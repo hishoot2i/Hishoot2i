@@ -6,16 +6,15 @@ import java.io.InputStream;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.skin.GetResources;
 import org.illegaller.ratabb.hishoot2i.skin.SkinDescription;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.github.airk.tool.sobitmap.SoBitmap;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import static org.illegaller.ratabb.hishoot2i.util.DrawView.recycleBitmap;
@@ -55,28 +54,16 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 		mContext = context;
 	}
 
-	@SuppressWarnings("deprecation")
-	private Bitmap imageDefault() {
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inDither = false;
-		options.inPurgeable = true;
-		options.inTempStorage = new byte[32 * 1024];
-		options.inSampleSize = 2;
-		return BitmapFactory.decodeResource(mContext.getResources(),
-				R.drawable.img_default, options);
-	}
-
 	private Bitmap loadBitmap(String data) {
-		try {
-			if (data != null) {
-				return ImageLoader.getInstance().loadImageSync(data);
-			} else {
-				return imageDefault();
+		if (data != null) {
+			try {
+				return SoBitmap.getInstance(mContext).huntBlock(TAG,
+						Uri.parse(data));
+			} catch (Exception e) {
+				Log.e(TAG, "loadBitmap: " + e.getMessage());
 			}
-		} catch (Exception e) {
-			Log.e(TAG, "loadBitmap: " + e.getMessage());
-			return imageDefault();
 		}
+		return DrawView.imageDefault(mContext);
 	}
 
 	@Override
@@ -116,8 +103,8 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 		int totx = (int) ((TL + BL));
 		int toty = (int) ((TT + BT));
 
-		Bitmap frame = DrawView.getNine(0, 0, R.drawable.frame1, lebar + totx,
-				tinggi + toty, mContext);
+		Bitmap frame = DrawView.getNine(R.drawable.frame1, lebar + totx, tinggi
+				+ toty, mContext);
 
 		// XXX TEMPLATE
 		String skinPkg = mListener.packageTemplate();
@@ -183,7 +170,8 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 			Log.e(TAG, e.getMessage());
 			mThrow = true;
 			xwall = wall;
-			mixthem = xwall.copy(xwall.getConfig(), true);
+			mixthem = Bitmap.createBitmap(mix1.getWidth(), mix1.getHeight(),
+					Bitmap.Config.ARGB_8888);
 		}
 
 		Bitmap wm = mListener.wat()[0];
@@ -198,7 +186,9 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 
 		canvas.drawBitmap(mix1, 0, 0, null);// ss1
 		if (!single) {
-			canvas.drawBitmap(mix2, mix1.getWidth(), 0, null);// ss2
+			if (mix2 != null) {
+				canvas.drawBitmap(mix2, mix1.getWidth(), 0, null);// ss2
+			}
 		}
 		canvas.drawBitmap(wm, (mixthem.getWidth() / 2) - (wm.getWidth() / 2),
 				(mixthem.getHeight() - wm.getHeight()), null);

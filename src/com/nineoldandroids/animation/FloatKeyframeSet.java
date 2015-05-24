@@ -59,7 +59,8 @@ class FloatKeyframeSet extends KeyframeSet {
         return newSet;
     }
 
-    public float getFloatValue(float fraction) {
+    @SuppressWarnings("unchecked")
+	public float getFloatValue(float fraction) {
         if (mNumKeyframes == 2) {
             if (firstTime) {
                 firstTime = false;

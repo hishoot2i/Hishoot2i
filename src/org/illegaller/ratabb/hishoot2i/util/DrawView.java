@@ -3,32 +3,35 @@ package org.illegaller.ratabb.hishoot2i.util;
 import java.io.ByteArrayInputStream;
 
 import org.illegaller.ratabb.hishoot2i.Constants;
+import org.illegaller.ratabb.hishoot2i.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class DrawView {
-	/**
-	 * Scale the bitmap down so that it's smallest dimension is {@code minSize}.
-	 * If {@code bitmap} is smaller than this, than it will simply be returned.
-	 */
-
+	
 	private static final int RADIUS_BLUR = 25;
 	private static final String TAG = "DrawView";
+
+	@SuppressWarnings("deprecation")
+	public static Bitmap imageDefault(Context context) {
+		Resources res = context.getResources();
+		Drawable drawable = res.getDrawable(R.drawable.img_default);
+		return ((BitmapDrawable) drawable).getBitmap();
+
+	}
 
 	public static Bitmap scaleBitmapDown(Bitmap bitmap, int minSize) {
 		final int minDimension = Math
@@ -45,10 +48,7 @@ public class DrawView {
 				Math.round(bitmap.getHeight() * scaleRatio), false);
 	}
 
-	/**
-	 * Scale the bitmap down so that it's excludes the borders at
-	 * {@code padding}.
-	 */
+
 	public static Bitmap cropBitmap(Bitmap bitmap, int padding) {
 		return Bitmap.createBitmap(bitmap, padding, padding, bitmap.getWidth()
 				- (padding * 2), bitmap.getHeight() - (padding * 2));
@@ -61,53 +61,27 @@ public class DrawView {
 	}
 
 	public static void drawBlurBitmap(Canvas canvas, Bitmap source,
-			Context context) {
-		SharedPreferences pref = context
-				.getSharedPreferences(
-						context.getPackageName() + "_preferences",
-						Context.MODE_PRIVATE);
-		Editor editor = pref.edit();
+			Context context) {		
 		Rect bounds = new Rect();
 		bounds.set(0, 0, source.getWidth(), source.getHeight());
+
 		try {
 			if (DeviceUtil.isICS()) {
-				canvas.drawBitmap(renderScriptBlur(source, context), null,
-						bounds, null);
+				canvas.drawBitmap(RsBlur.doBlur(source, RADIUS_BLUR, context),
+						null, bounds, null);
 			} else {
 				canvas.drawBitmap(StackBlur.doBlur(source, RADIUS_BLUR, true),
 						null, bounds, null);
 			}
 		} catch (OutOfMemoryError e) {
 			canvas.drawBitmap(source, null, bounds, null);
-			editor.putBoolean(Constants.KEY_PREF_BLUR_BG, false);
-			editor.remove(Constants.KEY_PREF_SKIN_PACKAGE);
-			editor.apply();
+
+			SharedPreferences pref = Pref.getPref(context);
+			Pref.commitPref(pref, Constants.KEY_PREF_BLUR_BG, false);
+			Pref.removePref(pref, Constants.KEY_PREF_SKIN_PACKAGE);
 			System.gc();
-			Log.e(TAG, "OutOfMemoryError");
+			Log.e(TAG, "OutOfMemoryError on Blur");
 		}
-	}
-
-	public static Bitmap renderScriptBlur(Bitmap source, Context context)
-			throws OutOfMemoryError {
-		Bitmap blurred = Bitmap.createBitmap(source.getWidth(),
-				source.getHeight(), Bitmap.Config.ARGB_8888);
-		RenderScript rs = RenderScript.create(context);
-
-		Allocation input = Allocation.createFromBitmap(rs, source,
-				Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
-		Allocation output = Allocation.createTyped(rs, input.getType());
-
-		ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs,
-				Element.U8_4(rs));
-		blurScript.setRadius(RADIUS_BLUR);
-		blurScript.setInput(input);
-		blurScript.forEach(output);
-		output.copyTo(blurred);
-		rs.destroy();
-		input.destroy();
-		output.destroy();
-		return blurred;
-
 	}
 
 	/*  */
@@ -125,8 +99,7 @@ public class DrawView {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static Bitmap getNine(int fromx, int fromy, int id, int x, int y,
-			Context context) {
+	public static Bitmap getNine(int id, int x, int y, Context context) {
 		Bitmap out = Bitmap.createBitmap(x, y, Bitmap.Config.ARGB_8888);
 		Canvas c = new Canvas(out);
 

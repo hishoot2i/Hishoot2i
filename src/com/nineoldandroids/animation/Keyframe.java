@@ -45,7 +45,8 @@ public abstract class Keyframe implements Cloneable {
      * The type of the value in this Keyframe. This type is determined at construction time,
      * based on the type of the <code>value</code> object passed into the constructor.
      */
-    Class mValueType;
+    @SuppressWarnings("rawtypes")
+	Class mValueType;
 
     /**
      * The optional time interpolator for the interval preceding this keyframe. A null interpolator
@@ -228,7 +229,8 @@ public abstract class Keyframe implements Cloneable {
      *
      * @return The type of the value stored in the Keyframe.
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return mValueType;
     }
 

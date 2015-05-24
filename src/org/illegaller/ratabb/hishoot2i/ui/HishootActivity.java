@@ -4,8 +4,8 @@ import org.illegaller.ratabb.hishoot2i.Constants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.util.DeviceUtil;
 import org.illegaller.ratabb.hishoot2i.util.DrawView;
+import org.illegaller.ratabb.hishoot2i.util.Pref;
 
-//import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +22,6 @@ import it.neokree.materialnavigationdrawer.elements.MaterialSection;
 @SuppressWarnings("rawtypes")
 public class HishootActivity extends MaterialNavigationDrawer {
 	private SharedPreferences mSharedPreferences;
-
-	public SharedPreferences getSharedPreferences() {
-		return mSharedPreferences;
-	}
 
 	static {
 		System.loadLibrary("photoprocessing");
@@ -107,16 +103,16 @@ public class HishootActivity extends MaterialNavigationDrawer {
 
 		oldInit();
 
+		DeviceUtil.setTintSystemBar(this,true);
+
 	}
 
 	private void oldInit() {
-		mSharedPreferences = getSharedPreferences(getPackageName()
-				+ "_preferences", Context.MODE_PRIVATE);
+		mSharedPreferences = Pref.getPref(this);
 		boolean firstrun = mSharedPreferences.getBoolean(
 				Constants.KEY_FIRSTRUN, false);
 
-		DeviceUtil.setColorStatusbar(this.getWindow(),
-				getResources().getColor(R.color.latar_gelap));
+	
 		if (!firstrun) {
 			DeviceUtil.setDeviceInfo(this.getWindowManager()
 					.getDefaultDisplay(), mSharedPreferences);

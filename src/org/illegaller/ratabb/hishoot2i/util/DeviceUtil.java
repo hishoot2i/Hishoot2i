@@ -5,16 +5,21 @@ import static org.illegaller.ratabb.hishoot2i.Constants.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.illegaller.ratabb.hishoot2i.R;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.Build;
-import android.support.annotation.ColorRes;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -55,14 +60,7 @@ public class DeviceUtil {
 		return result;
 	}
 
-	/**
-	 * 
-	 * @param display
-	 * @param pref
-	 */
-
 	public static void setDeviceInfo(Display display, SharedPreferences pref) {
-
 		String devicename = String
 				.format("%s (%s)", Build.MODEL, Build.PRODUCT);
 		String os_ver = String.format("Android %s", Build.VERSION.RELEASE);
@@ -71,34 +69,43 @@ public class DeviceUtil {
 		int height = dm.heightPixels;
 		int width = dm.widthPixels;
 		int density = convertDensity(dm.densityDpi);
-		Editor editor = pref.edit();
-		editor.putInt(KEY_PREF_REAL_DENSITY, dm.densityDpi);
-		editor.putInt(KEY_PREF_DENSITY, density);
-		editor.putInt(KEY_PREF_DEVICE_HEIGHT, height);
-		editor.putInt(KEY_PREF_DEVICE_WIDTH, width);
-		editor.putString(KEY_PREF_DEVICE_OS, os_ver);
-		editor.putString(KEY_PREF_DEVICE, devicename);
-		editor.putBoolean(KEY_FIRSTRUN, true);
-		editor.commit();
 
+		Pref.commitPref(pref, KEY_PREF_REAL_DENSITY, dm.densityDpi);
+		Pref.commitPref(pref, KEY_PREF_DENSITY, density);
+		Pref.commitPref(pref, KEY_PREF_DEVICE_HEIGHT, height);
+		Pref.commitPref(pref, KEY_PREF_DEVICE_WIDTH, width);
+		Pref.commitPref(pref, KEY_PREF_DEVICE_OS, os_ver);
+		Pref.commitPref(pref, KEY_PREF_DEVICE, devicename);
+		Pref.commitPref(pref, KEY_FIRSTRUN, true);
 	}
 
-	/**
-	 * 
-	 * @param window
-	 * @param colorId
-	 *            color id status bar & navigation bar
-	 */
-
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public static void setColorStatusbar(Window window, @ColorRes int colorId) {
-		if (!isLollipop()) {
-			return;
+	@SuppressLint({ "NewApi", "ResourceAsColor" })
+	public static void setTintSystemBar(Activity activity, boolean on) {
+		Window window = activity.getWindow();
+		int idcolor = R.color.latar_gelap;
+		int idtrans = android.R.color.transparent;
+		Resources res = activity.getResources();
+		if (isLollipop()) {
+			if (on) {
+				window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+				window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			}
+			window.setStatusBarColor(on ? idtrans : res.getColor(idcolor));
+		} else if (isKitkat()) {
+			WindowManager.LayoutParams winParams = window.getAttributes();
+			final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+			if (on) {
+				winParams.flags |= bits;
+			} else {
+				winParams.flags &= ~bits;
+			}
+			window.setAttributes(winParams);
+		} else {
+			SystemBarTintManager tintManager = new SystemBarTintManager(
+					activity);
+			tintManager.setStatusBarTintEnabled(true);
+			tintManager.setStatusBarTintResource(idcolor);
 		}
-		window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-		window.setStatusBarColor(colorId);
-		window.setNavigationBarColor(colorId);
 
 	}
 

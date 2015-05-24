@@ -428,7 +428,8 @@ class ViewPropertyAnimatorHC extends ViewPropertyAnimator {
      * simply runs from 0 to 1, and then use that fractional value to set each property
      * value accordingly.
      */
-    private void startAnimation() {
+    @SuppressWarnings("unchecked")
+	private void startAnimation() {
         ValueAnimator animator = ValueAnimator.ofFloat(1.0f);
         ArrayList<NameValuesHolder> nameValueList =
                 (ArrayList<NameValuesHolder>) mPendingAnimations.clone();

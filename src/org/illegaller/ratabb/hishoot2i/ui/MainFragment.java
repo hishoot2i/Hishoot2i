@@ -1,11 +1,11 @@
 package org.illegaller.ratabb.hishoot2i.ui;
 
 import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
@@ -16,14 +16,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.crop.CropImageIntentBuilder;
+
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
+
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.ui.HishootActivity.watBitEnum;
 import org.illegaller.ratabb.hishoot2i.util.ImageTask;
+import org.illegaller.ratabb.hishoot2i.util.Pref;
 import org.illegaller.ratabb.hishoot2i.util.SaveTask;
+
 import static org.illegaller.ratabb.hishoot2i.Constants.*;
 
 public class MainFragment extends Fragment implements View.OnClickListener,
@@ -63,8 +68,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 		// ButterKnife.inject(this, view);
 
 		mContext = getActivity();
-		mSharedPreferences = ((HishootActivity) mContext)
-				.getSharedPreferences();
+		mSharedPreferences = Pref.getPref(mContext);
 
 		tinggi = mSharedPreferences.getInt(KEY_PREF_DEVICE_HEIGHT, 320);
 		lebar = mSharedPreferences.getInt(KEY_PREF_DEVICE_WIDTH, 240);
@@ -94,47 +98,12 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		// ButterKnife.reset(this);
-	}
 
-	// @Override
-	// public void onViewCreated(View view, Bundle savedInstanceState) {
-	// super.onViewCreated(view, savedInstanceState);
-	//
-	// mContext = getActivity();
-	// mSharedPreferences = ((HishootActivity) mContext)
-	// .getSharedPreferences();
-	//
-	// tinggi = mSharedPreferences.getInt(KEY_PREF_DEVICE_HEIGHT, 320);
-	// lebar = mSharedPreferences.getInt(KEY_PREF_DEVICE_WIDTH, 240);
-	// mUriCrop = Uri.fromFile(new File(mContext.getExternalCacheDir(),
-	// CACHE_IMAGE_CROP));
-	// imageQuality = getIntImageQuality();
-	//
-	// single = mSharedPreferences.getBoolean(KEY_PREF_SINGLE_SS, false);
-	//
-	// runningTask(false);
-	// }
+	}
 
 	@Override
 	public void onClick(View v) {
 
-		// if (v == fabs[0]) {
-		// getImageChooser(
-		// (String.format("%s 1", getString(R.string.screenshoot))),
-		// SS1);
-		// }
-		// if (v == fabs[1]) {
-		// getImageChooser(
-		// (String.format("%s 2", getString(R.string.screenshoot))),
-		// SS2);
-		// }
-		// if (v == fabs[2]) {
-		// getImageChooser(getString(R.string.wallpaper), WALL);
-		// }
-		// if (v == fabs[3]) {
-		// runningTask(true);
-		// }
 		switch (v.getId()) {
 		case R.id.fab_ss1:
 			getImageChooser(
@@ -215,7 +184,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 	@Override
 	public void onDestroy() {
 		dismisDialog();
-		// removeCacheCrop();
+
 		System.gc();
 		super.onDestroy();
 	}
@@ -224,16 +193,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 		if (progDialog != null && progDialog.isShowing())
 			progDialog.dismiss();
 	}
-
-	// private void removeCacheCrop() {
-	// if (mUriCrop != null) {
-	// File file = new File(mUriCrop.getPath());
-	// if (file.exists()) {
-	// file.delete();
-	// IMG_WALL = null;
-	// }
-	// }
-	// }
 
 	private void runningTask(boolean save) {
 		String ss = getString(R.string.screenshoot);
@@ -244,10 +203,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 			fabss1.setTitle(String.format("%s 1", ss));
 			fabss2.setTitle(String.format("%s 2", ss));
 		}
-
-		// for (FloatingActionButton fab : fabs) {
-		// fab.setOnClickListener(this);
-		// }
 
 		if (save) {
 			new SaveTask(this).execute(mBitmapSave);
@@ -285,11 +240,8 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 			@Override
 			public void onPositive(MaterialDialog dialog) {
 				super.onPositive(dialog);
-				Editor edit = mSharedPreferences.edit();
-				edit.putBoolean(KEY_PREF_SINGLE_SS, true);
-				edit.putBoolean(KEY_FIRSTRUN, false);
-				edit.commit();
-
+				Pref.commitPref(mSharedPreferences, KEY_PREF_SINGLE_SS, true);
+				Pref.commitPref(mSharedPreferences, KEY_FIRSTRUN, false);
 				runningTask(false);
 			}
 

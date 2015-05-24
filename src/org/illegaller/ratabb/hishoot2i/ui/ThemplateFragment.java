@@ -9,6 +9,7 @@ import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.skin.GetResources;
 import org.illegaller.ratabb.hishoot2i.skin.SkinUtil;
 import org.illegaller.ratabb.hishoot2i.util.DrawView;
+import org.illegaller.ratabb.hishoot2i.util.Pref;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -17,7 +18,6 @@ import static org.illegaller.ratabb.hishoot2i.Constants.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -62,8 +62,7 @@ public class ThemplateFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		mContext = getActivity();
-		mSharedPreferences = ((HishootActivity) mContext)
-				.getSharedPreferences();
+		mSharedPreferences = Pref.getPref(mContext);
 
 		density = mSharedPreferences.getInt(KEY_PREF_DENSITY, 0);
 		width = mSharedPreferences.getInt(KEY_PREF_DEVICE_WIDTH, 240);
@@ -137,8 +136,8 @@ public class ThemplateFragment extends ListFragment {
 		String mSkinPackageName = item.pkgName, mSkinMessage = null;
 
 		String description = DEFAULT_TEMPLATE_DESC;
-		Bitmap bitmap = DrawView.getNine(0, 0, R.drawable.frame1, width,
-				height, mContext);
+		Bitmap bitmap = DrawView.getNine(R.drawable.frame1, width, height,
+				mContext);
 
 		boolean isCompatible = true, isDefault = (mSkinPackageName
 				.equalsIgnoreCase(mSkinUtil.DEFAULT));
@@ -210,14 +209,12 @@ public class ThemplateFragment extends ListFragment {
 	}
 
 	private void setCurrentSkin(String pkg, boolean isDefault) {
-		Editor editor = mSharedPreferences.edit();
 
 		if (isDefault) {
-			editor.remove(KEY_PREF_SKIN_PACKAGE);
+			Pref.removePref(mSharedPreferences, KEY_PREF_SKIN_PACKAGE);
 		} else {
-			editor.putString(KEY_PREF_SKIN_PACKAGE, pkg);
+			Pref.commitPref(mSharedPreferences, KEY_PREF_SKIN_PACKAGE, pkg);
 		}
-		editor.commit();
 
 		// XXX
 		((HishootActivity) getActivity()).selectItem(

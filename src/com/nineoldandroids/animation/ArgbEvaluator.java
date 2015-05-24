@@ -20,6 +20,7 @@ package com.nineoldandroids.animation;
  * This evaluator can be used to perform type interpolation between integer
  * values that represent ARGB colors.
  */
+@SuppressWarnings("rawtypes")
 public class ArgbEvaluator implements TypeEvaluator {
 
     /**

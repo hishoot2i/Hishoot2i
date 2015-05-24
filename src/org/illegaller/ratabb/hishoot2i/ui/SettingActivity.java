@@ -2,8 +2,10 @@ package org.illegaller.ratabb.hishoot2i.ui;
 
 import org.illegaller.ratabb.hishoot2i.Constants;
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.util.DeviceUtil;
+import org.illegaller.ratabb.hishoot2i.util.Pref;
+
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -14,18 +16,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
-
 @SuppressLint("NewApi")
 public class SettingActivity extends AppCompatActivity {
 	private SharedPreferences mPref;
 	@SuppressWarnings("unused")
 	private static final String TAG = "Hishoot2i:SettingFragment";
+	private static boolean ischanghe;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mPref = getSharedPreferences(getPackageName() + "_preferences",
-				Context.MODE_PRIVATE);
+		mPref = Pref.getPref(this);
+
+		DeviceUtil.setTintSystemBar(this, false);
 
 		getSupportActionBar().setTitle(R.string.menu_setting);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,12 +51,13 @@ public class SettingActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		Intent intent = new Intent(Constants.ACTION_UPDATE);
-		sendBroadcast(intent);
+		if (ischanghe) {
+			Intent intent = new Intent(Constants.ACTION_UPDATE);
+			sendBroadcast(intent);
+		}
 		super.onDestroy();
 	}
 
-	
 	private class SettingFragment extends PreferenceFragment implements
 			OnSharedPreferenceChangeListener {
 
@@ -65,7 +69,7 @@ public class SettingActivity extends AppCompatActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-
+			ischanghe = false;
 			addPreferencesFromResource(R.xml.setting);
 			LPimageQuality = (ListPreference) findPreference(Constants.KEY_PREF_IMAGE_QUALITY);
 		}
@@ -104,6 +108,7 @@ public class SettingActivity extends AppCompatActivity {
 		public void onSharedPreferenceChanged(
 				SharedPreferences sharedPreferences, String key) {
 			// XXX
+			ischanghe = true;
 			updateSumPref(key);
 		}
 	}

@@ -337,7 +337,8 @@ public final class AnimatorSet extends Animator {
                 }
             }
             if (mListeners != null) {
-                ArrayList<AnimatorListener> tmpListeners =
+                @SuppressWarnings("unchecked")
+				ArrayList<AnimatorListener> tmpListeners =
                         (ArrayList<AnimatorListener>) mListeners.clone();
                 for (AnimatorListener listener : tmpListeners) {
                     listener.onAnimationEnd(this);

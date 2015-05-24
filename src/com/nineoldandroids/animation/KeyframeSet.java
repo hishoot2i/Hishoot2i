@@ -30,6 +30,7 @@ import com.nineoldandroids.animation.Keyframe.ObjectKeyframe;
  * values between those keyframes for a given animation. The class internal to the animation
  * package because it is an implementation detail of how Keyframes are stored and used.
  */
+@SuppressWarnings("rawtypes")
 class KeyframeSet {
 
     int mNumKeyframes;
@@ -38,7 +39,8 @@ class KeyframeSet {
     Keyframe mLastKeyframe;
     /*Time*/Interpolator mInterpolator; // only used in the 2-keyframe case
     ArrayList<Keyframe> mKeyframes; // only used when there are not 2 keyframes
-    TypeEvaluator mEvaluator;
+
+	TypeEvaluator mEvaluator;
 
 
     public KeyframeSet(Keyframe... keyframes) {
@@ -163,7 +165,8 @@ class KeyframeSet {
      * @param fraction The elapsed fraction of the animation
      * @return The animated value.
      */
-    public Object getValue(float fraction) {
+    @SuppressWarnings("unchecked")
+	public Object getValue(float fraction) {
 
         // Special-case optimization for the common case of only two keyframes
         if (mNumKeyframes == 2) {

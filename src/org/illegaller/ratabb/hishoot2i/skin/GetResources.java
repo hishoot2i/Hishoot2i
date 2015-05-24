@@ -10,8 +10,8 @@ import android.graphics.drawable.NinePatchDrawable;
 
 public class GetResources {
 	private Context mContext;
-	private Bitmap mBitmap;
-	private NinePatchDrawable mNinePatchDrawable;
+//	private Bitmap mBitmap;
+//	private NinePatchDrawable mNinePatchDrawable;
 	private PackageManager mPackageManager;
 
 	public GetResources(Context context) {
@@ -28,9 +28,10 @@ public class GetResources {
 		} catch (PackageManager.NameNotFoundException e) {
 		} catch (NullPointerException e) {
 		}
-		mNinePatchDrawable = loadNineDraw(themeResources, themePack, namaPng);
-
-		return mNinePatchDrawable;
+//		mNinePatchDrawable = loadNineDraw(themeResources, themePack, namaPng);
+//
+//		return mNinePatchDrawable;
+		return loadNineDraw(themeResources, themePack, namaPng);
 	}
 
 	public Bitmap getImage(String pkgName, String namaPng) {
@@ -43,9 +44,9 @@ public class GetResources {
 		} catch (NullPointerException e) {
 		}
 		Drawable d = loadThemeResource(themeResources, themePack, namaPng);
-		mBitmap = ((BitmapDrawable) d).getBitmap();
-
-		return mBitmap;
+//		mBitmap = ((BitmapDrawable) d).getBitmap();
+//		return mBitmap;
+		return  ((BitmapDrawable) d).getBitmap();
 	}
 
 	@SuppressWarnings("deprecation")
