@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab_menu"
+    style="@style/fam_style"
+    android:layout_gravity="bottom|end"
+    fab:fab_labelsPosition="left" >
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_open_with"
+        style="@style/fab_style"
+        fab:fab_colorNormal="@color/biru"
+        fab:fab_icon="@drawable/ic_fab_wall"
+        fab:fab_title="@string/share.open" />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_share_app"
+        style="@style/fab_style"
+        fab:fab_colorNormal="@color/ijo"
+        fab:fab_icon="@drawable/ic_fab_app"
+        fab:fab_title="@string/share.app" />
+
+</net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>

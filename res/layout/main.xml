@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@drawable/window_background"
+    >
+
+    <LinearLayout
+        android:id="@+id/layout_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/iv_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:contentDescription="@android:string/ok" />
+    </LinearLayout>
+
+    <include layout="@layout/fab" />
+
+</FrameLayout>

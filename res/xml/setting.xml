@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.afollestad.materialdialogs.prefs.MaterialListPreference
+        android:defaultValue="@string/imagequality.value.med"
+        android:entries="@array/imagequality_entries"
+        android:entryValues="@array/imagequality_values"
+        android:key="image_quality"
+        android:title="Image Quality" />
+
+    <SwitchPreference
+        android:key="single_ss"
+        android:summaryOff="Double"
+        android:summaryOn="Singgle"
+        android:title="Counts SS" />
+   <SwitchPreference
+        android:key="blur_bg"
+        android:summaryOff="Off"
+        android:summaryOn="On"
+        android:title="Blur background" />
+
+</PreferenceScreen>

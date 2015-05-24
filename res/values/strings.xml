@@ -1,0 +1,41 @@
+<resources>
+
+    <string name="menu.about">About</string>
+    <string name="menu.main">Hishoot</string>
+    <string name="menu.setting">Setting</string>
+    <string name="menu.template">Template</string>
+    <string name="open_source_licenses">Open source licenses</string>
+    <string name="licenses">License</string>
+    <string name="version">Version %s</string>
+    <!-- drawer -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <!--  -->
+    <string name="chooser">Choose image for %s</string>
+    <string name="screenshoot">Screenshot</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+    <string name="details_file_size">File size:</string>
+    <string name="savingImage">Saving picture\u2026</string>
+    <string name="runningFaceDetection">Please wait\u2026</string>
+    <string name="multiface_crop_help">Tap a face to begin.</string>
+    <string name="savingCrop">Saving crop picture\u2026</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_apply">Apply</string>
+    <string name="processing">Processing</string>
+    <string name="please_wait">Please wait\u2026</string>
+    <string name="success">Success</string>
+    <string name="failed">Failed!</string>
+    <!-- share -->
+    <string name="share">Share</string>
+    <string name="share.wall">Post to timeline</string>
+    <string name="share.grup">Post to group</string>
+    <string name="share.app">Share with\u2026</string>
+    <string name="share.open">Open with\u2026</string>
+    <!-- setting -->
+    <string name="imagequality.low">Low</string>
+    <string name="imagequality.med">Medium</string>
+    <string name="imagequality.hi">High</string>
+
+</resources>

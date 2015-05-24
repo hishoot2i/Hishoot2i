@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="menus" translatable="false">
+        <item>@string/menu.main</item>
+        <item>@string/menu.template</item>
+        <item>@string/menu.setting</item>
+        <item>@string/menu.about</item>
+    </string-array>
+    <string-array name="imagequality_entries" translatable="false">
+        <item>@string/imagequality.low</item>
+        <item>@string/imagequality.med</item>
+        <item>@string/imagequality.hi</item>
+    </string-array>
+    <string-array name="imagequality_values" translatable="false">
+        <item>@string/imagequality.value.low</item>
+        <item>@string/imagequality.value.med</item>
+        <item>@string/imagequality.value.hi</item>
+    </string-array>
+
+</resources>

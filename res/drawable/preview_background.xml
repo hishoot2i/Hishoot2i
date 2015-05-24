@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@color/latar_gelap"
+                android:startColor="@color/latar" />
+        </shape>
+    </item>
+    <item>
+        <bitmap
+            android:alpha="95"
+            android:src="@drawable/tile"
+            android:tileMode="repeat" />
+    </item>
+</layer-list>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab_menu"
+    style="@style/fam_style"
+    android:layout_gravity="bottom|start"
+    fab:fab_labelsPosition="right" >
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_ss1"
+        style="@style/fab_style"
+        fab:fab_colorNormal="@color/ijo"
+        fab:fab_icon="@drawable/ic_fab_ss"
+        fab:fab_title="@string/screenshoot" />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_ss2"
+        style="@style/fab_style"
+        fab:fab_colorNormal="@color/ijo"
+        fab:fab_icon="@drawable/ic_fab_ss"
+        fab:fab_title="@string/screenshoot" />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_wallp"
+        style="@style/fab_style"
+        fab:fab_colorNormal="@color/biru"
+        fab:fab_icon="@drawable/ic_fab_wall"
+        fab:fab_title="@string/wallpaper" />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_save"
+        style="@style/fab_style"
+        fab:fab_colorNormal="@color/ungu"
+        fab:fab_icon="@drawable/ic_fab_save"
+        fab:fab_title="@string/save" />
+
+</net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>

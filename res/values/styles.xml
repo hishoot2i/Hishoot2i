@@ -1,0 +1,109 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:fab="http://schemas.android.com/apk/res-auto">
+
+    <style name="MyTheme" parent="@style/MaterialNavigationDrawerTheme.Light.DarkActionBar.TranslucentKitKatStatusBar">
+       
+        <item name="colorPrimary">@color/latar</item>
+        <item name="colorPrimaryDark">@color/latar_gelap</item>
+        <item name="colorAccent">@android:color/black</item>
+        <item name="singleAccount">true</item>
+    </style>
+    <!-- unused -->
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/HishootActionBar</item>
+        <!--  -->
+        <item name="actionBarStyle">@style/HishootActionBar</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="MyTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    <!-- about -->
+    <style name="HishootAboutBodyText" parent="@style/TextAppearance.AppCompat.Small">
+
+        <!-- <item name="android:textAlignment">center</item> API17 -->
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="HishootAboutVerText" parent="@style/TextAppearance.AppCompat.Small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
+        <item name="android:layout_marginBottom">8.0dip</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="HishootTextActionBar" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/putih</item>
+    </style>
+
+    <style name="HishootActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_background__hishoot</item>
+        <item name="android:textAppearance">@style/HishootTextActionBar</item>
+        <!--  -->
+        <item name="background">@drawable/ab_background__hishoot</item>
+        <item name="titleTextStyle">@style/HishootTextActionBar</item>
+        <!--  -->
+        <item name="colorPrimary">@color/biru</item>
+        <item name="colorPrimaryDark">@color/biru_tua</item>
+    </style>
+
+    <style name="LogoStyle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:paddingBottom">8.0dip</item>
+        <item name="android:paddingTop">0.0dip</item>
+    </style>
+    <!-- preview -->
+    <style name="PreviewDevider">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">1.0dip</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="BorderlessButton" parent="@android:style/Widget.Holo.Button.Borderless.Small">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="PreviewButton" parent="@style/BorderlessButton">
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="PreviewLayoutButton">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:weightSum">2</item>
+    </style>
+    <!-- crop -->
+    <style name="HishootCropButton" parent="@style/BorderlessButton">
+        <item name="android:layout_width">100dip</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <!-- fab -->
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="fab_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fab_colorPressed">@color/latar</item>
+        <item name="fab_type">mini</item>
+    </style>
+
+    <style name="fam_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="fab_addButtonColorNormal">@color/latar</item>
+        <item name="fab_addButtonColorPressed">@color/biru_tua</item>
+        <item name="fab_addButtonPlusIconColor">@color/white</item>
+        <item name="fab_labelStyle">@style/menu_labels_style</item>
+    </style>
+
+</resources>
