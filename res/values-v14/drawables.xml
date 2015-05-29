@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="ic_arrow_up" type="drawable">@drawable/arrow_up</item>
+    <item name="ic_arrow_down" type="drawable">@drawable/arrow_down</item>
+
+</resources>
