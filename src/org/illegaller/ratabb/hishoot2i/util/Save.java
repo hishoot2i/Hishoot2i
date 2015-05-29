@@ -15,18 +15,19 @@ import android.os.Environment;
 import android.util.Base64;
 
 public class Save {
-	/** <strong>Hint: </strong>{@link Bitmap#compress} */
 
 	public File SaveBitmap(Bitmap bmp, @IMAGE_QUALITY int _imageQuality) {
 
 		String extension = (_imageQuality == IQ_HI) ? ".png" : ".jpg";
-		
+
 		int quality = (_imageQuality == IQ_LOW) ? 60 : 80;
 		Bitmap.CompressFormat format = (_imageQuality == IQ_HI) ? Bitmap.CompressFormat.PNG
 				: Bitmap.CompressFormat.JPEG;
 
 		String filename = String.format("HiShoot-%s%s",
 				String.valueOf(System.currentTimeMillis()), extension);
+
+		/**/
 		OutputStream outStream = null;
 		File file = getHishootDirectory(filename);
 		try {

@@ -2,5 +2,6 @@
 <resources>
 
     <item name="largeheap" type="bool">true</item>
+	<item name="hw_accelerad" type="bool">false</item>
 
 </resources>

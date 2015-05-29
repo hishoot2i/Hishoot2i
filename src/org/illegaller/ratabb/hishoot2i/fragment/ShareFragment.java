@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.ui;
+package org.illegaller.ratabb.hishoot2i.fragment;
 
 import java.io.File;
 
@@ -9,6 +9,7 @@ import org.illegaller.ratabb.hishoot2i.Constants;
 import org.illegaller.ratabb.hishoot2i.R;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 
 public class ShareFragment extends Fragment implements OnClickListener {
 
@@ -37,7 +37,6 @@ public class ShareFragment extends Fragment implements OnClickListener {
 		final Bundle arg = new Bundle();
 		arg.putString(Constants.EXTRA_FILE_SAVE, string);
 		sf.setArguments(arg);
-
 		return sf;
 	}
 
@@ -53,20 +52,22 @@ public class ShareFragment extends Fragment implements OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.share, container, false);
-		
-		ivPreview =(ImageView)view.findViewById(R.id.iv_preview);
-		
-		fabMenu =(FloatingActionsMenu)view.findViewById(R.id.fab_menu);
-		fabs_share_app=(FloatingActionButton)view.findViewById(R.id.fab_share_app);
-		fab_open_with=(FloatingActionButton)view.findViewById(R.id.fab_open_with);
-		
-		ivPreview.setImageBitmap(BitmapFactory.decodeFile(mPathImage));
 
+		ivPreview = (ImageView) view.findViewById(R.id.iv_preview);
+
+		fabMenu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
+		fabs_share_app = (FloatingActionButton) view
+				.findViewById(R.id.fab_share_app);
+		fab_open_with = (FloatingActionButton) view
+				.findViewById(R.id.fab_open_with);
+		Bitmap bitmap = BitmapFactory.decodeFile(mPathImage);
+		if (bitmap != null) {
+			ivPreview.setImageBitmap(bitmap);
+		}
 		fabs_share_app.setOnClickListener(this);
 		fab_open_with.setOnClickListener(this);
 		return view;
 	}
-
 
 	@Override
 	public void onClick(View v) {
@@ -88,6 +89,5 @@ public class ShareFragment extends Fragment implements OnClickListener {
 		}
 		fabMenu.collapse();
 	}
-
 
 }

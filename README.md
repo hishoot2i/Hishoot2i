@@ -9,6 +9,6 @@ Hishoot2i based from [Hishoot](https://github.com/jmkl/Hishoot)
 * **[Android Crop Image](https://github.com/lvillani/android-cropimage) ** 
 * **[Nine Old Androids](https://github.com/JakeWharton/NineOldAndroids) ** 
 * **[FloatingActionButton](https://github.com/str4d/android-floating-action-button) ** 
-* **[Switch Button](https://github.com/ikewong/SwitchButton) ** 
 * **[Material Ripple](https://github.com/balysv/material-ripple) **
-* **[SoBitmap](https://github.com/airk000/SoBitmap) **
+* **[Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader) **
+* **[Android System Bar Tint] (https://github.com/jgilfelt/SystemBarTint/) **

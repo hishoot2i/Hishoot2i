@@ -25,10 +25,7 @@
 
         <include layout="@layout/fab_share" />
 
-        <!-- <com.facebook.login.widget.LoginButton -->
-        <!-- android:id="@+id/fbLogin" -->
-        <!-- android:layout_width="wrap_content" -->
-        <!-- android:layout_height="wrap_content" /> -->
+
     </FrameLayout>
 
     <ListView

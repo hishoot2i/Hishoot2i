@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="black_semi_transparent">#80000000</color>
+    
     <color name="white">#fafafa</color>
     <color name="white_pressed">#f1f1f1</color>
     <color name="primary">#3f51b5</color>
@@ -20,7 +20,5 @@
     <color name="latar">#00b8d4</color>
     <color name="latar_gelap">#0296ac</color>
     <color name="putih">#ffffff</color>
-    <color name="default_normal">#ff0099cc</color><!-- android.R.color.holo_blue_dark -->
-    <color name="default_pressed">#ff33b5e5</color><!-- android.R.color.holo_blue_light -->
-    <color name="default_disabled">#aaa</color><!-- android.R.color.darker_gray -->
+
 </resources>

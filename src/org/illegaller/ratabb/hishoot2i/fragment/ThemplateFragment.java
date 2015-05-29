@@ -1,26 +1,22 @@
-package org.illegaller.ratabb.hishoot2i.ui;
+package org.illegaller.ratabb.hishoot2i.fragment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.illegaller.ratabb.hishoot2i.Constants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.skin.GetResources;
 import org.illegaller.ratabb.hishoot2i.skin.SkinUtil;
-import org.illegaller.ratabb.hishoot2i.util.DrawView;
+import org.illegaller.ratabb.hishoot2i.ui.HishootActivity;
+import org.illegaller.ratabb.hishoot2i.util.BitmapUtil;
 import org.illegaller.ratabb.hishoot2i.util.Pref;
+import org.illegaller.ratabb.hishoot2i.util.TemplateUtil;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import static org.illegaller.ratabb.hishoot2i.Constants.*;
-//import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -37,7 +33,7 @@ import android.widget.Toast;
 
 public class ThemplateFragment extends ListFragment {
 	private Context mContext;
-	private SharedPreferences mSharedPreferences;
+	private Pref mPref;
 
 	private SkinUtil mSkinUtil;
 	private ArrayList<Pair<String, Drawable>> paket;
@@ -62,11 +58,11 @@ public class ThemplateFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		mContext = getActivity();
-		mSharedPreferences = Pref.getPref(mContext);
+		mPref = new Pref(mContext);
 
-		density = mSharedPreferences.getInt(KEY_PREF_DENSITY, 0);
-		width = mSharedPreferences.getInt(KEY_PREF_DEVICE_WIDTH, 240);
-		height = mSharedPreferences.getInt(KEY_PREF_DEVICE_HEIGHT, 320);
+		density = mPref.getSPref().getInt(KEY_PREF_DENSITY, 0);
+		width = mPref.getSPref().getInt(KEY_PREF_DEVICE_WIDTH, 240);
+		height = mPref.getSPref().getInt(KEY_PREF_DEVICE_HEIGHT, 320);
 
 		mSkinUtil = new SkinUtil(mContext);
 
@@ -76,7 +72,7 @@ public class ThemplateFragment extends ListFragment {
 		items.add(new SkinItem(mSkinUtil.DEFAULT, DEFAULT_TEMPLATE_DESC,
 				mContext.getResources().getDrawable(R.drawable.ic_launcher)));
 
-		paket = loadSkinPackage();
+		paket = TemplateUtil.loadSkinPackage(mContext);
 		if (paket != null) {
 			for (int i = 0; i < paket.size(); i++) {
 				Pair<String, Drawable> pair = paket.get(i);
@@ -114,21 +110,6 @@ public class ThemplateFragment extends ListFragment {
 		return skinDescription();
 	}
 
-	private ArrayList<Pair<String, Drawable>> loadSkinPackage() {
-		ArrayList<Pair<String, Drawable>> mPaket = new ArrayList<Pair<String, Drawable>>();
-
-		PackageManager pm = mContext.getPackageManager();
-		Intent i = new Intent(Intent.ACTION_MAIN, null);
-		i.addCategory("dcsms.hishoot.SKINTEMPLATE");
-		List<ResolveInfo> apps = pm.queryIntentActivities(i, 0);
-		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(pm));
-		for (ResolveInfo skin : apps) {
-			ActivityInfo ai = skin.activityInfo;
-			// XXX:
-			mPaket.add(Pair.create(ai.packageName, ai.loadIcon(pm)));
-		}
-		return mPaket;
-	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
@@ -136,7 +117,7 @@ public class ThemplateFragment extends ListFragment {
 		String mSkinPackageName = item.pkgName, mSkinMessage = null;
 
 		String description = DEFAULT_TEMPLATE_DESC;
-		Bitmap bitmap = DrawView.getNine(R.drawable.frame1, width, height,
+		Bitmap bitmap = BitmapUtil.getNine(R.drawable.frame1, width, height,
 				mContext);
 
 		boolean isCompatible = true, isDefault = (mSkinPackageName
@@ -211,9 +192,9 @@ public class ThemplateFragment extends ListFragment {
 	private void setCurrentSkin(String pkg, boolean isDefault) {
 
 		if (isDefault) {
-			Pref.removePref(mSharedPreferences, KEY_PREF_SKIN_PACKAGE);
+			mPref.remove(KEY_PREF_SKIN_PACKAGE);
 		} else {
-			Pref.commitPref(mSharedPreferences, KEY_PREF_SKIN_PACKAGE, pkg);
+			mPref.putAndApply(KEY_PREF_SKIN_PACKAGE, pkg);
 		}
 
 		// XXX

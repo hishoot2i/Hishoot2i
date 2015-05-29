@@ -1,22 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <com.afollestad.materialdialogs.prefs.MaterialListPreference
-        android:defaultValue="@string/imagequality.value.med"
-        android:entries="@array/imagequality_entries"
-        android:entryValues="@array/imagequality_values"
-        android:key="image_quality"
-        android:title="Image Quality" />
+    <PreferenceCategory android:title="Configuration" >
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:defaultValue="@string/imagequality.value.med"
+            android:entries="@array/imagequality_entries"
+            android:entryValues="@array/imagequality_values"
+            android:key="image_quality"
+            android:title="Image Quality" />
 
-    <SwitchPreference
-        android:key="single_ss"
-        android:summaryOff="Double"
-        android:summaryOn="Singgle"
-        android:title="Counts SS" />
-   <SwitchPreference
-        android:key="blur_bg"
-        android:summaryOff="Off"
-        android:summaryOn="On"
-        android:title="Blur background" />
+        <SwitchPreference
+            android:key="single_ss"
+            android:summaryOff="Double"
+            android:summaryOn="Singgle"
+            android:title="Counts SS" />
+        <SwitchPreference
+            android:key="blur_bg"
+            android:summaryOff="Off"
+            android:summaryOn="On"
+            android:title="Blur background" />
+
+        <org.illegaller.ratabb.hishoot2i.preference.SeekBarPreference
+            interval="1"
+            maximum="100"
+            minimum="1"
+            monitorBoxEnabled="true"
+            monitorBoxUnit=" "
+            android:defaultValue="25"
+            android:dependency="blur_bg"
+            android:key="blur_radius"
+            android:title="Blur radius" />
+        <!-- android:summary="Blur value sum" -->
+        <SwitchPreference
+            android:key="hide_wattermark"
+            android:summaryOff="Off"
+            android:summaryOn="On"
+            android:title="Hide Watermark" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Other" >
+        <Preference
+            android:key="template_web"
+            android:title="Template on Web" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

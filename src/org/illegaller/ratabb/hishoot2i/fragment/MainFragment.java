@@ -1,11 +1,10 @@
-package org.illegaller.ratabb.hishoot2i.ui;
+package org.illegaller.ratabb.hishoot2i.fragment;
 
 import java.io.File;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
@@ -18,16 +17,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+
 import com.android.crop.CropImageIntentBuilder;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.ui.HishootActivity;
 import org.illegaller.ratabb.hishoot2i.ui.HishootActivity.watBitEnum;
 import org.illegaller.ratabb.hishoot2i.util.ImageTask;
 import org.illegaller.ratabb.hishoot2i.util.Pref;
 import org.illegaller.ratabb.hishoot2i.util.SaveTask;
+import org.illegaller.ratabb.hishoot2i.util.SystemProp;
 
 import static org.illegaller.ratabb.hishoot2i.Constants.*;
 
@@ -35,7 +37,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 		ImageTask.OnImageTaskListener, SaveTask.OnSaveTaskListener {
 
 	public static final String TAG = "Hishoot2i:MainFragment";
-	private SharedPreferences mSharedPreferences;
+	private Pref mPref;
 	private Context mContext;
 
 	private FloatingActionsMenu fabMenu;
@@ -65,18 +67,16 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.main, container, false);
-		// ButterKnife.inject(this, view);
-
 		mContext = getActivity();
-		mSharedPreferences = Pref.getPref(mContext);
+		mPref = new Pref(mContext);
 
-		tinggi = mSharedPreferences.getInt(KEY_PREF_DEVICE_HEIGHT, 320);
-		lebar = mSharedPreferences.getInt(KEY_PREF_DEVICE_WIDTH, 240);
+		tinggi = mPref.getSPref().getInt(KEY_PREF_DEVICE_HEIGHT, 320);
+		lebar = mPref.getSPref().getInt(KEY_PREF_DEVICE_WIDTH, 240);
 		mUriCrop = Uri.fromFile(new File(mContext.getExternalCacheDir(),
 				CACHE_IMAGE_CROP));
 		imageQuality = getIntImageQuality();
 
-		single = mSharedPreferences.getBoolean(KEY_PREF_SINGLE_SS, false);
+		single = mPref.getSPref().getBoolean(KEY_PREF_SINGLE_SS, false);
 
 		ivPreview = (ImageView) view.findViewById(R.id.iv_preview);
 
@@ -93,12 +93,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 
 		runningTask(false);
 		return view;
-	}
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-
 	}
 
 	@Override
@@ -130,9 +124,8 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != Activity.RESULT_OK) {
+		if ((resultCode != Activity.RESULT_OK) || (data == null))
 			return;
-		}
 
 		String sdata = data.getDataString();
 		switch (requestCode) {
@@ -164,6 +157,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 	@Override
 	public void onPause() {
 		dismisDialog();
+		System.gc();
 		super.onPause();
 
 	}
@@ -184,7 +178,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 	@Override
 	public void onDestroy() {
 		dismisDialog();
-
 		System.gc();
 		super.onDestroy();
 	}
@@ -195,6 +188,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 	}
 
 	private void runningTask(boolean save) {
+		System.gc();
 		String ss = getString(R.string.screenshoot);
 		if (single) {
 			fabss1.setTitle(ss);
@@ -240,8 +234,8 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 			@Override
 			public void onPositive(MaterialDialog dialog) {
 				super.onPositive(dialog);
-				Pref.commitPref(mSharedPreferences, KEY_PREF_SINGLE_SS, true);
-				Pref.commitPref(mSharedPreferences, KEY_FIRSTRUN, false);
+				mPref.putAndApply(KEY_PREF_SINGLE_SS, true);
+				mPref.putAndApply(KEY_FIRSTRUN, false);
 				runningTask(false);
 			}
 
@@ -262,7 +256,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 		// low=0, medium=1, high=2
 		String[] values = getResources().getStringArray(
 				R.array.imagequality_values);
-		String ret = mSharedPreferences.getString(KEY_PREF_IMAGE_QUALITY,
+		String ret = mPref.getSPref().getString(KEY_PREF_IMAGE_QUALITY,
 				values[1]);
 		int result = IQ_MED;
 
@@ -302,8 +296,8 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 
 	@Override
 	public String packageTemplate() {
-		if (mSharedPreferences.contains(KEY_PREF_SKIN_PACKAGE)) {
-			return mSharedPreferences.getString(KEY_PREF_SKIN_PACKAGE, "");
+		if (mPref.getSPref().contains(KEY_PREF_SKIN_PACKAGE)) {
+			return mPref.getSPref().getString(KEY_PREF_SKIN_PACKAGE, "");
 		} else {
 			return null;
 		}
@@ -330,21 +324,32 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 
 	@Override
 	public Boolean onBlur() {
-		return mSharedPreferences.getBoolean(KEY_PREF_BLUR_BG, false);
+		return mPref.getSPref().getBoolean(KEY_PREF_BLUR_BG, false);
+	}
+
+	@Override
+	public Boolean onHideWm() {
+		boolean ret = mPref.getSPref().getBoolean(KEY_PREF_HIDE_WATTERMARK,
+				false);
+		int t = SystemProp.getTrial(mContext);
+		return ret && t >= 1;
 	}
 
 	@Override
 	public Boolean oneSS() {
-		return mSharedPreferences.getBoolean(KEY_PREF_SINGLE_SS, false);
+		return mPref.getSPref().getBoolean(KEY_PREF_SINGLE_SS, false);
 	}/* ImageTask.IImageTaskListener END */
 
 	/* SaveTask.ISaveTaskListener */
 	@Override
 	public void onPostResult(File result) {
 		if (result.exists()) {
+			if (mPref.getSPref().getBoolean(KEY_PREF_HIDE_WATTERMARK, false)) {
+				SystemProp.getOrPutTrial(mContext);
+			}
+
 			mBitmapSave.recycle();
 			progDialog.setContent(getString(R.string.success));
-
 			progDialog.dismiss();
 			((HishootActivity) mContext).selectItem(getString(R.string.share),
 					result.getAbsolutePath());
@@ -362,8 +367,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,
 
 	@Override
 	public void onPreSave() {
-		progDialog = getProgressDialog(R.string.savingImage,
-				R.string.please_wait);
+		progDialog = getProgressDialog(R.string.save, R.string.please_wait);
 
 	}/* SaveTask.ISaveTaskListener END */
 

@@ -2,26 +2,29 @@ package org.illegaller.ratabb.hishoot2i.ui;
 
 import org.illegaller.ratabb.hishoot2i.Constants;
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.fragment.AboutFragment;
+import org.illegaller.ratabb.hishoot2i.fragment.MainFragment;
+import org.illegaller.ratabb.hishoot2i.fragment.ShareFragment;
+import org.illegaller.ratabb.hishoot2i.fragment.ThemplateFragment;
 import org.illegaller.ratabb.hishoot2i.util.DeviceUtil;
-import org.illegaller.ratabb.hishoot2i.util.DrawView;
+import org.illegaller.ratabb.hishoot2i.util.BitmapUtil;
 import org.illegaller.ratabb.hishoot2i.util.Pref;
+import org.illegaller.ratabb.hishoot2i.util.TemplateUtil;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 import it.neokree.materialnavigationdrawer.elements.MaterialSection;
 
 @SuppressWarnings("rawtypes")
 public class HishootActivity extends MaterialNavigationDrawer {
-	private SharedPreferences mSharedPreferences;
+	private Pref mPref;
 
 	static {
 		System.loadLibrary("photoprocessing");
@@ -48,8 +51,8 @@ public class HishootActivity extends MaterialNavigationDrawer {
 	}
 
 	private void setWatBitmap(int density) {
-		watBitmap = DrawView.getMark(wat1(), density);
-		wat2Bitmap = DrawView.getMark(wat2(), density);
+		watBitmap = BitmapUtil.getMark(wat1(), density);
+		wat2Bitmap = BitmapUtil.getMark(wat2(), density);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -60,28 +63,29 @@ public class HishootActivity extends MaterialNavigationDrawer {
 					getString(R.string.menu_main));
 			setSection(sectionMain);
 		} else if (menu.equals(getString(R.string.share))) {
+
 			setFragment(ShareFragment.newInstance(object),
 					getString(R.string.share));
 
 		}
 	}
 
-	private MaterialSection<Fragment> sectionMain, sectionTemplate,
-			sectionAbout, sectionSetting;
+	private MaterialSection sectionMain, sectionTemplate, sectionAbout,
+			sectionSetting;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Bundle savedInstanceState) {
-		Resources res = getResources();
+
 		setDrawerHeaderImage(R.drawable.banner);
 		setUsername(getString(R.string.app_name));
 		setUserEmail(String.format(getString(R.string.version),
 				getString(R.string.app_ver)));
-
+		Resources res = getResources();
 		setUsernameTextColor(res.getColor(android.R.color.black));
 		setUserEmailTextColor(res.getColor(android.R.color.black));
-		// section (menu)
 
+		// XXX section (menu drawer)
 		sectionMain = newSection(getString(R.string.menu_main),
 				R.drawable.ic_section_main, MainFragment.newInstance());
 		sectionTemplate = newSection(getString(R.string.menu_template),
@@ -91,7 +95,7 @@ public class HishootActivity extends MaterialNavigationDrawer {
 
 		sectionSetting = newSection(getString(R.string.menu_setting),
 				R.drawable.ic_section_setting,
-				new Intent(this, DeviceUtil.isICS() ?
+				new Intent(this, DeviceUtil.hasICS() ?
 
 				SettingActivity.class : OlderSettingActivity.class));
 
@@ -100,32 +104,31 @@ public class HishootActivity extends MaterialNavigationDrawer {
 		this.addSection(sectionAbout);
 
 		this.addBottomSection(sectionSetting);
+		/**/
 
-		oldInit();
+		DeviceUtil.setTintSystemBar(this, true);
 
-		DeviceUtil.setTintSystemBar(this,true);
-
-	}
-
-	private void oldInit() {
-		mSharedPreferences = Pref.getPref(this);
-		boolean firstrun = mSharedPreferences.getBoolean(
-				Constants.KEY_FIRSTRUN, false);
-
-	
+		mPref = new Pref(HishootActivity.this);
+		boolean firstrun = mPref.getSPref().getBoolean(Constants.KEY_FIRSTRUN,
+				false);
 		if (!firstrun) {
 			DeviceUtil.setDeviceInfo(this.getWindowManager()
-					.getDefaultDisplay(), mSharedPreferences);
+					.getDefaultDisplay(), this);
 		}
 
-		int density = mSharedPreferences.getInt(
-				Constants.KEY_PREF_REAL_DENSITY, DisplayMetrics.DENSITY_MEDIUM);
+		int count = 0;
+		if (mPref.getSPref().contains(Constants.KEY_PREF_TEMPLATE_COUNT)) {
+			count = mPref.getSPref().getInt(Constants.KEY_PREF_TEMPLATE_COUNT,
+					0);
+		} else {
+			count = TemplateUtil.loadSkinPackage(HishootActivity.this).size();
+		}
+		setCountTemplate(count);
+
+		int density = mPref.getSPref().getInt(Constants.KEY_PREF_REAL_DENSITY,
+				DisplayMetrics.DENSITY_MEDIUM);
 		setWatBitmap(density);
 		setReceiver(this);
-
-		int count = mSharedPreferences.getInt(
-				Constants.KEY_PREF_TEMPLATE_COUNT, 0);
-		setCountTemplate(count);
 
 	}
 
@@ -160,7 +163,6 @@ public class HishootActivity extends MaterialNavigationDrawer {
 
 	private void setCountTemplate(int count) {
 		sectionTemplate.setNotifications(count);
-		mSharedPreferences.edit()
-				.putInt(Constants.KEY_PREF_TEMPLATE_COUNT, count).commit();
+		mPref.putAndApply(Constants.KEY_PREF_TEMPLATE_COUNT, count);
 	}
 }

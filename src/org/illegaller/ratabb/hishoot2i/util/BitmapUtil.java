@@ -5,8 +5,10 @@ import java.io.ByteArrayInputStream;
 import org.illegaller.ratabb.hishoot2i.Constants;
 import org.illegaller.ratabb.hishoot2i.R;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,17 +22,41 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-public class DrawView {
-	
-	private static final int RADIUS_BLUR = 25;
-	private static final String TAG = "DrawView";
+public class BitmapUtil {
+
+	// private static final int RADIUS_BLUR = 25;
+	private static final String TAG = "BitmapUtil";
+	@SuppressWarnings("unused")
+	private static final String IMAGE_DEFAULT = "drawable://"
+			+ R.drawable.img_default;
+
+	public static Bitmap copyFrom(Bitmap src) {
+		return src.copy(src.getConfig(), true);
+	}
+
+	public static Bitmap loadImage(Context context, String data, int dstWidth,
+			int dstHeight) {
+		return scaledBitmap(loadImage(context, data), dstWidth, dstHeight);
+	}
 
 	@SuppressWarnings("deprecation")
 	public static Bitmap imageDefault(Context context) {
 		Resources res = context.getResources();
-		Drawable drawable = res.getDrawable(R.drawable.img_default);
-		return ((BitmapDrawable) drawable).getBitmap();
+		Drawable d = res.getDrawable(R.drawable.img_default);
+		return ((BitmapDrawable) d).getBitmap();
+	}
 
+	public static Bitmap loadImage(Context context, String data) {
+		if (data == null)
+			return BitmapUtil.imageDefault(context);
+
+		return ImageLoader.getInstance().loadImageSync(data,
+				DisplayImageOptions.createSimple());
+
+	}
+
+	public static Bitmap scaledBitmap(Bitmap src, int dstWidth, int dstHeight) {
+		return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, true);
 	}
 
 	public static Bitmap scaleBitmapDown(Bitmap bitmap, int minSize) {
@@ -48,37 +74,44 @@ public class DrawView {
 				Math.round(bitmap.getHeight() * scaleRatio), false);
 	}
 
-
 	public static Bitmap cropBitmap(Bitmap bitmap, int padding) {
 		return Bitmap.createBitmap(bitmap, padding, padding, bitmap.getWidth()
 				- (padding * 2), bitmap.getHeight() - (padding * 2));
 	}
 
-	/** Recycle the given {@code bitmap} if it is not null. */
+	/** Recycle ASAP the given {@code bitmap} if it is not null. */
 	public static void recycleBitmap(Bitmap bitmap) {
-		if (bitmap != null)
+		if (bitmap != null && !bitmap.isRecycled())
 			bitmap.recycle();
 	}
 
-	public static void drawBlurBitmap(Canvas canvas, Bitmap source,
-			Context context) {		
+	public static void drawIt(Canvas canvas, Bitmap bitmap, int left, int top) {
+		if (bitmap != null)
+			canvas.drawBitmap(bitmap, left, top, null);
+	}
+
+	public static void drawIt(Canvas canvas, Bitmap bitmap, Rect bounds) {
+		if (bitmap != null)
+			canvas.drawBitmap(bitmap, null, bounds, null);
+	}
+
+	public static void drawItBlur(Canvas canvas, Bitmap source, Context context) {
 		Rect bounds = new Rect();
 		bounds.set(0, 0, source.getWidth(), source.getHeight());
-
+		Pref pref = new Pref(context);
+		int radius = pref.getSPref().getInt(Constants.KEY_PREF_BLUR_RADIUS, 25);
 		try {
-			if (DeviceUtil.isICS()) {
-				canvas.drawBitmap(RsBlur.doBlur(source, RADIUS_BLUR, context),
-						null, bounds, null);
-			} else {
-				canvas.drawBitmap(StackBlur.doBlur(source, RADIUS_BLUR, true),
-						null, bounds, null);
-			}
+			// if (DeviceUtil.hasICS()) {
+			// BitmapUtil.drawIt(canvas,
+			// RsBlur.doBlur(source, radius, context), bounds);
+			// } else {
+			BitmapUtil.drawIt(canvas, StackBlur.doBlur(source, radius, false),
+					bounds);
+			// }
 		} catch (OutOfMemoryError e) {
-			canvas.drawBitmap(source, null, bounds, null);
-
-			SharedPreferences pref = Pref.getPref(context);
-			Pref.commitPref(pref, Constants.KEY_PREF_BLUR_BG, false);
-			Pref.removePref(pref, Constants.KEY_PREF_SKIN_PACKAGE);
+			BitmapUtil.drawIt(canvas, source, 0, 0);
+			pref.putAndApply(Constants.KEY_PREF_BLUR_BG, false);
+			pref.remove(Constants.KEY_PREF_SKIN_PACKAGE);
 			System.gc();
 			Log.e(TAG, "OutOfMemoryError on Blur");
 		}
@@ -113,16 +146,6 @@ public class DrawView {
 		return out;
 	}
 
-	/**
-	 * 
-	 * @param image
-	 * @param maxWidth
-	 * @param maxHeight
-	 * @return
-	 * @throws Throwable
-	 * @throws OutOfMemoryError
-	 */
-
 	public static Bitmap resizeImage(Bitmap image, int maxWidth, int maxHeight)
 			throws Throwable, OutOfMemoryError {
 		int imageWidth = image.getWidth();
@@ -154,7 +177,7 @@ public class DrawView {
 		double a = 1;
 		switch (d) {
 		case DisplayMetrics.DENSITY_LOW:
-			a = 1;
+			a = 0.75;
 			break;
 		case DisplayMetrics.DENSITY_MEDIUM:
 			a = 1;

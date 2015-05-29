@@ -5,7 +5,11 @@ import static org.illegaller.ratabb.hishoot2i.Constants.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.illegaller.ratabb.hishoot2i.BuildConfig;
+import org.illegaller.ratabb.hishoot2i.HishootApp;
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.ui.OlderSettingActivity;
+import org.illegaller.ratabb.hishoot2i.ui.SettingActivity;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -13,13 +17,13 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.StrictMode;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -28,30 +32,66 @@ import android.view.WindowManager;
 
 public class DeviceUtil {
 	/** API >=21 **/
-	public static boolean isLollipop() {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+	public static boolean hasLollipop() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
 	}
 
 	/** API >=19 **/
-	public static boolean isKitkat() {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT);
+	public static boolean hasKitkat() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+	}
+
+	public static boolean hasJellyBean16() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
 	}
 
 	/** API >=17 **/
-	public static boolean isJellyBean() {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1);
+	public static boolean hasJellyBean() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
 	}
 
 	/** API >=14 **/
-	public static boolean isICS() {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH);
+	public static boolean hasICS() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+	}
+
+	/** API >=11 **/
+	public static boolean hasHoneycomb() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+	}
+
+	/** API >=9 **/
+	public static boolean hasGingerbread() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public static void enableStrictMode() {
+		if (BuildConfig.DEBUG) {
+			if (DeviceUtil.hasGingerbread()) {
+				StrictMode.ThreadPolicy.Builder threadPolicyBuilder = new StrictMode.ThreadPolicy.Builder()
+						.detectAll().penaltyLog();
+				StrictMode.VmPolicy.Builder vmPolicyBuilder = new StrictMode.VmPolicy.Builder()
+						.detectAll().penaltyLog();
+				if (DeviceUtil.hasHoneycomb()) {
+					threadPolicyBuilder.penaltyFlashScreen();
+					vmPolicyBuilder
+							.setClassInstanceLimit(HishootApp.class, 1)
+							.setClassInstanceLimit(SettingActivity.class, 1)
+							.setClassInstanceLimit(OlderSettingActivity.class,
+									1);
+				}
+				StrictMode.setThreadPolicy(threadPolicyBuilder.build());
+				StrictMode.setVmPolicy(vmPolicyBuilder.build());
+			}
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	private static DisplayMetrics getDisplayMetrics(Display display) {
 		DisplayMetrics result = new DisplayMetrics();
 
-		if (isJellyBean()) {
+		if (DeviceUtil.hasJellyBean()) {
 			display.getRealMetrics(result);
 		} else {
 			display.getMetrics(result);
@@ -60,7 +100,7 @@ public class DeviceUtil {
 		return result;
 	}
 
-	public static void setDeviceInfo(Display display, SharedPreferences pref) {
+	public static void setDeviceInfo(Display display, Context context) {
 		String devicename = String
 				.format("%s (%s)", Build.MODEL, Build.PRODUCT);
 		String os_ver = String.format("Android %s", Build.VERSION.RELEASE);
@@ -69,29 +109,28 @@ public class DeviceUtil {
 		int height = dm.heightPixels;
 		int width = dm.widthPixels;
 		int density = convertDensity(dm.densityDpi);
-
-		Pref.commitPref(pref, KEY_PREF_REAL_DENSITY, dm.densityDpi);
-		Pref.commitPref(pref, KEY_PREF_DENSITY, density);
-		Pref.commitPref(pref, KEY_PREF_DEVICE_HEIGHT, height);
-		Pref.commitPref(pref, KEY_PREF_DEVICE_WIDTH, width);
-		Pref.commitPref(pref, KEY_PREF_DEVICE_OS, os_ver);
-		Pref.commitPref(pref, KEY_PREF_DEVICE, devicename);
-		Pref.commitPref(pref, KEY_FIRSTRUN, true);
+		Pref pref = new Pref(context);
+		pref.putAndApply(KEY_PREF_REAL_DENSITY, dm.densityDpi);
+		pref.putAndApply(KEY_PREF_DENSITY, density);
+		pref.putAndApply(KEY_PREF_DEVICE_HEIGHT, height);
+		pref.putAndApply(KEY_PREF_DEVICE_WIDTH, width);
+		pref.putAndApply(KEY_PREF_DEVICE_OS, os_ver);
+		pref.putAndApply(KEY_PREF_DEVICE, devicename);
+		pref.putAndApply(KEY_FIRSTRUN, true);
 	}
 
 	@SuppressLint({ "NewApi", "ResourceAsColor" })
 	public static void setTintSystemBar(Activity activity, boolean on) {
 		Window window = activity.getWindow();
-		int idcolor = R.color.latar_gelap;
-		int idtrans = android.R.color.transparent;
+		int idcolor = R.color.latar_gelap, idtrans = android.R.color.transparent;
 		Resources res = activity.getResources();
-		if (isLollipop()) {
+		if (DeviceUtil.hasLollipop()) {
 			if (on) {
 				window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 				window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 			}
 			window.setStatusBarColor(on ? idtrans : res.getColor(idcolor));
-		} else if (isKitkat()) {
+		} else if (DeviceUtil.hasKitkat()) {
 			WindowManager.LayoutParams winParams = window.getAttributes();
 			final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
 			if (on) {

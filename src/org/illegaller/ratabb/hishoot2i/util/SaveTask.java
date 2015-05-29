@@ -11,9 +11,7 @@ public class SaveTask extends AsyncTask<Bitmap, Void, File> {
 
 	public interface OnSaveTaskListener {
 		void onPostResult(File result);
-
 		void onPreSave();
-
 		int quality();
 	}
 

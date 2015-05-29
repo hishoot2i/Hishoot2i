@@ -6,7 +6,6 @@ import java.io.InputStream;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.skin.GetResources;
 import org.illegaller.ratabb.hishoot2i.skin.SkinDescription;
-import com.github.airk.tool.sobitmap.SoBitmap;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -14,10 +13,8 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import static org.illegaller.ratabb.hishoot2i.util.DrawView.recycleBitmap;
 
 public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 	private static final String TAG = "Hishoot:ImageTask";
@@ -25,7 +22,8 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 	private SkinDescription skinDescription;
 	private Point wh;
 	private Context mContext;
-	boolean mThrow = false, single = false, blur = false;
+	boolean mThrow = false, single = false, blur = false,
+			hideWattermark = false;
 
 	public interface OnImageTaskListener {
 		void onPostResult(Bitmap result);
@@ -46,24 +44,14 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 
 		Boolean onBlur();
 
+		Boolean onHideWm();
+
 	}
 
 	public ImageTask(Context context, OnImageTaskListener listener)
 			throws Throwable {
 		mListener = listener;
 		mContext = context;
-	}
-
-	private Bitmap loadBitmap(String data) {
-		if (data != null) {
-			try {
-				return SoBitmap.getInstance(mContext).huntBlock(TAG,
-						Uri.parse(data));
-			} catch (Exception e) {
-				Log.e(TAG, "loadBitmap: " + e.getMessage());
-			}
-		}
-		return DrawView.imageDefault(mContext);
 	}
 
 	@Override
@@ -73,6 +61,7 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 		wh = mListener.WH();
 		single = mListener.oneSS();
 		blur = mListener.onBlur();
+		hideWattermark = mListener.onHideWm();
 	}
 
 	@Override
@@ -89,9 +78,11 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 		int lebar = wh.x, tinggi = wh.y;
 		String[] allBitmap = mListener.bitmapAll();
 
-		Bitmap ss1 = scaledBitmap(loadBitmap(allBitmap[0]), lebar, tinggi);
-		Bitmap ss2 = scaledBitmap(loadBitmap(allBitmap[1]), lebar, tinggi);
-		Bitmap wall = loadBitmap(allBitmap[2]);
+		Bitmap ss1 = BitmapUtil
+				.loadImage(mContext, allBitmap[0], lebar, tinggi);
+		Bitmap ss2 = BitmapUtil
+				.loadImage(mContext, allBitmap[1], lebar, tinggi);
+		Bitmap wall = BitmapUtil.loadImage(mContext, allBitmap[2]);
 
 		int TL = getDimensionPixelSize(R.dimen.def_tl);
 		int TT = getDimensionPixelSize(R.dimen.def_tt);
@@ -103,10 +94,9 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 		int totx = (int) ((TL + BL));
 		int toty = (int) ((TT + BT));
 
-		Bitmap frame = DrawView.getNine(R.drawable.frame1, lebar + totx, tinggi
-				+ toty, mContext);
+		Bitmap frame = BitmapUtil.getNine(R.drawable.frame1, lebar + totx,
+				tinggi + toty, mContext);
 
-		// XXX TEMPLATE
 		String skinPkg = mListener.packageTemplate();
 		if (skinPkg != null) {
 			GetResources getResources = new GetResources(mContext);
@@ -138,23 +128,22 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 			totx = (int) ((TL + BL));
 			toty = (int) ((TT + BT));
 
-			recycleBitmap(frame);
+			BitmapUtil.recycleBitmap(frame);
 			frame = Bitmap.createScaledBitmap(framefrom, lebar + totx, tinggi
 					+ toty, true);
-			recycleBitmap(framefrom);
+			BitmapUtil.recycleBitmap(framefrom);
 
 		}
 		Bitmap xwall = null, mixthem = null, mix1 = null, mix2 = null;
 		try {
-			mix1 = DrawView.DrawMe(frame, 0, 0, ss1, topx, topy, mContext,
+			mix1 = BitmapUtil.DrawMe(frame, 0, 0, ss1, topx, topy, mContext,
 					lebar + totx, tinggi + toty);
-
-			mix2 = (single) ? null : DrawView.DrawMe(frame, 0, 0, ss2, topx,
+			BitmapUtil.recycleBitmap(ss1);
+			mix2 = (single) ? null : BitmapUtil.DrawMe(frame, 0, 0, ss2, topx,
 					topy, mContext, lebar + totx, tinggi + toty);
 
-			recycleBitmap(frame);
-			recycleBitmap(ss1);
-			recycleBitmap(ss2);
+			BitmapUtil.recycleBitmap(frame);
+			BitmapUtil.recycleBitmap(ss2);
 
 			mixthem = Bitmap.createBitmap(
 					(single) ? mix1.getWidth() : mix1.getWidth() * 2,
@@ -164,40 +153,44 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 					new Point(wall.getWidth(), wall.getHeight()), new Point(
 							mixthem.getWidth(), mixthem.getHeight()));
 
-			xwall = DrawView.resizeImage(wall, point.x, point.y);
+			xwall = BitmapUtil.resizeImage(wall, point.x, point.y);
 		} catch (Throwable e) {
 			// OOM ?
-			Log.e(TAG, e.getMessage());
+			Log.e(TAG, "OOM");
 			mThrow = true;
 			xwall = wall;
-			mixthem = Bitmap.createBitmap(mix1.getWidth(), mix1.getHeight(),
-					Bitmap.Config.ARGB_8888);
+			mixthem = BitmapUtil.copyFrom(xwall);
 		}
 
 		Bitmap wm = mListener.wat()[0];
+		@SuppressWarnings("unused")
 		Bitmap wmi = mListener.wat()[1];
 		Canvas canvas = new Canvas(mixthem);
 
 		if (blur) {
-			DrawView.drawBlurBitmap(canvas, xwall, mContext);
+			BitmapUtil.drawItBlur(canvas, xwall, mContext);
 		} else {
-			canvas.drawBitmap(xwall, 0, 0, null);
+			BitmapUtil.drawIt(canvas, xwall, 0, 0);
 		}
+		BitmapUtil.recycleBitmap(wall);
+		BitmapUtil.recycleBitmap(xwall);
 
-		canvas.drawBitmap(mix1, 0, 0, null);// ss1
+		BitmapUtil.drawIt(canvas, mix1, 0, 0);
+		BitmapUtil.recycleBitmap(mix1);
 		if (!single) {
-			if (mix2 != null) {
-				canvas.drawBitmap(mix2, mix1.getWidth(), 0, null);// ss2
-			}
+			BitmapUtil.drawIt(canvas, mix2, mix1.getWidth(), 0);
+			BitmapUtil.recycleBitmap(mix2);
 		}
-		canvas.drawBitmap(wm, (mixthem.getWidth() / 2) - (wm.getWidth() / 2),
-				(mixthem.getHeight() - wm.getHeight()), null);
-		canvas.drawBitmap(wmi, mixthem.getWidth() - wmi.getWidth(), 0f, null);
 
-		recycleBitmap(mix1);
-		recycleBitmap(mix2);
-		recycleBitmap(wall);
-		recycleBitmap(xwall);
+		if (!hideWattermark) {
+			BitmapUtil.drawIt(canvas, wm,
+					(mixthem.getWidth() / 2) - (wm.getWidth() / 2),
+					(mixthem.getHeight() - wm.getHeight()));
+			// XXX
+			// BitmapUtil.drawIt(canvas, wmi, mixthem.getWidth() -
+			// wmi.getWidth(),
+			// 0);
+		}
 		Log.d(TAG, "doInBackground: " + (System.currentTimeMillis() - startMs)
 				+ "ms");
 		return mixthem;
@@ -209,10 +202,6 @@ public class ImageTask extends AsyncTask<Void, Void, Bitmap> {
 
 	private int getDimensionPixelSize(int dimenId) {
 		return mContext.getResources().getDimensionPixelSize(dimenId);
-	}
-
-	private Bitmap scaledBitmap(Bitmap src, int dstWidth, int dstHeight) {
-		return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, true);
 	}
 
 	private Point getPointMax(boolean flag, Point wall, Point mix) {

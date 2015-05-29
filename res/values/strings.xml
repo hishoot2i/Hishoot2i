@@ -15,12 +15,7 @@
     <string name="screenshoot">Screenshot</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="save">Save</string>
-    <string name="discard">Discard</string>
     <string name="details_file_size">File size:</string>
-    <string name="savingImage">Saving picture\u2026</string>
-    <string name="runningFaceDetection">Please wait\u2026</string>
-    <string name="multiface_crop_help">Tap a face to begin.</string>
-    <string name="savingCrop">Saving crop picture\u2026</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_apply">Apply</string>
     <string name="processing">Processing</string>

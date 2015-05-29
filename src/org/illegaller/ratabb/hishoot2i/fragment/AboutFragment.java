@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.ui;
+package org.illegaller.ratabb.hishoot2i.fragment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.util.SystemProp;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -13,6 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
@@ -22,18 +24,16 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AboutFragment extends Fragment implements View.OnClickListener {
 
 	private Context mContext;
 	private static final String TAG = "Hishoot2i";
-
-	// @InjectView(R.id.textAbout)
 	private TextView textAbout;
-	// @InjectView(R.id.tvVer)
 	private TextView textVer;
-
 	private Button btLicenses;
+	private long[] mHits = new long[5];
 
 	public AboutFragment() {
 	}
@@ -46,7 +46,6 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.about, container, false);
-		// ButterKnife.inject(this, view);
 		textAbout = (TextView) view.findViewById(R.id.textAbout);
 		textVer = (TextView) view.findViewById(R.id.tvVer);
 		btLicenses = (Button) view.findViewById(R.id.bLicenses);
@@ -59,44 +58,14 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
 		textVer.setText(getString(R.string.version, getString(R.string.app_ver)));
 
 		btLicenses.setOnClickListener(this);
+		textVer.setOnClickListener(this);
 		return view;
 	}
 
 	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		// ButterKnife.reset(this);
-	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		// mContext = getActivity();
-		// String aboutTxt = String.format("%s\n%s", getString(R.string.about),
-		// getString(R.string.about2));
-		//
-		// textAbout.setText(aboutTxt);
-		//
-		// textVer.setText(getString(R.string.version,
-		// getString(R.string.app_ver)));
-
-	}
-
-	// @OnClick(R.id.bLicenses)
-	// void onClickLecenses() {
-	// TextView tvLicense = new TextView(mContext);
-	// tvLicense.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-	// LayoutParams.WRAP_CONTENT));
-	//
-	// tvLicense.setTextAppearance(mContext, R.style.HishootAboutBodyText);
-	// tvLicense.setText(Html.fromHtml(getStringFromAssets("LICENSE")));
-	//
-	// getMaterialDialog(tvLicense);
-	// }
-	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		if (v.getId() == R.id.bLicenses) {
+		switch (v.getId()) {
+		case R.id.bLicenses:
 			TextView tvLicense = new TextView(mContext);
 			tvLicense.setLayoutParams(new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -105,7 +74,26 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
 			tvLicense.setText(Html.fromHtml(getStringFromAssets("LICENSE")));
 
 			getMaterialDialog(tvLicense);
+			break;
+		case R.id.tvVer:
+			System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+			mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+			if (mHits[0] >= (SystemClock.uptimeMillis() - 1000)) {
+				int t = getResetTrial(mContext);
+				Toast.makeText(mContext, "Ok trial was reset: " + t,
+						Toast.LENGTH_SHORT).show();
+			}
+
+			break;
+		default:
+			break;
 		}
+
+	}
+
+	private int getResetTrial(Context context) {
+		SystemProp.resTrial(context.getContentResolver());
+		return SystemProp.getTrial(context);
 	}
 
 	private MaterialDialog getMaterialDialog(View view) {
