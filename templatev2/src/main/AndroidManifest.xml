@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="id.ratabb.templatev2.sample">
+
+    <application
+            android:allowBackup="true"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <activity android:name=".TemplateHishoot">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="dcsms.hishoot.SKINTEMPLATE"/>
+            </intent-filter>
+            <!-- template v2 -->
+            <meta-data
+                    android:name="org.illegaller.ratabb.hishoot2i.TEMPLATE"
+                    android:value="2"/>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/screenShootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.activity.MainActivity"
+        style="@style/Widget.Hishoot.CardView">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Hishoot.Config"
+                android:text="@string/background"/>
+
+        <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="4dp">
+
+            <RadioButton
+                    android:id="@+id/radioButton_bg_color"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/color"/>
+
+            <RadioButton
+                    android:id="@+id/radioButton_bg_image"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/image"/>
+        </RadioGroup>
+
+        <LinearLayout
+                android:id="@+id/layout_bg_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+            <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_blurBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blur"
+                    android:layout_marginBottom="4dp"/>
+
+            <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekBar_blur_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <ImageView
+                    android:id="@+id/img_config_bg"
+                    android:layout_width="@dimen/dimen100dp"
+                    android:layout_height="@dimen/dimen75dp"
+                    android:layout_gravity="center_horizontal"
+                    style="@style/Widget.Hishoot.Config.Image"
+                    tools:ignore="ContentDescription"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/layout_bg_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:visibility="visible"
+                android:orientation="horizontal">
+
+            <com.larswerkman.holocolorpicker.ColorPicker
+                    android:id="@+id/colorPickBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen200dp"
+                    />
+
+            <com.larswerkman.holocolorpicker.SVBar
+                    android:id="@+id/svBarBg"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/dimen200dp"
+                    app:bar_orientation_horizontal="false"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

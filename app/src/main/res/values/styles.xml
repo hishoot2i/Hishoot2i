@@ -1,0 +1,80 @@
+<resources>
+
+    <style name="NoParent"/>
+
+    <style name="HishootTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/grey_50</item>
+        <item name="android:textAppearance">@style/TextAppearance.Hishoot</item>
+    </style>
+
+    <style name="HishootTheme.BrandedLaunch" parent="HishootTheme">
+        <item name="android:windowBackground">@drawable/braded_logo</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#de000000</item>
+        <item name="android:textColorHint">#de000000</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot.Title">
+        <item name="android:textSize">12sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot.SubTitle">
+        <item name="android:textSize">9sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot.Config">
+        <item name="android:textSize">14sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Hishoot" parent="NoParent"/>
+
+    <style name="Widget.Hishoot.Config"/>
+
+    <style name="Widget.Hishoot.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">?colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.Hishoot.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.Hishoot.ActionBar.Popup</item>
+        <item name="elevation">@dimen/default_elevation</item>
+    </style>
+
+    <style name="Widget.Hishoot.ActionBar.NoBackground">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="layout_collapseMode">pin</item>
+    </style>
+
+    <style name="ThemeOverlay.Hishoot.ActionBar.Popup" parent="ThemeOverlay.AppCompat">
+        <item name="android:background">?colorPrimaryDark</item>
+    </style>
+
+    <style name="ThemeOverlay.Hishoot.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="Widget.Hishoot.CardView" parent="CardView.Light">
+        <item name="contentPadding">@dimen/content_padding</item>
+        <item name="cardElevation">@dimen/cardview_default_elevation</item>
+        <item name="cardCornerRadius">@dimen/cardview_default_radius</item>
+        <item name="cardBackgroundColor">@color/grey_200</item>
+    </style>
+
+    <style name="Widget.Hishoot.Config.Image">
+        <item name="android:src">@drawable/ic_add_box_black_24dp</item>
+        <item name="android:tint">?attr/colorAccent</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@color/half_white</item>
+    </style>
+
+    <!--<style name="Widget.Hishoot.CButton" >-->
+        <!--&lt;!&ndash;<item name="android:textColor">#de000000</item>&ndash;&gt;-->
+    <!--</style>-->
+</resources>

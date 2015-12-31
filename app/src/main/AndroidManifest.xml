@@ -1,0 +1,86 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.illegaller.ratabb.hishoot2i">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--M-->
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+            android:name=".HishootApplication"
+            android:allowBackup="true"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:supportsRtl="true"
+            android:largeHeap="@bool/largeHeap"
+            android:theme="@style/HishootTheme">
+        <activity
+                android:name=".ui.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:label="@string/app_name"
+                android:theme="@style/HishootTheme.BrandedLaunch">
+            <!-- launcher -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".ui.activity.ReceiverActivity"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:screenOrientation="portrait"
+                android:label="@string/app_name"
+                android:theme="@style/HishootTheme.BrandedLaunch">
+            <!-- receive image-->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".ui.activity.ErrorActivity"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".ui.activity.AboutActivity"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".ui.activity.ImportHtzActivity"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data
+                        android:host="*"
+                        android:pathPattern="/.*\\.htz"
+                        android:scheme="file"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data
+                        android:host="*"
+                        android:mimeType="*/*"
+                        android:pathPattern="/.*\\.htz"
+                        android:scheme="file"/>
+            </intent-filter>
+        </activity>
+
+        <service android:name=".HishootService"/>
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="0521d6342dca791039363b645a4cb70b7be12a9a"/>
+    </application>
+
+</manifest>
