@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <item name="largeheap" type="bool">false</item>
-	<item name="hw_accelerad" type="bool">false</item>
-</resources>
