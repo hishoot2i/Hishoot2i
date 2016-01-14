@@ -4,8 +4,10 @@ import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.TemplateProvider;
 import org.illegaller.ratabb.hishoot2i.di.ir.TemplateUsedID;
 import org.illegaller.ratabb.hishoot2i.model.pref.StringPreference;
+import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.ui.adapter.TemplateRecyclerAdapter;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
@@ -21,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -29,7 +33,6 @@ import butterknife.Bind;
 public class ListTemplateFragment extends BaseFragment {
 
     @Bind(R.id.recyclerView) RecyclerView mRecyclerView;
-    @Inject TemplateProvider templateProvider;
     @Inject @TemplateUsedID StringPreference templateUsedIdTray;
     TemplateRecyclerAdapter mAdapter;
 
@@ -79,10 +82,22 @@ public class ListTemplateFragment extends BaseFragment {
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new TemplateRecyclerAdapter(templateProvider.asList(), templateUsedIdTray.get());
         mRecyclerView.setLayoutManager(new GridLayoutManager(weakActivity.get(), 2));
-        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
+        new LoadAdapter().execute();
     }
 
+    class LoadAdapter extends AsyncTask<Void, Void, List<Template>> {
+
+        @Override protected List<Template> doInBackground(Void... voids) {
+            TemplateProvider templateProvider = new TemplateProvider(weakActivity.get());
+            return templateProvider.asList();
+        }
+
+        @Override protected void onPostExecute(List<Template> templates) {
+            super.onPostExecute(templates);
+            mAdapter = new TemplateRecyclerAdapter(templates, templateUsedIdTray.get());
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
 }

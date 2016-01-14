@@ -27,7 +27,7 @@ public class PermissionHelper {
 
     private boolean hasInit = false;
 
-    protected PermissionHelper() {//no-op
+    private PermissionHelper() {        //no instance
     }
 
     public static PermissionHelper.Builder writeExternalStorage() {

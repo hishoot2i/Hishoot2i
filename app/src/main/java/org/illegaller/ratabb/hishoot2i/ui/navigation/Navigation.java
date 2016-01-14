@@ -23,7 +23,10 @@ public class Navigation {
     }
 
     public static void startMainActivity(@NonNull final Context context) {
-        context.startActivity(MainActivity.getIntent(context));
+        Intent intent = MainActivity.getIntent(context);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Utils.isHoneycomb()) intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
     }
 
     public static void startImportHtz(@NonNull final Context context) {
@@ -54,7 +57,7 @@ public class Navigation {
     }
 
     public static void openImageView(final Context context, final Uri imageUri) {
-        Intent intent = Navigation.intentImageView(imageUri);
+        Intent intent = Navigation.intentOpenImage(imageUri);
         if (Navigation.isAvailable(context, intent))
             context.startActivity(intent);
     }
@@ -76,7 +79,7 @@ public class Navigation {
         return intent;
     }
 
-    public static Intent intentImageView(final Uri imageUri) {
+    public static Intent intentOpenImage(final Uri imageUri) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(imageUri, "image/*");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

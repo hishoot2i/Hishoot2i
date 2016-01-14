@@ -43,11 +43,9 @@ import dagger.Provides;
 @Module(library = true, complete = false)
 public class PreferencesModule {
 
-
     @Provides @Singleton SharedPreferences provideSharedPreferences(@ForApplicationContext Context context) {
         return new SecurePreferences(context);
     }
-
 
     @Provides @Singleton @AppRunningCount IntPreference provideAppRunningCount(SharedPreferences pref) {
         return new IntPreference(pref, "app_running_count", 0);

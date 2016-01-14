@@ -6,7 +6,7 @@ import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.model.Sizes;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
-import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
+import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -31,15 +31,12 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
     public static final String HTZ_FILE_CFG = "template.cfg";
     private static final int BUFFER_SIZE = 1024;
     private String htzName;
+    private Context mContext;
     @Nullable private Callback mCallback;
 
     public TemplateBuilderHtz(Context context, @Nullable Callback callback) {
-        this(context);
+        this.mContext = context;
         this.mCallback = callback;
-    }
-
-    public TemplateBuilderHtz(final Context context) {
-        super(context);
     }
 
     public void setHtzName(String htzName) {
@@ -59,16 +56,16 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
         name = modelHtz.name;
         author = modelHtz.author;
         templateSizes = Sizes.create(modelHtz.template_width, modelHtz.template_height);
-        screenSizes = Sizes.create(modelHtz.screen_width, modelHtz.screen_height);
-        offset = Sizes.create(modelHtz.screen_x, modelHtz.screen_y);
-
-        isCompatible = screenSizes.equals(userDeviceScreenSizes);
-
-        previewFile = UILHelper.stringFiles(new File(currentPath(), modelHtz.preview));
-        frameFile = UILHelper.stringFiles(new File(currentPath(), modelHtz.template_file));
-        glareFile = UILHelper.stringFiles(new File(currentPath(), modelHtz.overlay_file));
-
+        previewFile = Utils.getStringFilePathHtz(currentPath(), modelHtz.preview);
+        frameFile = Utils.getStringFilePathHtz(currentPath(), modelHtz.template_file);
+        glareFile = Utils.getStringFilePathHtz(currentPath(), modelHtz.overlay_file);
         overlayOffset = Sizes.create(modelHtz.overlay_x, modelHtz.overlay_y);
+        leftTop = Sizes.create(modelHtz.screen_x, modelHtz.screen_y);
+        rightTop = Sizes.create(modelHtz.screen_x + modelHtz.screen_width, modelHtz.screen_y);
+        leftBottom = Sizes.create(modelHtz.screen_x,
+                modelHtz.screen_height + modelHtz.screen_y);
+        rightBottom = Sizes.create(modelHtz.screen_width + modelHtz.screen_x,
+                modelHtz.screen_height + modelHtz.screen_y);
     }
 
     private File currentPath() {
@@ -76,12 +73,12 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
     }
 
 
-    public File getHtzFileConfig() {
+    private File getHtzFileConfig() {
         return new File(currentPath(), HTZ_FILE_CFG);
     }
 
 
-    public ModelHtz getModelHtzFrom(File json) {
+    private ModelHtz getModelHtzFrom(File json) {
         String result = null;
         BufferedReader reader;
         try {
@@ -99,12 +96,12 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
         return getModelHtzFrom(result);
     }
 
-    public ModelHtz getModelHtzFrom(final String json) {
+    private ModelHtz getModelHtzFrom(final String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, ModelHtz.class);
     }
 
-    public String getTemplateId(String templateName) {
+    private String getTemplateId(String templateName) {
         String result = (templateName.contains(" ")) ? templateName.replace(" ", "_")
                 : templateName;
         return result.toLowerCase().trim();
@@ -156,7 +153,7 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
         void onDone(final String result);
     }
 
-    private class UnzipTask extends AsyncTask<Void, Void, String> {
+    class UnzipTask extends AsyncTask<Void, Void, String> {
         private final String htzFile;
         private final String outputFile;
 

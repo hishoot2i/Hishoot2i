@@ -24,4 +24,5 @@
     <string name="send.report">Please send report</string>
     <string name="save.failed">Save failed</string>
     <string name="config.not.valid">Configuration not valid</string>
+    <string name="change">Change</string>
 </resources>

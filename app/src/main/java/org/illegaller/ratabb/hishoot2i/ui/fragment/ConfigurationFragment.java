@@ -200,12 +200,12 @@ public class ConfigurationFragment extends BaseFragment
     }
 
     //Start Spinner listener
-    @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        String selected = (String) parent.getItemAtPosition(pos);
+    @Override public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+        String selected = (String) adapterView.getItemAtPosition(pos);
         if (selected.equals(AppConstants.sBADGE_TYPEFACE)) FontUtils.setBadgeTypefaceDefault();
         else {
             final File file = fontProvider.find(selected);
-            if (file != null) FontUtils.setBadgeTypeface(file);
+            if (file != null && file.exists()) FontUtils.setBadgeTypeface(file);
         }
 
         badgeTypeFacePref.set(selected);

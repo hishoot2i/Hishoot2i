@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/app_version"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:ellipsize="marquee"
                     android:textAppearance="@style/TextAppearance.Hishoot.SubTitle"/>
         </LinearLayout>
@@ -54,12 +54,16 @@
                 android:padding="8dp">
 
 
-
             <Button
                     android:id="@+id/forceClearNotification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Force clear notification"/>
+            <Button
+                    android:id="@+id/importTemplateHtz"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Import Template Htz"/>
         </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

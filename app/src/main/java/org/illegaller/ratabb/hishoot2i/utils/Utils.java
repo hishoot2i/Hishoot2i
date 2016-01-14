@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import java.io.Closeable;
@@ -71,6 +72,17 @@ public class Utils {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(Utils.getResourcesFrom(contextTemplate), resID, options);
         return Sizes.create(options.outWidth, options.outHeight);
+    }
+
+    public static String getStringFilePathHtz(final File currentPath, String fileName) {
+        return UILHelper.stringFiles(new File(currentPath, fileName));
+    }
+
+    public static String getStringFilePath(final Context context, final String packageName,
+                                           final String fileName)
+            throws PackageManager.NameNotFoundException {
+        @DrawableRes int drawableRes = Utils.getResIdDrawableTemplate(context, packageName, fileName);
+        return UILHelper.stringTemplateApp(packageName, drawableRes);
     }
 
     @DrawableRes public static int getResIdDrawableTemplate(final Context context, final String packageName,
@@ -322,12 +334,27 @@ public class Utils {
             for (int i = 0; i < viewGroup.getChildCount(); i++)
                 Utils.unbindDrawables(viewGroup.getChildAt(i));
 
-            viewGroup.removeAllViews();
+            if (viewGroup instanceof AdapterView) HLog.d(viewGroup);
+            else viewGroup.removeAllViews();
         }
-
     }
 
-    /** FIX memory-leak {@link android.view.inputmethod.InputMethodManager} ??? **/
+    public static void restartActivity(final Activity activity, boolean restart) {
+        if (activity == null) return;
+        final int enter_anim = android.R.anim.fade_in;
+        final int exit_anim = android.R.anim.fade_out;
+        activity.overridePendingTransition(enter_anim, exit_anim);
+        activity.finish();
+        if (restart) {
+            activity.overridePendingTransition(enter_anim, exit_anim);
+            activity.startActivity(activity.getIntent());
+        }
+    }
+
+    /**
+     * //FIXME: ??
+     * memory-leak {@link android.view.inputmethod.InputMethodManager}
+     **/
     public static void fixInputMethodManager(final Activity activity) {
         final Object imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 

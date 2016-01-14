@@ -7,10 +7,13 @@ import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApk
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApkV2;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderDefault;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderHtz;
+import org.illegaller.ratabb.hishoot2i.utils.HLog;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -37,10 +40,12 @@ public class TemplateProvider {
         this.mapTemplate = new HashMap<>();
 
         provideTemplateApk();
+        provideTemplateApkV2();
         provideTemplateHtz();
         provideTemplateDefault();
+        HLog.setTAG(this);
+        HLog.d(System.currentTimeMillis() + "ms ");
     }
-
 
     public Template findById(@NonNull final String templateId) {
         Template result = mapTemplate.get(templateId);
@@ -90,7 +95,7 @@ public class TemplateProvider {
     //START Provide Template
     private void provideTemplateDefault() {
         TemplateBuilderDefault builder = new TemplateBuilderDefault(mContext);
-        mapTemplate.put(builder.id, builder.build());
+        putMap(builder.id, builder.build());
     }
 
     private void provideTemplateApk() {
@@ -99,17 +104,27 @@ public class TemplateProvider {
         List<ResolveInfo> resolveInfoList = mPackageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resolveInfoList) {
             ActivityInfo activityInfo = resolveInfo.activityInfo;
-            Bundle metaData = activityInfo.metaData;
-            AbstractTemplateBuilder builder = null;
-            if (metaData != null) {//v2
-                int templateVersion = metaData.getInt(AppConstants.META_DATA_TEMPLATE);
-                if (templateVersion == 2)
-                    builder = new TemplateBuilderApkV2(mContext, activityInfo.packageName);
-            } else { //v1
-                builder = new TemplateBuilderApkV1(mContext, activityInfo.packageName);
-            }
+            AbstractTemplateBuilder builder = new TemplateBuilderApkV1(mContext, activityInfo.packageName);
+            putMap(builder.id, builder.build());
+        }
+    }
 
-            if (builder != null) mapTemplate.put(builder.id, builder.build());
+    private void provideTemplateApkV2() {
+        List<PackageInfo> packageInfoList = mPackageManager.getInstalledPackages(
+                PackageManager.GET_UNINSTALLED_PACKAGES
+                        | PackageManager.GET_META_DATA);
+
+        for (PackageInfo packageInfo : packageInfoList) {
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            Bundle metaData = applicationInfo.metaData;
+            if (metaData != null && metaData.containsKey(AppConstants.META_DATA_TEMPLATE)) {
+                int version = metaData.getInt(AppConstants.META_DATA_TEMPLATE);
+                if (version == 2) {
+                    AbstractTemplateBuilder builder = new TemplateBuilderApkV2(mContext,
+                            applicationInfo.packageName);
+                    putMap(builder.id, builder.build());
+                }
+            }
         }
     }
 
@@ -120,12 +135,16 @@ public class TemplateProvider {
             if (htzFile.isDirectory()) {
                 File cfg = new File(htzFile, TemplateBuilderHtz.HTZ_FILE_CFG);
                 if (cfg.exists()) {
-                    TemplateBuilderHtz builder = new TemplateBuilderHtz(mContext);
+                    TemplateBuilderHtz builder = new TemplateBuilderHtz(mContext, null);
                     builder.setHtzName(htzFile.getName());
-                    mapTemplate.put(builder.id, builder.build());
+                    putMap(builder.id, builder.build());
                 }
             }
         }
     }//END Provide Template
 
+    private void putMap(String templateID, Template template) {
+        if (mapTemplate.containsKey(templateID)) return;
+        mapTemplate.put(templateID, template);
+    }
 }

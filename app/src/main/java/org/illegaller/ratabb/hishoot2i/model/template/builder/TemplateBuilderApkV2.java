@@ -2,11 +2,9 @@ package org.illegaller.ratabb.hishoot2i.model.template.builder;
 
 import com.google.gson.Gson;
 
-import com.nostra13.universalimageloader.utils.L;
-
 import org.illegaller.ratabb.hishoot2i.model.Sizes;
 import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
-import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
+import org.illegaller.ratabb.hishoot2i.utils.HLog;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.content.Context;
@@ -19,38 +17,30 @@ import java.io.InputStreamReader;
 
 public class TemplateBuilderApkV2 extends AbstractTemplateBuilder {
     public TemplateBuilderApkV2(Context context, String packageName) {
-        super(context);
         id = packageName;
         type = TemplateType.APK_V2;
-        InputStream inputStream = null;
         try {
-            inputStream = Utils.getAssetsStream(context, packageName, "template.cfg");
-            ModelV2 modelV2 = parsing(inputStream);
+            InputStream inputStream = Utils.getAssetsStream(context, packageName, "template.cfg");
+            ModelV2 modelV2 = parsingStream(inputStream);
             name = modelV2.name;
             author = modelV2.author;
             templateSizes = Sizes.create(modelV2.template_width, modelV2.template_height);
-            screenSizes = Sizes.create(modelV2.screen_width, modelV2.screen_height);
-            offset = Sizes.create(modelV2.screen_x, modelV2.screen_y);
-            isCompatible = screenSizes.equals(userDeviceScreenSizes);
-            previewFile = UILHelper.stringTemplateApp(packageName,
-                    Utils.getResIdDrawableTemplate(context, packageName, "preview"));
-            frameFile = UILHelper.stringTemplateApp(packageName,
-                    Utils.getResIdDrawableTemplate(context, packageName, "frame"));
-            glareFile = UILHelper.stringTemplateApp(packageName,
-                    Utils.getResIdDrawableTemplate(context, packageName, "glare"));
-            shadowFile = UILHelper.stringTemplateApp(packageName,
-                    Utils.getResIdDrawableTemplate(context, packageName, "shadow"));
-
+            leftTop = Sizes.create(modelV2.left_top_x, modelV2.left_top_y);
+            rightTop = Sizes.create(modelV2.right_top_x, modelV2.right_top_y);
+            leftBottom = Sizes.create(modelV2.left_bottom_x, modelV2.left_bottom_y);
+            rightBottom = Sizes.create(modelV2.right_bottom_x, modelV2.right_bottom_y);
+            previewFile = Utils.getStringFilePath(context, packageName, "preview");
+            frameFile = Utils.getStringFilePath(context, packageName, "frame");
+            glareFile = Utils.getStringFilePath(context, packageName, "glare");
+            shadowFile = Utils.getStringFilePath(context, packageName, "shadow");
+            Utils.tryClose(inputStream);
         } catch (IOException | PackageManager.NameNotFoundException e) {
             String msg = "Template: " + packageName + " can't load";
-            L.e(e, msg);
-        } finally {
-            Utils.tryClose(inputStream);
+            HLog.e(msg, e);
         }
-
     }
 
-    ModelV2 parsing(InputStream inputStream) {
+    ModelV2 parsingStream(InputStream inputStream) {
         String result = null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder stringBuilder = new StringBuilder();
@@ -62,10 +52,10 @@ public class TemplateBuilderApkV2 extends AbstractTemplateBuilder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return parsing(result);
+        return parsingGson(result);
     }
 
-    ModelV2 parsing(String s) {
+    ModelV2 parsingGson(String s) {
         Gson gson = new Gson();
         return gson.fromJson(s, ModelV2.class);
     }
@@ -73,10 +63,14 @@ public class TemplateBuilderApkV2 extends AbstractTemplateBuilder {
     class ModelV2 {
         public String name;
         public String author;
-        public int screen_width;
-        public int screen_height;
-        public int screen_x;
-        public int screen_y;
+        public int left_top_x;
+        public int left_top_y;
+        public int right_top_x;
+        public int right_top_y;
+        public int left_bottom_x;
+        public int left_bottom_y;
+        public int right_bottom_x;
+        public int right_bottom_y;
         public int template_width;
         public int template_height;
     }

@@ -27,7 +27,6 @@ public class HishootProcess {
     @ColorInt private final int badgeColor;
     private final String badgeText;
 
-
     public HishootProcess(Context context, Callback callback, Template template, boolean doubleSSEnable,
                           boolean backgroundColorEnable, boolean backgroundImageBlurEnable,
                           boolean badgeEnable, int backgroundColorInt, int backgroundImageBlurRadius,
@@ -46,7 +45,6 @@ public class HishootProcess {
         HLog.setTAG(this);
     }
 
-
     public void process(@NonNull final DataImagePath dataImagePath) {
         final String pathImageBg = dataImagePath.pathImageBackground;
         final String pathImageSS1 = dataImagePath.pathImageScreen1;
@@ -62,7 +60,6 @@ public class HishootProcess {
 
         long startMs = System.currentTimeMillis();
         callback.startingImage(startMs);
-
 
         int totalW = template.templateSizes.width;
         int totalH = template.templateSizes.height;
@@ -113,12 +110,7 @@ public class HishootProcess {
             } catch (IOException e) {
                 failed(e, "IOException", R.string.save_failed);
             }
-
         }
-        //done
-
-        HLog.d("process: " + (System.currentTimeMillis() - startMs) + "ms");
-        HLog.d(template.toString());
     }
 
     private void failed(final Throwable e, final int message, final int extra) {
@@ -131,7 +123,6 @@ public class HishootProcess {
 
     private void failed(final Throwable e, final String message, final String extra) {
         if (e != null) HLog.e(message, e);
-
         callback.failedImage(message, extra);
     }
 

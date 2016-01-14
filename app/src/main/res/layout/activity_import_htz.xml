@@ -29,7 +29,6 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:foreground="?android:selectableItemBackground"
                 android:layout_centerHorizontal="true"
                 tools:ignore="ContentDescription"/>
 

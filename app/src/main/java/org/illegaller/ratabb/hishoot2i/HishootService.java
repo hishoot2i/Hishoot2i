@@ -113,13 +113,13 @@ public class HishootService extends IntentService implements HishootProcess.Call
 
     @Override public void failedImage(String text, String extra) {
         final String title = getString(R.string.app_name);
-        Notification notification = new NotificationCompat.Builder(this) //
+        Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(title)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setStyle(new NotificationCompat.BigTextStyle() //
-                        .setBigContentTitle(title) //
-                        .bigText(text) //
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .setBigContentTitle(title)
+                        .bigText(text)
                         .setSummaryText(extra))
                 .setSmallIcon(R.drawable.ic_notif)
                 .setWhen(System.currentTimeMillis())
@@ -138,7 +138,6 @@ public class HishootService extends IntentService implements HishootProcess.Call
             }
         });
 
-
         //NOTIFICATION
         //share
         final String share = getString(R.string.share);
@@ -147,14 +146,14 @@ public class HishootService extends IntentService implements HishootProcess.Call
                 android.R.drawable.ic_menu_share, share,
                 PendingIntent.getActivity(this, 0, sharingIntent, PendingIntent.FLAG_CANCEL_CURRENT));
 
-        //view
-        final Intent viewIntent = Navigation.intentImageView(imageUri);
+        //open
+        final Intent openIntent = Navigation.intentOpenImage(imageUri);
         final File file = new File(imageUri.getPath());
         final Bitmap previewBigPicture = BitmapUtils.previewBigPicture(result);
         final Bitmap largeIcon = BitmapUtils.roundedLargeIcon(this, previewBigPicture);
 
         notificationBuilder.setContentIntent(
-                PendingIntent.getActivity(this, 0, viewIntent, 0))
+                PendingIntent.getActivity(this, 0, openIntent, 0))
                 .setStyle(new NotificationCompat.BigPictureStyle()
                         .bigPicture(previewBigPicture))
                 .setLargeIcon(largeIcon)
@@ -164,5 +163,7 @@ public class HishootService extends IntentService implements HishootProcess.Call
         Notification notification = notificationBuilder.build();
 
         notificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
+
+        stopSelf();
     }
 }

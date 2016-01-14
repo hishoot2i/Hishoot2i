@@ -8,7 +8,7 @@ public class HLog {
     private static final boolean DEBUG = BuildConfig.DEBUG;
     private static String LOG_TAG = "UNDEFINE_TAG";
 
-    protected HLog() {
+    private HLog() {
         throw new AssertionError("HLog no construction");
     }
 

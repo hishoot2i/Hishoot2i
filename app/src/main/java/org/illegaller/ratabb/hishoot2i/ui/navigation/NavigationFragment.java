@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 
 public class NavigationFragment {
 
-     private static WeakReference<FragmentManager> sWeakFragmentManager = null;
+    private static WeakReference<FragmentManager> sWeakFragmentManager = null;
     @IdRes private final int mDefContainer;
 
     public NavigationFragment(@NonNull FragmentManager fragmentManager, @IdRes int defContainer) {
@@ -35,7 +35,9 @@ public class NavigationFragment {
     }
 
     public int getSize() {
-        return sWeakFragmentManager.get().getBackStackEntryCount();
+        final FragmentManager fragmentManager = sWeakFragmentManager.get();
+        if (null == fragmentManager) return 0;
+        else return fragmentManager.getBackStackEntryCount();
     }
 
     public boolean isEmpty() {
@@ -51,7 +53,7 @@ public class NavigationFragment {
         sWeakFragmentManager.get().beginTransaction().addToBackStack(getName(fragment))
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(mDefContainer, fragment, getName(fragment))
-                .commitAllowingStateLoss();//Crash issues #86
+                .commitAllowingStateLoss();
         sWeakFragmentManager.get().executePendingTransactions();
     }
 

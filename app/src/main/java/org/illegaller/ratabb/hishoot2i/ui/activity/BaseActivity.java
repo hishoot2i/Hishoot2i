@@ -11,7 +11,6 @@ import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 
@@ -45,8 +44,8 @@ public class BaseActivity extends AbstractAppCompatActivity {
 
     @Override protected void onDestroy() {
         ImageLoader.getInstance().clearMemoryCache();
-        Utils.unbindDrawables(container);
         Utils.fixInputMethodManager(this);
+        Utils.unbindDrawables(container);
         super.onDestroy();
 
     }

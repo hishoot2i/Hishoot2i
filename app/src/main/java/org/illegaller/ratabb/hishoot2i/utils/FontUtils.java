@@ -5,29 +5,30 @@ import android.graphics.Typeface;
 import java.io.File;
 
 public class FontUtils {
-    private static Typeface sBadgeTypeface = Typeface.create("sans-serif-black", Typeface.BOLD);
+    private static Typeface sBadgeTypeface = sDefault();
 
-    protected FontUtils() {
-        throw new AssertionError("no construction");
+    private FontUtils() {        //no instance
     }
 
     public static Typeface getBadgeTypeface() {
         return sBadgeTypeface;
     }
 
-    public static void setBadgeTypeface(final String path) {
-        sBadgeTypeface = Typeface.createFromFile(path);
-    }
-
     public static void setBadgeTypeface(final File file) {
-        sBadgeTypeface = Typeface.createFromFile(file);
+        if (!file.exists() && !file.canRead()) return;
+        try {
+            sBadgeTypeface = Typeface.createFromFile(file);
+        } catch (Exception e) {
+            HLog.e(file.getName(), e);
+            FontUtils.setBadgeTypefaceDefault();
+        }
     }
 
     public static void setBadgeTypefaceDefault() {
-        sBadgeTypeface = Typeface.create("sans-serif-black", Typeface.BOLD);
+        sBadgeTypeface = sDefault();
     }
 
-    public static void setBadgeTypeface(final Typeface typeface) {
-        sBadgeTypeface = typeface;
+    private static Typeface sDefault() {
+        return Typeface.create("sans-serif-black", Typeface.BOLD);
     }
 }

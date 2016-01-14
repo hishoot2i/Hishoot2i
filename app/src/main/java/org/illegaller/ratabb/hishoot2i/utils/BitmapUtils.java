@@ -18,7 +18,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.graphics.drawable.NinePatchDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -29,19 +28,16 @@ import android.util.DisplayMetrics;
 
 public class BitmapUtils {
 
-    protected BitmapUtils() {
+    private BitmapUtils() {
         throw new AssertionError("BitmapUtils no construction");
     }
 
     ////////////////// HishootProcess //////////////////
     public static Bitmap mixTemplate(@NonNull final Context context, @NonNull final Template template,
                                      @NonNull final String pathSS) {
+        // TODO: clean redundant
         final int templateW = template.templateSizes.width;
         final int templateH = template.templateSizes.height;
-        final int screenW = template.screenSizes.width;
-        final int screenH = template.screenSizes.height;
-        final int offsetW = template.offset.width;
-        final int offsetH = template.offset.height;
 
         Matrix matrix = new Matrix();
 
@@ -49,11 +45,17 @@ public class BitmapUtils {
         Canvas canvas = new Canvas(result);
         if (template.type == TemplateType.APK_V1) {
             //ss
-            matrix.postTranslate(offsetW, offsetH);
+//            final int screenW = template.screenSizes.width;
+//            final int screenH = template.screenSizes.height;
+//            final int offsetW = template.offset.width;
+//            final int offsetH = template.offset.height;
+
+//            matrix.postTranslate(offsetW, offsetH);
             Bitmap ss = UILHelper.loadImage(pathSS);
-            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
+            BitmapUtils.drawPerspective(canvas, ss, template);
+//            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
             //frame
-            matrix.postTranslate(0 - offsetW, 0 - offsetH);
+//            matrix.postTranslate(0 - offsetW, 0 - offsetH);
             Bitmap frame;
             if (template.id.equals(AppConstants.DEFAULT_TEMPLATE_ID))
                 frame = BitmapUtils.getNinePatch(context, R.drawable.frame1, templateW, templateH);
@@ -62,48 +64,75 @@ public class BitmapUtils {
 
             BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(frame, templateW, templateH), matrix);
         } else if (template.type == TemplateType.HTZ) {
+//            final int screenW = template.screenSizes.width;
+//            final int screenH = template.screenSizes.height;
+//            final int offsetW = template.offset.width;
+//            final int offsetH = template.offset.height;
             if (template.frameFile != null) {
                 Bitmap frame = UILHelper.loadImage(template.frameFile);
                 BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(frame, templateW, templateH), matrix);
             }
             //ss
-            matrix.postTranslate(offsetW, offsetH);
+//            matrix.postTranslate(offsetW, offsetH);
             Bitmap ss = UILHelper.loadImage(pathSS);
-            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
-            matrix.postTranslate(0 - offsetW, 0 - offsetH);
+            BitmapUtils.drawPerspective(canvas, ss, template);
+//            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
+//            matrix.postTranslate(0 - offsetW, 0 - offsetH);
             if (template.glareFile != null) {
                 Bitmap glare = UILHelper.loadImage(template.glareFile);
                 if (template.overlayOffset != null)
                     matrix.postTranslate(template.overlayOffset.width, template.overlayOffset.height);
                 BitmapUtils.drawBitmapToCanvas(canvas, glare, matrix);
             }
-        } else {
+        } else if (template.type == TemplateType.APK_V2) {
             if (template.shadowFile != null) {
                 Bitmap shadow = UILHelper.loadImage(template.shadowFile);
                 BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(shadow, templateW, templateH), matrix);
             }
             if (template.frameFile != null) {
                 Bitmap frame = UILHelper.loadImage(template.frameFile);
-                ;
-
                 BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(frame, templateW, templateH), matrix);
             }
-            //ss
-            matrix.postTranslate(offsetW, offsetH);
             Bitmap ss = UILHelper.loadImage(pathSS);
-
-            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
-
-            matrix.postTranslate(0 - offsetW, 0 - offsetH);
+            BitmapUtils.drawPerspective(canvas, ss, template);
             if (template.glareFile != null) {
                 Bitmap glare = UILHelper.loadImage(template.glareFile);
-
                 BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(glare, templateW, templateH), matrix);
             }
         }
         return result;
     }
 
+    private static void drawPerspective(final Canvas canvas, final Bitmap bitmap,
+                                        final Template template) {
+        Matrix matrix = new Matrix();
+        Paint paint = new Paint();
+        final float tWidth = bitmap.getWidth();
+        final float tHeight = bitmap.getHeight();
+        final float[] src = new float[]{0, 0, tWidth, 0, 0, tHeight, tWidth, tHeight};
+
+        final float leftTopX = template.leftTop.width;
+        final float leftTopY = template.leftTop.height;
+        final float rightTopX = template.rightTop.width;
+        final float rightTopY = template.rightTop.height;
+        final float leftBottomX = template.leftBottom.width;
+        final float leftBottomY = template.leftBottom.height;
+        final float rightBottomX = template.rightBottom.width;
+        final float rightBottomY = template.rightBottom.height;
+
+        final float[] dst = new float[]{
+                leftTopX, leftTopY,
+                rightTopX, rightTopY,
+                leftBottomX, leftBottomY,
+                rightBottomX, rightBottomY
+        };
+        matrix.setPolyToPoly(src, 0, dst, 0, src.length / 2);
+        canvas.save();
+        canvas.concat(matrix);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.restore();
+        bitmap.recycle();
+    }
 
     public static Bitmap matchSizes(final Bitmap bitmap, int targetW, int targetH) {
         if (bitmap.getWidth() == targetW && bitmap.getHeight() == targetH) return bitmap;
@@ -138,7 +167,8 @@ public class BitmapUtils {
     }
 
     /** http://stackoverflow.com/a/8113368 */
-    public static Bitmap scaleCenterCrop(Bitmap source, int newWidth, int newHeight) {
+    public static Bitmap scaleCenterCrop(@NonNull final Bitmap source, int newWidth, int newHeight) {
+        // TODO:Bitmap source null?
         int sourceWidth = source.getWidth();
         int sourceHeight = source.getHeight();
 
@@ -169,8 +199,6 @@ public class BitmapUtils {
         return dest;
     }
 
-    ////////////////// Badge //////////////////
-    // TODO: TypeFace
     public static Bitmap bitmapBadge(final Context context, final String badgeText,
                                      @ColorInt int color) {
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -200,6 +228,8 @@ public class BitmapUtils {
         return bitmap;
     }
 
+    ////////////////// Badge //////////////////
+
     ////////////////// Template Default //////////////////
     public static Bitmap getNinePatch(Context context, @DrawableRes int drawableID, int width, int height) {
         Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -211,8 +241,6 @@ public class BitmapUtils {
         }
         return result;
     }
-
-    ////////////////// HishootService //////////////////
 
     /**
      * {@link Bitmap} for {@link android.support.v4.app.NotificationCompat.BigPictureStyle#bigPicture(Bitmap)}
@@ -236,6 +264,8 @@ public class BitmapUtils {
         screenshot.recycle();
         return preview;
     }
+
+    ////////////////// HishootService //////////////////
 
     public static Bitmap roundedLargeIcon(final Context context, final Bitmap bitmap) {
         final int iconSize = Utils.getDimensionPixelSize(context, android.R.dimen.app_icon_size);

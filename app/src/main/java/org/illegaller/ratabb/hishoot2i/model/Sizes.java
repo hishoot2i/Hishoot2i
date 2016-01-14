@@ -1,18 +1,11 @@
 package org.illegaller.ratabb.hishoot2i.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class Sizes{
+public class Sizes {
 
     public int width;
     public int height;
 
-    /**
-     * {@code <b>No construction</b><\n>
-     * use {@link Sizes#create(int, int)}}
-     */
-    protected Sizes() {
+    private Sizes() {        //no instance
     }
 
     public static Sizes create(int width, int height) {
