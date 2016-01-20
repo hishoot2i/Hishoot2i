@@ -3,21 +3,18 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:elevation="@dimen/default_elevation">
 
         <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolbarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen200dp"
                 android:theme="@style/ThemeOverlay.Hishoot.ActionBar"
@@ -49,8 +46,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-        <fragment
-                android:id="@+id/fragmentAbout"
+        <fragment android:tag="@string/about"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 class="org.illegaller.ratabb.hishoot2i.ui.fragment.AboutFragment"

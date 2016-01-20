@@ -18,7 +18,7 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 
 public class PermissionHelper {
-    protected static PermissionHelper sINSTANCE = new PermissionHelper();
+    private static PermissionHelper sINSTANCE = new PermissionHelper();
 
     private String singlePermission;
     private int requestCode;
@@ -53,23 +53,23 @@ public class PermissionHelper {
 
     public void onResult(int requestCode, String[] permissions, int[] grantResults) {
         if (!hasInit) throw new PermissionHelperException("Builder.build()");
-        if (this.requestCode == requestCode && weakCallback.get() != null) {
-            if (grantResults[0] == PERMISSION_GRANTED) weakCallback.get().allow();
-            else weakCallback.get().deny(permissions[0]);
+        if (this.requestCode == requestCode && getCallback() != null) {
+            if (grantResults[0] == PERMISSION_GRANTED) getCallback().allow();
+            else if (getCallback() != null) getCallback().deny(permissions[0]);
         }
     }
 
     public void runRequest() {
         if (!hasInit) throw new PermissionHelperException("Builder.build()");
-        if (weakObject.get() == null)
+        if (getObject() == null)
             throw new PermissionHelperException("Builder.with(Object,Callback)");
         if (SDK_INT >= M && checkSelfPermission()) requestPermission();
-        else if (weakCallback.get() != null) weakCallback.get().allow();
+        else if (getCallback() != null) getCallback().allow();
     }
 
     public void runRequestWithRationale(android.view.View snackView, @StringRes int rationale) {
         if (!hasInit) throw new PermissionHelperException("Builder.build()");
-        if (weakObject.get() == null)
+        if (getObject() == null)
             throw new PermissionHelperException("Builder.with(Object,Callback)");
         if (SDK_INT >= M && checkSelfPermission()) {
             if (shouldShowRequestPermissionRationale()) {
@@ -81,46 +81,49 @@ public class PermissionHelper {
                         })
                         .show();
             }
-        } else if (weakCallback.get() != null) weakCallback.get().allow();
+        } else if (getCallback() != null) getCallback().allow();
     }
 
     /* internal */
+    private Object getObject() {
+        return weakObject.get();
+    }
+
+    private Callback getCallback() {
+        return weakCallback.get();
+    }
+
     protected boolean checkSelfPermission() {
         return ContextCompat.checkSelfPermission(contextFromObject(), this.singlePermission)
                 != PERMISSION_GRANTED;
     }
 
     @TargetApi(M) protected void requestPermission() {
-        if (weakObject.get() instanceof Activity)
-            ActivityCompat.requestPermissions(objectToActivity(),
+        final Object object = getObject();
+        if (object instanceof Activity)
+            ActivityCompat.requestPermissions((Activity) object,
                     new String[]{singlePermission}, requestCode);
-        else if (weakObject.get() instanceof Fragment)
-            objectToFragment().requestPermissions(new String[]{singlePermission}, requestCode);
+        else if (object instanceof Fragment)
+            ((Fragment) object).requestPermissions(new String[]{singlePermission}, requestCode);
         else throw new PermissionHelperException("Builder.with(Object,Callback)");
     }
 
     @TargetApi(M) protected boolean shouldShowRequestPermissionRationale() {
-        if (weakObject.get() instanceof Activity)
-            return ActivityCompat.shouldShowRequestPermissionRationale(objectToActivity(),
+        final Object object = getObject();
+        if (object instanceof Activity)
+            return ActivityCompat.shouldShowRequestPermissionRationale((Activity) object,
                     this.singlePermission);
-        else if (weakObject.get() instanceof Fragment)
-            return objectToFragment().shouldShowRequestPermissionRationale(this.singlePermission);
+        else if (object instanceof Fragment)
+            return ((Fragment) object).shouldShowRequestPermissionRationale(this.singlePermission);
         else throw new PermissionHelperException("Builder.with(Object,Callback)");
     }
 
     protected Context contextFromObject() {
-        if (weakObject.get() instanceof Activity) return objectToActivity();
-        else if (weakObject.get() instanceof Fragment)
-            return objectToFragment().getActivity();
+        final Object object = getObject();
+        if (object instanceof Activity) return (Activity) object;
+        else if (object instanceof Fragment)
+            return ((Fragment) object).getActivity();
         else throw new PermissionHelperException("Builder.with(Object,Callback)");
-    }
-
-    protected Activity objectToActivity() {
-        return (Activity) weakObject.get();
-    }
-
-    protected Fragment objectToFragment() {
-        return (Fragment) weakObject.get();
     }
 
     /* listener */

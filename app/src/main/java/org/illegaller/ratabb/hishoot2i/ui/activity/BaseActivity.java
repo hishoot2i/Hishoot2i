@@ -6,11 +6,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.illegaller.ratabb.hishoot2i.HishootApplication;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.AppContainer;
+import org.illegaller.ratabb.hishoot2i.utils.HLog;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 
@@ -19,7 +21,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class BaseActivity extends AbstractAppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     @Nullable @Bind(R.id.toolbar) Toolbar mToolbar;
     @Inject AppContainer appContainer;
     ViewGroup container;
@@ -32,6 +34,7 @@ public class BaseActivity extends AbstractAppCompatActivity {
         Dart.inject(this);
         container = appContainer.get(this, application);
         Utils.setTransparentStatusBar(getWindow());
+        HLog.setTAG(this);
     }
 
 
@@ -47,7 +50,6 @@ public class BaseActivity extends AbstractAppCompatActivity {
         Utils.fixInputMethodManager(this);
         Utils.unbindDrawables(container);
         super.onDestroy();
-
     }
 
     protected void setToolbar() {

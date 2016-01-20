@@ -10,6 +10,7 @@ import org.illegaller.ratabb.hishoot2i.di.ir.BackgroundImageBlurEnable;
 import org.illegaller.ratabb.hishoot2i.di.ir.BackgroundImageBlurRadius;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeColor;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeEnable;
+import org.illegaller.ratabb.hishoot2i.di.ir.BadgeSize;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeText;
 import org.illegaller.ratabb.hishoot2i.di.ir.ScreenDoubleEnable;
 import org.illegaller.ratabb.hishoot2i.di.ir.TemplateUsedID;
@@ -46,7 +47,6 @@ public class HishootService extends IntentService implements HishootProcess.Call
     public static final int HISHOOT_NOTIFICATION_ID = 0x01;
     public static final String KEY_EXTRA_PATH_DATA = "extra_path_data";
 
-
     @Inject @ScreenDoubleEnable BooleanPreference screenDoublePref;
     @Inject @BackgroundColorEnable BooleanPreference bgColorEnablePref;
     @Inject @BackgroundImageBlurEnable BooleanPreference bgImageBlurEnablePref;
@@ -55,11 +55,11 @@ public class HishootService extends IntentService implements HishootProcess.Call
     @Inject @BadgeEnable BooleanPreference badgeEnablePref;
     @Inject @BadgeText StringPreference badgeTextPref;
     @Inject @BadgeColor IntPreference badgeColorPref;
-
+    @Inject @BadgeSize IntPreference badgeSizePref;
     @Inject @TemplateUsedID StringPreference templateUsedIDPref;
     @Inject NotificationManager notificationManager;
     NotificationCompat.Builder notificationBuilder;
-    @Inject TemplateProvider mTemplateProvider;
+
 
     @InjectExtra(KEY_EXTRA_PATH_DATA) DataImagePath dataPath;
     HishootProcess mHishootProcess;
@@ -85,18 +85,18 @@ public class HishootService extends IntentService implements HishootProcess.Call
 
     @Override protected void onHandleIntent(Intent intent) {
         Dart.inject(this, intent.getExtras());
-        final Template template = mTemplateProvider.findById(templateUsedIDPref.get());
+        TemplateProvider templateProvider = new TemplateProvider(this);
+        final Template template = templateProvider.findById(templateUsedIDPref.get());
         mHishootProcess = new HishootProcess(this, this, template, screenDoublePref.get(),
                 bgColorEnablePref.get(), bgImageBlurEnablePref.get(), badgeEnablePref.get(),
                 bgColorIntPref.get(), bgImageBlurRadiusPref.get(), badgeColorPref.get(),
-                badgeTextPref.get()
+                badgeTextPref.get(), badgeSizePref.get()
         );
         mHishootProcess.process(dataPath);
     }
 
 
     @Override public void startingImage(long startTime) {
-
         Intent nullIntent = MainActivity.getIntent(this);
         nullIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationBuilder = new NotificationCompat.Builder(this)
@@ -105,21 +105,21 @@ public class HishootService extends IntentService implements HishootProcess.Call
                 .setSmallIcon(R.drawable.ic_notif)
                 .setWhen(startTime)
                 .setContentIntent(PendingIntent.getActivity(this, 0, nullIntent, 0))
-                .setProgress(0, 0, true);
+                .setProgress(0, 0, true)
+                .setAutoCancel(false);
         Notification notification = notificationBuilder.build();
-//        notification.flags |= Notification.FLAG_NO_CLEAR; //FIXME: notification can't clear?
         notificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
     }
 
-    @Override public void failedImage(String text, String extra) {
+    @Override public void failedImage(String msg, String extra) {
         final String title = getString(R.string.app_name);
-        Notification notification = new NotificationCompat.Builder(this)
+         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(title)
                 .setContentTitle(title)
-                .setContentText(text)
+                .setContentText(msg)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .setBigContentTitle(title)
-                        .bigText(text)
+                        .bigText(msg)
                         .setSummaryText(extra))
                 .setSmallIcon(R.drawable.ic_notif)
                 .setWhen(System.currentTimeMillis())

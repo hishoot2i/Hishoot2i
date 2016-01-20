@@ -37,13 +37,12 @@
 # LeakCanary
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
-#Support Design
--dontwarn android.support.design.**
+
+#Support
+-dontwarn android.support.**
 -keep class android.support.design.** { *; }
 -keep interface android.support.design.** { *; }
 -keep public class android.support.design.R$* { *; }
-
-#Support AppCompat
 -keep public class android.support.v7.widget.** { *; }
 -keep public class android.support.v7.internal.widget.** { *; }
 -keep public class android.support.v7.internal.view.menu.** { *; }
@@ -67,26 +66,23 @@
 -keep class * extends dagger.internal.Binding
 -keep class * extends dagger.internal.ModuleAdapter
 -keep class * extends dagger.internal.StaticInjection
-	
-#??
+
+#Otto
+-keepclassmembers class ** {
+    @com.squareup.otto.Subscribe public *;
+    @com.squareup.otto.Produce public *;
+}
+
+####
 -keepattributes  Signature,SourceFile,LineNumberTable,InnerClasses
--keep public class net.grandcentrix.tray.** {*;}
--keep public class org.illegaller.ratabb.hishoot2i.model.tray.** {*;}
--keep public class org.illegaller.ratabb.hishoot2i.di.Modules.** { *;}
--keepclassmembers public class org.illegaller.ratabb.hishoot2i.di.Modules.** { *;}
--keep public class org.illegaller.ratabb.hishoot2i.HishootApplication.** {*;}
--keep class io.fabric.sdk.** {*;}
--keep class android.support.v4.widget.** { *;}
--keep class android.support.v7.widget.** { *;}
--keep class android.support.design.widget.** { *;}
-
-
+-keepclassmembers public class org.illegaller.ratabb.hishoot2i.model.template.ModelHtz {*;}
+-keepclassmembers public class org.illegaller.ratabb.hishoot2i.model.template.ModelV2 {*;}
 
 -dontpreverify
 -repackageclasses ''
--allowaccessmodification
--optimizations !code/simplification/arithmetic
--keepattributes *Annotation*
+#-allowaccessmodification
+#-optimizations !code/simplification/arithmetic
+#-keepattributes *Annotation*
 #-dontwarn
 
 -keep public class * extends android.app.Activity
@@ -110,13 +106,13 @@
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
 
--keepclassmembers class * implements android.os.Parcelable {
-    static android.os.Parcelable$Creator CREATOR;
-}
-
--keepclassmembers class **.R$* {
-    public static <fields>;
-}
+#-keepclassmembers class * implements android.os.Parcelable {
+#    static android.os.Parcelable$Creator CREATOR;
+#}
+#
+#-keepclassmembers class **.R$* {
+#    public static <fields>;
+#}
 
 # Keep fragments
 
@@ -140,14 +136,12 @@
 }
 
 # Native Methods
-
--keepclasseswithmembernames class * {
-    native <methods>;
-}
+#-keepclasseswithmembernames class * {
+#    native <methods>;
+#}
 
 # Android Support Library
-
--keep class android.** {*;}
+#-keep class android.** {*;}
 
 # Button methods
 

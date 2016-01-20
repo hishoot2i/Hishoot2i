@@ -3,6 +3,7 @@ package org.illegaller.ratabb.hishoot2i.model.template.builder;
 import com.google.gson.Gson;
 
 import org.illegaller.ratabb.hishoot2i.model.Sizes;
+import org.illegaller.ratabb.hishoot2i.model.template.ModelV2;
 import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
 import org.illegaller.ratabb.hishoot2i.utils.HLog;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
@@ -60,18 +61,18 @@ public class TemplateBuilderApkV2 extends AbstractTemplateBuilder {
         return gson.fromJson(s, ModelV2.class);
     }
 
-    class ModelV2 {
-        public String name;
-        public String author;
-        public int left_top_x;
-        public int left_top_y;
-        public int right_top_x;
-        public int right_top_y;
-        public int left_bottom_x;
-        public int left_bottom_y;
-        public int right_bottom_x;
-        public int right_bottom_y;
-        public int template_width;
-        public int template_height;
-    }
+//    class ModelV2 {
+//        public String name;
+//        public String author;
+//        public int left_top_x;
+//        public int left_top_y;
+//        public int right_top_x;
+//        public int right_top_y;
+//        public int left_bottom_x;
+//        public int left_bottom_y;
+//        public int right_bottom_x;
+//        public int right_bottom_y;
+//        public int template_width;
+//        public int template_height;
+//    }
 }

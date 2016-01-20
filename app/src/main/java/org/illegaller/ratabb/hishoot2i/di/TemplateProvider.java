@@ -7,7 +7,6 @@ import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApk
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApkV2;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderDefault;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderHtz;
-import org.illegaller.ratabb.hishoot2i.utils.HLog;
 
 import android.content.Context;
 import android.content.Intent;
@@ -43,8 +42,6 @@ public class TemplateProvider {
         provideTemplateApkV2();
         provideTemplateHtz();
         provideTemplateDefault();
-        HLog.setTAG(this);
-        HLog.d(System.currentTimeMillis() + "ms ");
     }
 
     public Template findById(@NonNull final String templateId) {
@@ -143,7 +140,7 @@ public class TemplateProvider {
         }
     }//END Provide Template
 
-    private void putMap(String templateID, Template template) {
+    private void putMap(@NonNull final String templateID, @NonNull final Template template) {
         if (mapTemplate.containsKey(templateID)) return;
         mapTemplate.put(templateID, template);
     }

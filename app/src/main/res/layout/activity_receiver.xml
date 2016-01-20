@@ -2,11 +2,9 @@
 <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/rootViewActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        android:background="@color/grey_50"
         tools:context=".ui.activity.ReceiverActivity">
 
     <include layout="@layout/include_appbarlayout_toolbar"/>
@@ -34,10 +32,9 @@
                     >
 
                 <TextView
-                        android:id="@+id/txtWhat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/what.type"
+                        android:text="@string/what_type"
                         android:padding="10dp"
                         android:textAppearance="@style/TextAppearance.Hishoot.Config"/>
 

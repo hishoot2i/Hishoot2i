@@ -12,15 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 public class FontProvider {
     private static final String[] pathFonts = new String[]{"fonts", "Fonts"};
-
-    private FileExtensionFilter filter = new FileExtensionFilter("ttf");
-
     private final Map<String, File> mapFontFile;// fontName ,fontPath
+    private FileExtensionFilter filter = new FileExtensionFilter("ttf");
     private List<File> fontList;
 
     public FontProvider() {
@@ -55,28 +54,30 @@ public class FontProvider {
             File dir = new File(Environment.getExternalStorageDirectory(), font);
             if (dir.isDirectory()) {
                 File[] files = dir.listFiles(filter);
-                for (File file : files) putToMapFonts(file);
+                for (File file : files)if (file!=null)putToMapFonts(file);
             }
         }
     }
 
 
-    private void putToMapFonts(File file) {
-        mapFontFile.put(Utils.getFileNameWithoutExtension(file.getAbsolutePath()), file);
+    private void putToMapFonts(@NonNull final File file) {
+        final String name = Utils.getFileNameWithoutExtension(file.getAbsolutePath());
+        if (mapFontFile.containsKey(name) && !file.canRead()) return;
+        mapFontFile.put(name, file);
     }
 
-   class FileExtensionFilter implements FilenameFilter {
+    class FileExtensionFilter implements FilenameFilter {
         private Set<String> extSet = new HashSet<>();
 
         FileExtensionFilter(String... extension) {
             for (String ext : extension) {
-                extSet.add("." + ext.toLowerCase().trim());
+                extSet.add("." + ext.toLowerCase(Locale.US).trim());
             }
         }
 
         @Override public boolean accept(File file, String s) {
             for (String ext : extSet) {
-                if (s.toLowerCase().endsWith(ext)) return true;
+                if (s.toLowerCase(Locale.US).endsWith(ext)) return true;
             }
             return false;
         }

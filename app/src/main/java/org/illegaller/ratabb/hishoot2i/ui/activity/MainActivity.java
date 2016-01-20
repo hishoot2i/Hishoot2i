@@ -2,7 +2,6 @@ package org.illegaller.ratabb.hishoot2i.ui.activity;
 
 import com.f2prateek.dart.InjectExtra;
 import com.f2prateek.dart.Optional;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Subscribe;
 
 import org.illegaller.ratabb.hishoot2i.HishootService;
@@ -22,6 +21,7 @@ import org.illegaller.ratabb.hishoot2i.utils.HLog;
 import org.illegaller.ratabb.hishoot2i.utils.PermissionHelper;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,12 +33,12 @@ import android.support.design.widget.Snackbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
 
 public class MainActivity extends BaseActivity implements PermissionHelper.Callback {
     private static final String EXTRA_IMAGE_RECEIVE = "extra.image.receive.main";
@@ -46,6 +46,7 @@ public class MainActivity extends BaseActivity implements PermissionHelper.Callb
     @Inject @TemplateUsedID StringPreference templateUsedIdPref;
     @Optional @InjectExtra(EXTRA_IMAGE_RECEIVE) ImageReceive mImageReceive;
     @Bind(R.id.fab) FloatingActionButton fab;
+    @Bind(R.id.toolbar_progressbar) ProgressBar mProgressBar;
     private NavigationFragment navFragment;
     private DataImagePath dataPath;
 
@@ -53,6 +54,7 @@ public class MainActivity extends BaseActivity implements PermissionHelper.Callb
         return new Intent(context, MainActivity.class);
     }
 
+    @TargetApi(11)
     public static void handleImageReceive(final Activity activity, @NonNull ImageReceive imageReceive) {
         Intent intent = MainActivity.getIntent(activity);
         intent.putExtra(EXTRA_IMAGE_RECEIVE, imageReceive);
@@ -70,14 +72,18 @@ public class MainActivity extends BaseActivity implements PermissionHelper.Callb
         navFragment = new NavigationFragment(getSupportFragmentManager(), R.id.flContent);
         navFragment.setRoot(ListTemplateFragment.newInstance());
 
-
         if (mImageReceive != null) onNavigation(ConfigurationFragment.newInstance(mImageReceive));
 
-        PermissionHelper.writeExternalStorage().with(this, this).build();
-        PermissionHelper.getInstance().runRequest();
-
+        PermissionHelper.writeExternalStorage()
+                .with(this, this)
+                .build().runRequest();
         hideFab();
-        HLog.setTAG(this);
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                                     @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionHelper.getInstance().onResult(requestCode, permissions, grantResults);
     }
 
     @Override protected void onDestroy() {
@@ -112,17 +118,24 @@ public class MainActivity extends BaseActivity implements PermissionHelper.Callb
         fab.show();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
+                showProgress();
                 HishootService.start(MainActivity.this, dataPath);
-                hideFab();
+                onBackPressed();
             }
         });
+    }
 
+    private void showProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void dismissProgress() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void hideFab() {
         fab.hide();
         fab.setVisibility(View.GONE);
-
     }
 
     @Override public void allow() {
@@ -143,6 +156,7 @@ public class MainActivity extends BaseActivity implements PermissionHelper.Callb
     }
 
     @Subscribe public void onEvent(final EventHishoot.EventProcessDone event) {
+        dismissProgress();
         Utils.galleryAddPic(this, event.uri);
         View flContent = ButterKnife.findById(this, R.id.flContent);
         Snackbar snackbar = Snackbar.make(flContent, "Hishoot has saved", Snackbar.LENGTH_LONG);
@@ -152,13 +166,11 @@ public class MainActivity extends BaseActivity implements PermissionHelper.Callb
             }
         });
         snackbar.show();
-        ImageLoader.getInstance().clearMemoryCache();
     }
 
     @Subscribe public void onEvent(final EventHishoot.EventSetTemplateUse event) {
         templateUsedIdPref.set(event.templateID);
         onNavigation(ConfigurationFragment.newInstance(null));
     }
-
 
 }

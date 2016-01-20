@@ -18,9 +18,9 @@ public class BadgeDrawable extends Drawable {
     private int height;
     private Paint paint;
 
-    public BadgeDrawable(Context context, String badgeText, @ColorInt int color) {
+    public BadgeDrawable(Context context, String badgeText, @ColorInt int badgeColor, int badgeSize) {
         if (bitmap == null) {
-            bitmap = BitmapUtils.bitmapBadge(context, badgeText, color);
+            bitmap = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
             width = bitmap.getWidth();
             height = bitmap.getHeight();
         }

@@ -11,10 +11,12 @@ import java.io.File;
 
 public class HtzFilePickActivity extends FilePickerActivity {
 
-    @Override protected AbstractFilePickerFragment<File> getFragment(String startPath, int mode, boolean allowMultiple, boolean allowCreateDir) {
+    @Override protected AbstractFilePickerFragment<File> getFragment(String startPath, int mode,
+                                                                     boolean allowMultiple,
+                                                                     boolean allowCreateDir) {
         AbstractFilePickerFragment<File> fragment = new HtzFilePickFragment();
-        fragment.setArgs(startPath != null ? startPath : Environment.getExternalStorageDirectory().getPath(),
-                mode, allowMultiple, allowCreateDir);
+        fragment.setArgs(startPath != null ? startPath :
+                Environment.getExternalStorageDirectory().getPath(), mode, allowMultiple, allowCreateDir);
         return fragment;
     }
 

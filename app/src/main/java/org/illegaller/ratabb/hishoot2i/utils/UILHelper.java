@@ -1,6 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.utils;
 
-
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -8,20 +7,23 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
-import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.BuildConfig;
+import org.illegaller.ratabb.hishoot2i.model.Sizes;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.DrawableRes;
-import android.util.DisplayMetrics;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -53,46 +55,62 @@ public class UILHelper {
         return UILHelper.formatString(FILES, file.getAbsolutePath());
     }
 
-
-    public static void init(final Application application) {
-        final File cacheDir = StorageUtils.getCacheDirectory(application);
+    public static void init(@NonNull final Context context, int width, int height) {
+        final File cacheDir = StorageUtils.getCacheDirectory(context);
         DiskCache diskCache = null;
-        long cacheMaxSize = 50 * 1024 * 1024;//50Mb
+        long cacheMaxSize = 50 * 1024 * 1024;
         try {
             diskCache = new LruDiskCache(cacheDir, new HashCodeFileNameGenerator(), cacheMaxSize);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final DisplayMetrics displayMetrics = application.getResources().getDisplayMetrics();
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(
-                application)
+        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context)
                 .memoryCacheExtraOptions(width, height)
                 .diskCacheExtraOptions(width, height, null)
-                .threadPoolSize(3) // default
-                .threadPriority(Thread.NORM_PRIORITY - 2) // default
-                .tasksProcessingOrder(QueueProcessingType.FIFO) // default
+                .threadPoolSize(3)
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .denyCacheImageMultipleSizesInMemory()
-                .imageDownloader(new TemplateImageDownloader(application))
+                .imageDecoder(new BaseImageDecoder(true))
+                .imageDownloader(new TemplateImageDownloader(context))
                 .defaultDisplayImageOptions(DisplayImageOptions.createSimple());
 
-//        if (BuildConfig.DEBUG) config.writeDebugLogs();
+        if (BuildConfig.DEBUG) config.writeDebugLogs();
         if (null != diskCache) config.diskCache(diskCache);
 
         ImageLoader.getInstance().init(config.build());
     }
 
-
     public static void displayPreview(final ImageView imageView, final String pathImage) {
-        ImageLoader.getInstance().displayImage(pathImage, imageView, getDisplayImageOptionsPreview());
+        ImageLoader.getInstance().displayImage(pathImage, imageView,
+                getDisplayImageOptionsPreview());
     }
 
-    public static Bitmap loadImage(final String pathImage) {
-        return ImageLoader.getInstance().loadImageSync(pathImage, getDisplayImageOptionsProcess());
+//    @Nullable public static Bitmap loadImageX(final String pathImage) {
+//        // FIXME: handle OOM
+//        tryClearMemoryCache();
+//        return ImageLoader.getInstance().loadImageSync(pathImage, getDisplayImageOptionsProcess());
+//    }
+
+    @Nullable public static Bitmap loadImage(final String pathImage) {
+        return loadImage(pathImage, null);
     }
 
-    //////// private ////////
+    @Nullable public static Bitmap loadImage(final String pathImage, final Sizes sizesTarget) {
+        if (sizesTarget != null) {
+            final ImageSize imageSize = new ImageSize(sizesTarget.width, sizesTarget.height);
+            return ImageLoader.getInstance()
+                    .loadImageSync(pathImage, imageSize, getDisplayImageOptionsProcess());
+        } else {
+            return ImageLoader.getInstance()
+                    .loadImageSync(pathImage, getDisplayImageOptionsProcess());
+        }
+    }
+
+    public static void tryClearMemoryCache() {
+        ImageLoader.getInstance().clearMemoryCache();
+    }
+
     private static String formatString(String type, String data) {
         return String.format("%s%s", type, data);
     }
@@ -105,8 +123,7 @@ public class UILHelper {
                 .cacheOnDisk(true)
                 .cacheInMemory(false)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-                .showImageOnLoading(R.mipmap.ic_launcher)
-                .resetViewBeforeLoading(true)
+//                .showImageOnLoading(R.drawable.braded_logo)
                 .decodingOptions(options);
         return result.build();
     }
@@ -116,7 +133,7 @@ public class UILHelper {
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .cacheOnDisk(false)
                 .cacheInMemory(false)
-                .imageScaleType(ImageScaleType.NONE_SAFE);
+                .imageScaleType(ImageScaleType.NONE);
         return result.build();
     }
 

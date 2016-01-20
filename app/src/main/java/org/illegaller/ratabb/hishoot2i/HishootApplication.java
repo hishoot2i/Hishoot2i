@@ -2,12 +2,13 @@ package org.illegaller.ratabb.hishoot2i;
 
 import com.crashlytics.android.Crashlytics;
 
-import org.illegaller.ratabb.hishoot2i.di.ActivityHierarchyServerCompat;
 import org.illegaller.ratabb.hishoot2i.di.Modules;
+import org.illegaller.ratabb.hishoot2i.di.ir.UserDeviceScreenHeight;
+import org.illegaller.ratabb.hishoot2i.di.ir.UserDeviceScreenWidth;
+import org.illegaller.ratabb.hishoot2i.model.pref.IntPreference;
 import org.illegaller.ratabb.hishoot2i.ui.activity.ErrorActivity;
 import org.illegaller.ratabb.hishoot2i.ui.activity.MainActivity;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
-import org.jraf.android.util.activitylifecyclecallbackscompat.ApplicationHelper;
 
 import android.app.Application;
 import android.content.Context;
@@ -19,8 +20,8 @@ import dagger.ObjectGraph;
 import io.fabric.sdk.android.Fabric;
 
 public class HishootApplication extends Application {
-
-    @Inject ActivityHierarchyServerCompat activityHierarchyServerCompat;
+    @Inject @UserDeviceScreenWidth IntPreference userScreenWidthPref;
+    @Inject @UserDeviceScreenHeight IntPreference userScreenHeightPref;
     private ObjectGraph appGraph;
 
     public static HishootApplication get(Context context) {
@@ -30,8 +31,6 @@ public class HishootApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
         buildAndInjectAppGraph();
-
-        ApplicationHelper.registerActivityLifecycleCallbacks(this, activityHierarchyServerCompat);
 
         //START CustomActivityOnCrash
         CustomActivityOnCrash.setLaunchErrorActivityWhenInBackground(true);
@@ -51,7 +50,7 @@ public class HishootApplication extends Application {
         } //END Fabric
 
         //ImageLoader
-        UILHelper.init(this);
+        UILHelper.init(this, userScreenWidthPref.get(), userScreenHeightPref.get());
     }
 
     private void buildAndInjectAppGraph() {

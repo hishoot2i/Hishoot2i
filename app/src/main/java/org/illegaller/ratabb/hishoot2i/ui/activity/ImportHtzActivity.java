@@ -5,9 +5,7 @@ import org.illegaller.ratabb.hishoot2i.di.ir.TemplateUsedID;
 import org.illegaller.ratabb.hishoot2i.model.pref.StringPreference;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderHtz;
-import org.illegaller.ratabb.hishoot2i.ui.navigation.Navigation;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -80,8 +78,7 @@ public class ImportHtzActivity extends BaseActivity implements TemplateBuilderHt
         if (builder == null) return;
         templateUsedIdTray.set(builder.id);
 //        Navigation.startMainActivity(this);
-        Utils.restartActivity(this, false);
-
+        this.finish();
     }
 
     @Override public void onDone(final String result) {

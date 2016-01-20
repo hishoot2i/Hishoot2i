@@ -30,10 +30,6 @@ public class ApplicationModule {
         return mApplication;
     }
 
-    @Provides @Singleton TemplateProvider provideTemplates() {
-        return new TemplateProvider(mApplication);
-    }
-
     @Provides @Singleton RefWatcher provideRefWatcher() {
         return LeakCanary.install(mApplication);
     }

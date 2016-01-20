@@ -16,8 +16,8 @@ import android.content.Context;
 import javax.inject.Inject;
 
 public class TemplateBuilderDefault extends AbstractTemplateBuilder {
-    @Inject @UserDeviceScreenWidth IntPreference userScreenWidthTray;
-    @Inject @UserDeviceScreenHeight IntPreference userScreenHeightTray;
+    @Inject @UserDeviceScreenWidth IntPreference userScreenWidthPref;
+    @Inject @UserDeviceScreenHeight IntPreference userScreenHeightPref;
     public TemplateBuilderDefault(Context context) {
         HishootApplication.get(context).inject(this);
         id = AppConstants.DEFAULT_TEMPLATE_ID;
@@ -30,7 +30,7 @@ public class TemplateBuilderDefault extends AbstractTemplateBuilder {
         final int BT = Utils.getDimensionPixelSize(context, R.dimen.def_bt);
         previewFile = UILHelper.stringDrawables(R.drawable.default_preview);
         frameFile = UILHelper.stringDrawables(R.drawable.frame1);
-        Sizes screenSizes =  Sizes.create(userScreenWidthTray.get(), userScreenHeightTray.get());
+        Sizes screenSizes =  Sizes.create(userScreenWidthPref.get(), userScreenHeightPref.get());
         Sizes offset = Sizes.create(TL, TT);
         templateSizes = Sizes.create(screenSizes.width + (TL + BL), screenSizes.height + (TT + BT));
         leftTop = offset;

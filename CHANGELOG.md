@@ -1,5 +1,11 @@
 # Changelog
 -----
+**v1.0.4 (20160120)**
+
+- [+] add Badge size
+- [?] clean up dead code
+- [?] bla bla bla  :/
+
 **v1.0.3 (20160114)**
 
 - [?] TL;DR: fix minor bug
@@ -8,7 +14,7 @@
 
 **v1.0.2 (20151231)**
 
-- [?] hide FAB after click ???????
+- [?] hide FAB after click
 - [+] fix clear notification add Button "Force clear notification"
 - [?] fix OOM on create notification BigPicture style
 - [+] re-add notification (normal style) Gingerbread

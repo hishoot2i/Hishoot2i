@@ -8,6 +8,7 @@ import android.widget.Filter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class TemplateFiltered extends Filter {
     private final TemplateRecyclerAdapter mAdapter;
@@ -26,10 +27,10 @@ public class TemplateFiltered extends Filter {
         if (charSequence.length() == 0 || TextUtils.isEmpty(charSequence))
             filteredList.addAll(templateList);
         else {
-            final String filterPattern = charSequence.toString().toLowerCase().trim();
+            final String filterPattern = charSequence.toString().toLowerCase(Locale.US).trim();
             for (final Template template : templateList) {
-                if (template.name.toLowerCase().contains(filterPattern)) filteredList.add(template);
-                else if (template.author.toLowerCase().contains(filterPattern))
+                if (template.name.toLowerCase(Locale.US).contains(filterPattern)) filteredList.add(template);
+                else if (template.author.toLowerCase(Locale.US).contains(filterPattern))
                     filteredList.add(template);
             }
         }

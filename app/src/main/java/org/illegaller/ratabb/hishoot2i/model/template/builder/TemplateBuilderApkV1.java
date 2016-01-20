@@ -44,7 +44,11 @@ public class TemplateBuilderApkV1 extends AbstractTemplateBuilder {
     class TemplateReader {
         String device = null;
         String author = null;
-        int tx, ty, bx, by, densType;
+        int tx;
+        int ty;
+        int bx;
+        int by;
+//        int densType;
 
         public TemplateReader(InputStream inputStream) throws IOException, XmlPullParserException {
             String value = null;
@@ -77,8 +81,8 @@ public class TemplateBuilderApkV1 extends AbstractTemplateBuilder {
                             this.bx = Integer.parseInt(value);
                         } else if (xppName.equalsIgnoreCase("boty")) {
                             this.by = Integer.parseInt(value);
-                        } else if (xppName.equalsIgnoreCase("deviceDpi")) {
-                            this.densType = Integer.parseInt(value);
+//                        } else if (xppName.equalsIgnoreCase("deviceDpi")) {
+//                            this.densType = Integer.parseInt(value);
                         }
                         break;
                     default:

@@ -35,9 +35,4 @@ public class UIModule {
         return AppContainer.DEFAULT;
     }
 
-    @Provides @Singleton ActivityHierarchyServerCompat provideActivityHierarchyServerCompat() {
-        return ActivityHierarchyServerCompat.NONE;
-    }
-
-
 }

@@ -1,11 +1,10 @@
 package org.illegaller.ratabb.hishoot2i.ui.activity;
 
-
-import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.utils.PermissionHelper;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -28,6 +27,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 
+import static org.illegaller.ratabb.hishoot2i.AppConstants.getHishootDir;
+
 public class ErrorActivity extends BaseActivity implements PermissionHelper.Callback {
     public static final String sLOG_TAG = "ErrorActivity";
     @Bind(R.id.errorText) TextView errorText;
@@ -47,7 +48,6 @@ public class ErrorActivity extends BaseActivity implements PermissionHelper.Call
     }
 
     @Override protected void onDestroy() {
-//        PermissionHelper.getInstance().release();
         super.onDestroy();
     }
 
@@ -67,13 +67,14 @@ public class ErrorActivity extends BaseActivity implements PermissionHelper.Call
     }
 
     @SuppressWarnings("deprecated")
-    private void copyToClipBoard() {
+    @TargetApi(11) private void copyToClipBoard() {
         if (Utils.isHoneycomb()) {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clipData = ClipData.newPlainText("Error log", errorText.getText());
             clipboard.setPrimaryClip(clipData);
         } else {
-            @SuppressWarnings("deprecated") android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            @SuppressWarnings("deprecated") android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
+                    getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(errorText.getText());
         }
         Utils.makeLongToast(this, "Error log copy to clipboard");
@@ -81,7 +82,7 @@ public class ErrorActivity extends BaseActivity implements PermissionHelper.Call
 
     private void doSave() {
         String errorMessage = errorText.getText().toString();
-        File errorFile = new File(AppConstants.getHishootDir(), "hishoot2i-error.log");
+        File errorFile = new File(getHishootDir(), "hishoot2i-error.log");
         new SaveErrorTask().execute(new ErrorModel(errorMessage, errorFile));
     }
 

@@ -19,23 +19,27 @@ public class NavigationFragment {
         this.mDefContainer = defContainer;
     }
 
+    protected FragmentManager getFragmentManager() {
+        return sWeakFragmentManager.get();
+    }
+
     protected String getName(final Fragment fragment) {
         return fragment.getClass().getSimpleName();
     }
 
     protected void replace(final Fragment fragment) {
-        sWeakFragmentManager.get().beginTransaction()
+        getFragmentManager().beginTransaction()
                 .replace(mDefContainer, fragment, getName(fragment))
                 .commit();
-        sWeakFragmentManager.get().executePendingTransactions();
+        getFragmentManager().executePendingTransactions();
     }
 
     protected void clear() {
-        while (sWeakFragmentManager.get().popBackStackImmediate()) ;
+        while (getFragmentManager().popBackStackImmediate()) ;
     }
 
     public int getSize() {
-        final FragmentManager fragmentManager = sWeakFragmentManager.get();
+        final FragmentManager fragmentManager = getFragmentManager();
         if (null == fragmentManager) return 0;
         else return fragmentManager.getBackStackEntryCount();
     }
@@ -50,20 +54,20 @@ public class NavigationFragment {
     }
 
     public void goTo(final Fragment fragment) {
-        sWeakFragmentManager.get().beginTransaction().addToBackStack(getName(fragment))
+        getFragmentManager().beginTransaction().addToBackStack(getName(fragment))
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(mDefContainer, fragment, getName(fragment))
                 .commitAllowingStateLoss();
-        sWeakFragmentManager.get().executePendingTransactions();
+        getFragmentManager().executePendingTransactions();
     }
 
     public void goOneBack() {
-        sWeakFragmentManager.get().popBackStackImmediate();
+        getFragmentManager().popBackStackImmediate();
     }
 
     public Fragment getCurrent() {
         if (isEmpty()) return null;
-        String tag = sWeakFragmentManager.get().getBackStackEntryAt(getSize() - 1).getName();
-        return sWeakFragmentManager.get().findFragmentByTag(tag);
+        String tag = getFragmentManager().getBackStackEntryAt(getSize() - 1).getName();
+        return getFragmentManager().findFragmentByTag(tag);
     }
 }

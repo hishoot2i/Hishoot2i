@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.model.Sizes;
+import org.illegaller.ratabb.hishoot2i.model.template.ModelHtz;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
@@ -23,6 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -104,7 +106,7 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
     private String getTemplateId(String templateName) {
         String result = (templateName.contains(" ")) ? templateName.replace(" ", "_")
                 : templateName;
-        return result.toLowerCase().trim();
+        return result.toLowerCase(Locale.US).trim();
     }
 
     public boolean cekHtz(final String fileHtzPath) {
@@ -201,19 +203,19 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
         }
     }
 
-    class ModelHtz {
-        public String name;
-        public String author;
-        public String template_file;
-        public String preview;
-        public String overlay_file;
-        public int overlay_x;
-        public int overlay_y;
-        public int screen_width;
-        public int screen_height;
-        public int screen_x;
-        public int screen_y;
-        public int template_width;
-        public int template_height;
-    }
+//    class ModelHtz {
+//        public String name;
+//        public String author;
+//        public String template_file;
+//        public String preview;
+//        public String overlay_file;
+//        public int overlay_x;
+//        public int overlay_y;
+//        public int screen_width;
+//        public int screen_height;
+//        public int screen_x;
+//        public int screen_y;
+//        public int template_width;
+//        public int template_height;
+//    }
 }

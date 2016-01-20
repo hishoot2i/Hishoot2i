@@ -4,6 +4,7 @@ package org.illegaller.ratabb.hishoot2i.utils;
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.model.Sizes;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -111,16 +111,13 @@ public class Utils {
     }
 
 
-    @ColorInt public static int setHalfAlphaColor(@ColorInt int source) {
-        return Color.argb(128, Color.red(source), Color.green(source), Color.blue(source));
-    }
     /*********** Display ***********/
 
     /**
      * reflection  method {@link Display#getRealMetrics(DisplayMetrics)} on
      * pre- {@linkplain android.os.Build.VERSION_CODES#JELLY_BEAN}
      **/
-    public static int getDeviceHeight(final Display display) {
+    @TargetApi(17) public static int getDeviceHeight(final Display display) {
         if (Utils.isJellyBeanMR1())
             return Utils.getDisplayMetrics(display).heightPixels;
         else if (Utils.isHoneycombMR2()) {
@@ -140,7 +137,7 @@ public class Utils {
         return Utils.getDisplayMetrics(display).widthPixels;
     }
 
-    public static DisplayMetrics getDisplayMetrics(final Display display) {
+    @TargetApi(17) public static DisplayMetrics getDisplayMetrics(final Display display) {
         DisplayMetrics result = new DisplayMetrics();
         if (Utils.isJellyBeanMR1()) {
             display.getRealMetrics(result);
@@ -244,7 +241,7 @@ public class Utils {
     }
 
     /*********** StatusBar ***********/
-    public static void setTransparentStatusBar(@NonNull final Window window) {
+    @TargetApi(23) public static void setTransparentStatusBar(@NonNull final Window window) {
         @ColorInt int transparent = android.R.color.transparent;
         if (Utils.isLollipop()) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -302,7 +299,7 @@ public class Utils {
 
     public static String getDeviceOS() {
         String release = Build.VERSION.RELEASE;
-        return String.format("Android %s [sdk%d]", release, Build.VERSION.SDK_INT);
+        return String.format(Locale.US, "Android %s [sdk%d]", release, Build.VERSION.SDK_INT);
     }
 
     public static String capitalize(String string) {
@@ -336,18 +333,6 @@ public class Utils {
 
             if (viewGroup instanceof AdapterView) HLog.d(viewGroup);
             else viewGroup.removeAllViews();
-        }
-    }
-
-    public static void restartActivity(final Activity activity, boolean restart) {
-        if (activity == null) return;
-        final int enter_anim = android.R.anim.fade_in;
-        final int exit_anim = android.R.anim.fade_out;
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.finish();
-        if (restart) {
-            activity.overridePendingTransition(enter_anim, exit_anim);
-            activity.startActivity(activity.getIntent());
         }
     }
 

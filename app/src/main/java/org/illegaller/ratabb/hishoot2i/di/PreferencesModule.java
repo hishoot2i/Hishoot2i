@@ -2,7 +2,6 @@ package org.illegaller.ratabb.hishoot2i.di;
 
 import com.securepreferences.SecurePreferences;
 
-import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.ir.AppRunningCount;
 import org.illegaller.ratabb.hishoot2i.di.ir.BackgroundColorEnable;
@@ -11,6 +10,7 @@ import org.illegaller.ratabb.hishoot2i.di.ir.BackgroundImageBlurEnable;
 import org.illegaller.ratabb.hishoot2i.di.ir.BackgroundImageBlurRadius;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeColor;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeEnable;
+import org.illegaller.ratabb.hishoot2i.di.ir.BadgeSize;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeText;
 import org.illegaller.ratabb.hishoot2i.di.ir.BadgeTypeface;
 import org.illegaller.ratabb.hishoot2i.di.ir.ForApplicationContext;
@@ -40,6 +40,13 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static org.illegaller.ratabb.hishoot2i.AppConstants.BACKGROUND_IMAGE_BLUR_RADIUS;
+import static org.illegaller.ratabb.hishoot2i.AppConstants.BADGE_COLOR;
+import static org.illegaller.ratabb.hishoot2i.AppConstants.BADGE_SIZE;
+import static org.illegaller.ratabb.hishoot2i.AppConstants.BADGE_TEXT;
+import static org.illegaller.ratabb.hishoot2i.AppConstants.BADGE_TYPEFACE;
+import static org.illegaller.ratabb.hishoot2i.AppConstants.DEFAULT_TEMPLATE_ID;
+
 @Module(library = true, complete = false)
 public class PreferencesModule {
 
@@ -57,7 +64,7 @@ public class PreferencesModule {
 
     /** Template */
     @Provides @Singleton @TemplateUsedID StringPreference provideTemplateUsedID(SharedPreferences pref) {
-        return new StringPreference(pref, "template_used_id", AppConstants.DEFAULT_TEMPLATE_ID);
+        return new StringPreference(pref, "template_used_id", DEFAULT_TEMPLATE_ID);
     }
 
     @Provides @Singleton @GlareEnable BooleanPreference provideGlareEnable(SharedPreferences pref) {
@@ -78,14 +85,13 @@ public class PreferencesModule {
         return new IntPreference(pref, "background_color_int", Utils.getColorInt(context, R.color.colorPrimaryDark));
     }
 
-
     @Provides @Singleton @BackgroundImageBlurEnable BooleanPreference provideBackgroundImageBlurEnable(SharedPreferences pref) {
         return new BooleanPreference(pref, "background_image_blur_enable", false);
     }
 
     @Provides @Singleton @BackgroundImageBlurRadius IntPreference provideBackgroundImageBlurRadius(SharedPreferences pref) {
         return new IntPreference(pref, "background_image_blur_radius",
-                AppConstants.sBACKGROUND_IMAGE_BLUR_RADIUS);
+                BACKGROUND_IMAGE_BLUR_RADIUS);
     }
 
     /** Badge */
@@ -94,15 +100,19 @@ public class PreferencesModule {
     }
 
     @Provides @Singleton @BadgeColor IntPreference provideBadgeColor(SharedPreferences pref) {
-        return new IntPreference(pref, "badge_color", AppConstants.sBADGE_COLOR);
+        return new IntPreference(pref, "badge_color", BADGE_COLOR);
     }
 
     @Provides @Singleton @BadgeText StringPreference provideBadgeText(SharedPreferences pref) {
-        return new StringPreference(pref, "badge_text", AppConstants.sBADGE_TEXT);
+        return new StringPreference(pref, "badge_text", BADGE_TEXT);
     }
 
     @Provides @Singleton @BadgeTypeface StringPreference provideBadgeTypeface(SharedPreferences pref) {
-        return new StringPreference(pref, "badge_typeface", AppConstants.sBADGE_TYPEFACE);
+        return new StringPreference(pref, "badge_typeface", BADGE_TYPEFACE);
+    }
+
+    @Provides @Singleton @BadgeSize IntPreference provideBadgeSize(SharedPreferences pref) {
+        return new IntPreference(pref, "badge_size", BADGE_SIZE);
     }
 
     /* User Info */

@@ -4,6 +4,7 @@ import com.f2prateek.dart.Dart;
 import com.squareup.leakcanary.RefWatcher;
 
 import org.illegaller.ratabb.hishoot2i.HishootApplication;
+import org.illegaller.ratabb.hishoot2i.utils.HLog;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.os.Bundle;
@@ -28,8 +29,9 @@ public class BaseFragment extends Fragment {
     @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weakActivity = new WeakReference<>(getActivity());
-        HishootApplication.get(weakActivity.get()).inject(this);
+        HishootApplication.get(getActivity()).inject(this);
         Dart.inject(this, getArguments());
+        HLog.setTAG(this);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

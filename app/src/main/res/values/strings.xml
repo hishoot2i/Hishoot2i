@@ -1,9 +1,7 @@
 <resources>
-    <string name="setting">Setting</string>
     <string name="about">About</string>
     <string name="names">Name: %s</string>
     <string name="authors">Authors: %s</string>
-    <string name="chooser">Choose image for %s</string>
     <string name="screen">Screen</string>
     <string name="double_">Double</string>
     <string name="background">Background</string>
@@ -12,17 +10,17 @@
     <string name="blur">Blur</string>
     <string name="badge">Badge</string>
     <string name="hide">Hide</string>
-    <string name="fail">Fail</string>
     <string name="share">Share</string>
     <string name="save">Save</string>
     <string name="saving">Saving…</string>
-    <string name="what.type">What type of image is this?</string>
     <string name="versi">Versi</string>
     <string name="close">Close</string>
-    <string name="restart">Re-start App</string>
+    <string name="restart">Restart</string>
     <string name="copy">Copy</string>
     <string name="send.report">Please send report</string>
     <string name="save.failed">Save failed</string>
     <string name="config.not.valid">Configuration not valid</string>
-    <string name="change">Change</string>
+    <string name="size">Size</string>
+    <string name="font">Font</string>
+    <string name="what_type">What type of image is this?</string>
 </resources>

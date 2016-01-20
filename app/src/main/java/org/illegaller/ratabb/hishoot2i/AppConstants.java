@@ -9,10 +9,16 @@ import java.io.IOException;
 
 public class AppConstants {
 
-    public static final int sBACKGROUND_IMAGE_BLUR_RADIUS = 25;
-    public static final int sBADGE_COLOR = Color.WHITE;
-    public static final String sBADGE_TEXT = "hishoot";
-    public static final String sBADGE_TYPEFACE = "Default";
+    public static final int REQ_PICK_IMG_SS1 = 0x0001;
+    public static final int REQ_PICK_IMG_SS2 = 0x0002;
+    public static final int REQ_PICK_IMG_BG = 0x0003;
+    public static final int REQ_PICK_HTZ = 0x0004;
+
+    public static final int BACKGROUND_IMAGE_BLUR_RADIUS = 25;
+    public static final int BADGE_COLOR = Color.WHITE;
+    public static final int BADGE_SIZE = 24;
+    public static final String BADGE_TEXT = "HISHOOT";
+    public static final String BADGE_TYPEFACE = "Default";
     /**
      * <strong>Category Hishoot Template App</strong><br><br>
      * Constant value: <i>"dcsms.hishoot.SKINTEMPLATE"</i>

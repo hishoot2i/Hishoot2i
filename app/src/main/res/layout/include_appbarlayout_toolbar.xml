@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.AppBarLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -9,8 +8,18 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            style="@style/Widget.Hishoot.ActionBar"/>
+            style="@style/Widget.Hishoot.ActionBar">
 
+    </android.support.v7.widget.Toolbar>
+
+    <ProgressBar
+            android:id="@+id/toolbar_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Hishoot.ProgressBar"
+            android:visibility="gone"
+            android:layout_gravity="bottom"
+            android:indeterminate="true"/>
 </android.support.design.widget.AppBarLayout>
 
 

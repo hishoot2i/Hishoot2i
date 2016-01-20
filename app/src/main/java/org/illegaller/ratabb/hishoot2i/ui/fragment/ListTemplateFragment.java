@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -81,7 +82,6 @@ public class ListTemplateFragment extends BaseFragment {
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         mRecyclerView.setLayoutManager(new GridLayoutManager(weakActivity.get(), 2));
         mRecyclerView.setHasFixedSize(true);
         new LoadAdapter().execute();
@@ -95,7 +95,7 @@ public class ListTemplateFragment extends BaseFragment {
         }
 
         @Override protected void onPostExecute(List<Template> templates) {
-            super.onPostExecute(templates);
+            if (templates == null) templates = new ArrayList<>();
             mAdapter = new TemplateRecyclerAdapter(templates, templateUsedIdTray.get());
             mRecyclerView.setAdapter(mAdapter);
         }

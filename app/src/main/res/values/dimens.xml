@@ -15,8 +15,8 @@
     <dimen name="def_tt">27dp</dimen>
     <dimen name="def_bl">27dp</dimen>
     <dimen name="def_bt">54dp</dimen>
-    <dimen name="fab_margin_bottom">16dp</dimen>
-    <dimen name="fab_margin_right">16dp</dimen>
+    <dimen name="fab_margin_vertical">16dp</dimen>
+    <dimen name="fab_margin_horizontal">16dp</dimen>
 
 
 </resources>

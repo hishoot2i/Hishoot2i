@@ -2,14 +2,14 @@ package org.illegaller.ratabb.hishoot2i.utils;
 
 import com.enrique.stackblur.StackBlurManager;
 
-import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
@@ -22,9 +22,14 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
+
+import java.util.Locale;
+
+import static org.illegaller.ratabb.hishoot2i.AppConstants.DEFAULT_TEMPLATE_ID;
 
 public class BitmapUtils {
 
@@ -32,84 +37,82 @@ public class BitmapUtils {
         throw new AssertionError("BitmapUtils no construction");
     }
 
-    ////////////////// HishootProcess //////////////////
-    public static Bitmap mixTemplate(@NonNull final Context context, @NonNull final Template template,
-                                     @NonNull final String pathSS) {
-        // TODO: clean redundant
+    @Nullable public static Bitmap mixTemplate(@NonNull final Context context, @NonNull final Template template,
+                                               @NonNull final String pathSS) throws OutOfMemoryError {
         final int templateW = template.templateSizes.width;
         final int templateH = template.templateSizes.height;
 
         Matrix matrix = new Matrix();
+        HLog.d("Template w:" + templateW + " h:" + templateH);
 
         Bitmap result = Bitmap.createBitmap(templateW, templateH, Bitmap.Config.ARGB_8888);
+
         Canvas canvas = new Canvas(result);
-        if (template.type == TemplateType.APK_V1) {
-            //ss
-//            final int screenW = template.screenSizes.width;
-//            final int screenH = template.screenSizes.height;
-//            final int offsetW = template.offset.width;
-//            final int offsetH = template.offset.height;
+        Bitmap ss = UILHelper.loadImage(pathSS);
+        ;
+        Bitmap frame;
+        Bitmap shadow;
+        Bitmap glare;
+        switch (template.type) {
+            case APK_V1:
+                if (ss != null) BitmapUtils.drawPerspective(canvas, ss, template);
+                if (template.id.equals(DEFAULT_TEMPLATE_ID))
+                    frame = BitmapUtils.getNinePatch(context, R.drawable.frame1, templateW, templateH);
+                else frame = UILHelper.loadImage(template.frameFile, template.templateSizes);
 
-//            matrix.postTranslate(offsetW, offsetH);
-            Bitmap ss = UILHelper.loadImage(pathSS);
-            BitmapUtils.drawPerspective(canvas, ss, template);
-//            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
-            //frame
-//            matrix.postTranslate(0 - offsetW, 0 - offsetH);
-            Bitmap frame;
-            if (template.id.equals(AppConstants.DEFAULT_TEMPLATE_ID))
-                frame = BitmapUtils.getNinePatch(context, R.drawable.frame1, templateW, templateH);
-            else
-                frame = UILHelper.loadImage(template.frameFile);
-
-            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(frame, templateW, templateH), matrix);
-        } else if (template.type == TemplateType.HTZ) {
-//            final int screenW = template.screenSizes.width;
-//            final int screenH = template.screenSizes.height;
-//            final int offsetW = template.offset.width;
-//            final int offsetH = template.offset.height;
-            if (template.frameFile != null) {
-                Bitmap frame = UILHelper.loadImage(template.frameFile);
-                BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(frame, templateW, templateH), matrix);
-            }
-            //ss
-//            matrix.postTranslate(offsetW, offsetH);
-            Bitmap ss = UILHelper.loadImage(pathSS);
-            BitmapUtils.drawPerspective(canvas, ss, template);
-//            BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(ss, screenW, screenH), matrix);
-//            matrix.postTranslate(0 - offsetW, 0 - offsetH);
-            if (template.glareFile != null) {
-                Bitmap glare = UILHelper.loadImage(template.glareFile);
-                if (template.overlayOffset != null)
-                    matrix.postTranslate(template.overlayOffset.width, template.overlayOffset.height);
-                BitmapUtils.drawBitmapToCanvas(canvas, glare, matrix);
-            }
-        } else if (template.type == TemplateType.APK_V2) {
-            if (template.shadowFile != null) {
-                Bitmap shadow = UILHelper.loadImage(template.shadowFile);
-                BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(shadow, templateW, templateH), matrix);
-            }
-            if (template.frameFile != null) {
-                Bitmap frame = UILHelper.loadImage(template.frameFile);
-                BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(frame, templateW, templateH), matrix);
-            }
-            Bitmap ss = UILHelper.loadImage(pathSS);
-            BitmapUtils.drawPerspective(canvas, ss, template);
-            if (template.glareFile != null) {
-                Bitmap glare = UILHelper.loadImage(template.glareFile);
-                BitmapUtils.drawBitmapToCanvas(canvas, matchSizes(glare, templateW, templateH), matrix);
-            }
+                if (frame != null) BitmapUtils.drawBitmapToCanvas(canvas,
+                        BitmapUtils.matchSizes(frame, templateW, templateH), matrix);
+                break;
+            case APK_V2:
+                if (template.shadowFile != null) {
+                    shadow = UILHelper.loadImage(template.shadowFile, template.templateSizes);
+                    if (shadow != null) BitmapUtils.drawBitmapToCanvas(canvas,
+                            BitmapUtils.matchSizes(shadow, templateW, templateH), matrix);
+                }
+                if (template.frameFile != null) {
+                    frame = UILHelper.loadImage(template.frameFile, template.templateSizes);
+                    if (frame != null) BitmapUtils.drawBitmapToCanvas(canvas,
+                            BitmapUtils.matchSizes(frame, templateW, templateH), matrix);
+                }
+                if (ss != null) BitmapUtils.drawPerspective(canvas, ss, template);
+                if (template.glareFile != null) {
+                    glare = UILHelper.loadImage(template.glareFile, template.templateSizes);
+                    if (glare != null) BitmapUtils.drawBitmapToCanvas(canvas,
+                            BitmapUtils.matchSizes(glare, templateW, templateH), matrix);
+                }
+                break;
+            case HTZ:
+                if (template.frameFile != null) {
+                    frame = UILHelper.loadImage(template.frameFile, template.templateSizes);
+                    if (frame != null) BitmapUtils.drawBitmapToCanvas(canvas,
+                            BitmapUtils.matchSizes(frame, templateW, templateH), matrix);
+                }
+                if (ss != null) BitmapUtils.drawPerspective(canvas, ss, template);
+                if (template.glareFile != null) {
+                    glare = UILHelper.loadImage(template.glareFile);
+                    if (template.overlayOffset != null)
+                        matrix.postTranslate(template.overlayOffset.width, template.overlayOffset.height);
+                    if (glare != null) BitmapUtils.drawBitmapToCanvas(canvas, glare, matrix);
+                }
+                break;
+            default:
+                throw new RuntimeException("no default switch; unknown template type ");
         }
         return result;
     }
 
-    private static void drawPerspective(final Canvas canvas, final Bitmap bitmap,
-                                        final Template template) {
+    /*http://github.com/StudentNSK/Image-Perspective-Transformation-Example/*/
+    private static void drawPerspective(@NonNull final Canvas canvas, @NonNull final Bitmap bitmap,
+                                        @NonNull final Template template) {
         Matrix matrix = new Matrix();
         Paint paint = new Paint();
         final float tWidth = bitmap.getWidth();
         final float tHeight = bitmap.getHeight();
-        final float[] src = new float[]{0, 0, tWidth, 0, 0, tHeight, tWidth, tHeight};
+        final float[] src = new float[]{
+                0, 0,
+                tWidth, 0,
+                0, tHeight,
+                tWidth, tHeight};
 
         final float leftTopX = template.leftTop.width;
         final float leftTopY = template.leftTop.height;
@@ -124,8 +127,8 @@ public class BitmapUtils {
                 leftTopX, leftTopY,
                 rightTopX, rightTopY,
                 leftBottomX, leftBottomY,
-                rightBottomX, rightBottomY
-        };
+                rightBottomX, rightBottomY};
+
         matrix.setPolyToPoly(src, 0, dst, 0, src.length / 2);
         canvas.save();
         canvas.concat(matrix);
@@ -134,22 +137,25 @@ public class BitmapUtils {
         bitmap.recycle();
     }
 
-    public static Bitmap matchSizes(final Bitmap bitmap, int targetW, int targetH) {
+    private static Bitmap matchSizes(@NonNull final Bitmap bitmap, int targetW, int targetH) {
         if (bitmap.getWidth() == targetW && bitmap.getHeight() == targetH) return bitmap;
         else return Bitmap.createScaledBitmap(bitmap, targetW, targetH, true);
     }
 
-    public static void drawBitmapToCanvas(Canvas canvas, Bitmap bitmap, int left, int top) {
+    public static void drawBitmapToCanvas(@NonNull final Canvas canvas, @NonNull final Bitmap bitmap,
+                                          int left, int top) throws OutOfMemoryError {
         canvas.drawBitmap(bitmap, left, top, null);
         bitmap.recycle();
     }
 
-    public static void drawBitmapToCanvas(Canvas canvas, Bitmap bitmap, Matrix matrix) {
+    public static void drawBitmapToCanvas(@NonNull final Canvas canvas, @NonNull final Bitmap bitmap,
+                                          Matrix matrix) throws OutOfMemoryError {
         canvas.drawBitmap(bitmap, matrix, null);
         bitmap.recycle();
     }
 
-    public static void drawBitmapBlurToCanvas(Canvas canvas, Bitmap bitmap, int radius) {
+    public static void drawBlurToCanvas(@NonNull final Canvas canvas, @NonNull final Bitmap bitmap,
+                                        int radius) throws OutOfMemoryError {
         int rad = (radius > 100) ? 100 : radius;
         int widthSrc = bitmap.getWidth();
         int heightSrc = bitmap.getHeight();
@@ -168,57 +174,54 @@ public class BitmapUtils {
 
     /** http://stackoverflow.com/a/8113368 */
     public static Bitmap scaleCenterCrop(@NonNull final Bitmap source, int newWidth, int newHeight) {
-        // TODO:Bitmap source null?
         int sourceWidth = source.getWidth();
         int sourceHeight = source.getHeight();
 
-        // Compute the scaling factors to fit the new height and width, respectively.
-        // To cover the final image, the final scaling will be the bigger of these two.
         float xScale = (float) newWidth / sourceWidth;
         float yScale = (float) newHeight / sourceHeight;
         float scale = Math.max(xScale, yScale);
 
-        // Now getInstance the size of the source bitmap when scaled
         float scaledWidth = scale * sourceWidth;
         float scaledHeight = scale * sourceHeight;
 
-        // Let's find out the upper left coordinates if the scaled bitmap
-        // should be centered in the new size give by the parameters
         float left = (newWidth - scaledWidth) / 2;
         float top = (newHeight - scaledHeight) / 2;
 
-        // The target rectangle for the new, scaled version of the source bitmap will now be
         RectF targetRect = new RectF(left, top, left + scaledWidth, top + scaledHeight);
 
-        // Finally, we create a new bitmap of the specified size and draw our new,
-        // scaled bitmap onto it.
-        Bitmap dest = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
+        Bitmap dest = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(dest);
         canvas.drawBitmap(source, null, targetRect, null);
         source.recycle();
         return dest;
     }
 
-    public static Bitmap bitmapBadge(final Context context, final String badgeText,
-                                     @ColorInt int color) {
+    /** http://github.com/yesidlazaro/BadgedImageView */
+    @TargetApi(12) public static Bitmap bitmapBadge(@NonNull final Context context,
+                                                    @NonNull final String badgeText,
+                                                    @ColorInt int badgeColor, int badgeSize) {
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         final float density = displayMetrics.density;
         final float scaleDensity = displayMetrics.scaledDensity;
+        final float padding = 8 * density;
+        final float cornerRadius = 8 * density;
+        final String text = badgeText.toUpperCase(Locale.US);
+        final Rect textBounds = new Rect();
+
+
         final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
         textPaint.setTypeface(FontUtils.getBadgeTypeface());
-        textPaint.setTextSize(24 * scaleDensity);
-        final float padding = 10 * density;
-        final float cornerRadius = 8 * density;
-        final Rect textBounds = new Rect();
-        final String text = badgeText.toUpperCase();
+        textPaint.setTextSize(badgeSize * scaleDensity);
         textPaint.getTextBounds(text, 0, text.length(), textBounds);
-        int width = (int) (padding + textBounds.width() + padding);
-        int height = (int) (padding + textBounds.height() + padding);
+        final int width = (int) (padding + textBounds.width() + padding);
+        final int height = (int) (padding + textBounds.height() + padding);
+
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         if (Utils.isHoneycombMR1()) bitmap.setHasAlpha(true);
         final Canvas canvas = new Canvas(bitmap);
+
         final Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        backgroundPaint.setColor(Utils.setHalfAlphaColor(color));
+        backgroundPaint.setColor(BitmapUtils.setHalfAlphaColor(badgeColor));
 
         final RectF rectF = new RectF(0, 0, width, height);
         canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, backgroundPaint);
@@ -228,25 +231,28 @@ public class BitmapUtils {
         return bitmap;
     }
 
-    ////////////////// Badge //////////////////
+    @ColorInt public static int setHalfAlphaColor(@ColorInt int source) {
+        return Color.argb(128, Color.red(source), Color.green(source), Color.blue(source));
+    }
 
     ////////////////// Template Default //////////////////
-    public static Bitmap getNinePatch(Context context, @DrawableRes int drawableID, int width, int height) {
+    public static Bitmap getNinePatch(@NonNull final Context context, @DrawableRes int drawableID,
+                                      int width, int height) {
         Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
-        NinePatchDrawable ninePatchDrawable = (NinePatchDrawable) ContextCompat.getDrawable(context, drawableID);
-        if (ninePatchDrawable != null) {
-            ninePatchDrawable.setBounds(0, 0, width, height);
-            ninePatchDrawable.draw(canvas);
+        NinePatchDrawable npd = (NinePatchDrawable) ContextCompat.getDrawable(context, drawableID);
+        if (npd != null) {
+            npd.setBounds(0, 0, width, height);
+            npd.draw(canvas);
         }
         return result;
     }
 
     /**
-     * {@link Bitmap} for {@link android.support.v4.app.NotificationCompat.BigPictureStyle#bigPicture(Bitmap)}
+     * {@link Bitmap} for
+     * {@link android.support.v4.app.NotificationCompat.BigPictureStyle#bigPicture(Bitmap)}
      */
-    public static Bitmap previewBigPicture(final Bitmap source) {
-
+    public static Bitmap previewBigPicture(@NonNull final Bitmap source) {
         final Bitmap screenshot = BitmapUtils.scaleCenterCrop(source, 256, 256);
         int imageWidth = screenshot.getWidth();
         int imageHeight = screenshot.getHeight();
@@ -258,17 +264,17 @@ public class BitmapUtils {
         colorMatrix.setSaturation(0.25f);
         paint.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
         Matrix matrix = new Matrix();
-        matrix.postTranslate((shortSide - imageWidth) / 2, (shortSide - imageHeight) / 2);
+        matrix.postTranslate((shortSide - imageWidth) / 2f, (shortSide - imageHeight) / 2f);
         canvas.drawBitmap(screenshot, matrix, paint);
-        canvas.drawColor(0x40FFFFFF);
+        canvas.drawColor(BitmapUtils.setHalfAlphaColor(Color.DKGRAY));
         screenshot.recycle();
         return preview;
     }
 
     ////////////////// HishootService //////////////////
-
-    public static Bitmap roundedLargeIcon(final Context context, final Bitmap bitmap) {
+    public static Bitmap roundedLargeIcon(@NonNull final Context context, @NonNull final Bitmap bitmap) {
         final int iconSize = Utils.getDimensionPixelSize(context, android.R.dimen.app_icon_size);
+        final float halfIconSize = (float) (iconSize / (double) 2);
         final Bitmap scale = Bitmap.createScaledBitmap(bitmap, iconSize, iconSize, true);
         Paint paint = new Paint();
         Rect rect = new Rect(0, 0, iconSize, iconSize);
@@ -276,7 +282,7 @@ public class BitmapUtils {
         Bitmap rounded = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(rounded);
         canvas.drawARGB(0, 0, 0, 0);
-        canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2, paint);
+        canvas.drawCircle(halfIconSize, halfIconSize, halfIconSize, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(scale, rect, rect, paint);
         scale.recycle();

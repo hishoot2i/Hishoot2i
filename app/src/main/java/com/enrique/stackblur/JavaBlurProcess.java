@@ -248,7 +248,7 @@ public class JavaBlurProcess implements BlurProcess {
 
     @Override
     public Bitmap blur(Bitmap original, float radius) {
-        long startMs = System.currentTimeMillis();
+//        long startMs = System.currentTimeMillis();
         int w = original.getWidth();
         int h = original.getHeight();
         int[] currentPixels = new int[w * h];
