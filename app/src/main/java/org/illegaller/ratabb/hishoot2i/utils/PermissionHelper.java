@@ -18,7 +18,7 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 
 public class PermissionHelper {
-    private static PermissionHelper sINSTANCE = new PermissionHelper();
+    private static PermissionHelper sInstance;
 
     private String singlePermission;
     private int requestCode;
@@ -35,10 +35,14 @@ public class PermissionHelper {
     }
 
     public static PermissionHelper getInstance() {
-        synchronized (PermissionHelper.class) {
-            if (sINSTANCE == null) sINSTANCE = new PermissionHelper();
+        if (sInstance == null) {
+            synchronized (PermissionHelper.class) {
+                if (sInstance == null) {
+                    sInstance = new PermissionHelper();
+                }
+            }
         }
-        return sINSTANCE;
+        return sInstance;
     }
 
 

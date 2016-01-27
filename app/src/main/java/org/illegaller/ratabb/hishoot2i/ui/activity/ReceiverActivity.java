@@ -16,7 +16,7 @@ import java.io.File;
 
 import butterknife.OnClick;
 
-public class ReceiverActivity extends BaseActivity {
+public class ReceiverActivity extends AbstractBaseActivity {
 
     private static String sImagePath;
 

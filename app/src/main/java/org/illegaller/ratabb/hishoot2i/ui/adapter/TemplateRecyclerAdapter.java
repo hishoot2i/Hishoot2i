@@ -28,13 +28,11 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private final List<Template> sourceList;
     private final String usedTemplateID;
 
-
     public TemplateRecyclerAdapter(List<Template> templateList, String usedTemplateID) {
         this.sourceList = templateList;
         this.filteredList.addAll(templateList);
         this.usedTemplateID = usedTemplateID;
     }
-
 
     public void setFiltered(List<Template> filtered) {
         this.filteredList.clear();

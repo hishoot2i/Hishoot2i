@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.utils;
 
-
 import org.illegaller.ratabb.hishoot2i.AppConstants;
+import org.illegaller.ratabb.hishoot2i.BuildConfig;
 import org.illegaller.ratabb.hishoot2i.model.Sizes;
 
 import android.annotation.TargetApi;
@@ -15,6 +15,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
@@ -25,7 +27,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +49,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.GINGERBREAD;
+import static android.os.Build.VERSION_CODES.HONEYCOMB;
+import static android.os.Build.VERSION_CODES.HONEYCOMB_MR1;
+import static android.os.Build.VERSION_CODES.HONEYCOMB_MR2;
+import static android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 public class Utils {
-    private static final String sLOG_TAG = "Utils";
 
     protected Utils() {
         throw new AssertionError("Utils no construction");
@@ -88,8 +97,8 @@ public class Utils {
     @DrawableRes public static int getResIdDrawableTemplate(final Context context, final String packageName,
                                                             final String resourceName)
             throws PackageManager.NameNotFoundException {
-        Context contextTarget = createPackageContext(context, packageName);
-        Resources resources = getResourcesFrom(contextTarget);
+        Context contextTarget = Utils.createPackageContext(context, packageName);
+        Resources resources = Utils.getResourcesFrom(contextTarget);
         return resources.getIdentifier(resourceName, "drawable", packageName);
     }
 
@@ -110,12 +119,9 @@ public class Utils {
         return context.getResources().getDimensionPixelSize(dimenId);
     }
 
-
     /*********** Display ***********/
-
     /**
-     * reflection  method {@link Display#getRealMetrics(DisplayMetrics)} on
-     * pre- {@linkplain android.os.Build.VERSION_CODES#JELLY_BEAN}
+     * reflection  method {@link Display#getRealMetrics(DisplayMetrics)}
      **/
     @TargetApi(17) public static int getDeviceHeight(final Display display) {
         if (Utils.isJellyBeanMR1())
@@ -125,7 +131,8 @@ public class Utils {
                 Method mGetRawH = Display.class.getMethod("getRawHeight");
                 return (Integer) mGetRawH.invoke(display);
             } catch (Exception e) {
-                Log.e(sLOG_TAG, "getRawHeight reflection", e);
+                HLog.setTAG(Utils.class);
+                HLog.e("getRawHeight reflection", e);
                 return 0;
             }
         } else {
@@ -162,7 +169,8 @@ public class Utils {
         } else if (dens >= DisplayMetrics.DENSITY_LOW) {
             return 0;
         } else {
-            Log.e(sLOG_TAG, "Density:\n" + dens);
+            HLog.setTAG(Utils.class);
+            HLog.e("Density:\n" + dens);
             return 0;
         }
     }
@@ -185,12 +193,28 @@ public class Utils {
             PrintWriter printWriter = new PrintWriter(outputStream);
             printWriter.append(text);
             printWriter.flush();
-            printWriter.close();
+            Utils.tryClose(printWriter);
+            Utils.tryClose(outputStream);
         } catch (FileNotFoundException e) {
-            Log.e(sLOG_TAG, "save text to file", e);
+            HLog.setTAG(Utils.class);
+            HLog.e("save text to file", e);
             return false;
         }
         return true;
+    }
+
+    public static String getFileNameWithoutExtension(String filePath) {
+        if (TextUtils.isEmpty(filePath)) return filePath;
+
+        int extPos = filePath.lastIndexOf(".");
+        int filePos = filePath.lastIndexOf(File.separator);
+        if (filePos == -1) return (extPos == -1 ? filePath : filePath.substring(0, extPos));
+
+        if (extPos == -1) return filePath.substring(filePos + 1);
+
+        return (filePos < extPos ?
+                filePath.substring(filePos + 1, extPos)
+                : filePath.substring(filePos + 1));
     }
 
     public static File saveHishoot(final Bitmap bitmap) throws IOException {
@@ -206,7 +230,6 @@ public class Utils {
 
         return file;
     }
-
 
     public static void galleryAddPic(final Context context, final Uri contentUri) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -250,41 +273,45 @@ public class Utils {
         }
     }
 
-
     /******* Build.VERSION ******/
     /** API 21 : Android 5.0 */
     public static boolean isLollipop() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP;
+        return SDK_INT >= LOLLIPOP;
     }
 
     /** API 17 : Android 4.2 */
     public static boolean isJellyBeanMR1() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+        return SDK_INT >= JELLY_BEAN_MR1;
     }
 
     /** API 16 : Android 4.1 */
     public static boolean isJellyBean() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN;
+        return SDK_INT >= JELLY_BEAN;
     }
 
     /** API 14 : Android 4.0 */
     public static boolean isICS() {
-        return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+        return SDK_INT >= ICE_CREAM_SANDWICH;
     }
 
     /** API 13 : Android 3.2 */
     public static boolean isHoneycombMR2() {
-        return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2;
+        return SDK_INT >= HONEYCOMB_MR2;
     }
 
     /** API 12 : Android 3.1 */
     public static boolean isHoneycombMR1() {
-        return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1;
+        return SDK_INT >= HONEYCOMB_MR1;
     }
 
     /** API 11 : Android 3.0 */
     public static boolean isHoneycomb() {
-        return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+        return SDK_INT >= HONEYCOMB;
+    }
+
+    /** API 9 : Android 2.3 */
+    public static boolean isGingerbread() {
+        return SDK_INT >= GINGERBREAD;
     }
 
     public static String getDeviceName() {
@@ -299,7 +326,7 @@ public class Utils {
 
     public static String getDeviceOS() {
         String release = Build.VERSION.RELEASE;
-        return String.format(Locale.US, "Android %s [sdk%d]", release, Build.VERSION.SDK_INT);
+        return String.format(Locale.US, "Android %s [sdk%d]", release, SDK_INT);
     }
 
     public static String capitalize(String string) {
@@ -331,13 +358,27 @@ public class Utils {
             for (int i = 0; i < viewGroup.getChildCount(); i++)
                 Utils.unbindDrawables(viewGroup.getChildAt(i));
 
-            if (viewGroup instanceof AdapterView) HLog.d(viewGroup);
+            if (viewGroup instanceof AdapterView) HLog.d(viewGroup);//no-op
             else viewGroup.removeAllViews();
         }
     }
 
+    @TargetApi(11) public static void enableStrictMode() {
+        if (BuildConfig.DEBUG) {//for Debug only
+            if (Utils.isGingerbread()) {
+                StrictMode.ThreadPolicy.Builder threadPolicyBuilder = new StrictMode.ThreadPolicy.Builder()
+                        .detectAll().penaltyLog();
+                StrictMode.VmPolicy.Builder vmPolicyBuilder = new StrictMode.VmPolicy.Builder()
+                        .detectAll().penaltyLog();
+                if (Utils.isHoneycomb()) threadPolicyBuilder.penaltyFlashScreen();
+
+                StrictMode.setThreadPolicy(threadPolicyBuilder.build());
+                StrictMode.setVmPolicy(vmPolicyBuilder.build());
+            }
+        }
+    }
+
     /**
-     * //FIXME: ??
      * memory-leak {@link android.view.inputmethod.InputMethodManager}
      **/
     public static void fixInputMethodManager(final Activity activity) {
@@ -355,17 +396,7 @@ public class Utils {
         Reflector.invokeMethodExceptionSafe(imm, "startGettingWindowFocus", view);
     }
 
-    public static String getFileNameWithoutExtension(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return filePath;
-
-        int extPos = filePath.lastIndexOf(".");
-        int filePos = filePath.lastIndexOf(File.separator);
-        if (filePos == -1) return (extPos == -1 ? filePath : filePath.substring(0, extPos));
-
-        if (extPos == -1) return filePath.substring(filePos + 1);
-
-        return (filePos < extPos ?
-                filePath.substring(filePos + 1, extPos)
-                : filePath.substring(filePos + 1));
+    public static boolean isMainThread() {
+        return Looper.myLooper() == Looper.getMainLooper();
     }
 }

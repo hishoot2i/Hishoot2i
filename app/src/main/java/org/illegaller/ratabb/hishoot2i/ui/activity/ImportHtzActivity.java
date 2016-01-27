@@ -23,12 +23,12 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
-public class ImportHtzActivity extends BaseActivity implements TemplateBuilderHtz.Callback {
+public class ImportHtzActivity extends AbstractBaseActivity implements TemplateBuilderHtz.Callback {
     @Bind(R.id.ivTemplate) ImageView mImageView;
     @Bind(R.id.tvTemplateName) TextView mTemplateName;
     @Bind(R.id.tvTemplateAuthor) TextView mTemplateAuthor;
 
-    @Inject @TemplateUsedID StringPreference templateUsedIdTray;
+    @Inject @TemplateUsedID StringPreference templateUsedIdPref;
     private TemplateBuilderHtz builder;
     private boolean hasChecked;
 
@@ -63,23 +63,17 @@ public class ImportHtzActivity extends BaseActivity implements TemplateBuilderHt
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            saveTrayAndStartMain();
+            onBackPressed();
             return true;
         } else
             return super.onOptionsItemSelected(item);
     }
 
     @Override public void onBackPressed() {
-        saveTrayAndStartMain();
-//        super.onBackPressed();
+        if (builder != null) templateUsedIdPref.set(builder.id);
+        super.onBackPressed();
     }
 
-    private void saveTrayAndStartMain() {
-        if (builder == null) return;
-        templateUsedIdTray.set(builder.id);
-//        Navigation.startMainActivity(this);
-        this.finish();
-    }
 
     @Override public void onDone(final String result) {
         if (!hasChecked) {

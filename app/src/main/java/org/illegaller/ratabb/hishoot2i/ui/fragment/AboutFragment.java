@@ -1,6 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.ui.fragment;
 
-
 import org.illegaller.ratabb.hishoot2i.HishootService;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.ui.navigation.Navigation;

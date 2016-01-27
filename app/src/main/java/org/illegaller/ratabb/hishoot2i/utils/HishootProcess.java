@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class HishootProcess {
     private final String badgeText;
     private final int badgeSize;
 
-    public HishootProcess(Context context, Callback callback, Template template, boolean doubleSSEnable,
+    public HishootProcess(Context context, Callback callback, @Nullable Template template, boolean doubleSSEnable,
                           boolean backgroundColorEnable, boolean backgroundImageBlurEnable,
                           boolean badgeEnable, int backgroundColorInt, int backgroundImageBlurRadius,
                           int badgeColor, String badgeText, int badgeSize) {
@@ -61,7 +62,10 @@ public class HishootProcess {
             failed(null, R.string.config_not_valid, R.string.send_report);
             return;
         }
-
+        if (template == null) {
+            failed(null, "Oops template not found", R.string.send_report);
+            return;
+        }
         long startMs = System.currentTimeMillis();
         callback.startingImage(startMs);
         UILHelper.tryClearMemoryCache();
@@ -72,7 +76,7 @@ public class HishootProcess {
 
         Bitmap result;
         Canvas canvas;
-        try {
+        try { // FIXME: handle this exception
             result = Bitmap.createBitmap(totalW, totalH, Bitmap.Config.ARGB_8888);
             canvas = new Canvas(result);
         } catch (Exception e) {

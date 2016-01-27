@@ -1,5 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.ui.navigation;
 
+import org.illegaller.ratabb.hishoot2i.utils.HLog;
+
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,16 +13,16 @@ import java.lang.ref.WeakReference;
 
 public class NavigationFragment {
 
-    private static WeakReference<FragmentManager> sWeakFragmentManager = null;
     @IdRes private final int mDefContainer;
+    private WeakReference<FragmentManager> weakFragmentManager = null;
 
     public NavigationFragment(@NonNull FragmentManager fragmentManager, @IdRes int defContainer) {
-        sWeakFragmentManager = new WeakReference<>(fragmentManager);
+        this.weakFragmentManager = new WeakReference<>(fragmentManager);
         this.mDefContainer = defContainer;
     }
 
     protected FragmentManager getFragmentManager() {
-        return sWeakFragmentManager.get();
+        return weakFragmentManager.get();
     }
 
     protected String getName(final Fragment fragment) {
@@ -30,12 +32,15 @@ public class NavigationFragment {
     protected void replace(final Fragment fragment) {
         getFragmentManager().beginTransaction()
                 .replace(mDefContainer, fragment, getName(fragment))
-                .commit();
+                .commitAllowingStateLoss();
         getFragmentManager().executePendingTransactions();
     }
 
     protected void clear() {
-        while (getFragmentManager().popBackStackImmediate()) ;
+        while (getFragmentManager().popBackStackImmediate()) {
+            //no-op
+            HLog.d("");
+        }
     }
 
     public int getSize() {
@@ -65,9 +70,9 @@ public class NavigationFragment {
         getFragmentManager().popBackStackImmediate();
     }
 
-    public Fragment getCurrent() {
-        if (isEmpty()) return null;
-        String tag = getFragmentManager().getBackStackEntryAt(getSize() - 1).getName();
-        return getFragmentManager().findFragmentByTag(tag);
-    }
+//    public Fragment getCurrent() {
+//        if (isEmpty()) return null;
+//        String tag = getFragmentManager().getBackStackEntryAt(getSize() - 1).getName();
+//        return getFragmentManager().findFragmentByTag(tag);
+//    }
 }

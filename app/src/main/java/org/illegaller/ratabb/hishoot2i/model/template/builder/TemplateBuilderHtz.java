@@ -134,8 +134,9 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
                     zipFile.close();
 
                     file = new File(AppConstants.getHishootHtzDir(mContext), getTemplateId(htzModel.name));
-                    if (!file.exists()) file.mkdirs();
-
+                    if (!file.exists()) {
+                        boolean ignored = file.mkdirs();
+                    }
                     break;
                 }
             }
@@ -202,20 +203,4 @@ public class TemplateBuilderHtz extends AbstractTemplateBuilder {
             if (mCallback != null) mCallback.onDone(result);
         }
     }
-
-//    class ModelHtz {
-//        public String name;
-//        public String author;
-//        public String template_file;
-//        public String preview;
-//        public String overlay_file;
-//        public int overlay_x;
-//        public int overlay_y;
-//        public int screen_width;
-//        public int screen_height;
-//        public int screen_x;
-//        public int screen_y;
-//        public int template_width;
-//        public int template_height;
-//    }
 }

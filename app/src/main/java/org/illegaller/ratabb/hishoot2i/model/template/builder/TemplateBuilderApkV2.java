@@ -41,7 +41,7 @@ public class TemplateBuilderApkV2 extends AbstractTemplateBuilder {
         }
     }
 
-    ModelV2 parsingStream(InputStream inputStream) {
+    private ModelV2 parsingStream(InputStream inputStream) {
         String result = null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder stringBuilder = new StringBuilder();
@@ -56,23 +56,8 @@ public class TemplateBuilderApkV2 extends AbstractTemplateBuilder {
         return parsingGson(result);
     }
 
-    ModelV2 parsingGson(String s) {
+    private ModelV2 parsingGson(String s) {
         Gson gson = new Gson();
         return gson.fromJson(s, ModelV2.class);
     }
-
-//    class ModelV2 {
-//        public String name;
-//        public String author;
-//        public int left_top_x;
-//        public int left_top_y;
-//        public int right_top_x;
-//        public int right_top_y;
-//        public int left_bottom_x;
-//        public int left_bottom_y;
-//        public int right_bottom_x;
-//        public int right_bottom_y;
-//        public int template_width;
-//        public int template_height;
-//    }
 }

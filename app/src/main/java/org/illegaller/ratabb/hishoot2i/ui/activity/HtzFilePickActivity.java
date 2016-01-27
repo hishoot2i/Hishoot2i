@@ -21,12 +21,8 @@ public class HtzFilePickActivity extends FilePickerActivity {
     }
 
     public static class HtzFilePickFragment extends FilePickerFragment {
-        // File extension to filter on
         private static final String EXTENSION = ".htz";
 
-        /**
-         * @return The file extension. If file has no extension, it returns null.
-         */
         private String getExtension(@NonNull File file) {
             String path = file.getPath();
             int i = path.lastIndexOf(".");

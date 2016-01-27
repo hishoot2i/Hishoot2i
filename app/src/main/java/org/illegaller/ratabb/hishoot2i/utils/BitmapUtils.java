@@ -49,7 +49,6 @@ public class BitmapUtils {
 
         Canvas canvas = new Canvas(result);
         Bitmap ss = UILHelper.loadImage(pathSS);
-        ;
         Bitmap frame;
         Bitmap shadow;
         Bitmap glare;
@@ -137,6 +136,7 @@ public class BitmapUtils {
         bitmap.recycle();
     }
 
+    // FIXME: NPE bitmap
     private static Bitmap matchSizes(@NonNull final Bitmap bitmap, int targetW, int targetH) {
         if (bitmap.getWidth() == targetW && bitmap.getHeight() == targetH) return bitmap;
         else return Bitmap.createScaledBitmap(bitmap, targetW, targetH, true);

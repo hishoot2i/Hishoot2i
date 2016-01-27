@@ -7,6 +7,7 @@ import org.illegaller.ratabb.hishoot2i.model.pref.StringPreference;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.ui.adapter.TemplateRecyclerAdapter;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-
 
 public class ListTemplateFragment extends BaseFragment {
 
@@ -84,14 +84,18 @@ public class ListTemplateFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new GridLayoutManager(weakActivity.get(), 2));
         mRecyclerView.setHasFixedSize(true);
-        new LoadAdapter().execute();
+        new LoadAdapter(view.getContext()).execute();
     }
 
-    class LoadAdapter extends AsyncTask<Void, Void, List<Template>> {
+     class LoadAdapter extends AsyncTask<Void, Void, List<Template>> {
+        final Context mContext;
+        LoadAdapter(Context context) {
+            this.mContext = context;
+        }
 
         @Override protected List<Template> doInBackground(Void... voids) {
-            TemplateProvider templateProvider = new TemplateProvider(weakActivity.get());
-            return templateProvider.asList();
+            TemplateProvider mTemplateProvider = new TemplateProvider(mContext);
+            return mTemplateProvider.asList();
         }
 
         @Override protected void onPostExecute(List<Template> templates) {

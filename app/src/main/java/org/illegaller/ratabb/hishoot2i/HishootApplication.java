@@ -9,6 +9,7 @@ import org.illegaller.ratabb.hishoot2i.model.pref.IntPreference;
 import org.illegaller.ratabb.hishoot2i.ui.activity.ErrorActivity;
 import org.illegaller.ratabb.hishoot2i.ui.activity.MainActivity;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
+import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.app.Application;
 import android.content.Context;
@@ -31,7 +32,7 @@ public class HishootApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
         buildAndInjectAppGraph();
-
+        Utils.enableStrictMode();
         //START CustomActivityOnCrash
         CustomActivityOnCrash.setLaunchErrorActivityWhenInBackground(true);
         CustomActivityOnCrash.setRestartActivityClass(MainActivity.class);

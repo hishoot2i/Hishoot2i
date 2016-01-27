@@ -7,6 +7,8 @@ import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApk
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApkV2;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderDefault;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderHtz;
+import org.illegaller.ratabb.hishoot2i.utils.HLog;
+import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,52 +31,28 @@ import java.util.Map;
 
 public class TemplateProvider {
 
-    private final Context mContext;
-    private final PackageManager mPackageManager;
     private final Map<String, Template> mapTemplate;
     private List<Template> templateList;
 
-    public TemplateProvider(@NonNull Context context) {
-        this.mContext = context;
-        this.mPackageManager = context.getPackageManager();
+    public TemplateProvider(@NonNull final Context context) {
+        if (Utils.isMainThread())
+            throw new RuntimeException("use background thread");//avoid main/ui thread
+        long startMs = System.currentTimeMillis();
         this.mapTemplate = new HashMap<>();
-
-        provideTemplateApk();
-        provideTemplateApkV2();
-        provideTemplateHtz();
-        provideTemplateDefault();
+        final Context mContext = context.getApplicationContext();
+        provideTemplateApk(mContext);
+        provideTemplateApkV2(mContext);
+        provideTemplateHtz(mContext);
+        provideTemplateDefault(mContext);
+        HLog.d("TemplateProvider construction time: "
+                + (System.currentTimeMillis() - startMs)
+                + "ms");
     }
 
-    public Template findById(@NonNull final String templateId) {
-        Template result = mapTemplate.get(templateId);
-        if (result == null) throw new RuntimeException("findById: " + templateId);
-        return result;
+    @Nullable public Template findById(@NonNull final String templateId) {
+        return mapTemplate.get(templateId);
     }
 
-    // TODO: do we need this?
-   /*public List<Template> asListTemplateV1() {
-        List<Template> result = new ArrayList<>();
-        for (Template template : asList()) {
-            if (template.type == TemplateType.APK_V1) result.add(template);
-        }
-        return result;
-    }
-
-    public List<Template> asListTemplateHtz() {
-        List<Template> result = new ArrayList<>();
-        for (Template template : asList()) {
-            if (template.type == TemplateType.HTZ) result.add(template);
-        }
-        return result;
-    }
-
-    public List<Template> asListTemplateV2() {
-        List<Template> result = new ArrayList<>();
-        for (Template template : asList()) {
-            if (template.type == TemplateType.APK_V2) result.add(template);
-        }
-        return result;
-    }*/
     public List<Template> asList() {
         if (templateList == null) {
             templateList = new ArrayList<>(mapTemplate.values());
@@ -90,15 +69,16 @@ public class TemplateProvider {
     }
 
     //START Provide Template
-    private void provideTemplateDefault() {
+    private void provideTemplateDefault(@NonNull final Context mContext) {
         TemplateBuilderDefault builder = new TemplateBuilderDefault(mContext);
         putMap(builder.id, builder.build());
     }
 
-    private void provideTemplateApk() {
+    private void provideTemplateApk(@NonNull final Context mContext) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(AppConstants.CATEGORY_TEMPLATE_APK);
-        List<ResolveInfo> resolveInfoList = mPackageManager.queryIntentActivities(intent, 0);
+        final PackageManager manager = mContext.getPackageManager();
+        List<ResolveInfo> resolveInfoList = manager.queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resolveInfoList) {
             ActivityInfo activityInfo = resolveInfo.activityInfo;
             AbstractTemplateBuilder builder = new TemplateBuilderApkV1(mContext, activityInfo.packageName);
@@ -106,26 +86,24 @@ public class TemplateProvider {
         }
     }
 
-    private void provideTemplateApkV2() {
-        List<PackageInfo> packageInfoList = mPackageManager.getInstalledPackages(
-                PackageManager.GET_UNINSTALLED_PACKAGES
-                        | PackageManager.GET_META_DATA);
+    private void provideTemplateApkV2(@NonNull final Context mContext) {
+        final PackageManager manager = mContext.getPackageManager();
+        List<PackageInfo> installedPackages = manager.getInstalledPackages(PackageManager.GET_META_DATA);
 
-        for (PackageInfo packageInfo : packageInfoList) {
+        for (PackageInfo packageInfo : installedPackages) {
             ApplicationInfo applicationInfo = packageInfo.applicationInfo;
             Bundle metaData = applicationInfo.metaData;
             if (metaData != null && metaData.containsKey(AppConstants.META_DATA_TEMPLATE)) {
                 int version = metaData.getInt(AppConstants.META_DATA_TEMPLATE);
                 if (version == 2) {
-                    AbstractTemplateBuilder builder = new TemplateBuilderApkV2(mContext,
-                            applicationInfo.packageName);
+                    AbstractTemplateBuilder builder = new TemplateBuilderApkV2(mContext, applicationInfo.packageName);
                     putMap(builder.id, builder.build());
                 }
             }
         }
     }
 
-    private void provideTemplateHtz() {
+    private void provideTemplateHtz(@NonNull final Context mContext) {
         File htzDir = AppConstants.getHishootHtzDir(mContext);
         if (htzDir.listFiles() == null) return;
         for (File htzFile : htzDir.listFiles()) {

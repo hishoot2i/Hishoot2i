@@ -12,18 +12,15 @@ import android.support.annotation.ColorInt;
 
 public class BadgeDrawable extends Drawable {
 
-
-    private Bitmap bitmap;
-    private int width;
-    private int height;
-    private Paint paint;
+    private final Bitmap bitmap;
+    private final int width;
+    private final int height;
+    private final Paint paint;
 
     public BadgeDrawable(Context context, String badgeText, @ColorInt int badgeColor, int badgeSize) {
-        if (bitmap == null) {
-            bitmap = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
-            width = bitmap.getWidth();
-            height = bitmap.getHeight();
-        }
+        bitmap = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
         paint = new Paint();
     }
 

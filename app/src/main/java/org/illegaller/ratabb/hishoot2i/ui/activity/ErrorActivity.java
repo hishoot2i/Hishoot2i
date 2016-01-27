@@ -29,7 +29,7 @@ import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 
 import static org.illegaller.ratabb.hishoot2i.AppConstants.getHishootDir;
 
-public class ErrorActivity extends BaseActivity implements PermissionHelper.Callback {
+public class ErrorActivity extends AbstractBaseActivity implements PermissionHelper.Callback {
     public static final String sLOG_TAG = "ErrorActivity";
     @Bind(R.id.errorText) TextView errorText;
     @Bind(R.id.restartActivityButton) Button restartButton;

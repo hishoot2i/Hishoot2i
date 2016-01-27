@@ -70,7 +70,6 @@ import static org.illegaller.ratabb.hishoot2i.AppConstants.REQ_PICK_IMG_BG;
 import static org.illegaller.ratabb.hishoot2i.AppConstants.REQ_PICK_IMG_SS1;
 import static org.illegaller.ratabb.hishoot2i.AppConstants.REQ_PICK_IMG_SS2;
 
-// TODO: clean this class
 public class ConfigurationFragment extends BaseFragment
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener,
         SeekBar.OnSeekBarChangeListener, TextWatcher, AdapterView.OnItemSelectedListener,
@@ -141,8 +140,6 @@ public class ConfigurationFragment extends BaseFragment
         backgroundView();
         badgeView();
         badgeFontView();
-
-        //////
 
         @ColorInt int colorEditText = ContextCompat.getColor(view.getContext(), R.color.colorAccent);
         etBadge.setTextColor(colorEditText);
@@ -302,11 +299,20 @@ public class ConfigurationFragment extends BaseFragment
 
 
     private void setNullListener() {
+        swDoubleSS.setOnCheckedChangeListener(null);
+        rbBgColor.setOnCheckedChangeListener(null);
+        swBlurBg.setOnCheckedChangeListener(null);
+        swBadgeHide.setOnCheckedChangeListener(null);
+        sbBlurRadius.setOnSeekBarChangeListener(null);
+        sbBadgeSize.setOnSeekBarChangeListener(null);
+        imgSS1.setOnClickListener(null);
+        imgSS2.setOnClickListener(null);
+        imgBg.setOnClickListener(null);
+
         etBadge.removeTextChangedListener(this);
         colorPickerBg.setOnColorChangedListener(null);
         colorPickerBadge.setOnColorChangedListener(null);
         spinnerFontBadge.setOnItemSelectedListener(null);
-
     }
 
     private void screenView() {
@@ -356,7 +362,7 @@ public class ConfigurationFragment extends BaseFragment
         else view.setBackgroundColor(colorTransparent);
     }
 
-    private void badgeFontView() {// TODO: send info if only Default
+    private void badgeFontView() {
         List<String> list = fontProvider.asListName();
         list.add(0, BADGE_TYPEFACE);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(weakActivity.get(),

@@ -20,7 +20,7 @@ repositories {
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 4
+def versionPatch = 5
 def versionBuild = 0 // ?
 def buildTime = new Date().format("yyyyMMdd");
 def appName = "Hishoot2i"
@@ -80,7 +80,6 @@ android {
             ext.enableCrashlytics = false
         }
         release {
-            //TODO: clean proguard-rules.pro + enabled proguard
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
@@ -93,7 +92,7 @@ android {
     }
     lintOptions {
         // abortOnError false
-        disable 'Registered', 'UnusedAttribute', 'PrivateResource', 'IconDensities', 'AppLinksAutoVerifyError', 'UnusedResources'
+        disable 'UnusedResources','IconDensities','UnusedAttribute'
     }
 
 }
@@ -121,6 +120,5 @@ dependencies {
     compile dependencies.dart
     compile dependencies.otto
 
-    compile dependencies.securePrefernces
     compile dependencies.filePicker
 }

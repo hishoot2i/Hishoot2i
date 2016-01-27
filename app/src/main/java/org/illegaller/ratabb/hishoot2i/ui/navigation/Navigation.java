@@ -27,13 +27,6 @@ public class Navigation {
         throw new AssertionError("Navigation no construction");
     }
 
-//    public static void startMainActivity(@NonNull final Context context) {
-//        Intent intent = MainActivity.getIntent(context);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        if (Utils.isHoneycomb()) intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        context.startActivity(intent);
-//    }
-
     public static void startImportHtz(@NonNull final Context context, @NonNull Uri data) {
         Intent intent = ImportHtzActivity.getIntent(context);
         intent.setData(data);
@@ -44,24 +37,11 @@ public class Navigation {
         context.startActivity(AboutActivity.getIntent(context));
     }
 
-//    public static void openBrowser(final Context context, final String urlTo) {
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setData(Uri.parse(urlTo));
-//        if (Navigation.isAvailable(context, intent))
-//            context.startActivity(intent);
-//    }
-
     public static void openImagePicker(final Fragment fragment, final String title, int requestCode) {
         Intent intent = Navigation.intentImagePicker();
         if (Navigation.isAvailable(fragment.getActivity(), intent))
             fragment.startActivityForResult(Intent.createChooser(intent, title), requestCode);
     }
-
-//    public static void openImagePicker(final Activity activity, final String title, int requestCode) {
-//        Intent intent = Navigation.intentImagePicker();
-//        if (Navigation.isAvailable(activity, intent))
-//            activity.startActivityForResult(Intent.createChooser(intent, title), requestCode);
-//    }
 
     public static void openHtzPicker(final Fragment fragment, int requestCode) {
         Intent intent = new Intent(fragment.getActivity(), HtzFilePickActivity.class);
@@ -103,15 +83,15 @@ public class Navigation {
         return intent;
     }
 
-    public static void restartActivity(final Activity activity) {
-        if (activity == null) return;
-        final int enter_anim = android.R.anim.fade_in;
-        final int exit_anim = android.R.anim.fade_out;
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.finish();
-        activity.overridePendingTransition(enter_anim, exit_anim);
-        activity.startActivity(activity.getIntent());
-    }
+//    public static void restartActivity(final Activity activity) {
+//        if (activity == null) return;
+//        final int enter_anim = android.R.anim.fade_in;
+//        final int exit_anim = android.R.anim.fade_out;
+//        activity.overridePendingTransition(enter_anim, exit_anim);
+//        activity.finish();
+//        activity.overridePendingTransition(enter_anim, exit_anim);
+//        activity.startActivity(activity.getIntent());
+//    }
 
     /**
      * Check if any apps are installed on the app to receive this intent.

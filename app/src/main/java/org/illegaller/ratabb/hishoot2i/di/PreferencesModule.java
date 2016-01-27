@@ -1,7 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.di;
 
-import com.securepreferences.SecurePreferences;
-
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.ir.AppRunningCount;
 import org.illegaller.ratabb.hishoot2i.di.ir.BackgroundColorEnable;
@@ -51,14 +49,15 @@ import static org.illegaller.ratabb.hishoot2i.AppConstants.DEFAULT_TEMPLATE_ID;
 public class PreferencesModule {
 
     @Provides @Singleton SharedPreferences provideSharedPreferences(@ForApplicationContext Context context) {
-        return new SecurePreferences(context);
+        final String pref_name = context.getPackageName() + "_preferences";
+        return context.getSharedPreferences(pref_name, Context.MODE_PRIVATE);
     }
 
     @Provides @Singleton @AppRunningCount IntPreference provideAppRunningCount(SharedPreferences pref) {
         return new IntPreference(pref, "app_running_count", 0);
     }
 
-    @Provides @Singleton @ScreenDoubleEnable BooleanPreference provideScreenShootCount(SharedPreferences pref) {
+    @Provides @Singleton @ScreenDoubleEnable BooleanPreference provideScreenDoubleEnable(SharedPreferences pref) {
         return new BooleanPreference(pref, "screen_double", false);
     }
 
@@ -90,8 +89,7 @@ public class PreferencesModule {
     }
 
     @Provides @Singleton @BackgroundImageBlurRadius IntPreference provideBackgroundImageBlurRadius(SharedPreferences pref) {
-        return new IntPreference(pref, "background_image_blur_radius",
-                BACKGROUND_IMAGE_BLUR_RADIUS);
+        return new IntPreference(pref, "background_image_blur_radius", BACKGROUND_IMAGE_BLUR_RADIUS);
     }
 
     /** Badge */

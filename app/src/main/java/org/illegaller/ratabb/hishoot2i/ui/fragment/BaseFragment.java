@@ -21,10 +21,8 @@ import butterknife.ButterKnife;
 
 public class BaseFragment extends Fragment {
 
-
     WeakReference<FragmentActivity> weakActivity = null;
     @Inject RefWatcher mRefWatcher;
-
 
     @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

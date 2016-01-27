@@ -1,5 +1,10 @@
 # Changelog
 -----
+**v1.0.5 (20160128)**
+
+- [?] drop SecurePreferences, use normal SharedPreferences
+- [?] improve Template manager
+
 **v1.0.4 (20160120)**
 
 - [+] add Badge size
@@ -8,7 +13,7 @@
 
 **v1.0.3 (20160114)**
 
-- [?] TL;DR: fix minor bug
+- [?] fix minor bug
 - [+] add pick file Template Htz
 - [?] [**Template V2**](templatev2/README.md)
 

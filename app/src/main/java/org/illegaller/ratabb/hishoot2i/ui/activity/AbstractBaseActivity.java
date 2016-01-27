@@ -21,11 +21,10 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class AbstractBaseActivity extends AppCompatActivity {
     @Nullable @Bind(R.id.toolbar) Toolbar mToolbar;
     @Inject AppContainer appContainer;
     ViewGroup container;
-
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +36,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         HLog.setTAG(this);
     }
 
-
     protected void inflateView(@LayoutRes int layoutID) {
         getLayoutInflater().inflate(layoutID, container);
         ButterKnife.bind(this);
         setToolbar();
     }
-
 
     @Override protected void onDestroy() {
         ImageLoader.getInstance().clearMemoryCache();

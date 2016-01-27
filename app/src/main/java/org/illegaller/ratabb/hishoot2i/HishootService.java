@@ -79,10 +79,6 @@ public class HishootService extends IntentService implements HishootProcess.Call
         ((HishootApplication) getApplication()).inject(this);
     }
 
-    @Override public void onDestroy() {
-        super.onDestroy();
-    }
-
     @Override protected void onHandleIntent(Intent intent) {
         Dart.inject(this, intent.getExtras());
         TemplateProvider templateProvider = new TemplateProvider(this);
@@ -94,7 +90,6 @@ public class HishootService extends IntentService implements HishootProcess.Call
         );
         mHishootProcess.process(dataPath);
     }
-
 
     @Override public void startingImage(long startTime) {
         Intent nullIntent = MainActivity.getIntent(this);
@@ -138,15 +133,12 @@ public class HishootService extends IntentService implements HishootProcess.Call
             }
         });
 
-        //NOTIFICATION
-        //share
         final String share = getString(R.string.share);
         final Intent sharingIntent = Navigation.intentShareImage(share, imageUri);
         notificationBuilder.addAction(
-                android.R.drawable.ic_menu_share, share,
+                R.drawable.ic_share_24dp, share,
                 PendingIntent.getActivity(this, 0, sharingIntent, PendingIntent.FLAG_CANCEL_CURRENT));
 
-        //open
         final Intent openIntent = Navigation.intentOpenImage(imageUri);
         final File file = new File(imageUri.getPath());
         final Bitmap previewBigPicture = BitmapUtils.previewBigPicture(result);

@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
-public class AboutActivity extends BaseActivity {
+public class AboutActivity extends AbstractBaseActivity {
 
 
     public static Intent getIntent(final Context context) {

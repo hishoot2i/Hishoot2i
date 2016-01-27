@@ -40,8 +40,7 @@
 
     <style name="Widget.Hishoot.Config"/>
 
-    <style name="Widget.Hishoot.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
-    </style>
+    <style name="Widget.Hishoot.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal"/>
 
     <style name="Widget.Hishoot.ActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">?colorPrimary</item>
@@ -77,9 +76,6 @@
         <item name="android:background">@color/half_white</item>
     </style>
 
-    <!--<style name="Widget.Hishoot.CButton" >-->
-    <!--&lt;!&ndash;<item name="android:textColor">#de000000</item>&ndash;&gt;-->
-    <!--</style>-->
     <!-- You can also inherit from NNF_BaseTheme.Light -->
     <style name="FilePickerTheme" parent="NNF_BaseTheme.Light">
         <!-- Set these to match your theme -->
@@ -91,7 +87,7 @@
         <item name="alertDialogTheme">@style/FilePickerAlertDialogTheme</item>
 
         <!-- If you want to set a specific toolbar theme, do it here -->
-        <!-- <item name="nnf_toolbarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item> -->
+        <item name="nnf_toolbarTheme">@style/ThemeOverlay.Hishoot.ActionBar</item>
     </style>
 
     <style name="FilePickerAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">

@@ -43,9 +43,11 @@ public class AppConstants {
      *
      * @return a {@link File} directory
      */
-    public static File getHishootDir() {// TODO: check storage state
+    public static File getHishootDir() {
         final File result = new File(Environment.getExternalStorageDirectory(), "HiShoot");
-        if (!result.exists()) result.mkdirs();
+        if (!result.exists()) {
+            boolean ignored = result.mkdirs();
+        }
         return result;
     }
 
@@ -54,9 +56,11 @@ public class AppConstants {
      */
     public static File getHishootHtzDir(final Context context) {
         File file = new File(context.getFilesDir(), "htz");
-        if (!file.exists()) file.mkdirs();
+        if (!file.exists()) {
+            boolean ignored = file.mkdirs();
+        }
         try {
-            (new File(file, ".nomedia")).createNewFile();
+            boolean ignored = (new File(file, ".nomedia")).createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }

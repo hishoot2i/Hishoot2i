@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class FontProvider {
     private static final String[] pathFonts = new String[]{"fonts", "Fonts"};
-    private final Map<String, File> mapFontFile;// fontName ,fontPath
+    private final Map<String, File> mapFontFile;// fontName ,fontFile
     private FileExtensionFilter filter = new FileExtensionFilter("ttf");
     private List<File> fontList;
 
@@ -31,7 +31,6 @@ public class FontProvider {
         if (fontList == null) {
             fontList = new ArrayList<>(mapFontFile.values());
         }
-
         return fontList;
     }
 
@@ -58,7 +57,6 @@ public class FontProvider {
             }
         }
     }
-
 
     private void putToMapFonts(@NonNull final File file) {
         final String name = Utils.getFileNameWithoutExtension(file.getAbsolutePath());

@@ -40,7 +40,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements PermissionHelper.Callback {
+public class MainActivity extends AbstractBaseActivity implements PermissionHelper.Callback {
     private static final String EXTRA_IMAGE_RECEIVE = "extra.image.receive.main";
 
     @Inject @TemplateUsedID StringPreference templateUsedIdPref;
