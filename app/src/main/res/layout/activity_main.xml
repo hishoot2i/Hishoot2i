@@ -3,29 +3,68 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".ui.activity.MainActivity">
-
-    <include layout="@layout/include_appbarlayout_toolbar"/>
+        tools:context=".view.MainActivity">
 
     <FrameLayout
             android:id="@+id/flContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:paddingTop="?attr/actionBarSize"/>
+            android:layout_gravity="center"/>
+
+    <FrameLayout
+            android:id="@+id/flBottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:paddingTop="?attr/actionBarSize"
+            android:background="@color/dark50">
+
+        <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="bottom"
+                android:background="@android:color/white"
+                android:padding="8dp"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize">
+
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                style="@style/Widget.Hishoot.ActionBar.Overlay"/>
+
+        <include
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                layout="@layout/include_progress_bar"/>
+    </FrameLayout>
+
 
     <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/fabSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/fab_margin_vertical"
-            android:layout_marginStart="@dimen/fab_margin_horizontal"
-            android:layout_marginLeft="@dimen/fab_margin_horizontal"
-            android:src="@drawable/ic_notif"
+            android:layout_marginEnd="@dimen/fab_margin_horizontal"
+            android:layout_marginRight="@dimen/fab_margin_horizontal"
+            android:visibility="visible"
+            app:elevation="@dimen/fab_elevation"
             app:fabSize="normal"
-            app:layout_anchor="@+id/flContent"
-            app:layout_anchorGravity="bottom|left|start"/>
+            app:useCompatPadding="true"
+            app:layout_anchor="@+id/toolbar"
+            app:layout_anchorGravity="bottom|end|right"
+            app:srcCompat="@drawable/ic_sd_storage_black_24dp"
+            android:tint="@android:color/white"/>
 </android.support.design.widget.CoordinatorLayout>

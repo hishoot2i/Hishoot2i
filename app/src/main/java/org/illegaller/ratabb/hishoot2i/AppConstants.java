@@ -9,13 +9,8 @@ import java.io.IOException;
 
 public class AppConstants {
 
-    public static final int REQ_PICK_IMG_SS1 = 0x0001;
-    public static final int REQ_PICK_IMG_SS2 = 0x0002;
-    public static final int REQ_PICK_IMG_BG = 0x0003;
-    public static final int REQ_PICK_HTZ = 0x0004;
-
-    public static final int BACKGROUND_IMAGE_BLUR_RADIUS = 25;
-    public static final int BADGE_COLOR = Color.WHITE;
+    public static final int BG_IMAGE_BLUR_RADIUS = 25;
+    public static final int BADGE_COLOR = Color.RED;
     public static final int BADGE_SIZE = 24;
     public static final String BADGE_TEXT = "HISHOOT";
     public static final String BADGE_TYPEFACE = "Default";
@@ -32,9 +27,10 @@ public class AppConstants {
     public static final String META_DATA_TEMPLATE = "org.illegaller.ratabb.hishoot2i.TEMPLATE";
 
     public static final String DEFAULT_TEMPLATE_ID = "default";
+    public static final String MESSAGE_TEMPLATE_CANT_LOAD = "Template %s can't load";
+    public static final String MESSAGE_TEMPLATE_CANT_FIND = "Template %s can't find";
 
-    protected AppConstants() {
-        throw new AssertionError("AppConstants no construction");
+    private AppConstants() {        //no instance
     }
 
     /**

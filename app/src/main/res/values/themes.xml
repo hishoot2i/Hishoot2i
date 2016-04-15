@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="HishootTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorBackgroundWindow</item>
+        <item name="spbStyle">@style/Widget.Hishoot.ProgressBar</item>
+    </style>
+
+    <style name="HishootTheme.Branded" parent="HishootTheme">
+        <item name="android:windowBackground">@drawable/braded_logo</item>
+    </style>
+
+    <style name="Hishoot.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert"/>
+
+
+</resources>

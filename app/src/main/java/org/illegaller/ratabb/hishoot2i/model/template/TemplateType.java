@@ -3,14 +3,13 @@ package org.illegaller.ratabb.hishoot2i.model.template;
 public enum TemplateType {
     APK_V1("apk_v1"), APK_V2("apk_v2"), HTZ("htz");
 
-    String id;
+    String name;
 
-    TemplateType(String id) {
-        this.id = id;
+    TemplateType(String name) {
+        this.name = name;
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
-
 }

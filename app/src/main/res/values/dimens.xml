@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="default_elevation">8dp</dimen>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="preview_template_height">180dp</dimen>
-    <dimen name="dimen75dp">75dp</dimen>
-    <dimen name="dimen100dp">100dp</dimen>
-    <dimen name="dimen200dp">200dp</dimen>
-    <dimen name="content_padding">4dp</dimen>
     <!--Template Default-->
     <dimen name="def_tl">26dp</dimen>
     <dimen name="def_tt">27dp</dimen>
     <dimen name="def_bl">27dp</dimen>
     <dimen name="def_bt">54dp</dimen>
-    <dimen name="fab_margin_vertical">16dp</dimen>
-    <dimen name="fab_margin_horizontal">16dp</dimen>
 
-
+    <dimen name="toolbar_elevation">8dp</dimen>
+    <dimen name="fab_elevation">8dp</dimen>
+    <dimen name="progress_bar_height">4dp</dimen>
+    <dimen name="item_template_min_height">96dp</dimen>
+    <dimen name="item_template_max_height">240dp</dimen>
+    <dimen name="item_margin">2dp</dimen>
+    <dimen name="item_text_margin_vertical">2dp</dimen>
+    <dimen name="item_text_margin_horizontal">8dp</dimen>
+    <dimen name="rectangle_size">6dp</dimen>
+    <dimen name="fab_margin_horizontal">36dp</dimen>
+    <dimen name="item_template_circle_button_size">34dp</dimen>
 </resources>

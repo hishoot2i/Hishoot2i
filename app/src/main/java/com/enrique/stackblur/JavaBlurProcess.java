@@ -1,11 +1,33 @@
+/**
+ * StackBlur v1.0 for Android
+ *
+ * @Author: Enrique López Mañas <eenriquelopez@gmail.com>
+ * http://www.lopez-manas.com
+ *
+ * Author of the original algorithm: Mario Klingemann <mario.quasimondo.com>
+ *
+ * This is a compromise between Gaussian Blur and Box blur
+ * It creates much better looking blurs than Box Blur, but is
+ * 7x faster than my Gaussian Blur implementation.
+ *
+ * I called it Stack Blur because this describes best how this
+ * filter works internally: it creates a kind of moving stack
+ * of colors whilst scanning through the image. Thereby it
+ * just has to add one new block of color to the right side
+ * of the stack and remove the leftmost color. The remaining
+ * colors on the topmost layer of the stack are either added on
+ * or reduced by one, depending on if they are on the right or
+ * on the left side of the stack.
+ *
+ * @copyright: Enrique López Mañas
+ * @license: Apache License 2.0
+ */
 package com.enrique.stackblur;
 
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
-
-
 
 public class JavaBlurProcess implements BlurProcess {
 
@@ -248,15 +270,14 @@ public class JavaBlurProcess implements BlurProcess {
 
     @Override
     public Bitmap blur(Bitmap original, float radius) {
-//        long startMs = System.currentTimeMillis();
         int w = original.getWidth();
         int h = original.getHeight();
         int[] currentPixels = new int[w * h];
         original.getPixels(currentPixels, 0, w, 0, 0, w, h);
         int cores = StackBlurManager.EXECUTOR_THREADS;
 
-        ArrayList<BlurTask> horizontal = new ArrayList<BlurTask>(cores);
-        ArrayList<BlurTask> vertical = new ArrayList<BlurTask>(cores);
+        ArrayList<BlurTask> horizontal = new ArrayList<>(cores);
+        ArrayList<BlurTask> vertical = new ArrayList<>(cores);
         for (int i = 0; i < cores; i++) {
             horizontal.add(new BlurTask(currentPixels, w, h, (int) radius, cores, i, 1));
             vertical.add(new BlurTask(currentPixels, w, h, (int) radius, cores, i, 2));

@@ -18,20 +18,18 @@ import java.util.Set;
 
 public class FontProvider {
     private static final String[] pathFonts = new String[]{"fonts", "Fonts"};
-    private final Map<String, File> mapFontFile;// fontName ,fontFile
+    private final Map<String, File> fontFileMap;// fontName ,fontFile
     private FileExtensionFilter filter = new FileExtensionFilter("ttf");
-    private List<File> fontList;
+    private List<File> fontFileList;
 
     public FontProvider() {
-        this.mapFontFile = new HashMap<>();
+        this.fontFileMap = new HashMap<>();
         provideFontSdcard();
     }
 
     public List<File> asListFile() {
-        if (fontList == null) {
-            fontList = new ArrayList<>(mapFontFile.values());
-        }
-        return fontList;
+        if (fontFileList == null) fontFileList = new ArrayList<>(fontFileMap.values());
+        return fontFileList;
     }
 
     public List<String> asListName() {
@@ -44,7 +42,7 @@ public class FontProvider {
     }
 
     @Nullable public File find(@NonNull final String name) {
-        return mapFontFile.get(name);
+        return fontFileMap.get(name);
     }
 
     /////// private method ////////
@@ -53,18 +51,18 @@ public class FontProvider {
             File dir = new File(Environment.getExternalStorageDirectory(), font);
             if (dir.isDirectory()) {
                 File[] files = dir.listFiles(filter);
-                for (File file : files)if (file!=null)putToMapFonts(file);
+                for (File file : files) if (file != null) putToMapFonts(file);
             }
         }
     }
 
     private void putToMapFonts(@NonNull final File file) {
         final String name = Utils.getFileNameWithoutExtension(file.getAbsolutePath());
-        if (mapFontFile.containsKey(name) && !file.canRead()) return;
-        mapFontFile.put(name, file);
+        if (fontFileMap.containsKey(name) && !file.canRead()) return;
+        fontFileMap.put(name, file);
     }
 
-    class FileExtensionFilter implements FilenameFilter {
+    private class FileExtensionFilter implements FilenameFilter {
         private Set<String> extSet = new HashSet<>();
 
         FileExtensionFilter(String... extension) {

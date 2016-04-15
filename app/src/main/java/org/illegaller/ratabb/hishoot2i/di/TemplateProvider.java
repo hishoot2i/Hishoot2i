@@ -2,124 +2,126 @@ package org.illegaller.ratabb.hishoot2i.di;
 
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.model.template.builder.AbstractTemplateBuilder;
-import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApkV1;
-import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderApkV2;
-import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderDefault;
-import org.illegaller.ratabb.hishoot2i.model.template.builder.TemplateBuilderHtz;
-import org.illegaller.ratabb.hishoot2i.utils.HLog;
+import org.illegaller.ratabb.hishoot2i.model.template.builder.ApkV1Builder;
+import org.illegaller.ratabb.hishoot2i.model.template.builder.ApkV2Builder;
+import org.illegaller.ratabb.hishoot2i.model.template.builder.DefaultBuilder;
+import org.illegaller.ratabb.hishoot2i.model.template.builder.HtzBuilder;
+import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.File;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class TemplateProvider {
+import static org.illegaller.ratabb.hishoot2i.AppConstants.MESSAGE_TEMPLATE_CANT_FIND;
 
-    private final Map<String, Template> mapTemplate;
+public class TemplateProvider {
+    public static final Comparator<Template> TEMPLATE_NAME_COMPARATOR = new Comparator<Template>() {
+        private final Collator mCollator = Collator.getInstance();
+
+        @Override public int compare(Template t0, Template t1) {
+            return mCollator.compare(t0.name, t1.name);
+        }
+    };
+    private final Context mContext;
+    private Map<String, Template> templateMap;
     private List<Template> templateList;
 
-    public TemplateProvider(@NonNull final Context context) {
-        if (Utils.isMainThread())
-            throw new RuntimeException("use background thread");//avoid main/ui thread
-        long startMs = System.currentTimeMillis();
-        this.mapTemplate = new HashMap<>();
-        final Context mContext = context.getApplicationContext();
-        provideTemplateApk(mContext);
-        provideTemplateApkV2(mContext);
-        provideTemplateHtz(mContext);
-        provideTemplateDefault(mContext);
-        HLog.d("TemplateProvider construction time: "
-                + (System.currentTimeMillis() - startMs)
-                + "ms");
+    public TemplateProvider(Context context) {
+        this.mContext = context.getApplicationContext();
+        templateMap = new HashMap<>();
+        provideTemplateDefault();
+        provideTemplateApk();
+        provideTemplateHtz();
+        provideTemplateApkV2();
     }
 
-    @Nullable public Template findById(@NonNull final String templateId) {
-        return mapTemplate.get(templateId);
+    @Nullable public Template findById(String templateID) {
+        if (templateMap.containsKey(templateID)) return templateMap.get(templateID);
+        else {
+            CrashLog.logError(
+                    String.format(Locale.US, MESSAGE_TEMPLATE_CANT_FIND, templateID),
+                    null
+            );
+            return null;
+        }
     }
 
     public List<Template> asList() {
-        if (templateList == null) {
-            templateList = new ArrayList<>(mapTemplate.values());
-        }
-        Template DEFAULT = findById(AppConstants.DEFAULT_TEMPLATE_ID);
+        if (templateMap == null) throw new RuntimeException("provideTemplate()");
+        if (templateList == null) templateList = new ArrayList<>(templateMap.values());
+        final Template DEFAULT = findById(AppConstants.DEFAULT_TEMPLATE_ID);
         templateList.remove(DEFAULT);
-        Collections.sort(templateList, new Comparator<Template>() {
-            @Override public int compare(Template t0, Template t1) {
-                return t0.name.compareToIgnoreCase(t1.name);
-            }
-        });
+        Collections.sort(templateList, TEMPLATE_NAME_COMPARATOR);
         templateList.add(0, DEFAULT);
         return templateList;
     }
 
     //START Provide Template
-    private void provideTemplateDefault(@NonNull final Context mContext) {
-        TemplateBuilderDefault builder = new TemplateBuilderDefault(mContext);
-        putMap(builder.id, builder.build());
+    void provideTemplateDefault() {
+        final DefaultBuilder builder = new DefaultBuilder(mContext);
+        putToTemplateMap(builder.id, builder.build());
     }
 
-    private void provideTemplateApk(@NonNull final Context mContext) {
+    void provideTemplateApk() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(AppConstants.CATEGORY_TEMPLATE_APK);
         final PackageManager manager = mContext.getPackageManager();
-        List<ResolveInfo> resolveInfoList = manager.queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resolveInfoList) {
-            ActivityInfo activityInfo = resolveInfo.activityInfo;
-            AbstractTemplateBuilder builder = new TemplateBuilderApkV1(mContext, activityInfo.packageName);
-            putMap(builder.id, builder.build());
+        List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+        for (ResolveInfo info : infos) {
+            final ApkV1Builder builder = new ApkV1Builder(mContext, info.activityInfo.packageName);
+            putToTemplateMap(builder.id, builder.build());
         }
     }
 
-    private void provideTemplateApkV2(@NonNull final Context mContext) {
-        final PackageManager manager = mContext.getPackageManager();
-        List<PackageInfo> installedPackages = manager.getInstalledPackages(PackageManager.GET_META_DATA);
-
-        for (PackageInfo packageInfo : installedPackages) {
-            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-            Bundle metaData = applicationInfo.metaData;
+    void provideTemplateApkV2() {
+        final List<ApplicationInfo> apps = Utils.getInstalledApplications(mContext,
+                PackageManager.GET_META_DATA);
+        for (ApplicationInfo app : apps) {
+            Bundle metaData = app.metaData;
             if (metaData != null && metaData.containsKey(AppConstants.META_DATA_TEMPLATE)) {
                 int version = metaData.getInt(AppConstants.META_DATA_TEMPLATE);
                 if (version == 2) {
-                    AbstractTemplateBuilder builder = new TemplateBuilderApkV2(mContext, applicationInfo.packageName);
-                    putMap(builder.id, builder.build());
+                    final ApkV2Builder builder = new ApkV2Builder(mContext, app.packageName);
+                    putToTemplateMap(builder.id, builder.build());
                 }
             }
         }
     }
 
-    private void provideTemplateHtz(@NonNull final Context mContext) {
+    void provideTemplateHtz() {
         File htzDir = AppConstants.getHishootHtzDir(mContext);
-        if (htzDir.listFiles() == null) return;
-        for (File htzFile : htzDir.listFiles()) {
+        final File[] lisFiles = htzDir.listFiles();
+        if (lisFiles == null) return;
+        for (File htzFile : lisFiles) {
             if (htzFile.isDirectory()) {
-                File cfg = new File(htzFile, TemplateBuilderHtz.HTZ_FILE_CFG);
+                File cfg = new File(htzFile, HtzBuilder.HTZ_FILE_CFG);
                 if (cfg.exists()) {
-                    TemplateBuilderHtz builder = new TemplateBuilderHtz(mContext, null);
+                    HtzBuilder builder = new HtzBuilder(mContext, null);
                     builder.setHtzName(htzFile.getName());
-                    putMap(builder.id, builder.build());
+                    putToTemplateMap(builder.id, builder.build());
                 }
             }
         }
     }//END Provide Template
 
-    private void putMap(@NonNull final String templateID, @NonNull final Template template) {
-        if (mapTemplate.containsKey(templateID)) return;
-        mapTemplate.put(templateID, template);
+    void putToTemplateMap(String templateID, Template template) {
+        /* avoid duplicate template or failed build template*/
+        if (templateMap.containsKey(templateID) || template == null) return;
+        templateMap.put(templateID, template);
     }
 }

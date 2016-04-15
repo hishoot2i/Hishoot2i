@@ -14,13 +14,13 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import org.illegaller.ratabb.hishoot2i.BuildConfig;
-import org.illegaller.ratabb.hishoot2i.model.Sizes;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Universal Image Loader Helper
+ * Universal WhatImage Loader Helper
  */
 public class UILHelper {
     private static final String FILES = "file://";
@@ -39,20 +39,19 @@ public class UILHelper {
     private static final String DRAWABLES = "drawable://";
     private static final String SEPARATOR = "/";
 
-    protected UILHelper() {
-        throw new AssertionError("UILHelper no construction");
+    private UILHelper() {        //no instance
     }
 
     public static String stringTemplateApp(String templateId, @DrawableRes int resId) {
-        return UILHelper.formatString(TEMPLATE_APP, templateId + SEPARATOR + resId);
+        return TEMPLATE_APP + templateId + SEPARATOR + String.valueOf(resId);
     }
 
     public static String stringDrawables(@DrawableRes int resId) {
-        return UILHelper.formatString(DRAWABLES, String.valueOf(resId));
+        return DRAWABLES + String.valueOf(resId);
     }
 
     public static String stringFiles(File file) {
-        return UILHelper.formatString(FILES, file.getAbsolutePath());
+        return FILES + file.getAbsolutePath();
     }
 
     public static void init(@NonNull final Context context, int width, int height) {
@@ -62,7 +61,7 @@ public class UILHelper {
         try {
             diskCache = new LruDiskCache(cacheDir, new HashCodeFileNameGenerator(), cacheMaxSize);
         } catch (IOException e) {
-            e.printStackTrace();
+            CrashLog.logError("diskCache on init UIL", e);
         }
         ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context)
                 .memoryCacheExtraOptions(width, height)
@@ -71,70 +70,39 @@ public class UILHelper {
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .denyCacheImageMultipleSizesInMemory()
-                .imageDecoder(new BaseImageDecoder(true))
+                .imageDecoder(new BaseImageDecoder(BuildConfig.DEBUG))
                 .imageDownloader(new TemplateImageDownloader(context))
                 .defaultDisplayImageOptions(DisplayImageOptions.createSimple());
-
-        if (BuildConfig.DEBUG) config.writeDebugLogs();
+        /*if (BuildConfig.DEBUG) config.writeDebugLogs();*/
         if (null != diskCache) config.diskCache(diskCache);
-
         ImageLoader.getInstance().init(config.build());
     }
 
     public static void displayPreview(final ImageView imageView, final String pathImage) {
-        ImageLoader.getInstance().displayImage(pathImage, imageView,
-                getDisplayImageOptionsPreview());
+        ImageLoader.getInstance()
+                .displayImage(pathImage, imageView, UILHelper.getDisplayImageOptions(true));
     }
-
-//    @Nullable public static Bitmap loadImageX(final String pathImage) {
-//        // FIXME: handle OOM
-//        tryClearMemoryCache();
-//        return ImageLoader.getInstance().loadImageSync(pathImage, getDisplayImageOptionsProcess());
-//    }
 
     @Nullable public static Bitmap loadImage(final String pathImage) {
-        return loadImage(pathImage, null);
+        return ImageLoader.getInstance().loadImageSync(
+                pathImage, UILHelper.getDisplayImageOptions(false));
     }
 
-    @Nullable public static Bitmap loadImage(final String pathImage, final Sizes sizesTarget) {
-        if (sizesTarget != null) {
-            final ImageSize imageSize = new ImageSize(sizesTarget.width, sizesTarget.height);
-            return ImageLoader.getInstance()
-                    .loadImageSync(pathImage, imageSize, getDisplayImageOptionsProcess());
-        } else {
-            return ImageLoader.getInstance()
-                    .loadImageSync(pathImage, getDisplayImageOptionsProcess());
-        }
+    @Nullable public static Bitmap loadImage(final String pathImage, final Point point) {
+        return ImageLoader.getInstance().loadImageSync(
+                pathImage, new ImageSize(point.x, point.y), UILHelper.getDisplayImageOptions(false));
     }
 
-    public static void tryClearMemoryCache() {
-        ImageLoader.getInstance().clearMemoryCache();
-    }
-
-    private static String formatString(String type, String data) {
-        return String.format("%s%s", type, data);
-    }
-
-    private static DisplayImageOptions getDisplayImageOptionsPreview() {
+    private static DisplayImageOptions getDisplayImageOptions(boolean isPreview) {
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = true;
-        DisplayImageOptions.Builder result = new DisplayImageOptions.Builder()
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheOnDisk(true)
+        options.inScaled = isPreview;
+        DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder()
+                .bitmapConfig(isPreview ? Bitmap.Config.RGB_565 : Bitmap.Config.ARGB_8888)
+                .cacheOnDisk(isPreview)
                 .cacheInMemory(false)
-                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-//                .showImageOnLoading(R.drawable.braded_logo)
+                .imageScaleType(isPreview ? ImageScaleType.IN_SAMPLE_POWER_OF_2 : ImageScaleType.NONE)
                 .decodingOptions(options);
-        return result.build();
-    }
-
-    private static DisplayImageOptions getDisplayImageOptionsProcess() {
-        DisplayImageOptions.Builder result = new DisplayImageOptions.Builder()
-                .bitmapConfig(Bitmap.Config.ARGB_8888)
-                .cacheOnDisk(false)
-                .cacheInMemory(false)
-                .imageScaleType(ImageScaleType.NONE);
-        return result.build();
+        return builder.build();
     }
 
     /**

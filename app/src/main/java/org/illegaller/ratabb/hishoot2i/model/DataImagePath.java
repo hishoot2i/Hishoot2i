@@ -30,7 +30,7 @@ public class DataImagePath implements Parcelable {
         this.pathImageBackground = in.readString();
     }
 
-    public static final Parcelable.Creator<DataImagePath> CREATOR = new Parcelable.Creator<DataImagePath>() {
+    public static final Creator<DataImagePath> CREATOR = new Creator<DataImagePath>() {
         public DataImagePath createFromParcel(Parcel source) {
             return new DataImagePath(source);
         }

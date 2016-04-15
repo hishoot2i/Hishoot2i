@@ -1,27 +1,13 @@
-apply from: 'dependencies.gradle'
+apply from: 'buildsystem/dependencies.gradle'
 buildscript {
-    repositories {
-        jcenter()
-    }
+    repositories { jcenter() }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha7'
-
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
+        classpath 'com.android.tools.build:gradle:2.1.0-beta1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-ext {
-    compileSdkVersion = 23
-    buildToolsVersion = "23.0.2"
-    minSdkVersion = 10
-    targetSdkVersion = 23
 }

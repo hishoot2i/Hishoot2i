@@ -19,7 +19,7 @@ public class FontUtils {
         try {
             sBadgeTypeface = Typeface.createFromFile(file);
         } catch (Exception e) {
-            HLog.e(file.getName(), e);
+            CrashLog.logError("FontUtils: " + file.getName(), e);
             FontUtils.setBadgeTypefaceDefault();
         }
     }

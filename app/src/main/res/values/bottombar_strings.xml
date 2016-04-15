@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="define_int_bottombar">bottombar</string>
+	<!-- Author section -->
+	<string name="library_bottombar_author">Iiro Krankka</string>
+	<string name="library_bottombar_authorWebsite">http://github.com/roughike</string>
+	<!-- Library section -->
+	<string name="library_bottombar_libraryName">BottomBar</string>
+	<string name="library_bottombar_libraryDescription">A custom view component that mimics the new Material Design Bottom Navigation pattern.</string>
+	<string name="library_bottombar_libraryWebsite">https://github.com/roughike/BottomBar</string>
+	<string name="library_bottombar_libraryVersion">1.3.3</string>
+	<!-- OpenSource section -->
+	<string name="library_bottombar_isOpenSource">true</string>
+	<string name="library_bottombar_repositoryLink">https://github.com/roughike/BottomBar</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_bottombar_classPath">com.roughike.bottombar.BottomBar</string>
+	<!-- License section -->
+	<string name="library_bottombar_licenseId">apache_2_0</string>
+	<!-- Custom variables section -->
+</resources>
+

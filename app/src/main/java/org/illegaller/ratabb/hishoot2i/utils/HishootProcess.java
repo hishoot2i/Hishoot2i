@@ -2,18 +2,16 @@ package org.illegaller.ratabb.hishoot2i.utils;
 
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.model.DataImagePath;
-import org.illegaller.ratabb.hishoot2i.model.Sizes;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import java.io.File;
 import java.io.IOException;
 
 public class HishootProcess {
@@ -21,129 +19,121 @@ public class HishootProcess {
     private final Callback callback;
     private final Template template;
     private final boolean doubleSSEnable;
-    private final boolean backgroundColorEnable;
-    private final boolean backgroundImageBlurEnable;
+    private final boolean bgColorEnable;
+    private final boolean bgImageBlurEnable;
     private final boolean badgeEnable;
-    private final int backgroundImageBlurRadius;
-    @ColorInt private final int backgroundColorInt;
-    @ColorInt private final int badgeColor;
+    private final boolean glareEnable;
+    private final boolean shadowEnable;
+    private final int bgImageBlurRadius;
     private final String badgeText;
     private final int badgeSize;
+    @ColorInt private final int bgColorInt;
+    @ColorInt private final int badgeColor;
 
-    public HishootProcess(Context context, Callback callback, @Nullable Template template, boolean doubleSSEnable,
-                          boolean backgroundColorEnable, boolean backgroundImageBlurEnable,
-                          boolean badgeEnable, int backgroundColorInt, int backgroundImageBlurRadius,
-                          int badgeColor, String badgeText, int badgeSize) {
+    public HishootProcess(Context context, Template template,
+                          boolean doubleSSEnable, boolean bgColorEnable,
+                          boolean bgImageBlurEnable, boolean badgeEnable,
+                          boolean glareEnable, boolean shadowEnable,
+                          int bgColorInt, int bgImageBlurRadius, int badgeColor,
+                          String badgeText, int badgeSize, Callback callback) {
         this.context = context;
         this.callback = callback;
         this.template = template;
         this.doubleSSEnable = doubleSSEnable;
-        this.backgroundColorEnable = backgroundColorEnable;
-        this.backgroundImageBlurEnable = backgroundImageBlurEnable;
+        this.bgColorEnable = bgColorEnable;
+        this.bgImageBlurEnable = bgImageBlurEnable;
         this.badgeEnable = badgeEnable;
-        this.backgroundColorInt = backgroundColorInt;
-        this.backgroundImageBlurRadius = backgroundImageBlurRadius;
+        this.glareEnable = glareEnable;
+        this.shadowEnable = shadowEnable;
+        this.bgColorInt = bgColorInt;
+        this.bgImageBlurRadius = bgImageBlurRadius;
         this.badgeColor = badgeColor;
         this.badgeText = badgeText;
         this.badgeSize = badgeSize;
-        HLog.setTAG(this);
     }
 
-    public void process(@NonNull final DataImagePath dataImagePath) {
+    public void process(@NonNull final DataImagePath dataImagePath, boolean isService) {
         final String pathImageBg = dataImagePath.pathImageBackground;
         final String pathImageSS1 = dataImagePath.pathImageScreen1;
         final String pathImageSS2 = dataImagePath.pathImageScreen2;
-
-        boolean isValid = pathImageSS1 != null;
-        if (doubleSSEnable) isValid &= pathImageSS2 != null;
-        if (!backgroundColorEnable) isValid &= pathImageBg != null;
-
-        if (!isValid) {
-            failed(null, R.string.config_not_valid, R.string.send_report);
-            return;
-        }
         if (template == null) {
-            failed(null, "Oops template not found", R.string.send_report);
+            failed("Oops template not found", R.string.send_report, null);
             return;
         }
-        long startMs = System.currentTimeMillis();
-        callback.startingImage(startMs);
-        UILHelper.tryClearMemoryCache();
-        int totalW = template.templateSizes.width;
-        int totalH = template.templateSizes.height;
-
+        callback.startingImage(System.currentTimeMillis());
+        int totalW = template.templatePoint.x;
+        int totalH = template.templatePoint.y;
         if (doubleSSEnable) totalW += totalW;
-
         Bitmap result;
         Canvas canvas;
-        try { // FIXME: handle this exception
+        try { // FIXME: handle this exception || define max width, height from device
             result = Bitmap.createBitmap(totalW, totalH, Bitmap.Config.ARGB_8888);
             canvas = new Canvas(result);
         } catch (Exception e) {
-            failed(e, "Oops error on create " + totalW + "x" + totalH, R.string.send_report);
+            failed("Oops error on create " + totalW + "x" + totalH, R.string.send_report, e);
             return;
         }
-
-        //background//
+        ///////background///////
         try {
-            if (backgroundColorEnable) {// background color
-                canvas.drawColor(backgroundColorInt);
-            } else { // background image
-                Bitmap background = UILHelper.loadImage(pathImageBg, Sizes.create(totalW, totalH));
+            if (bgColorEnable) /*background color*/ canvas.drawColor(bgColorInt);
+            else { /*background image*/
+                Bitmap background = pathImageBg != null ?
+                        UILHelper.loadImage(pathImageBg, new Point(totalW, totalH))
+                        : BitmapUtils.alphaPatternBitmap(context, totalW, totalH);
                 Bitmap scaleCenterCrop = null;
                 if (background != null)
                     scaleCenterCrop = BitmapUtils.scaleCenterCrop(background, totalW, totalH);
                 if (scaleCenterCrop != null) {
-                    if (backgroundImageBlurEnable)// background blur
-                        BitmapUtils.drawBlurToCanvas(canvas, scaleCenterCrop, backgroundImageBlurRadius);
+                    if (bgImageBlurEnable)/*background image blur*/
+                        BitmapUtils.drawBlurToCanvas(canvas, scaleCenterCrop, bgImageBlurRadius);
                     else BitmapUtils.drawBitmapToCanvas(canvas, scaleCenterCrop, 0, 0);
                 }
             }
         } catch (Exception e) {
-            failed(e, "Oops error on load background " + totalW + "x" + totalH, R.string.send_report);
+            failed("Oops error draw background " + totalW + "x" + totalH, R.string.send_report, e);
             return;
         }
-
-        //template+ss//
+        ///////template+ss///////
+        Bitmap mix1, mix2 = null;
         try {
-            Bitmap mix1 = BitmapUtils.mixTemplate(context, template, pathImageSS1);
-            if (mix1 != null) BitmapUtils.drawBitmapToCanvas(canvas, mix1, 0, 0);
-            if (doubleSSEnable) {
-                Bitmap mix2 = BitmapUtils.mixTemplate(context, template, pathImageSS2);
-                if (mix2 != null) BitmapUtils.drawBitmapToCanvas(canvas, mix2, (totalW / 2), 0);
-            }
-        } catch (OutOfMemoryError e) {
+            mix1 = BitmapUtils.mixTemplate(context, template, pathImageSS1, glareEnable, shadowEnable);
+            if (doubleSSEnable)
+                mix2 = BitmapUtils.mixTemplate(context, template, pathImageSS2, glareEnable, shadowEnable);
+        } catch (Exception e) {
             String msg = template.name + " (" + totalW + "x" + totalH + ")";
-            failed(e, "Template: " + msg + "\n...", R.string.send_report);
+            failed("Template: " + msg + "\n...", R.string.send_report, e);
             return;
         }
-
-        //badge//
+        if (mix1 != null) BitmapUtils.drawBitmapToCanvas(canvas, mix1, 0, 0);
+        if (mix2 != null) BitmapUtils.drawBitmapToCanvas(canvas, mix2, (totalW / 2), 0);
+        ///////badge///////
         if (badgeEnable) {
             final Bitmap badge = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
             final int topBadge = totalH - (badge.getHeight() * 2);
             final int leftBadge = (totalW / 2) - (badge.getWidth() / 2);
             BitmapUtils.drawBitmapToCanvas(canvas, badge, leftBadge, topBadge);
         }
+
         try {
-            final File file = Utils.saveHishoot(result);
-            callback.doneImage(Uri.fromFile(file), result);
+            if (isService)
+                callback.doneService(result, Uri.fromFile(Utils.saveHishoot(result)));
+            else callback.doneImage(result);
         } catch (IOException e) {
-            failed(e, "Oops can't save Hishoot", R.string.save_failed);
+            failed("Oops can't save Hishoot", R.string.save_failed, e);
         }
-        UILHelper.tryClearMemoryCache();
+
     }
 
-    private void failed(final Throwable e, final int message, final int extra) {
-        failed(e, context.getString(message), extra);
+    private void failed(final int message, final int extra, final Throwable e) {
+        failed(context.getString(message), extra, e);
     }
 
-    private void failed(final Throwable e, final String message, final int extra) {
-        failed(e, message, context.getString(extra));
+    private void failed(final String message, final int extra, final Throwable e) {
+        failed(message, context.getString(extra), e);
     }
 
-    private void failed(final Throwable e, final String message, final String extra) {
-        if (e != null) HLog.e(message, e);
+    private void failed(final String message, final String extra, final Throwable e) {
+        if (e != null) CrashLog.logError("HishootProcess: " + message, e);
         callback.failedImage(message, extra);
     }
 
@@ -153,6 +143,8 @@ public class HishootProcess {
 
         void failedImage(String text, String extra);
 
-        void doneImage(Uri imageUri, Bitmap result);
+        void doneImage(Bitmap result);
+
+        void doneService(Bitmap result, Uri uri);
     }
 }

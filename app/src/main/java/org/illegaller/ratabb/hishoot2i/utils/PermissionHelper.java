@@ -30,8 +30,8 @@ public class PermissionHelper {
     private PermissionHelper() {        //no instance
     }
 
-    public static PermissionHelper.Builder writeExternalStorage() {
-        return new PermissionHelper.Builder(0x0001, WRITE_EXTERNAL_STORAGE);
+    public static Builder writeExternalStorage() {
+        return new Builder(0x0001, WRITE_EXTERNAL_STORAGE);
     }
 
     public static PermissionHelper getInstance() {
