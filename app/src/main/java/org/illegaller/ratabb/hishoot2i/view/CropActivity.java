@@ -1,85 +1,99 @@
 package org.illegaller.ratabb.hishoot2i.view;
 
-import com.f2prateek.dart.Dart;
-import com.f2prateek.dart.InjectExtra;
-
-import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
-import org.illegaller.ratabb.hishoot2i.view.widget.CropImageView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.view.View;
-
-import java.io.File;
-import java.io.IOException;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import android.widget.ProgressBar;
+import butterknife.BindView;
 import butterknife.OnClick;
+import com.f2prateek.dart.Dart;
+import com.f2prateek.dart.InjectExtra;
+import javax.inject.Inject;
+import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
+import org.illegaller.ratabb.hishoot2i.di.module.CropActivityModule;
+import org.illegaller.ratabb.hishoot2i.presenter.CropActivityPresenter;
+import org.illegaller.ratabb.hishoot2i.view.common.BaseActivity;
+import org.illegaller.ratabb.hishoot2i.view.widget.CropImageView;
 
-public class CropActivity extends AppCompatActivity {
-    private static final String KEY_PATH_IMAGE = "path_image";
-    private static final String KEY_POINT_RATIO = "point_ratio";
-    @InjectExtra(KEY_PATH_IMAGE) String pathImage;
-    @InjectExtra(KEY_POINT_RATIO) Point pointRatio;
-    @Bind(R.id.cropImageVIew) CropImageView mCropImageView;
+public class CropActivity extends BaseActivity implements CropActivityView {
+  private static final String KEY_PATH_IMAGE = "path_image";
+  private static final String KEY_POINT_RATIO = "point_ratio";
+  @InjectExtra(KEY_PATH_IMAGE) String pathImage;
+  @InjectExtra(KEY_POINT_RATIO) Point pointRatio;
+  @BindView(R.id.cropImageVIew) CropImageView mCropImageView;
+  @BindView(R.id.pbCrop) ProgressBar mProgressBar;
+  @Inject CropActivityPresenter presenter;
 
-    public static Intent getIntent(Context context, String path, Point ratio) {
-        Intent starter = new Intent(context, CropActivity.class);
-        starter.putExtra(KEY_PATH_IMAGE, path);
-        starter.putExtra(KEY_POINT_RATIO, ratio);
-        starter.putExtra(Intent.EXTRA_RETURN_RESULT, true);
-        return starter;
+  public static Intent getIntent(Context context, String path, Point ratio) {
+    Intent starter = new Intent(context, CropActivity.class);
+    starter.putExtra(KEY_PATH_IMAGE, path);
+    starter.putExtra(KEY_POINT_RATIO, ratio);
+    starter.putExtra(Intent.EXTRA_RETURN_RESULT, true);
+    return starter;
+  }
+
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    Dart.inject(this);
+    presenter.attachView(this);
+    presenter.initView(pathImage);
+  }
+
+  @Override protected void onDestroy() {
+    presenter.detachView();
+    super.onDestroy();
+  }
+
+  @Override protected int getToolbarId() {
+    return 0;
+  }
+
+  @Override protected void setupComponent(ApplicationComponent component) {
+    component.plus(new CropActivityModule()).inject(this);
+  }
+
+  @Override protected int layoutRes() {
+    return R.layout.activity_crop;
+  }
+
+  @Override protected void setupToolbar(ActionBar actionBar) { /*no-op*/ }
+
+  @OnClick({ R.id.btnOkCrop, R.id.btnCancelCrop }) void onClick(View view) {
+    final int viewId = view.getId();
+    if (viewId == R.id.btnOkCrop) {
+      presenter.performSaveCrop(mCropImageView.getCroppedBitmap());
+    } else if (viewId == R.id.btnCancelCrop) onResult(null);
+  }
+
+  @Override public void onResult(@Nullable Uri uri) {
+    if (uri != null) {
+      setResult(Activity.RESULT_OK, new Intent().setData(uri));
+    } else {
+      setResult(Activity.RESULT_CANCELED);
     }
+    finish();
+  }
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crop);
-        ButterKnife.bind(this);
-        Dart.inject(this);
-        mCropImageView.setCustomRatio(pointRatio.x, pointRatio.y);
-        UILHelper.displayPreview(mCropImageView, pathImage);
-    }
+  @Override public void showProgress(boolean isShow) {
+    mProgressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    mCropImageView.setVisibility(isShow ? View.GONE : View.VISIBLE);
+  }
 
-    @OnClick({R.id.btnOkCrop, R.id.btnCancelCrop}) void onClick(View view) {
-        final int viewId = view.getId();
-        if (viewId == R.id.btnOkCrop) doSaveCrop();
-        else if (viewId == R.id.btnCancelCrop) {
-            setResult(Activity.RESULT_CANCELED);
-            finish();
-        }
-    }
+  @Override public void setCropImageView(Bitmap bitmap) {
+    mCropImageView.setCustomRatio(pointRatio.x, pointRatio.y);
+    mCropImageView.setImageBitmap(bitmap);
+    showProgress(false);
+  }
 
-    void doSaveCrop() {
-        final Bitmap bitmap = mCropImageView.getCroppedBitmap();
-        new AsyncTask<Void, Void, Uri>() {
-            @Override protected Uri doInBackground(Void... voids) {
-                try {
-                    File file = Utils.saveTempBackgroundCrop(CropActivity.this, bitmap);
-                    return Uri.fromFile(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override protected void onPostExecute(Uri uri) {
-                Intent data = new Intent();
-                data.setData(uri);
-                CropActivity.this.setResult(Activity.RESULT_OK, data);
-                CropActivity.this.finish();
-            }
-        }.execute();
-
-    }
+  @Override public Context context() {
+    return this;
+  }
 }

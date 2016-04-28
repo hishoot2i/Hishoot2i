@@ -1,55 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.LinearLayoutCompat
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <android.support.v7.widget.LinearLayoutCompat
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:gravity="center"
+      android:orientation="horizontal"
+      >
 
     <org.illegaller.ratabb.hishoot2i.view.widget.CropImageView
-            android:id="@+id/cropImageVIew"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            app:cropMode="ratio_fit_image"
-            app:backgroundColor="@color/base"
-            app:handleColor="@color/handle"
-            app:guideColor="@color/guide"
-            app:overlayColor="@color/overlay"
-            app:frameColor="@color/frame"
-            app:handleSize="8dp"
-            app:touchPadding="8dp"
-            app:handleShowMode="show_always"
-            app:guideShowMode="show_on_touch"
-            app:minFrameSize="50dp"
-            app:frameStrokeWeight="1dp"
-            app:guideStrokeWeight="1dp"/>
+        android:id="@+id/cropImageVIew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        app:backgroundColor="@color/base"
+        app:cropMode="ratio_fit_image"
+        app:frameColor="@color/frame"
+        app:frameStrokeWeight="1dp"
+        app:guideColor="@color/guide"
+        app:guideShowMode="show_on_touch"
+        app:guideStrokeWeight="1dp"
+        app:handleColor="@color/handle"
+        app:handleShowMode="show_always"
+        app:handleSize="8dp"
+        app:minFrameSize="50dp"
+        app:overlayColor="@color/overlay"
+        app:touchPadding="8dp"
+        />
 
+    <ProgressBar
+        android:id="@+id/pbCrop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        style="@style/Widget.AppCompat.ProgressBar"
+        />
+  </android.support.v7.widget.LinearLayoutCompat>
 
-    <android.support.v7.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true">
+  <android.support.v7.widget.LinearLayoutCompat
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal"
+      >
 
-        <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnCancelCrop"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@android:string/cancel"/>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnCancelCrop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@android:string/cancel"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        />
 
-        <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnOkCrop"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@android:string/ok"/>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnOkCrop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@android:string/ok"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        />
 
-    </android.support.v7.widget.LinearLayoutCompat>
+  </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.v7.widget.LinearLayoutCompat>

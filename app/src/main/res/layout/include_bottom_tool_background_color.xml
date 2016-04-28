@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    >
+
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:gravity="center_horizontal"
+      android:orientation="horizontal"
+      android:visibility="visible"
+      >
+
+
+    <org.illegaller.ratabb.hishoot2i.view.widget.CircleButton
+        android:id="@+id/cpfMixer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:tint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/ic_color_lens_black_24dp"
+        app:useCompatPadding="true"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="4dp"
+        android:text="@string/color_mixer"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:gravity="center_horizontal"
+      android:orientation="horizontal"
+      android:visibility="visible"
+      >
+
+    <org.illegaller.ratabb.hishoot2i.view.widget.CircleButton
+        android:id="@+id/cpfPipette"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:tint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/ic_colorize_black_24dp"
+        app:useCompatPadding="true"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="4dp"
+        android:text="@string/color_pipette"
+        />
+  </LinearLayout>
+</LinearLayout>

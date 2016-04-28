@@ -1,76 +1,93 @@
 package org.illegaller.ratabb.hishoot2i;
 
+import android.app.Application;
+import android.content.Context;
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
-
-import org.illegaller.ratabb.hishoot2i.di.compenent.AppComponent;
-import org.illegaller.ratabb.hishoot2i.di.compenent.DaggerAppComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.AppModule;
-import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
+import io.fabric.sdk.android.Fabric;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
+import org.illegaller.ratabb.hishoot2i.di.compenent.DaggerApplicationComponent;
+import org.illegaller.ratabb.hishoot2i.di.module.ApplicationModule;
+import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
+import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
+import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
 
-import android.app.Application;
-import android.content.Context;
-
-import javax.inject.Inject;
-
-import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
-import io.fabric.sdk.android.Fabric;
+import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.APP_RUNNING_COUNT;
+import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.CRASHLYTIC_ENABLE;
+import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_HEIGHT;
+import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_NAME;
+import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_OS;
+import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_WIDTH;
 
 public class HishootApplication extends Application {
-    @Inject TrayManager mTrayManager;
-    private AppComponent component;
-    private RefWatcher mWatcher;
+  @Inject @Named(CRASHLYTIC_ENABLE) BooleanTray crashlyticEnableTray;
+  @Inject @Named(APP_RUNNING_COUNT) IntTray appRunningCountTray;
+  @Inject @Named(DEVICE_HEIGHT) IntTray deviceHeightTray;
+  @Inject @Named(DEVICE_WIDTH) IntTray deviceWidthTray;
+  @Inject @Named(DEVICE_NAME) StringTray deviceNameTray;
+  @Inject @Named(DEVICE_OS) StringTray deviceOSTray;
+  private ApplicationComponent applicationComponent;
+  private RefWatcher mWatcher;
 
-    public static HishootApplication get(Context context) {
-        return (HishootApplication) context.getApplicationContext();
-    }
+  public static HishootApplication get(Context context) {
+    return (HishootApplication) context.getApplicationContext();
+  }
 
-    public RefWatcher getWatcher() {
-        return mWatcher;
-    }
+  public RefWatcher getWatcher() {
+    return mWatcher;
+  }
 
-    public AppComponent getComponent() {
-        return component;
+  public synchronized ApplicationComponent getApplicationComponent() {
+    if (applicationComponent == null) {
+      applicationComponent = DaggerApplicationComponent.builder()
+          .applicationModule(new ApplicationModule(this))
+          .build();
     }
+    return applicationComponent;
+  }
 
-    @Override public void onCreate() {
-        super.onCreate();
-        if (BuildConfig.DEBUG) AndroidDevMetrics.initWith(this);
-        setupInjection();
-        setupCAOC();
-        if (BuildConfig.USE_CRASHLYTICS) Fabric.with(this, new Crashlytics());
-        UILHelper.init(
-                this,
-                mTrayManager.getDeviceWidthTray().get(),
-                mTrayManager.getDeviceHeightTray().get()
-        );
-        mWatcher = LeakCanary.install(this);
-        logCount();
+  @Override public void onCreate() {
+    super.onCreate();
+    if (BuildConfig.DEBUG) AndroidDevMetrics.initWith(this);
+    setupInjection();
+    setupCAOC();
+    CrashLog.setCrashlyticsEnable(crashlyticEnableTray.get());
+    if (BuildConfig.USE_CRASHLYTICS && crashlyticEnableTray.get()) {
+      CrashLog.setCrashlyticsEnable(true);
+      Fabric.with(this, new Crashlytics());
     }
+    UILHelper.init(this, deviceWidthTray.get(), deviceHeightTray.get());
+    mWatcher = LeakCanary.install(this);
+    logCount();
+  }
 
-    private void logCount() {
-        mTrayManager.getAppRunningCountTray().set(mTrayManager.getAppRunningCountTray().get() + 1);
-        CrashLog.log("Device: " + mTrayManager.getDeviceNameTray().get()
-                + " " + mTrayManager.getDeviceOSTray().get()
-                + " runningCount:" + mTrayManager.getAppRunningCountTray().get());
-    }
+  void logCount() {
+    appRunningCountTray.set(appRunningCountTray.get() + 1);
+    CrashLog.log("Device name: "
+        + deviceNameTray.get()
+        + " OS: "
+        + deviceOSTray.get()
+        + " runningCount:"
+        + appRunningCountTray.get());
+  }
 
-    private void setupCAOC() {
-        CustomActivityOnCrash.setLaunchErrorActivityWhenInBackground(true);
-        CustomActivityOnCrash.setRestartActivityClass(LauncherActivity.class);
-        CustomActivityOnCrash.setShowErrorDetails(true);
-        CustomActivityOnCrash.install(this);
-    }
+  void setupCAOC() {
+    CustomActivityOnCrash.setLaunchErrorActivityWhenInBackground(true);
+    CustomActivityOnCrash.setRestartActivityClass(LauncherActivity.class);
+    CustomActivityOnCrash.setShowErrorDetails(true);
+    CustomActivityOnCrash.install(this);
+  }
 
-    private void setupInjection() {
-        component = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .build();
-        component.inject(this);
-    }
+  void setupInjection() {
+    applicationComponent = getApplicationComponent();
+    applicationComponent.inject(this);
+  }
 }

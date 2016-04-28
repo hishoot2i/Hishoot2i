@@ -38,6 +38,7 @@
     <style name="ThemeOverlay.Hishoot.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
+
     <style name="ThemeOverlay.Hishoot.ActionBar.Light" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/black</item>
     </style>
@@ -65,6 +66,28 @@
         <item name="android:typeface">normal</item>
     </style>
 
+    <style name="TextAppearance.Hishoot.About"/>
+
+    <style name="TextAppearance.Hishoot.About.Title">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">8sp</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot.About.Content">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot.About.Content.Sub">
+        <item name="android:textColor">?android:textColorTertiary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="TextAppearance.Hishoot.Title">
         <item name="android:textSize">18sp</item>
         <item name="android:singleLine">true</item>
@@ -73,5 +96,33 @@
 
     <style name="TextAppearance.Hishoot.SubTitle">
         <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="TextAppearance.Hishoot.Switch">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="Hishoot" parent="Hishoot.PreferenceTheme"/>
+
+    <style name="Hishoot.Preference.Category">
+        <item name="android:layout">@layout/hishoot_preference_category</item>
+        <item name="android:shouldDisableView">false</item>
+        <item name="android:selectable">false</item>
+    </style>
+
+    <style name="Hishoot.PreferenceFragment">
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:divider">@null</item>
+    </style>
+
+    <style name="Hishoot.Preference">
+        <item name="android:layout">@layout/hishoot_preference</item>
+    </style>
+    <style name="Hishoot.SwitchPreferenceCompat">
+        <item name="android:layout">@layout/hishoot_preference</item>
+        <item name="android:widgetLayout">@layout/preference_widget_switch_compat</item>
+        <item name="android:switchTextOn">@string/v7_preference_on</item>
+        <item name="android:switchTextOff">@string/v7_preference_off</item>
     </style>
 </resources>

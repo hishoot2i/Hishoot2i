@@ -15,57 +15,49 @@
  */
 package org.illegaller.ratabb.hishoot2i.view.widget;
 
-
-import org.illegaller.ratabb.hishoot2i.utils.BitmapUtils;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-
+import org.illegaller.ratabb.hishoot2i.utils.BitmapUtils;
 
 public class AlphaPatternDrawable extends Drawable {
 
-    private int mRectangleSize = 10;
-    private Paint mPaint = new Paint();
+  private int mRectangleSize = 10;
+  private Paint mPaint = new Paint();
 
+  private Bitmap mBitmap;
 
-    private Bitmap mBitmap;
+  public AlphaPatternDrawable(int rectangleSize) {
+    mRectangleSize = rectangleSize;
+  }
 
-    public AlphaPatternDrawable(int rectangleSize) {
-        mRectangleSize = rectangleSize;
-    }
+  @Override public void draw(Canvas canvas) {
+    canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+  }
 
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
-    }
+  @Override public int getOpacity() {
+    return 0;
+  }
 
-    @Override
-    public int getOpacity() {
-        return 0;
-    }
+  @Override public void setAlpha(int alpha) {
+    throw new UnsupportedOperationException("Alpha is not supported by this drawable.");
+  }
 
-    @Override
-    public void setAlpha(int alpha) {
-        throw new UnsupportedOperationException("Alpha is not supported by this drawable.");
-    }
+  @Override public void setColorFilter(ColorFilter cf) {
+    throw new UnsupportedOperationException("ColorFilter is not supported by this drawable.");
+  }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        throw new UnsupportedOperationException("ColorFilter is not supported by this drawable.");
-    }
+  @Override protected void onBoundsChange(Rect bounds) {
+    super.onBoundsChange(bounds);
+    generatePatternBitmap();
+  }
 
-    @Override
-    protected void onBoundsChange(Rect bounds) {
-        super.onBoundsChange(bounds);
-        generatePatternBitmap();
-    }
-
-    private void generatePatternBitmap() {
-        if (getBounds().width() <= 0 || getBounds().height() <= 0) return;
-        mBitmap = BitmapUtils.alphaPatternBitmap(mRectangleSize, getBounds().width(), getBounds().height());
-    }
+  private void generatePatternBitmap() {
+    if (getBounds().width() <= 0 || getBounds().height() <= 0) return;
+    mBitmap =
+        BitmapUtils.alphaPatternBitmap(mRectangleSize, getBounds().width(), getBounds().height());
+  }
 }

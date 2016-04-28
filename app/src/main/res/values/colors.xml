@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--TODO customize color-->
     <color name="colorPrimary">#02bfe7</color>
     <color name="colorPrimaryDark">#0281bb</color>
     <color name="colorAccent">#689f38</color>

@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="define_int_dart">dart</string>
+	<string name="define_int_Dart">year;owner</string>
 	<!-- Author section -->
-	<string name="library_dart_author">Prateek Srivastava</string>
-	<string name="library_dart_authorWebsite">http://about.psrivastava.com</string>
+	<string name="library_Dart_author">Prateek Srivastava</string>
+	<string name="library_Dart_authorWebsite">http://about.psrivastava.com</string>
 	<!-- Library section -->
-	<string name="library_dart_libraryName">Dart</string>
-	<string name="library_dart_libraryDescription">Extra "injection" library for Android which uses annotation processing to generate code that does direct field assignment of your extras.</string>
-	<string name="library_dart_libraryWebsite">https://github.com/f2prateek/dart</string>
-	<string name="library_dart_libraryVersion">2.0.0</string>
+	<string name="library_Dart_libraryName">Dart</string>
+	<string name="library_Dart_libraryDescription">Extra "injection" library for Android which uses annotation processing to generate code that does direct field assignment of your extras.</string>
+	<string name="library_Dart_libraryWebsite">https://github.com/f2prateek/dart</string>
+	<string name="library_Dart_libraryVersion">2.0.0</string>
 	<!-- OpenSource section -->
-	<string name="library_dart_isOpenSource">true</string>
-	<string name="library_dart_repositoryLink">https://github.com/f2prateek/dart</string>
+	<string name="library_Dart_isOpenSource">true</string>
+	<string name="library_Dart_repositoryLink">https://github.com/f2prateek/dart</string>
 	<!-- ClassPath for autoDetect section -->
-	<string name="library_dart_classPath">com.f2prateek.dart.Dart</string>
+	<string name="library_Dart_classPath">com.f2prateek.dart.Dart</string>
 	<!-- License section -->
-	<string name="library_dart_licenseId">apache_2_0</string>
+	<string name="library_Dart_licenseId">apache_2_0</string>
 	<!-- Custom variables section -->
+	<string name="library_Dart_owner">Prateek Srivastava</string>
+	<string name="library_Dart_year">2016</string>
 </resources>

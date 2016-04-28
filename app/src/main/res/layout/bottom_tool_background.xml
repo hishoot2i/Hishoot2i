@@ -1,138 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:layout_marginLeft="@dimen/activity_horizontal_margin"
-              android:layout_marginStart="@dimen/activity_horizontal_margin"
-              android:layout_marginRight="@dimen/activity_horizontal_margin"
-              android:layout_marginEnd="@dimen/activity_horizontal_margin">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
+    >
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="4dp">
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="4dp"
+      android:orientation="horizontal"
+      >
 
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.Hishoot.Title"
-                android:text="@string/background"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="@string/background"
+        android:textAppearance="@style/TextAppearance.Hishoot.Title"
+        />
 
-        <android.support.v7.widget.SwitchCompat
-                android:id="@+id/cbImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@string/with_image"/>
-    </LinearLayout>
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/cbImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/with_image"
+        />
+  </LinearLayout>
 
-    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp">
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="horizontal"
+        >
 
-            <LinearLayout
-                    android:id="@+id/layout_bg_color"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:visibility="visible"
-                    android:orientation="horizontal">
+      <include
+          layout="@layout/include_bottom_tool_background_color"
+          android:id="@+id/layout_bg_color"
+          />
 
-
-                <org.illegaller.ratabb.hishoot2i.view.widget.CircleButton
-                        android:id="@+id/cpBackground"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_gravity="center_vertical"
-                        android:tint="@android:color/white"
-                        app:useCompatPadding="true"
-                        app:srcCompat="@drawable/ic_color_lens_black_24dp"
-                        app:cb_color="?colorAccent"
-                        app:cb_pressedRingWidth="4dp"/>
-
-                <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="4dp"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/color_background"/>
-            </LinearLayout>
-
-            <LinearLayout
-                    android:id="@+id/layout_bg_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
-
-                    <org.illegaller.ratabb.hishoot2i.view.widget.CircleButton
-                            android:id="@+id/img_config_bg"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center_vertical"
-                            android:tint="@android:color/white"
-                            app:useCompatPadding="true"
-                            app:srcCompat="@drawable/ic_image_black_24dp"
-                            app:cb_color="?colorAccent"
-                            app:cb_pressedRingWidth="4dp"/>
-
-                    <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:padding="4dp"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/image_background"/>
-
-                    <android.support.v7.widget.AppCompatCheckBox
-                            android:id="@+id/cbCrop"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/crop"/>
-                </LinearLayout>
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_margin="8dp">
-
-                    <android.support.v7.widget.SwitchCompat
-                            android:id="@+id/cbBlurBg"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/blur"
-                            android:layout_gravity="center_vertical"/>
-
-                    <android.support.v7.widget.AppCompatSeekBar
-                            android:id="@+id/seekBar_blur_radius"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"/>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+      <include
+          layout="@layout/include_bottom_tool_background_image"
+          android:id="@+id/layout_bg_image"
+          />
+    </ViewFlipper>
+  </ScrollView>
 </LinearLayout>

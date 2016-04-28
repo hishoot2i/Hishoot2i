@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="define_int_stackblur">stackblur</string>
-	<!-- Author section -->
-	<string name="library_stackblur_author">Enrique López Mañas</string>
-	<string name="library_stackblur_authorWebsite">http://www.lopez-manas.com</string>
-	<!-- Library section -->
-	<string name="library_stackblur_libraryName">Android StackBlur</string>
-	<string name="library_stackblur_libraryDescription">Android StackBlur is a library that can perform a blurry effect on a Bitmap based on a gradient or radius, and return the result. The library is based on the code of Mario Klingemann.</string>
-	<string name="library_stackblur_libraryWebsite">https://github.com/kikoso/android-stackblur</string>
-	<string name="library_stackblur_libraryVersion">1.0.0</string>
-	<!-- OpenSource section -->
-	<string name="library_stackblur_isOpenSource">true</string>
-	<string name="library_stackblur_repositoryLink">https://github.com/kikoso/android-stackblur</string>
-	<!-- ClassPath for autoDetect section -->
-	<string name="library_stackblur_classPath">com.enrique.stackblur.StackBlurManager</string>
-	<!-- License section -->
-	<string name="library_stackblur_licenseId">apache_2_0</string>
-	<!-- Custom variables section -->
+  <string name="define_int_AndroidStackBlur">year;owner</string>
+  <!-- Author section -->
+  <string name="library_AndroidStackBlur_author">Enrique López Mañas</string>
+  <string name="library_AndroidStackBlur_authorWebsite">http://www.lopez-manas.com</string>
+  <!-- Library section -->
+  <string name="library_AndroidStackBlur_libraryName">Android StackBlur</string>
+  <string name="library_AndroidStackBlur_libraryDescription">Android StackBlur is a library that can perform a blurry effect on a Bitmap based on a gradient or radius, and return the result. The library is based on the code of Mario Klingemann.</string>
+  <string name="library_AndroidStackBlur_libraryWebsite">https://github.com/kikoso/android-stackblur</string>
+  <string name="library_AndroidStackBlur_libraryVersion">1.0.0</string>
+  <!-- OpenSource section -->
+  <string name="library_AndroidStackBlur_isOpenSource">true</string>
+  <string name="library_AndroidStackBlur_repositoryLink">https://github.com/kikoso/android-stackblur</string>
+  <!-- ClassPath for autoDetect section -->
+  <string name="library_AndroidStackBlur_classPath">com.enrique.stackblur.StackBlurManager</string>
+  <!-- License section -->
+  <string name="library_AndroidStackBlur_licenseId">apache_2_0</string>
+  <!-- Custom variables section -->
+  <string name="library_AndroidStackBlur_owner">Enrique López Mañas</string>
+  <string name="library_AndroidStackBlur_year">2016</string>
 </resources>
 

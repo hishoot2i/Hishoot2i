@@ -11,6 +11,7 @@
     <dimen name="progress_bar_height">4dp</dimen>
     <dimen name="item_template_min_height">96dp</dimen>
     <dimen name="item_template_max_height">240dp</dimen>
+    <dimen name="item_template_height">120dp</dimen>
     <dimen name="item_margin">2dp</dimen>
     <dimen name="item_text_margin_vertical">2dp</dimen>
     <dimen name="item_text_margin_horizontal">8dp</dimen>

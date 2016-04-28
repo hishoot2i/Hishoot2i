@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="define_int_SwipeRevealLayout">year;owner</string>
+  <!-- Author section -->
+  <string name="library_SwipeRevealLayout_author">Chau Thai</string>
+  <string name="library_SwipeRevealLayout_authorWebsite">https://github.com/chthai64/SwipeRevealLayout</string>
+  <!-- Library section -->
+  <string name="library_SwipeRevealLayout_libraryName">SwipeRevealLayout</string>
+  <string name="library_SwipeRevealLayout_libraryDescription">A layout that you can swipe/slide to show another layout.</string>
+  <string name="library_SwipeRevealLayout_libraryWebsite">https://github.com/chthai64/SwipeRevealLayout</string>
+  <string name="library_SwipeRevealLayout_libraryVersion">1.0.0</string>
+  <!-- OpenSource section -->
+  <string name="library_SwipeRevealLayout_isOpenSource">true</string>
+  <string name="library_SwipeRevealLayout_repositoryLink">https://github.com/chthai64/SwipeRevealLayout</string>
+  <!-- ClassPath for autoDetect section -->
+  <string name="library_SwipeRevealLayout_classPath">com.chauthai.swipereveallayout.SwipeRevealLayout</string>
+  <!-- License section -->
+  <string name="library_SwipeRevealLayout_licenseId">mit</string>
+  <!-- Custom variables section -->
+  <string name="library_SwipeRevealLayout_owner">Chau Thai</string>
+  <string name="library_SwipeRevealLayout_year">2016</string>
+</resources>

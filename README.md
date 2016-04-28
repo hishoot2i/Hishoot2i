@@ -1,40 +1,66 @@
 # Hishoot2i
-![banner][1]
+-----
+![banner][banner]
 
-Hishoot2i *grepe* [**Hishoot**][2] by [**JMKL**][3]
+Hishoot2i *grepe* [**Hishoot**][hishoot] by [**JMKL**][jmkl]
 
-# Changelog
-[**see here**][4]
+## Content
+* [Changelog](https://github.com/ratabb/hishoot2i#changelog)
+* [Community](https://github.com/ratabb/hishoot2i#community)
+* [Developer](https://github.com/ratabb/hishoot2i#developer)
+* [Influences](https://github.com/ratabb/hishoot2i#influences)
+* [Library](https://github.com/ratabb/hishoot2i#library)
+* [Download](https://github.com/ratabb/hishoot2i#download)
+* [License](https://github.com/ratabb/hishoot2i#license)
 
-# Community
-- [Google Plus Community][5]
-- [Facebook Group][6]
+## Changelog
+**v1.1.1 (20160429)**
 
-# Developer
-- [**DCSMS** a.k.a **JMKL**][3] creator [**Hishoot**][2]
-- [rbb][7]
+- switch (on/off) frame Template V2
+- template list slide to detail
+- background color pipette
+- option send analytic data
+- view saved file
+- add clear preview cache
+- publish app with Github release (app update)
 
-# Influences
-- [Device Frame Generator][8]
+[**previous version**][4]
+
+## Community
+- [Google Plus Community][gplus]
+- [Facebook Group][fb]
+
+## Developer
+- [**DCSMS** a.k.a **JMKL**][fbjmkl] creator [**Hishoot**][hishoot]
+- [ratabb][ratabb]
+
+## Influences
+- [Device Frame Generator][dfg]
 - ...
 
-# Library
-can see at [app/build.gradle][9] (*in use*)
-and [buildsystem/dependencies.gradle][10] (collection lib)
+## Library
+can see at [app/build.gradle][9] *in use*
+and [buildsystem/dependencies.gradle][10] *collection lib*
 
-local modification [Android StackBlur][11]
+local modification [Android StackBlur][stackblur]
 
-# License
+## Download
+[![icon][launcher]][release]
+
+## License
     fcuk-op license: IDK 'n IDC
 
-[1]: app/src/main/res/drawable-nodpi/banner.png
-[2]: http://github.com/jmkl/Hishoot
-[3]: http://github.com/jmkl
+[banner]: app/src/main/res/drawable-nodpi/banner.png
+[hishoot]: https://github.com/jmkl/Hishoot
+[jmkl]: https://github.com/jmkl
 [4]: CHANGELOG.md
-[5]: https://plus.google.com/communities/115724885071998017281
-[6]: https://www.facebook.com/groups/hishoot.template/
-[7]: http://google.com/+ratabilabagi
-[8]: https://github.com/f2prateek/device-frame-generator
+[gplus]: https://plus.google.com/communities/115724885071998017281
+[fb]: https://www.facebook.com/groups/hishoot.template/
+[ratabb]: https://plus.google.com/+ratabilabagi
+[dfg]: https://github.com/f2prateek/device-frame-generator
 [9]: app/build.gradle
 [10]: buildsystem/dependencies.gradle
-[11]: https://github.com/kikoso/android-stackblur
+[stackblur]: https://github.com/kikoso/android-stackblur
+[fbjmkl]: http://www.facebook.com/jimikill666
+[launcher]: app/src/main/res/mipmap-hdpi/ic_launcher.png
+[release]: https://github.com/ratabb/Hishoot2i/releases

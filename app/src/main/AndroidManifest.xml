@@ -1,63 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="org.illegaller.ratabb.hishoot2i">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.illegaller.ratabb.hishoot2i">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-    <application
-            android:name=".HishootApplication"
-            android:allowBackup="false"
-            android:label="@string/app_name"
-            android:icon="@mipmap/ic_launcher"
-            android:supportsRtl="false"
-            android:largeHeap="true"
-            android:theme="@style/HishootTheme"
-            tools:ignore="GoogleAppIndexingWarning">
-        <activity
-                android:name=".view.LauncherActivity"
-                android:launchMode="singleInstance"
-                android:theme="@style/HishootTheme.Branded"/>
+  <application
+      android:name=".HishootApplication"
+      android:allowBackup="false"
+      android:hardwareAccelerated="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:largeHeap="true"
+      android:supportsRtl="false"
+      android:theme="@style/HishootTheme"
+      tools:ignore="GoogleAppIndexingWarning">
+    <activity
+        android:name=".view.LauncherActivity"
+        android:launchMode="singleInstance"
+        android:screenOrientation="portrait"
+        android:theme="@style/HishootTheme.Branded"/>
+    <activity-alias
+        android:name=".ui.activity.MainActivity"
+        android:targetActivity=".view.LauncherActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
 
-        <activity-alias
-                android:name=".ui.activity.MainActivity"
-                android:targetActivity=".view.LauncherActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity-alias>
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity-alias>
+    <activity
+        android:name=".view.MainActivity"
+        android:parentActivityName=".view.LauncherActivity"
+        android:screenOrientation="portrait">
+      <intent-filter>
+        <action android:name="android.intent.action.SEND"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="image/*"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value=".view.LauncherActivity"/>
+    </activity>
+    <activity
+        android:name=".view.CropActivity"
+        android:excludeFromRecents="true"
+        android:screenOrientation="portrait"/>
+    <activity
+        android:name=".view.AboutActivity"
+        android:excludeFromRecents="true"
+        android:screenOrientation="portrait"/>
 
-        <activity
-                android:name=".view.MainActivity"
-                android:screenOrientation="portrait"
-                android:parentActivityName=".view.LauncherActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="image/*"/>
-            </intent-filter>
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".view.LauncherActivity"/>
-        </activity>
-        <activity
-                android:name=".view.CropActivity"
-                android:excludeFromRecents="true"
-                android:screenOrientation="portrait"/>
-        <activity
-                android:name=".view.AboutActivity"
-                android:excludeFromRecents="true"
-                android:screenOrientation="portrait"/>
+    <service android:name=".HishootService"/>
 
-        <service android:name=".HishootService"/>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="${fabric_api_key}" />
-    </application>
-
+    <meta-data
+        android:name="io.fabric.ApiKey"
+        android:value="${fabric_api_key}"/>
+  </application>
 </manifest>

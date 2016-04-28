@@ -1,6 +1,6 @@
 buildscript {
-    repositories { maven { url "https://maven.fabric.io/public" } }
-    dependencies { classpath "io.fabric.tools:gradle:1.21.5" }
+  repositories { maven { url "https://maven.fabric.io/public" } }
+  dependencies { classpath "io.fabric.tools:gradle:1.21.5" }
 }
 
 apply plugin: "com.android.application"
@@ -18,108 +18,123 @@ def buildTime = new Date().format("yyyyMMdd");
 def appName = "Hishoot2i"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 
-    packagingOptions {
-        exclude "META-INF/services/javax.annotation.processing.Processor"
-        exclude "META-INF/LICENSE.txt"
-        exclude "META-INF/NOTICE.txt"
-        exclude "META-INF/LICENSE"
-        exclude "META-INF/NOTICE"
-        exclude ".readme"
-        exclude "META-INF/INDEX.LIST"
-        exclude "LICENSE.txt"
-        exclude "NOTICE.txt"
-    }
+  packagingOptions {
+    exclude "META-INF/services/javax.annotation.processing.Processor"
+    exclude "META-INF/LICENSE.txt"
+    exclude "META-INF/NOTICE.txt"
+    exclude "META-INF/LICENSE"
+    exclude "META-INF/NOTICE"
+    exclude ".readme"
+    exclude "META-INF/INDEX.LIST"
+    exclude "LICENSE.txt"
+    exclude "NOTICE.txt"
+  }
 
-    defaultConfig {
-        applicationId "org.illegaller.ratabb.hishoot2i"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-        resValue("string", "tray__authority", "${applicationId}.tray")
-        resValue("string", "app_version", "$versionName")
-        resValue("string", "app_name", "$appName")
-        manifestPlaceholders = [fabric_api_key: loadFromProp("fabric.properties", "apiKey")]
-        archivesBaseName = "$appName" + "-v$versionName" + "-$buildTime" + "-minApi$minSdkVersion.apiLevel"
-        vectorDrawables.useSupportLibrary = true
-        resConfig("en")
-    }
+  defaultConfig {
+    applicationId "org.illegaller.ratabb.hishoot2i"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+    versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+    resValue("string", "tray__authority", "${applicationId}.tray")
+    resValue("string", "app_version", "$versionName")
+    resValue("string", "app_name", "$appName")
+    resValue("string", "app_build", "$buildTime")
+    vectorDrawables.useSupportLibrary = true
+    resConfig("en")
+    archivesBaseName =
+        "$appName" + "-v${versionName}" + "-${buildTime}" + "-minApi${minSdkVersion.apiLevel}"
+  }
 
-    signingConfigs {
-        release {
-            Properties prop = loadProp("sign.properties")
-            keyAlias prop["alias"]
-            keyPassword prop["passAlias"]
-            storeFile file(prop["store"])
-            storePassword prop["passStore"]
-        }
+  signingConfigs {
+    release {
+      Properties prop = loadProp("sign.properties")
+      keyAlias prop["keyAlias"]
+      keyPassword prop["keyPassword"]
+      storeFile file(prop["storeFile"])
+      storePassword prop["storePassword"]
     }
-    buildTypes {
-        debug {
-            minifyEnabled false
-            buildConfigField "boolean", "USE_CRASHLYTICS", "false"
-            ext.enableCrashlytics = false
-        }
-        release {
-            minifyEnabled true
-            shrinkResources true
-            zipAlignEnabled true
-            signingConfig android.signingConfigs.release
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            final FileCollection proguardCollection = files {
-                file("../buildsystem/proguard").listFiles()
-            }
-            proguardFiles(proguardCollection)
-            buildConfigField "boolean", "USE_CRASHLYTICS", "true"
-            ext.enableCrashlytics = true
-        }
+  }
+  buildTypes {
+    debug {
+      manifestPlaceholders = [fabric_api_key: ""]
+      minifyEnabled false
+      buildConfigField "boolean", "USE_CRASHLYTICS", "false"
+      ext.enableCrashlytics = false
     }
-    dexOptions { javaMaxHeapSize "2g" }
-    lintOptions {
-        abortOnError false
-        disable "IconDensities", "IconMissingDensityFolder"
+    release {
+      manifestPlaceholders = [fabric_api_key: loadFromProp("fabric.properties", "apiKey")]
+      minifyEnabled true
+      shrinkResources true
+      zipAlignEnabled true
+      signingConfig android.signingConfigs.release
+      proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+      final FileCollection proguardCollection = files {
+        file("../buildsystem/proguard").listFiles()
+      }
+      proguardFiles(proguardCollection)
+      buildConfigField "boolean", "USE_CRASHLYTICS", "true"
+      ext.enableCrashlytics = true
     }
+  }
+  dexOptions { javaMaxHeapSize "2g" }
+  lintOptions {
+    abortOnError false
+    disable "IconDensities", "IconMissingDensityFolder"
+  }
 }
 dependencies {
-    def appDependencies = rootProject.ext.dependencies
-    compile appDependencies.appCompat
-    compile appDependencies.cardView
-    compile appDependencies.design
-    compile appDependencies.recyclerView
-    compile appDependencies.customActivityOnCrash
-    compile appDependencies.eventBus
-    compile appDependencies.gson
-    compile appDependencies.universalImageLoader
-    compile appDependencies.dart
-    provided appDependencies.dartProcesor
-    compile appDependencies.butterknife
-    compile(appDependencies.crashlytics) { transitive = true }
-    compile(appDependencies.aboutLibraries) { transitive = true }
-    apt appDependencies.daggerCompiler
-    compile appDependencies.dagger
-    provided appDependencies.javaxAnnotation
-    compile appDependencies.tray
-    debugCompile appDependencies.leakcanaryDebug
-    releaseCompile appDependencies.leakcanaryRelease
-    compile appDependencies.bottomBar
-    compile appDependencies.smoothProgressBar
-    compile appDependencies.materialSearchview
-    compile appDependencies.recyclerviewAnimators
+  def appDependencies = rootProject.ext.dependencies
+  compile appDependencies.appCompat
+  compile appDependencies.cardView
+  compile appDependencies.design
+  compile appDependencies.recyclerView
+  compile appDependencies.preference
+  compile appDependencies.customActivityOnCrash
+  compile appDependencies.eventBus
+  compile appDependencies.gson
+  compile appDependencies.universalImageLoader
+  compile appDependencies.dart
+  provided appDependencies.dartProcesor
+  compile appDependencies.butterknife
+  apt appDependencies.butterknifeCompiler
+  compile(appDependencies.crashlytics) { transitive = true }
+  compile(appDependencies.aboutLibraries) { transitive = true }
+  apt appDependencies.daggerCompiler
+  compile appDependencies.dagger
+  provided appDependencies.javaxAnnotation
+  compile appDependencies.tray
+  debugCompile appDependencies.leakcanaryDebug
+  releaseCompile appDependencies.leakcanaryRelease
+  compile appDependencies.bottomBar
+  compile appDependencies.smoothProgressBar
+  compile appDependencies.materialSearchview
+  compile appDependencies.recyclerviewAnimators
+  compile appDependencies.rxJava
+  compile appDependencies.rxAndroid
+  compile appDependencies.swipeRevealLayout
+  compile appDependencies.appUpdater
 }
 
 String loadFromProp(String pathProp, String key) {
-    Properties props = loadProp(pathProp)
-    if (props.containsKey(key)) return props[key]
-    else throw new GradleException(String.format("key: %s notfound", key))
+  Properties props = loadProp(pathProp)
+  if (props.containsKey(key)) {
+    return props[key]
+  } else {
+    throw new GradleException(String.format("key: %s notfound", key))
+  }
 }
 
 Properties loadProp(String pathProp) {
-    Properties props = new Properties()
-    def fileProp = file(pathProp)
-    if (fileProp.canRead()) props.load(new FileInputStream(fileProp))
-    else throw new GradleException(String.format("missing prop: %s", pathProp))
-    return props;
+  Properties props = new Properties()
+  def fileProp = file(pathProp)
+  if (fileProp.canRead()) {
+    props.load(new FileInputStream(fileProp))
+  } else {
+    throw new GradleException(String.format("missing prop: %s", pathProp))
+  }
+  return props;
 }

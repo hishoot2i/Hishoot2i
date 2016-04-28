@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--CircleButton-->
-    <declare-styleable name="CircleButton">
-        <attr name="cb_color" format="color" />
-        <attr name="cb_pressedRingWidth" format="dimension" />
-    </declare-styleable>
     <!--CropImageView-->
     <declare-styleable name="CropImageView">
-        <attr name="imgSrc" format="reference" />
+        <attr name="imgSrc" format="reference"/>
         <attr name="cropMode">
             <enum name="ratio_fit_image" value="0"/>
             <enum name="ratio_4_3" value="1"/>

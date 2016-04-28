@@ -18,7 +18,6 @@
  * colors on the topmost layer of the stack are either added on
  * or reduced by one, depending on if they are on the right or
  * on the left side of the stack.
- *
  * @copyright: Enrique López Mañas
  * @license: Apache License 2.0
  */
@@ -27,13 +26,13 @@ package com.enrique.stackblur;
 import android.graphics.Bitmap;
 
 public interface BlurProcess {
-    /**
-     * Process the given image, blurring by the supplied radius.
-     * If radius is 0, this will return original
-     *
-     * @param original the bitmap to be blurred
-     * @param radius   the radius in pixels to blur the image
-     * @return the blurred version of the image.
-     */
-    Bitmap blur(Bitmap original, float radius);
+  /**
+   * Process the given image, blurring by the supplied radius.
+   * If radius is 0, this will return original
+   *
+   * @param original the bitmap to be blurred
+   * @param radius   the radius in pixels to blur the image
+   * @return the blurred version of the image.
+   */
+  Bitmap blur(Bitmap original, float radius);
 }

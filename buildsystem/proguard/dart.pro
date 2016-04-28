@@ -6,8 +6,3 @@
 #for dart 2.0 only
 -keep class **Henson { *; }
 -keep class **$$IntentBuilder { *; }
-
-
-#if you use it
-#see Parceler's github page
-#for specific proguard instructions
