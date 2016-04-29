@@ -73,8 +73,8 @@ public class CropActivity extends BaseActivity implements CropActivityView {
     } else if (viewId == R.id.btnCancelCrop) onResult(null);
   }
 
-  @Override public void onResult(@Nullable Uri uri) {
-    if (uri != null) {
+  @Override public void onResult(Uri uri) {
+    if (uri != Uri.EMPTY) {
       setResult(Activity.RESULT_OK, new Intent().setData(uri));
     } else {
       setResult(Activity.RESULT_CANCELED);

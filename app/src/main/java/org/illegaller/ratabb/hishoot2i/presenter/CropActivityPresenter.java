@@ -46,7 +46,7 @@ public class CropActivityPresenter implements IPresenter<CropActivityView> {
 
       @Override public void onError(Throwable e) {
         CrashLog.logError("doSaveCrop", e);
-        view.onResult(null);
+        view.onResult(Uri.EMPTY);
       }
     });
   }
