@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.os.Build.VERSION_CODES.HONEYCOMB;
 import static org.illegaller.ratabb.hishoot2i.AppConstants.getHishootDir;
 
 public class Utils {
@@ -212,13 +213,13 @@ public class Utils {
     if (Utils.isAvailable(context, intent)) context.startActivity(intent);
   }
 
-  @TargetApi(11) public static Intent intentShareImage(final String title, final Uri imageUri) {
+  @TargetApi(HONEYCOMB) public static Intent intentShareImage(final String title, final Uri imageUri) {
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("image/*");
     intent.putExtra(Intent.EXTRA_STREAM, imageUri);
     Intent chooser = Intent.createChooser(intent, title);
     int flag = Intent.FLAG_ACTIVITY_NEW_TASK;
-    if (DeviceUtils.isHoneycomb()) flag |= Intent.FLAG_ACTIVITY_CLEAR_TASK;
+    if (DeviceUtils.isCompatible(HONEYCOMB)) flag |= Intent.FLAG_ACTIVITY_CLEAR_TASK;
     chooser.addFlags(flag);
     return chooser;
   }

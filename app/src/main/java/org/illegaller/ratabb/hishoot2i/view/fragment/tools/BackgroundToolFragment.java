@@ -27,6 +27,8 @@ import org.illegaller.ratabb.hishoot2i.events.EventPipette;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
+import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
+import org.illegaller.ratabb.hishoot2i.utils.FileUtils;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.CropActivity;
@@ -41,7 +43,7 @@ import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_B
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_CROP_ENABLE;
 
 public class BackgroundToolFragment extends BaseToolFragment
-    implements SeekBar.OnSeekBarChangeListener, ColorPickerDialog.ColorChangeListener {
+    implements SeekBar.OnSeekBarChangeListener {
   public static final int REQ_IMAGE_BG = 0x03;
   public static final int REQ_IMAGE_CROP_BG = 0x04;
   @BindView(R.id.cbImage) SwitchCompat cbImage;
@@ -111,19 +113,15 @@ public class BackgroundToolFragment extends BaseToolFragment
     } else if (cb == cbCrop) cropEnableTray.set(check);
   }
 
-  @Override public void onColorChange(DialogInterface dialog, int color) {
-    colorTray.set(color);
-    cpfMixer.setColor(color);
-    cpfPipette.setColor(color);
-    EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
-  }
-
-  @OnClick({
-      R.id.img_config_bg, R.id.cpfMixer, R.id.cpfPipette
-  }) void onClick(View view) {
+  @OnClick({ R.id.img_config_bg, R.id.cpfMixer, R.id.cpfPipette }) void onClick(View view) {
     if (view == cpfMixer) {
       new ColorPickerDialog.Builder().colorInit(colorTray.get())
-          .listener(this)
+          .listener((DialogInterface dialog, int color) -> {
+            colorTray.set(color);
+            cpfMixer.setColor(color);
+            cpfPipette.setColor(color);
+            EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
+          })
           .create()
           .show(getFragmentManager(), ColorPickerDialog.TAG);
     } else if (view == cpfPipette) {
@@ -139,7 +137,19 @@ public class BackgroundToolFragment extends BaseToolFragment
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode != Activity.RESULT_OK) return;
     if (requestCode == REQ_IMAGE_CROP_BG) {
-      String imagePath = Utils.getStringFromUri(getActivity(), data.getData());
+      String imagePath = null;
+      try {
+        imagePath = FileUtils.getPath(getActivity(), data.getData());
+      } catch (Exception e) {
+        CrashLog.logError("imagePath null", e);
+      }
+      if (imagePath == null) {
+        /*cancel cropping :/*/
+        EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.BG, data.getDataString()));
+        return;
+      }
+
+      /*Utils.getStringFromUri(getActivity(), data.getData());*/
       Intent intent =
           CropActivity.getIntent(getActivity(), UILHelper.stringFiles(new File(imagePath)),
               bgPoint);
