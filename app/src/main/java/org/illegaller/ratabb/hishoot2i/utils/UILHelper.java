@@ -28,7 +28,7 @@ import java.io.InputStream;
 import org.illegaller.ratabb.hishoot2i.BuildConfig;
 
 /**
- * Universal Image Loader Helper
+ * <b>UIL: Universal Image Loader</b> Helper
  */
 public class UILHelper {
   private static final String FILES = "file://";
@@ -38,22 +38,48 @@ public class UILHelper {
 
   private UILHelper() { /*no instance*/ }
 
+  /**
+   * Image path from app template
+   *
+   * @param templateId packageName app template.
+   * @param resId drawable resources identity
+   * @return {@linkplain String} <b>template_app://{@code templateId/resId }</b>
+   */
   public static String stringTemplateApp(String templateId, @DrawableRes int resId) {
     return TEMPLATE_APP + templateId + SEPARATOR + resId;
   }
 
+  /**
+   * Image path from default template
+   *
+   * @param resId drawable resources identity
+   * @return {@linkplain String}  <b>drawable://{@code resId}</b>
+   */
   public static String stringDrawables(@DrawableRes int resId) {
     return DRAWABLES + resId;
   }
 
+  /**
+   * Image path from user storage
+   *
+   * @param file image file
+   * @return {@linkplain String}  <b>file://{@code absolute-path-of-file}</b>
+   */
   public static String stringFiles(File file) {
     return FILES + file.getAbsolutePath();
   }
 
+  /**
+   * Initialize <b>UIL</b> with customize configuration
+   *
+   * @param context context from app
+   * @param width device width
+   * @param height device height
+   */
   public static void init(@NonNull final Context context, int width, int height) {
     final File cacheDir = StorageUtils.getCacheDirectory(context);
     DiskCache diskCache = null;
-    long cacheMaxSize = 50 * 1024 * 1024;
+    long cacheMaxSize = 50 * 1024 * 1024; //50MB
     try {
       diskCache = new LruDiskCache(cacheDir, new HashCodeFileNameGenerator(), cacheMaxSize);
     } catch (IOException e) {
@@ -83,22 +109,23 @@ public class UILHelper {
     DiskCache diskCache = null;
     long result = 0L;
     try {
-      diskCache = ImageLoader.getInstance().getDiskCache();
+      diskCache = UILHelper.diskCache();
     } catch (IllegalStateException e) {
       CrashLog.logError("diskCache", e);
     }
     if (diskCache != null) {
-      for (File cache : diskCache.getDirectory().listFiles()) {
-        result += cache.length();
-      }
-      return result;
+      for (File cache : diskCache.getDirectory().listFiles()) result += cache.length();
     }
     return result;
   }
 
-  public static void clearDiskCache() throws IllegalStateException {
-    DiskCache diskCache = ImageLoader.getInstance().getDiskCache();
+  public static void clearCache() throws IllegalStateException {
+    DiskCache diskCache = UILHelper.diskCache();
     if (diskCache != null) diskCache.clear();
+  }
+
+  static DiskCache diskCache() throws IllegalStateException {
+    return ImageLoader.getInstance().getDiskCache();
   }
 
   @Nullable public static Bitmap loadImage(final String pathImage) {
@@ -125,8 +152,9 @@ public class UILHelper {
   }
 
   /**
-   * {@link UILHelper#stringTemplateApp(String, int)}
-   * http://stackoverflow.com/a/28010629
+   *  ***
+   * {@link UILHelper#stringTemplateApp(String, int)}<br>
+   * inspired by: http://stackoverflow.com/a/28010629
    */
   static class TemplateImageDownloader extends BaseImageDownloader {
 

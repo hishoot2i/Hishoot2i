@@ -53,7 +53,7 @@ public class CropActivity extends BaseActivity implements CropActivityView {
   }
 
   @Override protected int getToolbarId() {
-    return 0;
+    return View.NO_ID;
   }
 
   @Override protected void setupComponent(ApplicationComponent component) {

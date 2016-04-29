@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import butterknife.ButterKnife;
@@ -26,8 +27,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     contentView = ButterKnife.findById(this, android.R.id.content);
     ButterKnife.bind(this);
     setupWindowAnimAndTransparentStatusBar();
-    if (getToolbarId() != 0) {
-      setSupportActionBar((Toolbar) ButterKnife.findById(this, getToolbarId()));
+    if (getToolbarId() != View.NO_ID) {
+      setSupportActionBar(ButterKnife.findById(this, getToolbarId()));
       ActionBar actionBar = getSupportActionBar();
       if (actionBar != null) setupToolbar(actionBar);
     }

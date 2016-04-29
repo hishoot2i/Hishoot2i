@@ -1,11 +1,11 @@
 package org.illegaller.ratabb.hishoot2i.presenter;
 
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
+import butterknife.ButterKnife;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
@@ -34,11 +34,11 @@ public class LauncherActivityPresenter
     this.mView = null;
   }
 
-  public void onSaveInstanceState(Bundle outState) {
+  public void bottomBarSaveState(Bundle outState) {
     mBottomBar.onSaveInstanceState(outState);
   }
 
-  public void attachBottomBar(CoordinatorLayout layout, View view, Bundle bundle) {
+  public void attachBottomBar(Activity activity, Bundle bundle) {
     final int[][] sResource = {
         { R.drawable.ic_book_black_24dp, R.string.installed },
         { R.drawable.ic_favorite_black_24dp, R.string.favorite },
@@ -50,7 +50,8 @@ public class LauncherActivityPresenter
       Drawable icon = ResUtils.getVectorDrawable(mView.context(), sResource[i][0]);
       items[i] = new BottomBarTab(icon, sResource[i][1]);
     }
-    mBottomBar = BottomBar.attachShy(layout, view, bundle);
+    mBottomBar = BottomBar.attachShy(ButterKnife.findById(activity, R.id.coordinator),
+        ButterKnife.findById(activity, R.id.flContent), bundle);
     mBottomBar.setItems(items);
     mBottomBar.setOnTabClickListener(this);
     int colorAccent = ContextCompat.getColor(this.mView.context(), R.color.colorAccent);

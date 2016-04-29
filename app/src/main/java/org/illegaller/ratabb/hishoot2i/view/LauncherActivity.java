@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -31,8 +30,6 @@ public class LauncherActivity extends BaseActivity
     implements LauncherActivityView, PermissionHelper.Callback {
   @BindView(R.id.progress_bar) View mProgressBar;
   @BindView(R.id.search_view) MaterialSearchView mSearchView;
-  @BindView(R.id.coordinator) CoordinatorLayout coordinator;
-  @BindView(R.id.flContent) View content;
   @Inject LauncherActivityPresenter mPresenter;
 
   public static Intent getIntent(Context context) {
@@ -47,7 +44,7 @@ public class LauncherActivity extends BaseActivity
     setTheme(R.style.HishootTheme);
     super.onCreate(savedInstanceState);
     mPresenter.attachView(this);
-    mPresenter.attachBottomBar(coordinator, content, savedInstanceState);
+    mPresenter.attachBottomBar(this, savedInstanceState);
     PermissionHelper.storagePermission().with(this, this).build().runRequest();
   }
 
@@ -74,7 +71,7 @@ public class LauncherActivity extends BaseActivity
 
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    mPresenter.onSaveInstanceState(outState);
+    mPresenter.bottomBarSaveState(outState);
   }
 
   @Override protected void onStart() {

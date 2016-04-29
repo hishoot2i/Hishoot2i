@@ -11,8 +11,6 @@ import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.compenent.DaggerApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.ApplicationModule;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
@@ -35,21 +33,19 @@ public class HishootApplication extends Application {
   @Inject @Named(DEVICE_NAME) StringTray deviceNameTray;
   @Inject @Named(DEVICE_OS) StringTray deviceOSTray;
   private ApplicationComponent applicationComponent;
-  private RefWatcher mWatcher;
+/*  private RefWatcher mWatcher;*/
 
   public static HishootApplication get(Context context) {
     return (HishootApplication) context.getApplicationContext();
   }
 
-  public RefWatcher getWatcher() {
+/*  public RefWatcher getWatcher() {
     return mWatcher;
-  }
+  }*/
 
   public synchronized ApplicationComponent getApplicationComponent() {
     if (applicationComponent == null) {
-      applicationComponent = DaggerApplicationComponent.builder()
-          .applicationModule(new ApplicationModule(this))
-          .build();
+      applicationComponent = ApplicationComponent.Initializer.init(this);
     }
     return applicationComponent;
   }
@@ -59,13 +55,13 @@ public class HishootApplication extends Application {
     if (BuildConfig.DEBUG) AndroidDevMetrics.initWith(this);
     setupInjection();
     setupCAOC();
-    CrashLog.setCrashlyticsEnable(crashlyticEnableTray.get());
+    CrashLog.setAnalyticData(crashlyticEnableTray.get());
     if (BuildConfig.USE_CRASHLYTICS && crashlyticEnableTray.get()) {
-      CrashLog.setCrashlyticsEnable(true);
+      CrashLog.setAnalyticData(true);
       Fabric.with(this, new Crashlytics());
     }
     UILHelper.init(this, deviceWidthTray.get(), deviceHeightTray.get());
-    mWatcher = LeakCanary.install(this);
+   /* mWatcher = LeakCanary.install(this);*/
     logCount();
   }
 

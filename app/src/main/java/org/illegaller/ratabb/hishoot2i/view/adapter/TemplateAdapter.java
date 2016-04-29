@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -41,8 +42,8 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
   }
 
   @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.row_template, parent, false);
+    View view =
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.row_template, parent, false);
     return new ViewHolder(view);
   }
 
@@ -123,6 +124,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     @BindView(R.id.idSecondary) TextView idSecondary;
     @BindView(R.id.favIcon) AppCompatImageView favIcon;
     @BindView(R.id.deleteLayout) View deleteLayout;
+    @BindDimen(R.dimen.rectangle_size) int recSize;
     private boolean isFav = false;
     private Template template;
     private boolean isOpen = false;
@@ -130,9 +132,9 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     public ViewHolder(View view) {
       super(view);
       ButterKnife.bind(this, itemView);
-      int rectangleSize = ResUtils.getDimensionPixelSize(view.getContext(), R.dimen.rectangle_size);
-      previewPrimary.setBackground(new AlphaPatternDrawable(rectangleSize));
-      previewSecondary.setBackground(new AlphaPatternDrawable(rectangleSize));
+      AlphaPatternDrawable drawable = new AlphaPatternDrawable(recSize);
+      previewPrimary.setBackground(drawable);
+      previewSecondary.setBackground(drawable);
       swipeRevealLayout.setSwipeListener(new SwipeRevealLayout.SimpleSwipeListener() {
         @Override public void onOpened(SwipeRevealLayout view) {
           isOpen = true;
@@ -174,8 +176,6 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ViewHo
     }
 
     @OnClick(R.id.deleteLayout) void onClickDelete(View view) {
-      // TODO: send to fragment to startForResultActivity ?
-
       EventBus.getDefault().post(new EventUninstallTemplate(template.id));
     }
 

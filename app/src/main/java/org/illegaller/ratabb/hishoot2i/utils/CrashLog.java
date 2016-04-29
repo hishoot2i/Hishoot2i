@@ -12,7 +12,7 @@ public class CrashLog {
   static String className;
   static String methodName;
   static int lineNumber;
-  private static boolean isCrashlyticsEnable = false;
+  private static boolean sANALYTIC_DATA = false;
 
   private CrashLog() { /*no instance*/ }
 
@@ -27,7 +27,7 @@ public class CrashLog {
   }
 
   static void doLog(int priority, @Nullable String msg, @Nullable Throwable e) {
-    if (BuildConfig.USE_CRASHLYTICS && isCrashlyticsEnable) {
+    if (BuildConfig.USE_CRASHLYTICS && sANALYTIC_DATA) {
       if (!Fabric.isInitialized()) return;
       CrashlyticsCore core = Crashlytics.getInstance().core;
       if (msg != null) core.log(priority, className, createLog(msg));
@@ -55,7 +55,7 @@ public class CrashLog {
     lineNumber = sElements[1].getLineNumber();
   }
 
-  public static void setCrashlyticsEnable(boolean enable) {
-    isCrashlyticsEnable = enable;
+  public static void setAnalyticData(boolean enable) {
+    sANALYTIC_DATA = enable;
   }
 }

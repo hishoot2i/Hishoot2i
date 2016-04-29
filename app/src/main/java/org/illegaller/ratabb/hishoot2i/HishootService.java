@@ -37,6 +37,7 @@ public class HishootService extends IntentService {
   @InjectExtra(KEY_TEMPLATE) Template template;
   @Inject NotificationManager notificationManager;
   private NotificationCompat.Builder notificationBuilder;
+  private Handler mHandler = new Handler(Looper.getMainLooper());
   private HishootProcess.Callback saveCallback = new HishootProcess.Callback() {
     private final Context context = HishootService.this;
 
@@ -76,11 +77,7 @@ public class HishootService extends IntentService {
     }
 
     @Override public void doneProcess(Bitmap result, final Uri uri) {
-      postRunnableMain(new Runnable() {
-        @Override public void run() {
-          EventBus.getDefault().post(new EventSave(uri));
-        }
-      });
+      postRunnableMain(() -> EventBus.getDefault().post(new EventSave(uri)));
       final String share = getString(R.string.share);
       final Intent sharingIntent = Utils.intentShareImage(share, uri);
       notificationBuilder.addAction(android.R.drawable.ic_menu_share, share,
@@ -102,22 +99,14 @@ public class HishootService extends IntentService {
   };
   private HishootProcess.Callback previewCallback = new HishootProcess.Callback() {
 
-    @Override public void startProcess(long startTime) {/*no-op*/ }
+    @Override public void startProcess(long startTime) { /*no-op*/ }
 
     @Override public void failProcess(final String message, final String extra) {
-      postRunnableMain(new Runnable() {
-        @Override public void run() {
-          EventBus.getDefault().post(new EventPreview(null, message, extra));
-        }
-      });
+      postRunnableMain(() -> EventBus.getDefault().post(new EventPreview(null, message, extra)));
     }
 
     @Override public void doneProcess(final Bitmap result, @Nullable final Uri uri) {
-      postRunnableMain(new Runnable() {
-        @Override public void run() {
-          EventBus.getDefault().post(new EventPreview(result, null, null));
-        }
-      });
+      postRunnableMain(() -> EventBus.getDefault().post(new EventPreview(result, null, null)));
     }
   };
 
@@ -151,7 +140,7 @@ public class HishootService extends IntentService {
   }
 
   void postRunnableMain(Runnable runnable) {
-    new Handler(Looper.getMainLooper()).post(runnable);
+    mHandler.post(runnable);
   }
 
   @Override public void onCreate() {

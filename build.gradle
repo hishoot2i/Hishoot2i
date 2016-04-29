@@ -1,13 +1,9 @@
 apply from: 'buildsystem/dependencies.gradle'
 buildscript {
-    repositories { jcenter() }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
-    }
+  repositories { jcenter() }
+  dependencies { classpath 'com.android.tools.build:gradle:2.1.0' }
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir
+  delete rootProject.buildDir
 }

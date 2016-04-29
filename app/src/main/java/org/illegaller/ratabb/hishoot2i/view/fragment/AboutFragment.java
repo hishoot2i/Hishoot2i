@@ -158,7 +158,7 @@ public class AboutFragment extends PreferenceFragmentCompat
     return Observable.create(new Observable.OnSubscribe<String>() {
       @Override public void call(Subscriber<? super String> subscriber) {
         try {
-          UILHelper.clearDiskCache();
+          UILHelper.clearCache();
           subscriber.onNext(sizeCache());
           subscriber.onCompleted();
         } catch (Exception e) {

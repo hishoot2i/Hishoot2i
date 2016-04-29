@@ -1,14 +1,28 @@
 buildscript {
-  repositories { maven { url "https://maven.fabric.io/public" } }
-  dependencies { classpath "io.fabric.tools:gradle:1.21.5" }
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven { url "https://maven.fabric.io/public" }
+  }
+  dependencies {
+    classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
+    classpath "io.fabric.tools:gradle:1.21.5"
+  }
 }
 
 apply plugin: "com.android.application"
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: "com.neenbedankt.android-apt"
 apply plugin: "com.frogermcs.androiddevmetrics"
 apply plugin: "io.fabric"
 
-repositories { maven { url "https://maven.fabric.io/public" } }
+repositories {
+  jcenter()
+  mavenCentral()
+  maven { url "https://maven.fabric.io/public" }
+}
 
 def versionMajor = 1
 def versionMinor = 1
@@ -20,7 +34,10 @@ def appName = "Hishoot2i"
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
-
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
   packagingOptions {
     exclude "META-INF/services/javax.annotation.processing.Processor"
     exclude "META-INF/LICENSE.txt"
@@ -64,6 +81,7 @@ android {
       minifyEnabled false
       buildConfigField "boolean", "USE_CRASHLYTICS", "false"
       ext.enableCrashlytics = false
+      debuggable true
     }
     release {
       manifestPlaceholders = [fabric_api_key: loadFromProp("fabric.properties", "apiKey")]
@@ -78,6 +96,7 @@ android {
       proguardFiles(proguardCollection)
       buildConfigField "boolean", "USE_CRASHLYTICS", "true"
       ext.enableCrashlytics = true
+      debuggable false
     }
   }
   dexOptions { javaMaxHeapSize "2g" }
@@ -117,6 +136,7 @@ dependencies {
   compile appDependencies.rxAndroid
   compile appDependencies.swipeRevealLayout
   compile appDependencies.appUpdater
+  retrolambdaConfig appDependencies.jakewhartonLambda
 }
 
 String loadFromProp(String pathProp, String key) {

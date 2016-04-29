@@ -20,6 +20,8 @@ ext {
   //group
   supportAndroid = 'com.android.support'
   jakewharton = 'com.jakewharton'
+  jakewhartonLambda = 'com.jakewharton.retrolambda'
+  //'com.jakewharton.retrolambda:retrolambda:2.1.0-jake2'
   leakcanary = 'com.squareup.leakcanary'
   gson = 'com.google.code.gson'
   caoc = 'cat.ereza'
@@ -107,8 +109,9 @@ ext {
                   retrofit2                : dep(retrofit2, 'retrofit', retrofitVersion),
                   retrofit2AdapterRxjava   : dep(retrofit2, 'adapter-rxjava',
                       retrofitVersion),
-                  retrofit2ConverterGson   : dep(retrofit2, 'converter-gson',
-                      retrofitVersion),
+                  retrofit2ConverterGson   : dep(retrofit2, 'converter-gson', retrofitVersion),
+                  jakewhartonLambda        : dep(jakewhartonLambda, 'retrolambda',
+                      '2.1.0-jake2'),
                   swipeRevealLayout        : dep(swipeRevealLayout, 'swipe-reveal-layout',
                       '1.0.0')]
 }

@@ -87,10 +87,6 @@ import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.TEMPLATE_I
     return new IntTray(tray, DEVICE_WIDTH, DeviceUtils.getDeviceWidth());
   }
 
-/*  @Provides @Named(DEVICE_DENSITY) IntTray provideDeviceDensity(AppPreferences tray) {
-    return new IntTray(tray, DEVICE_DENSITY, DeviceUtils.getDensity());
-  }*/
-
   @Provides @Named(DEVICE_NAME) StringTray provideDeviceName(AppPreferences tray) {
     return new StringTray(tray, DEVICE_NAME, DeviceUtils.getDeviceName());
   }

@@ -31,6 +31,7 @@ public class HistoryFragment extends BaseFragment implements HistoryFragmentView
   private HistoryAdapter adapter;
   private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
     @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+      if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return;
       for (int i = 0, count = recyclerView.getChildCount(); i < count; i++) {
         View childAt = recyclerView.getChildAt(i);
         HistoryAdapter.ViewHolder viewHolder =
@@ -109,11 +110,15 @@ public class HistoryFragment extends BaseFragment implements HistoryFragmentView
         .setTitle("Confirm Deletion")
         .setMessage("This action cannot be undone.\nAre you sure?")
         .setNegativeButton(android.R.string.cancel, null)
-        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+/*        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialogInterface, int i) {
             boolean delete = file.delete();
             if (delete) presenter.perform();
           }
+        })*/
+        .setPositiveButton(android.R.string.ok, (DialogInterface dialog, int i) -> {
+          boolean delete = file.delete();
+          if (delete) presenter.perform();
         })
         .show();
   }

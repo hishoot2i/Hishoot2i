@@ -43,8 +43,7 @@ import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_TEXT
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_TYPEFACE;
 
 public class BadgeToolFragment extends BaseToolFragment
-    implements SeekBar.OnSeekBarChangeListener, AdapterView.OnItemSelectedListener, TextWatcher,
-    ColorPickerDialog.ColorChangeListener {
+    implements SeekBar.OnSeekBarChangeListener, AdapterView.OnItemSelectedListener, TextWatcher {
   @BindView(R.id.cbHide) SwitchCompat cbHide;
   @BindView(R.id.layout_badge) View vBadge;
   @BindView(R.id.seekBar_BadgeSize) AppCompatSeekBar sbSize;
@@ -153,15 +152,13 @@ public class BadgeToolFragment extends BaseToolFragment
     }
   }
 
-  @Override public void onColorChange(DialogInterface dialog, int color) {
-    badgeColorTray.set(color);
-    cpBadge.setColor(color);
-    EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
-  }
-
   @OnClick(R.id.cpBadge) void onClick(View view) {
     new ColorPickerDialog.Builder().colorInit(badgeColorTray.get())
-        .listener(this)
+        .listener((DialogInterface dialog, int color) -> {
+          badgeColorTray.set(color);
+          cpBadge.setColor(color);
+          EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
+        })
         .create()
         .show(getFragmentManager(), ColorPickerDialog.TAG);
   }

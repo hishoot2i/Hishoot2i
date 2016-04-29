@@ -69,10 +69,8 @@ public class PermissionHelper {
     if (SDK_INT >= M && checkSelfPermission()) {
       if (shouldShowRequestPermissionRationale()) {
         Snackbar.make(snackView, rationale, Snackbar.LENGTH_INDEFINITE)
-            .setAction(android.R.string.ok, new android.view.View.OnClickListener() {
-              @Override public void onClick(android.view.View view) {
-                requestPermission();
-              }
+            .setAction(android.R.string.ok, (android.view.View view) -> {
+              requestPermission();
             })
             .show();
       }

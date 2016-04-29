@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.squareup.leakcanary.RefWatcher;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.HishootApplication;
 import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.compenent.TemplateComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.TemplateModule;
 
 public abstract class BaseFragment extends Fragment {
   protected Unbinder unbinder;
+  @Inject protected RefWatcher refWatcher;
 
   public Context context() {
     return getActivity();
@@ -24,7 +25,9 @@ public abstract class BaseFragment extends Fragment {
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setupComponent( HishootApplication.get(context()).getApplicationComponent());
+    ApplicationComponent component = HishootApplication.get(context()).getApplicationComponent();
+    component.inject(this);
+    setupComponent(component);
   }
 
   @Nullable @Override
@@ -36,7 +39,8 @@ public abstract class BaseFragment extends Fragment {
   }
 
   @Override public void onDestroy() {
-    HishootApplication.get(context()).getWatcher().watch(this);
+   /* HishootApplication.get(context()).getWatcher().watch(this);*/
+    refWatcher.watch(this);
     super.onDestroy();
   }
 
@@ -47,5 +51,5 @@ public abstract class BaseFragment extends Fragment {
 
   @LayoutRes protected abstract int layoutRes();
 
-  protected abstract void setupComponent(ApplicationComponent appComponent     );
+  protected abstract void setupComponent(ApplicationComponent appComponent);
 }

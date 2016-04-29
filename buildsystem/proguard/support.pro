@@ -1,5 +1,9 @@
 ## Support Widget
 -keep public class android.support.v4.widget.** { *; }
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.** { *; }
+-dontwarn android.support.**
+-dontnote android.support.**
 #v7-appcompat
 -keep public class android.support.v7.widget.** { *; }
 -keep public class android.support.v7.internal.widget.** { *; }

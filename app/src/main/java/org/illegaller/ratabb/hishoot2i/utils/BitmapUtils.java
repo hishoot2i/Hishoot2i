@@ -28,6 +28,7 @@ import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray;
 
+import static android.os.Build.VERSION_CODES.HONEYCOMB_MR1;
 import static org.illegaller.ratabb.hishoot2i.AppConstants.DEFAULT_TEMPLATE_ID;
 
 public class BitmapUtils {
@@ -101,11 +102,11 @@ public class BitmapUtils {
     switch (template.type) {
       case APK_V1:
         if (ss != null) BitmapUtils.drawPerspective(canvas, ss, template);
-          if (template.id.equals(DEFAULT_TEMPLATE_ID)) {
-              frame = BitmapUtils.getNinePatch(context, R.drawable.frame1, templateW, templateH);
-          } else {
-              frame = UILHelper.loadImage(template.frameFile, template.templatePoint);
-          }
+        if (template.id.equals(DEFAULT_TEMPLATE_ID)) {
+          frame = BitmapUtils.getNinePatch(context, R.drawable.frame1, templateW, templateH);
+        } else {
+          frame = UILHelper.loadImage(template.frameFile, template.templatePoint);
+        }
         if (frame != null) {
           Bitmap bitmap = BitmapUtils.matchSizes(frame, templateW, templateH);
           if (bitmap != null) BitmapUtils.drawBitmapToCanvas(canvas, bitmap, matrix);
@@ -146,9 +147,9 @@ public class BitmapUtils {
         if (ss != null) BitmapUtils.drawPerspective(canvas, ss, template);
         if (template.glareFile != null) {
           glare = UILHelper.loadImage(template.glareFile);
-            if (template.overlayOffset != null) {
-                matrix.postTranslate(template.overlayOffset.x, template.overlayOffset.y);
-            }
+          if (template.overlayOffset != null) {
+            matrix.postTranslate(template.overlayOffset.x, template.overlayOffset.y);
+          }
           if (glare != null) BitmapUtils.drawBitmapToCanvas(canvas, glare, matrix);
         }
         break;
@@ -193,16 +194,16 @@ public class BitmapUtils {
 
   @Nullable private static Bitmap matchSizes(@NonNull final Bitmap bitmap, int targetW, int targetH)
       throws OutOfMemoryError {
-      if (bitmap.getWidth() == targetW && bitmap.getHeight() == targetH) {
-          return bitmap;
-      } else {
-          try {
-              return Bitmap.createScaledBitmap(bitmap, targetW, targetH, true);
-          } catch (OutOfMemoryError e) {
-              CrashLog.logError("target w:" + targetW + " h:" + targetH, e);
-              return null;
-          }
+    if (bitmap.getWidth() == targetW && bitmap.getHeight() == targetH) {
+      return bitmap;
+    } else {
+      try {
+        return Bitmap.createScaledBitmap(bitmap, targetW, targetH, true);
+      } catch (OutOfMemoryError e) {
+        CrashLog.logError("target w:" + targetW + " h:" + targetH, e);
+        return null;
       }
+    }
   }
 
   public static void drawBitmapToCanvas(@NonNull final Canvas canvas, @NonNull final Bitmap bitmap,
@@ -275,7 +276,7 @@ public class BitmapUtils {
   }
 
   /** http://github.com/yesidlazaro/BadgedImageView */
-  @TargetApi(12) public static Bitmap bitmapBadge(@NonNull final Context context,
+  @TargetApi(HONEYCOMB_MR1) public static Bitmap bitmapBadge(@NonNull final Context context,
       @NonNull final String badgeText, @ColorInt int badgeColor, int badgeSize) {
     final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
     final float density = displayMetrics.density;
@@ -293,7 +294,7 @@ public class BitmapUtils {
     final int height = (int) (padding + textBounds.height() + padding);
     //construct canvas
     Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-    if (DeviceUtils.isHoneycombMR1()) bitmap.setHasAlpha(true);
+    if (DeviceUtils.isCompatible(HONEYCOMB_MR1)) bitmap.setHasAlpha(true);
     final Canvas canvas = new Canvas(bitmap);
     //background
     final Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

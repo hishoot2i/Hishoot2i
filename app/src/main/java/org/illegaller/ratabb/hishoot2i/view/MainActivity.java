@@ -165,11 +165,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     final Uri uri = event.uri;
     Utils.galleryAddPic(this, uri);
     Snackbar.make(mFab, R.string.has_saved, Snackbar.LENGTH_SHORT)
-        .setAction(R.string.open, new View.OnClickListener() {
-          @Override public void onClick(View view) {
-            Utils.openImageView(MainActivity.this, uri);
-          }
-        })
+        .setAction(R.string.open, view -> Utils.openImageView(MainActivity.this,uri))
         .show();
   }
 

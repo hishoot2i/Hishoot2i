@@ -49,6 +49,7 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
 
   private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
     @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+      if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return;
       for (int i = 0, count = recyclerView.getChildCount(); i < count; i++) {
         View childAt = recyclerView.getChildAt(i);
         TemplateAdapter.ViewHolder viewHolder =
