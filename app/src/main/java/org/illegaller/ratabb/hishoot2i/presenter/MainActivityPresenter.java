@@ -26,7 +26,6 @@ import org.illegaller.ratabb.hishoot2i.model.ImageReceive;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.FileUtils;
 import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
 import org.illegaller.ratabb.hishoot2i.utils.SimpleObserver;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
@@ -76,15 +75,7 @@ public class MainActivityPresenter
   }
 
   public void handleImageReceive(Uri imageUri, final String templateId) {
-    String stringUri = null;
-    try {
-      stringUri = FileUtils.getPath(mView.context(), imageUri);
-    } catch (Exception e) {
-      CrashLog.logError("", e);
-      stringUri = Utils.getStringFromUri(mView.context(), imageUri);
-    }
-    Utils.checkNotNull(stringUri, "<null>");
-    /*Utils.getStringFromUri(mView.context(), imageUri);*/
+    String stringUri = Utils.getStringFromUri(mView.context(), imageUri);
     final String sImagePath = UILHelper.stringFiles(new File(stringUri));
     templateManager.getTemplateList(TemplateManager.NO_FAV)
         .subscribe(new SimpleObserver<List<Template>>() {
