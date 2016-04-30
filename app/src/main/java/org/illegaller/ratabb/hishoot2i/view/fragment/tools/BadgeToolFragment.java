@@ -1,6 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.view.fragment.tools;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -25,7 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.FontProvider;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ToolFragmentComponent;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
@@ -33,6 +32,7 @@ import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
 import org.illegaller.ratabb.hishoot2i.utils.FontUtils;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
+import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.ColorPickerDialog;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
 
@@ -42,7 +42,7 @@ import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_SIZE
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_TEXT;
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_TYPEFACE;
 
-public class BadgeToolFragment extends BaseToolFragment
+public class BadgeToolFragment extends BaseFragment
     implements SeekBar.OnSeekBarChangeListener, AdapterView.OnItemSelectedListener, TextWatcher {
   @BindView(R.id.cbHide) SwitchCompat cbHide;
   @BindView(R.id.layout_badge) View vBadge;
@@ -67,12 +67,12 @@ public class BadgeToolFragment extends BaseToolFragment
     return fragment;
   }
 
-  @Override protected void setupComponent(ToolFragmentComponent component) {
-    component.inject(this);
+  @Override protected int layoutRes() {
+    return R.layout.bottom_tool_badge;
   }
 
-  @Override int getLayoutRes() {
-    return R.layout.bottom_tool_badge;
+  @Override protected void setupComponent(ApplicationComponent appComponent) {
+    appComponent.inject(this);
   }
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,13 +153,10 @@ public class BadgeToolFragment extends BaseToolFragment
   }
 
   @OnClick(R.id.cpBadge) void onClick(View view) {
-    new ColorPickerDialog.Builder().colorInit(badgeColorTray.get())
-        .listener((DialogInterface dialog, int color) -> {
-          badgeColorTray.set(color);
-          cpBadge.setColor(color);
-          EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
-        })
-        .create()
-        .show(getFragmentManager(), ColorPickerDialog.TAG);
+    new ColorPickerDialog.Builder().colorInit(badgeColorTray.get()).listener((dialog, color) -> {
+      badgeColorTray.set(color);
+      cpBadge.setColor(color);
+      EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
+    }).create().show(getFragmentManager(), ColorPickerDialog.TAG);
   }
 }

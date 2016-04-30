@@ -39,7 +39,6 @@ public abstract class BaseFragment extends Fragment {
   }
 
   @Override public void onDestroy() {
-   /* HishootApplication.get(context()).getWatcher().watch(this);*/
     refWatcher.watch(this);
     super.onDestroy();
   }

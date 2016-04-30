@@ -5,24 +5,20 @@
 Hishoot2i *grepe* [**Hishoot**][hishoot] by [**JMKL**][jmkl]
 
 ## Content
-* [Changelog](https://github.com/ratabb/hishoot2i#changelog)
-* [Community](https://github.com/ratabb/hishoot2i#community)
-* [Developer](https://github.com/ratabb/hishoot2i#developer)
-* [Influences](https://github.com/ratabb/hishoot2i#influences)
-* [Library](https://github.com/ratabb/hishoot2i#library)
-* [Download](https://github.com/ratabb/hishoot2i#download)
-* [License](https://github.com/ratabb/hishoot2i#license)
+* [Changelog](#changelog)
+* [Community](#community)
+* [Developer](#developer)
+* [Influences](#influences)
+* [Library](#library)
+* [Download](#download)
+* [License](#license)
 
 ## Changelog
-**v1.1.1 (20160429)**
+###**v1.1.2 (20160501)**
 
-- switch (on/off) frame Template V2
-- template list slide to detail
-- background color pipette
-- option send analytic data
-- view saved file
-- add clear preview cache
-- publish app with Github release (app update)
+- fix bug's FC send image to Hishoot
+- fix bug's FC crop image from Document (API 19+)
+- test AppUpdater :v
 
 [**previous version**][4]
 
@@ -45,7 +41,7 @@ and [buildsystem/dependencies.gradle][10] *collection lib*
 local modification [Android StackBlur][stackblur]
 
 ## Download
-[![icon][launcher]][release]
+[**HERE**][release]
 
 ## License
     fcuk-op license: IDK 'n IDC
@@ -62,5 +58,4 @@ local modification [Android StackBlur][stackblur]
 [10]: buildsystem/dependencies.gradle
 [stackblur]: https://github.com/kikoso/android-stackblur
 [fbjmkl]: http://www.facebook.com/jimikill666
-[launcher]: app/src/main/res/mipmap-hdpi/ic_launcher.png
 [release]: https://github.com/ratabb/Hishoot2i/releases

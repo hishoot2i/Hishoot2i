@@ -26,7 +26,7 @@ repositories {
 
 def versionMajor = 1
 def versionMinor = 1
-def versionPatch = 1
+def versionPatch = 2
 def versionBuild = 0
 def buildTime = new Date().format("yyyyMMdd");
 def appName = "Hishoot2i"

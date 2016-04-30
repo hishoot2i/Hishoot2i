@@ -9,14 +9,24 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import java.io.File;
 
 import static android.os.Build.VERSION_CODES.KITKAT;
 
 public class FileUtils {
   private FileUtils() { /*no instance*/ }
 
+  @TargetApi(KITKAT) public static String getPath(final Context context, final Uri uri) {
+    final File f = new File(uri.getPath());
+    if (f.isFile()) {
+      return f.getAbsolutePath();
+    } else {
+      return FileUtils.getPathNonFile(context, uri);
+    }
+  }
+
   //http://stackoverflow.com/a/33014219
-  @Nullable @TargetApi(KITKAT) public static String getPath(final Context context, final Uri uri) {
+  @Nullable @TargetApi(KITKAT) static String getPathNonFile(final Context context, final Uri uri) {
     // DocumentProvider
     if (DeviceUtils.isCompatible(KITKAT) && DocumentsContract.isDocumentUri(context, uri)) {
       // ExternalStorageProvider

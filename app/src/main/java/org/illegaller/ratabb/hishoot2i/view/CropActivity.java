@@ -69,7 +69,7 @@ public class CropActivity extends BaseActivity implements CropActivityView {
   @OnClick({ R.id.btnOkCrop, R.id.btnCancelCrop }) void onClick(View view) {
     final int viewId = view.getId();
     if (viewId == R.id.btnOkCrop) {
-      presenter.performSaveCrop(mCropImageView.getCroppedBitmap());
+      presenter.performSaveCrop(mCropImageView);
     } else if (viewId == R.id.btnCancelCrop) onResult(null);
   }
 

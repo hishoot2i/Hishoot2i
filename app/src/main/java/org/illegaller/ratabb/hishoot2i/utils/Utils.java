@@ -7,11 +7,9 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -112,13 +110,16 @@ public class Utils {
     context.sendBroadcast(mediaScanIntent);
   }
 
-  public static String getStringFromUri(final Context context, final Uri uri) {
-    File f = new File(uri.getPath());
-    String result = (!f.isFile()) ? Utils.getImagePath(context, uri) : uri.getPath();
-    return (new File(result)).getAbsolutePath();
+ /*  public static String getStringFromUri(final Context context, final Uri uri) {
+    final File f = new File(uri.getPath());
+    if (f.isFile()) {
+      return f.getAbsolutePath();
+    } else {
+      return FileUtils.getPath(context, uri);
+    }
   }
 
-  static String getImagePath(final Context context, final Uri uri) {
+ static String getImagePath(final Context context, final Uri uri) {
     Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
     assert cursor != null;
     cursor.moveToFirst();
@@ -126,7 +127,7 @@ public class Utils {
     String result = cursor.getString(idx);
     cursor.close();
     return result;
-  }
+  }*/
 
   ////////////////////////////////////////////////
   public static boolean containsLowerCase(String from, String to) {
@@ -213,7 +214,8 @@ public class Utils {
     if (Utils.isAvailable(context, intent)) context.startActivity(intent);
   }
 
-  @TargetApi(HONEYCOMB) public static Intent intentShareImage(final String title, final Uri imageUri) {
+  @TargetApi(HONEYCOMB)
+  public static Intent intentShareImage(final String title, final Uri imageUri) {
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("image/*");
     intent.putExtra(Intent.EXTRA_STREAM, imageUri);

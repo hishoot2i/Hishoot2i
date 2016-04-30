@@ -11,6 +11,9 @@ import org.illegaller.ratabb.hishoot2i.model.template.builder.DefaultBuilder;
 import org.illegaller.ratabb.hishoot2i.utils.HishootProcess;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.AboutFragment;
+import org.illegaller.ratabb.hishoot2i.view.fragment.tools.BackgroundToolFragment;
+import org.illegaller.ratabb.hishoot2i.view.fragment.tools.BadgeToolFragment;
+import org.illegaller.ratabb.hishoot2i.view.fragment.tools.ScreenToolFragment;
 
 public interface ApplicationGraph {
   HishootApplication inject(HishootApplication application);
@@ -25,6 +28,12 @@ public interface ApplicationGraph {
 
   BaseFragment inject(BaseFragment fragment);
 
+  BackgroundToolFragment inject(BackgroundToolFragment fragment);
+
+  BadgeToolFragment inject(BadgeToolFragment fragment);
+
+  ScreenToolFragment inject(ScreenToolFragment fragment);
+
   TemplateComponent plus(TemplateModule module);
 
   AboutActivityComponent plus(AboutActivityModule module);
@@ -34,6 +43,4 @@ public interface ApplicationGraph {
   LauncherActivityComponent plus(LauncherActivityModule module);
 
   HistoryFragmentComponent plus(HistoryFragmentModule module);
-
-  ToolFragmentComponent plus();
 }

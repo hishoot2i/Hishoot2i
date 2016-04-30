@@ -25,7 +25,7 @@ public class AnimUtils {
   public static void height(final View view, int from, int to, long duration) {
     ValueAnimator animator = ValueAnimator.ofFloat(from, to);
     animator.setDuration(duration);
-    animator.addUpdateListener((ValueAnimator valueAnimator) -> {
+    animator.addUpdateListener(valueAnimator -> {
       float animatedValue = (float) valueAnimator.getAnimatedValue();
       ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
       layoutParams.height = (int) animatedValue;
@@ -42,7 +42,7 @@ public class AnimUtils {
   public static void translateY(final View view, int from, int to, long duration) {
     ValueAnimator animator = ValueAnimator.ofFloat(from, to);
     animator.setDuration(duration);
-    animator.addUpdateListener((ValueAnimator valueAnimator) -> {
+    animator.addUpdateListener(valueAnimator -> {
       float value = (float) valueAnimator.getAnimatedValue();
       view.setTranslationY(value);
       view.requestLayout();

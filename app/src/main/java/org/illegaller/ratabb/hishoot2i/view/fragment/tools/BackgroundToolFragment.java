@@ -1,7 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.view.fragment.tools;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ToolFragmentComponent;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.events.EventPipette;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
@@ -33,6 +32,7 @@ import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.CropActivity;
 import org.illegaller.ratabb.hishoot2i.view.MainActivity;
+import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.ColorPickerDialog;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
 
@@ -42,7 +42,7 @@ import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_B
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_BLUR_RADIUS;
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_CROP_ENABLE;
 
-public class BackgroundToolFragment extends BaseToolFragment
+public class BackgroundToolFragment extends BaseFragment
     implements SeekBar.OnSeekBarChangeListener {
   public static final int REQ_IMAGE_BG = 0x03;
   public static final int REQ_IMAGE_CROP_BG = 0x04;
@@ -68,14 +68,6 @@ public class BackgroundToolFragment extends BaseToolFragment
     BackgroundToolFragment fragment = new BackgroundToolFragment();
     fragment.setArguments(args);
     return fragment;
-  }
-
-  @Override protected void setupComponent(ToolFragmentComponent component) {
-    component.inject(this);
-  }
-
-  @Override int getLayoutRes() {
-    return R.layout.bottom_tool_background;
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -115,15 +107,12 @@ public class BackgroundToolFragment extends BaseToolFragment
 
   @OnClick({ R.id.img_config_bg, R.id.cpfMixer, R.id.cpfPipette }) void onClick(View view) {
     if (view == cpfMixer) {
-      new ColorPickerDialog.Builder().colorInit(colorTray.get())
-          .listener((DialogInterface dialog, int color) -> {
-            colorTray.set(color);
-            cpfMixer.setColor(color);
-            cpfPipette.setColor(color);
-            EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
-          })
-          .create()
-          .show(getFragmentManager(), ColorPickerDialog.TAG);
+      new ColorPickerDialog.Builder().colorInit(colorTray.get()).listener((dialog, color) -> {
+        colorTray.set(color);
+        cpfMixer.setColor(color);
+        cpfPipette.setColor(color);
+        EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
+      }).create().show(getFragmentManager(), ColorPickerDialog.TAG);
     } else if (view == cpfPipette) {
       EventBus.getDefault().post(new EventPipette(true, colorTray.get()));
     } else if (view.getId() == R.id.img_config_bg) {
@@ -146,14 +135,12 @@ public class BackgroundToolFragment extends BaseToolFragment
       if (imagePath == null) {
         /*cancel cropping :/*/
         EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.BG, data.getDataString()));
-        return;
+      } else {
+        Intent intent =
+            CropActivity.getIntent(getActivity(), UILHelper.stringFiles(new File(imagePath)),
+                bgPoint);
+        this.startActivityForResult(intent, REQ_IMAGE_BG);
       }
-
-      /*Utils.getStringFromUri(getActivity(), data.getData());*/
-      Intent intent =
-          CropActivity.getIntent(getActivity(), UILHelper.stringFiles(new File(imagePath)),
-              bgPoint);
-      this.startActivityForResult(intent, REQ_IMAGE_BG);
     } else if (requestCode == REQ_IMAGE_BG) {
       EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.BG, data.getDataString()));
     }
@@ -167,5 +154,13 @@ public class BackgroundToolFragment extends BaseToolFragment
     viewFlipper.setInAnimation(AnimUtils.animTranslateY(1F, 0F));
     viewFlipper.setOutAnimation(AnimUtils.animTranslateY(0F, -1F));
     viewFlipper.setDisplayedChild(isBgColor ? 0 : 1);
+  }
+
+  @Override protected int layoutRes() {
+    return R.layout.bottom_tool_background;
+  }
+
+  @Override protected void setupComponent(ApplicationComponent appComponent) {
+    appComponent.inject(this);
   }
 }

@@ -14,11 +14,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ToolFragmentComponent;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
+import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
 
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.FRAME_ENABLE;
@@ -26,7 +27,7 @@ import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.GLARE_ENAB
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SHADOW_ENABLE;
 import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SS_DOUBLE_ENABLE;
 
-public class ScreenToolFragment extends BaseToolFragment {
+public class ScreenToolFragment extends BaseFragment {
   static final int REQ_IMAGE_PIC_SS1 = 0x01;
   static final int REQ_IMAGE_PIC_SS2 = 0x02;
   @BindView(R.id.cbfScreen1) CircleButton cbfScreen1;
@@ -51,12 +52,12 @@ public class ScreenToolFragment extends BaseToolFragment {
     return fragment;
   }
 
-  @Override protected void setupComponent(ToolFragmentComponent component) {
-    component.inject(this);
+  @Override protected int layoutRes() {
+    return R.layout.bottom_tool_screen;
   }
 
-  @Override int getLayoutRes() {
-    return R.layout.bottom_tool_screen;
+  @Override protected void setupComponent(ApplicationComponent appComponent) {
+    appComponent.inject(this);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

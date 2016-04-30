@@ -1,5 +1,10 @@
 # Changelog
 -----
+##**v1.1.2 (20160501)**
+
+- fix bug's FC send image to Hishoot
+- fix bug's FC crop image from Document (API 19+)
+- test AppUpdater :v
 
 ##**v1.1.1 (20160429)**
 
