@@ -15,107 +15,37 @@ ext {
   supportVersion = '23.3.0'
   leakCanaryVersion = '1.4-beta2'
   daggerVersion = '2.2'
-  retrofitVersion = '2.0.2'
-  okhttpVersion = '3.2.0'
-  //group
-  supportAndroid = 'com.android.support'
-  jakewharton = 'com.jakewharton'
-  jakewhartonLambda = 'com.jakewharton.retrolambda'
-  //'com.jakewharton.retrolambda:retrolambda:2.1.0-jake2'
-  leakcanary = 'com.squareup.leakcanary'
-  gson = 'com.google.code.gson'
-  caoc = 'cat.ereza'
-  googleDagger = 'com.google.dagger'
-  uil = 'com.nostra13.universalimageloader'
-  crashlytics = 'com.crashlytics.sdk.android'
-  dart = 'com.f2prateek.dart'
-  securePref = 'com.scottyab'
-  tray = 'net.grandcentrix.tray'
-  filePicker = 'com.nononsenseapps'
-  holoColorPicker = 'com.larswerkman'
-  facebook = 'com.facebook.android'
-  javaxAnnotation = 'javax.annotation'
-  greenrobot = 'org.greenrobot'
-  mikepenz = 'com.mikepenz'
-  aurelhubert = 'com.aurelhubert'
-  smoothprogressbar = 'com.github.castorflex.smoothprogressbar'
-  materialprogressbar = 'me.zhanghai.android.materialprogressbar'
-  bottomBar = 'com.roughike'
-  appUpdater = 'com.github.javiersantos'
-  materialSearchview = 'com.miguelcatalan'
-  recyclerviewAnimators = 'jp.wasabeef'
-  reactiveX = 'io.reactivex'
-  okhttp3 = 'com.squareup.okhttp3'
-  retrofit2 = 'com.squareup.retrofit2'
-  swipeRevealLayout = 'com.chauthai.swipereveallayout'
-  dependencies = [appCompat                : dep(supportAndroid, 'appcompat-v7',
-      supportVersion),
-                  cardView                 : dep(supportAndroid, 'cardview-v7',
-                      supportVersion),
-                  design                   : dep(supportAndroid, 'design', supportVersion),
-                  recyclerView             : dep(supportAndroid, 'recyclerview-v7',
-                      supportVersion),
-                  palette                  : dep(supportAndroid, 'palette-v7',
-                      supportVersion),
-                  preference               : dep(supportAndroid, 'preference-v7',
-                      supportVersion),
-                  gridLayout               : dep(supportAndroid, 'gridlayout-v7',
-                      supportVersion),
-                  butterknife              : dep(jakewharton, 'butterknife', '8.0.1'),
-                  butterknifeCompiler      : dep(jakewharton, 'butterknife-compiler',
-                      '8.0.1'),
-                  bottomBar                : dep(bottomBar, 'bottom-bar', '1.2.7'), //1.3.3 ?
-                  aboutLibraries           : dep(mikepenz, 'aboutlibraries', '5.6.5@aar'),
-                  fastadapter              : dep(mikepenz, 'fastadapter', '1.2.6@aar'),
-                  fastadapterExtention     : dep(mikepenz, 'fastadapter-extensions',
-                      '1.2.5@aar'),
-                  ahBottomNav              : dep(aurelhubert, 'ahbottomnavigation', '1.0.1'),
-                  smoothProgressBar        : dep(smoothprogressbar, 'library', '1.1.0'),
-                  materialProgressBar      : dep(materialprogressbar, 'library', '1.1.5'),
-                  gson                     : dep(gson, 'gson', '2.6.2'),
-                  customActivityOnCrash    : dep(caoc, 'customactivityoncrash', '1.5.0'),
-                  universalImageLoader     : dep(uil, 'universal-image-loader', '1.9.5'),
-                  crashlytics              : dep(crashlytics, 'crashlytics', '2.5.5@aar'),
-                  filePicker               : dep(filePicker, 'filepicker', '2.4.2'),
-                  holoColorPicker          : dep(holoColorPicker, 'HoloColorPicker', '1.5'),
-                  facebook                 : dep(facebook, 'facebook-android-sdk', '4.10.0'),
-                  appUpdater               : dep(appUpdater, 'AppUpdater',
-                      '2.1'),
-                  materialSearchview       : dep(materialSearchview, 'materialsearchview',
-                      '1.4.0'),
-                  recyclerviewAnimators    : dep(recyclerviewAnimators,
-                      'recyclerview-animators', '2.2.1'),
-                  securePrefernces         : dep(securePref, 'secure-preferences-lib',
-                      '0.1.4'),
-                  tray                     : dep(tray, 'tray', '1.0.0-rc3'),
-                  dart                     : dep(dart, 'dart', '2.0.0'),
-                  dartProcesor             : dep(dart, 'dart-processor', '2.0.0'),
-                  eventBus                 : dep(greenrobot, 'eventbus', '3.0.0'),
-                  daggerCompiler           : dep(googleDagger, 'dagger-compiler',
-                      daggerVersion),
-                  daggerProducers          : dep(googleDagger, 'dagger-producers',
-                      daggerVersion),
-                  dagger                   : dep(googleDagger, 'dagger', daggerVersion),
-                  javaxAnnotation          : dep(javaxAnnotation, 'jsr250-api', '1.0'),
-                  leakcanaryDebug          : dep(leakcanary, 'leakcanary-android',
-                      leakCanaryVersion),
-                  leakcanaryRelease        : dep(leakcanary, 'leakcanary-android-no-op',
-                      leakCanaryVersion),
-                  rxJava                   : dep(reactiveX, 'rxjava', '1.1.3'),
-                  rxAndroid                : dep(reactiveX, 'rxandroid', '1.1.0'),
-                  okhttp3                  : dep(okhttp3, 'okhttp', okhttpVersion),
-                  okhttp3LoggingInterceptor: dep(okhttp3, 'logging-interceptor',
-                      okhttpVersion),
-                  retrofit2                : dep(retrofit2, 'retrofit', retrofitVersion),
-                  retrofit2AdapterRxjava   : dep(retrofit2, 'adapter-rxjava',
-                      retrofitVersion),
-                  retrofit2ConverterGson   : dep(retrofit2, 'converter-gson', retrofitVersion),
-                  jakewhartonLambda        : dep(jakewhartonLambda, 'retrolambda',
-                      '2.1.0-jake2'),
-                  swipeRevealLayout        : dep(swipeRevealLayout, 'swipe-reveal-layout',
-                      '1.0.0')]
-}
 
-String dep(CharSequence group, CharSequence name, CharSequence version) {
-  return "$group:$name:$version"
+  dependencies =
+      ["com.android.support:appcompat-v7"                        : "com.android.support:appcompat-v7:${supportVersion}",
+       "com.android.support:cardview-v7"                         : "com.android.support:cardview-v7:${supportVersion}",
+       "com.android.support:design"                           : "com.android.support:design:${supportVersion}",
+       "com.android.support:recyclerview-v7"                     : "com.android.support:recyclerview-v7:${supportVersion}",
+       "com.android.support:preference-v7"                       : "com.android.support:preference-v7:${supportVersion}",
+       "com.jakewharton:butterknife"                             : "com.jakewharton:butterknife:8.0.1",
+       "com.jakewharton:butterknife-compiler"                    : "com.jakewharton:butterknife-compiler:8.0.1",
+       "com.roughike:bottom-bar"                                 : "com.roughike:bottom-bar:1.2.7",
+       "com.mikepenz:aboutlibraries"                             : "com.mikepenz:aboutlibraries:5.6.5@aar",
+       "com.github.castorflex.smoothprogressbar:library"         : "com.github.castorflex.smoothprogressbar:library:1.1.0",
+       "com.google.code.gson:gson"                               : "com.google.code.gson:gson:2.6.2",
+       "cat.ereza:customactivityoncrash"                         : "cat.ereza:customactivityoncrash:1.5.0",
+       "com.nostra13.universalimageloader:universal-image-loader": "com.nostra13.universalimageloader:universal-image-loader:1.9.5",
+       "com.crashlytics.sdk.android:crashlytics"                 : "com.crashlytics.sdk.android:crashlytics:2.5.5@aar",
+       "com.github.javiersantos:AppUpdater"                      : "com.github.javiersantos:AppUpdater:2.1",
+       "com.miguelcatalan:materialsearchview"                    : "com.miguelcatalan:materialsearchview:1.4.0",
+       "jp.wasabeef:recyclerview-animators"                      : "jp.wasabeef:recyclerview-animators:2.2.1",
+       "net.grandcentrix.tray:tray"                              : "net.grandcentrix.tray:tray:1.0.0-rc3",
+       "com.f2prateek.dart:dart"                                 : "com.f2prateek.dart:dart:2.0.0",
+       "com.f2prateek.dart:dart-processor"                       : "com.f2prateek.dart:dart-processor:2.0.0",
+       "org.greenrobot:eventbus"                                 : "org.greenrobot:eventbus:3.0.0",
+       "com.google.dagger:dagger-compiler"                       : "com.google.dagger:dagger-compiler:${daggerVersion}",
+       "com.google.dagger:dagger-producers"                      : "com.google.dagger:dagger-producers:${daggerVersion}",
+       "com.google.dagger:dagger"                                : "com.google.dagger:dagger:${daggerVersion}",
+       "javax.annotation:jsr250-api"                             : "javax.annotation:jsr250-api:1.0",
+       "com.squareup.leakcanary:leakcanary-android"              : "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+       "com.squareup.leakcanary:leakcanary-android-no-op"        : "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
+       "io.reactivex:rxjava"                                     : "io.reactivex:rxjava:1.1.3",
+       "io.reactivex:rxandroid"                                  : "io.reactivex:rxandroid:1.1.0",
+       "net.orfjackal.retrolambda:retrolambda"                   : "net.orfjackal.retrolambda:retrolambda:2.3.0",
+       "com.chauthai.swipereveallayout:swipe-reveal-layout"      : "com.chauthai.swipereveallayout:swipe-reveal-layout:1.0.0"]
 }
