@@ -9,10 +9,9 @@ import org.illegaller.ratabb.hishoot2i.BuildConfig;
 
 public class CrashLog {
 
-  static String className;
-  static String methodName;
+  static String className, methodName;
   static int lineNumber;
-  private static boolean sANALYTIC_DATA = false;
+
 
   private CrashLog() { /*no instance*/ }
 
@@ -21,13 +20,13 @@ public class CrashLog {
     doLog(6, msg, e);
   }
 
-  public static void log(@Nullable String msg) {
+  public static void log(String msg) {
     getMethodNames(new Throwable().getStackTrace());
     doLog(3, msg, null);
   }
 
   static void doLog(int priority, @Nullable String msg, @Nullable Throwable e) {
-    if (BuildConfig.USE_CRASHLYTICS && sANALYTIC_DATA) {
+    if (BuildConfig.USE_CRASHLYTICS) {
       if (!Fabric.isInitialized()) return;
       CrashlyticsCore core = Crashlytics.getInstance().core;
       if (msg != null) core.log(priority, className, createLog(msg));
@@ -55,7 +54,5 @@ public class CrashLog {
     lineNumber = sElements[1].getLineNumber();
   }
 
-  public static void setAnalyticData(boolean enable) {
-    sANALYTIC_DATA = enable;
-  }
+
 }

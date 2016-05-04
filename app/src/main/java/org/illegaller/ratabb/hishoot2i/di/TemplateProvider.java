@@ -28,13 +28,8 @@ import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import static org.illegaller.ratabb.hishoot2i.AppConstants.MESSAGE_TEMPLATE_CANT_FIND;
 
 public class TemplateProvider {
-  public static final Comparator<Template> TEMPLATE_NAME_COMPARATOR = new Comparator<Template>() {
-    private final Collator mCollator = Collator.getInstance();
-
-    @Override public int compare(Template t0, Template t1) {
-      return mCollator.compare(t0.name, t1.name);
-    }
-  };
+  public static final Comparator<Template> TEMPLATE_NAME_COMPARATOR =
+      (t0, t1) -> Collator.getInstance().compare(t0.name, t1.name);
   private final Context mContext;
   private Template DEFAULT;
   private Map<String, Template> templateMap;

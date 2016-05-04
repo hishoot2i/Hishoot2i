@@ -78,7 +78,7 @@ public class HishootProcess {
   }
 
   public void process(@NonNull DataImagePath dataImagePath, @NonNull Template template,
-      @NonNull Callback callback, boolean isSave) {
+      @NonNull Callback callback, boolean isSave) throws Exception {
     if (Utils.isMainThread()) {
       throw new IllegalThreadStateException("avoid HishootProcess#prosess on main thread");
     }
@@ -150,7 +150,7 @@ public class HishootProcess {
 
     try {
       callback.doneProcess(result, isSave ? Uri.fromFile(Utils.saveHishoot(result)) : null);
-    } catch (IOException e) {
+    } catch (IOException e) { /* FIXME: reported */
       failed(R.string.cant_save, R.string.save_failed, e);
     }
   }

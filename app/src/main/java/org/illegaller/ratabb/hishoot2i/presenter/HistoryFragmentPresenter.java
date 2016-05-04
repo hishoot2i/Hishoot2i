@@ -10,7 +10,6 @@ import org.illegaller.ratabb.hishoot2i.utils.SimpleObserver;
 import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedulers;
 import org.illegaller.ratabb.hishoot2i.view.fragment.HistoryFragmentView;
 import rx.Observable;
-import rx.Subscriber;
 
 public class HistoryFragmentPresenter implements IPresenter<HistoryFragmentView> {
   private HistoryFragmentView mView;
@@ -48,20 +47,18 @@ public class HistoryFragmentPresenter implements IPresenter<HistoryFragmentView>
   }
 
   Observable<List<String>> getListObservable() {
-    return Observable.create(new Observable.OnSubscribe<List<String>>() {
-      @Override public void call(Subscriber<? super List<String>> subscriber) {
-        try {
-          final List<String> result = new ArrayList<>();
-          final File folder = AppConstants.getHishootDir();
-          File[] files = folder.listFiles(filter);
-          for (File file : files) {
-            result.add(file.getAbsolutePath());
-          }
-          subscriber.onNext(result);
-          subscriber.onCompleted();
-        } catch (Exception e) {
-          subscriber.onError(e);
+    return Observable.create((Observable.OnSubscribe<List<String>>) subscriber -> {
+      try {
+        final List<String> result = new ArrayList<>();
+        final File folder = AppConstants.getHishootDir();
+        File[] files = folder.listFiles(filter);
+        for (File file : files) {
+          result.add(file.getAbsolutePath());
         }
+        subscriber.onNext(result);
+        subscriber.onCompleted();
+      } catch (Exception e) {
+        subscriber.onError(e);
       }
     }).subscribeOn(schedulers.backgroundThread()).observeOn(schedulers.mainThread());
   }

@@ -22,22 +22,22 @@ import org.illegaller.ratabb.hishoot2i.events.EventSave;
 import org.illegaller.ratabb.hishoot2i.model.DataImagePath;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.utils.BitmapUtils;
+import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.HishootProcess;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
 
 public class HishootService extends IntentService {
   private static final int HISHOOT_NOTIFICATION_ID = 0x01;
-  private static final String ACTION_SAVE = "org.illegaller.ratabb.hishoot2i.services.action.SAVE";
-  private static final String ACTION_PREVIEW =
-      "org.illegaller.ratabb.hishoot2i.services.action.PREVIEW";
+  private static final String PACKAGE_NAME = HishootService.class.getPackage().getName();
+  private static final String ACTION_SAVE = PACKAGE_NAME + ".services.action.SAVE";
+  private static final String ACTION_PREVIEW = PACKAGE_NAME + ".services.action.PREVIEW";
   private static final String KEY_DATA_IMAGE_PATH = "data_image_path";
   private static final String KEY_TEMPLATE = "template";
   @InjectExtra(KEY_DATA_IMAGE_PATH) DataImagePath dataImagePath;
   @InjectExtra(KEY_TEMPLATE) Template template;
   @Inject NotificationManager notificationManager;
   private NotificationCompat.Builder notificationBuilder;
-  private Handler mHandler = new Handler(Looper.getMainLooper());
   private HishootProcess.Callback saveCallback = new HishootProcess.Callback() {
     private final Context context = HishootService.this;
 
@@ -106,7 +106,7 @@ public class HishootService extends IntentService {
     }
 
     @Override public void doneProcess(final Bitmap result, @Nullable final Uri uri) {
-      postRunnableMain(() -> EventBus.getDefault().post(new EventPreview(result, null, null)));
+      postRunnableMain(() -> EventBus.getDefault().post(new EventPreview(result, "", "")));
     }
   };
 
@@ -140,7 +140,7 @@ public class HishootService extends IntentService {
   }
 
   void postRunnableMain(Runnable runnable) {
-    mHandler.post(runnable);
+    new Handler(Looper.getMainLooper()).post(runnable);
   }
 
   @Override public void onCreate() {
@@ -152,10 +152,19 @@ public class HishootService extends IntentService {
     Dart.inject(this, intent.getExtras());
     final String action = intent.getAction();
     HishootProcess.Callback callback = null;
+    boolean isSave = false;
     if (ACTION_SAVE.equals(action)) {
       callback = saveCallback;
-    } else if (ACTION_PREVIEW.equals(action)) callback = previewCallback;
-    if (callback == null) throw new UnsupportedOperationException("no valid action");
-    new HishootProcess(this).process(dataImagePath, template, callback, callback == saveCallback);
+      isSave = true;
+    } else if (ACTION_PREVIEW.equals(action)) {
+      callback = previewCallback;
+      isSave = false;
+    }
+    Utils.checkNotNull(callback, "no valid action");
+    try {
+      new HishootProcess(this).process(dataImagePath, template, callback, isSave);
+    } catch (Exception e) {
+      CrashLog.logError(template.toString() + "\naction: " + action, e);
+    }
   }
 }

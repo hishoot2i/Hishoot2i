@@ -5,8 +5,6 @@ import android.content.Context;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,15 +31,10 @@ public class HishootApplication extends Application {
   @Inject @Named(DEVICE_NAME) StringTray deviceNameTray;
   @Inject @Named(DEVICE_OS) StringTray deviceOSTray;
   private ApplicationComponent applicationComponent;
-/*  private RefWatcher mWatcher;*/
 
   public static HishootApplication get(Context context) {
     return (HishootApplication) context.getApplicationContext();
   }
-
-/*  public RefWatcher getWatcher() {
-    return mWatcher;
-  }*/
 
   public synchronized ApplicationComponent getApplicationComponent() {
     if (applicationComponent == null) {
@@ -50,14 +43,17 @@ public class HishootApplication extends Application {
     return applicationComponent;
   }
 
+  public boolean isCrashlyticEnable() {
+    return !BuildConfig.DEBUG && crashlyticEnableTray.get();
+  }
+
   @Override public void onCreate() {
     super.onCreate();
     if (BuildConfig.DEBUG) AndroidDevMetrics.initWith(this);
     setupInjection();
     setupCAOC();
-    CrashLog.setAnalyticData(crashlyticEnableTray.get());
-    if (BuildConfig.USE_CRASHLYTICS && crashlyticEnableTray.get()) {
-      CrashLog.setAnalyticData(true);
+
+    if (isCrashlyticEnable()) {
       Fabric.with(this, new Crashlytics());
     }
     UILHelper.init(this, deviceWidthTray.get(), deviceHeightTray.get());
