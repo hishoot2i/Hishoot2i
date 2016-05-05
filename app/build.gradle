@@ -67,12 +67,14 @@ android {
   }
 
   signingConfigs {
-    release {
-      Properties prop = loadProp("sign.properties")
-      keyAlias prop["keyAlias"]
-      keyPassword prop["keyPassword"]
-      storeFile file(prop["storeFile"])
-      storePassword prop["storePassword"]
+    if (file("sign.properties").exists()) {
+      release {
+        Properties prop = loadProp("sign.properties")
+        keyAlias prop["keyAlias"]
+        keyPassword prop["keyPassword"]
+        storeFile file(prop["storeFile"])
+        storePassword prop["storePassword"]
+      }
     }
   }
   buildTypes {
@@ -84,11 +86,14 @@ android {
       debuggable true
     }
     release {
-      manifestPlaceholders = [fabric_api_key: loadFromProp("fabric.properties", "apiKey")]
-      minifyEnabled true
-      shrinkResources true
-      zipAlignEnabled true
-      signingConfig android.signingConfigs.release
+      manifestPlaceholders = [fabric_api_key: (file("sign.properties").exists()) ?
+          loadFromProp("fabric.properties", "apiKey") : ""]
+      if (file("sign.properties").exists()) {
+        minifyEnabled true
+        shrinkResources true
+        zipAlignEnabled true
+        signingConfig android.signingConfigs.release
+      }
       proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
       final FileCollection proguardCollection = files {
         file("../buildsystem/proguard").listFiles()
