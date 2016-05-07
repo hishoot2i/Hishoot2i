@@ -1,20 +1,18 @@
 language: android
 jdk: oraclejdk7
-
+sudo: false
 android:
   components:
+    - platform-tools
+    - tools
     - build-tools-23.0.2
     - android-23
     - extra-android-support
-    - extra-google-m2repository
     - extra-android-m2repository
   licenses:
-    - '.+'
+    - 'android-sdk-license-.+'
     
 before_script:
-  - echo yes | android update sdk --no-ui --all --filter platform-tools,tools
-  - echo yes | android update sdk --no-ui --all --filter build-tools-23.0.2
-  - echo yes | android update sdk --no-ui --all --filter android-23
+    - chmod +x gradlew
 
-script:
-    - ./gradlew clean test
+script: ./gradlew clean check -s -d
