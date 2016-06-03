@@ -60,6 +60,6 @@ public class DeviceUtils {
 
   /******* Build.VERSION ******/
   public static boolean isCompatible(int apiLevel) {
-    return android.os.Build.VERSION.SDK_INT >= apiLevel;
+    return SDK_INT >= apiLevel;
   }
 }

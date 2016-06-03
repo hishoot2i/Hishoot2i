@@ -5,6 +5,7 @@
 Hishoot2i *grepe* [**Hishoot**][hishoot] by [**JMKL**][jmkl]
 
 ## Content
+* [Todo](#todo)
 * [Changelog](#changelog)
 * [Community](#community)
 * [Developer](#developer)
@@ -13,12 +14,14 @@ Hishoot2i *grepe* [**Hishoot**][hishoot] by [**JMKL**][jmkl]
 * [Download](#download)
 * [License](#license)
 
-## Changelog
-###**v1.1.2 (20160501)**
+##Todo
 
-- fix bug's FC send image to Hishoot
-- fix bug's FC crop image from Document (API 19+)
-- test AppUpdater :v
+- create ui and local test ?
+
+## Changelog
+###**v1.1.3 (WIP)**
+
+- bug's fix
 
 [**previous version**][4]
 

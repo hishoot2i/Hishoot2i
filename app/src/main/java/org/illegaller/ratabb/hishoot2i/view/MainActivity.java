@@ -19,13 +19,9 @@ import butterknife.OnClick;
 import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.MainActivityModule;
-import org.illegaller.ratabb.hishoot2i.di.module.TemplateModule;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.events.EventPipette;
 import org.illegaller.ratabb.hishoot2i.events.EventPreview;
@@ -35,7 +31,7 @@ import org.illegaller.ratabb.hishoot2i.model.ImageReceive;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
-import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
+import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 import org.illegaller.ratabb.hishoot2i.presenter.MainActivityPresenter;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseActivity;
@@ -44,29 +40,25 @@ import org.illegaller.ratabb.hishoot2i.view.widget.PipetteView;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_COLOR_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_COLOR_INT;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SS_DOUBLE_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.TEMPLATE_ID;
 
 public class MainActivity extends BaseActivity implements MainActivityView {
   private static final String KEY_TEMPLATE_ACTIVITY = "key_template_activity";
   @BindView(R.id.progress_bar) View mProgressBar;
   @BindView(R.id.fabSave) View mFab;
-  @BindView(R.id.flBottom) View flBottom;
+  @BindView(R.id.flBottom) View mViewBottom;
   @BindView(R.id.mainImageView) ImageView mImageView;
   @BindView(R.id.pipetteView) PipetteView mPipetteView;
   @Inject MainActivityPresenter mPresenter;
-  @Inject @Named(BG_COLOR_INT) IntTray bgColorIntTray;
-  @Inject @Named(SS_DOUBLE_ENABLE) BooleanTray ssDoubleEnableTray;
-  @Inject @Named(TEMPLATE_ID) StringTray templateIdTray;
-  @Inject @Named(BG_COLOR_ENABLE) BooleanTray bgColorEnableTray;
+  @Inject TrayManager mTrayManager;
   @Nullable @InjectExtra(KEY_TEMPLATE_ACTIVITY) Template mTemplate;
-  private String pathImageSS1;
-  private String pathImageSS2;
-  private String pathImageBg;
+  private IntTray mBgColorIntTray;
+  private BooleanTray mDoubleEnableTray;
+  private BooleanTray mBgColorEnableTray;
+  private String mPathImageSS1;
+  private String mPathImageSS2;
+  private String mPathImageBg;
   private DataImagePath mDataImagePath;
-  private ActionBar actionBar;
+  private ActionBar mActionBar;
 
   public static void start(Context context, Template template) {
     Intent starter = new Intent(context, MainActivity.class);
@@ -78,14 +70,14 @@ public class MainActivity extends BaseActivity implements MainActivityView {
   public Point pointBackgroundTemplate() {
     Utils.checkNotNull(mTemplate, "mTemplate == null");
     Point templatePoint = mTemplate.templatePoint;
-    return ssDoubleEnableTray.get() ? new Point(templatePoint.x * 2, templatePoint.y)
+    return mDoubleEnableTray.isValue() ? new Point(templatePoint.x * 2, templatePoint.y)
         : templatePoint;
   }
 
   @Override protected void setupToolbar(ActionBar actionBar) {
-    this.actionBar = actionBar; /*need for show/hide on action pipette*/
-    this.actionBar.setDisplayShowTitleEnabled(false);
-    this.actionBar.setDisplayHomeAsUpEnabled(true);
+    this.mActionBar = actionBar; /*need for show/hide on action pipette*/
+    this.mActionBar.setDisplayShowTitleEnabled(false);
+    this.mActionBar.setDisplayHomeAsUpEnabled(true);
   }
 
   @Override protected int getToolbarId() {
@@ -96,14 +88,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     return R.layout.activity_main;
   }
 
-  @Override protected void setupComponent(ApplicationComponent component) {
-    component.plus(new TemplateModule()).plus(new MainActivityModule()).inject(this);
-  }
-
   @OnClick({ R.id.fabSave, R.id.flBottom }) void onClick(View view) {
     if (view == mFab) {
       mPresenter.perform(true, mDataImagePath, mTemplate);
-    } else if (view == flBottom) mPresenter.closeTool(true);
+    } else if (view == mViewBottom) mPresenter.closeTool(true);
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,12 +115,16 @@ public class MainActivity extends BaseActivity implements MainActivityView {
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Dart.inject(this);
+    getActivityComponent().inject(this);
+    mBgColorEnableTray = mTrayManager.getBackgroundColorEnable();
+    mBgColorIntTray = mTrayManager.getBackgroundColorInt();
+    mDoubleEnableTray = mTrayManager.getDoubleEnable();
     mPresenter.attachView(this);
     mPresenter.setup(this, savedInstanceState);
     final String action = getIntent().getAction();
     if (Intent.ACTION_SEND.equals(action)) {
       final Uri imageUri = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
-      mPresenter.handleImageReceive(imageUri, templateIdTray.get());
+      mPresenter.handleImageReceive(imageUri, mTrayManager.getTemplateID().getValue());
     }
     EventBus.getDefault().register(this);
   }
@@ -165,7 +157,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     final Uri uri = event.uri;
     Utils.galleryAddPic(this, uri);
     Snackbar.make(mFab, R.string.has_saved, Snackbar.LENGTH_SHORT)
-        .setAction(R.string.open, view -> Utils.openImageView(MainActivity.this,uri))
+        .setAction(R.string.open, view -> Utils.openImageView(MainActivity.this, uri))
         .show();
   }
 
@@ -182,16 +174,16 @@ public class MainActivity extends BaseActivity implements MainActivityView {
   @Subscribe public void onEvent(EventImageSet event) {
     switch (event.type) {
       case SS1:
-        pathImageSS1 = event.path;
+        mPathImageSS1 = event.path;
         break;
       case SS2:
-        pathImageSS2 = event.path;
+        mPathImageSS2 = event.path;
         break;
       case BG:
-        pathImageBg = event.path;
+        mPathImageBg = event.path;
         break;
       default:
-      case NONE:/*no-op, just closing tools & perform image process*/
+      case NONE: /* no-op, just closing tools & perform process*/
         break;
     }
     mPresenter.closeTool(true);
@@ -202,7 +194,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
   }
 
   /////////// MainActivityView ///////////////
-  @Override public Context context() {
+
+  @Override public Context getContext() {
     return this;
   }
 
@@ -215,7 +208,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
   }
 
   @Override public void perform() {
-    mDataImagePath = new DataImagePath(pathImageSS1, pathImageSS2, pathImageBg);
+    mDataImagePath = new DataImagePath(mPathImageSS1, mPathImageSS2, mPathImageBg);
     mPresenter.perform(false, mDataImagePath, mTemplate);
   }
 
@@ -223,10 +216,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
       @NonNull Template template) {
     if (imageReceive == null) return;
     if (imageReceive.isBackground) {
-      bgColorEnableTray.set(false);
-      pathImageBg = imageReceive.imagePath;
+      mBgColorEnableTray.setValue(false);
+      mPathImageBg = imageReceive.imagePath;
     } else {
-      pathImageSS1 = imageReceive.imagePath;
+      mPathImageSS1 = imageReceive.imagePath;
     }
     mTemplate = template;
     mPresenter.closeTool(true);
@@ -237,7 +230,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
   }
 
   @Override public void pipetteResult(int color) {
-    bgColorIntTray.set(color);
+    mBgColorIntTray.setValue(color);
     perform();
     ((CircleButton) ButterKnife.findById(this, R.id.cpfMixer)).setColor(color);
     ((CircleButton) ButterKnife.findById(this, R.id.cpfPipette)).setColor(color);
@@ -245,9 +238,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
   @Override public void showActionBar(boolean isShow) {
     if (isShow) {
-      actionBar.show();
+      mActionBar.show();
     } else {
-      actionBar.hide();
+      mActionBar.hide();
     }
   }
 }

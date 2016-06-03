@@ -30,15 +30,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import org.illegaller.ratabb.hishoot2i.AppConstants;
 
 import static android.os.Build.VERSION_CODES.HONEYCOMB;
-import static org.illegaller.ratabb.hishoot2i.AppConstants.getHishootDir;
 
 public class Utils {
 
-  private final static String sSEPARATOR = ",";
+  private static final String sSEPARATOR = ",";
 
-  private Utils() { /*no instance*/ }
+  private Utils() {
+    throw new UnsupportedOperationException("no instance");
+  }
 
   public static boolean isMainThread() {
     return Looper.myLooper() == Looper.getMainLooper();
@@ -61,8 +63,9 @@ public class Utils {
     if (view.getBackground() != null) view.getBackground().setCallback(null);
     if (view instanceof ViewGroup) {
       final ViewGroup viewGroup = (ViewGroup) view;
-      for (int i = 0; i < viewGroup.getChildCount(); i++)
+      for (int i = 0; i < viewGroup.getChildCount(); i++) {
         Utils.unbindDrawables(viewGroup.getChildAt(i));
+      }
       if (!(viewGroup instanceof AdapterView)) viewGroup.removeAllViews();
     }
   }
@@ -85,7 +88,7 @@ public class Utils {
   public static File saveHishoot(final Bitmap bitmap) throws IOException {
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
     String imageFileName = "HiShoot_" + timeStamp + ".png";
-    File hishootDir = getHishootDir();
+    File hishootDir = AppConstants.getHishootDir();
     File file = new File(hishootDir, imageFileName);
     OutputStream outputStream = new FileOutputStream(file);
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
@@ -109,25 +112,6 @@ public class Utils {
     mediaScanIntent.setData(contentUri);
     context.sendBroadcast(mediaScanIntent);
   }
-
- /*  public static String getStringFromUri(final Context context, final Uri uri) {
-    final File f = new File(uri.getPath());
-    if (f.isFile()) {
-      return f.getAbsolutePath();
-    } else {
-      return FileUtils.getPath(context, uri);
-    }
-  }
-
- static String getImagePath(final Context context, final Uri uri) {
-    Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-    assert cursor != null;
-    cursor.moveToFirst();
-    int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-    String result = cursor.getString(idx);
-    cursor.close();
-    return result;
-  }*/
 
   ////////////////////////////////////////////////
   public static boolean containsLowerCase(String from, String to) {
@@ -169,11 +153,11 @@ public class Utils {
   }
 
   public static String listToString(List<String> list) {
-    return arrayToString(listToArray(list));
+    return Utils.arrayToString(Utils.listToArray(list));
   }
 
   public static List<String> stringToList(String string) {
-    return arrayToList(stringToArray(string));
+    return Utils.arrayToList(Utils.stringToArray(string));
   }
 
   /////////////////////////////////////////////////////
@@ -185,12 +169,16 @@ public class Utils {
   public static void openImagePicker(final android.support.v4.app.Fragment fragment,
       final String title, int requestCode) {
     Intent intent = intentImagePicker();
-    if (Utils.isAvailable(fragment.getActivity(), intent)) {
-      fragment.startActivityForResult(Intent.createChooser(intent, title), requestCode);
+    try {
+      if (Utils.isAvailable(fragment.getActivity(), intent)) {
+        fragment.startActivityForResult(Intent.createChooser(intent, title), requestCode);
+      }
+    } catch (Exception e) {
+      CrashLog.logError("openImagePicker", e);
     }
   }
 
-  public static void openImagePicker(final android.app.Fragment fragment, @StringRes int title,
+/*  public static void openImagePicker(final android.app.Fragment fragment, @StringRes int title,
       int requestCode) {
     Utils.openImagePicker(fragment, fragment.getString(title), requestCode);
   }
@@ -201,7 +189,7 @@ public class Utils {
     if (Utils.isAvailable(fragment.getActivity(), intent)) {
       fragment.startActivityForResult(Intent.createChooser(intent, title), requestCode);
     }
-  }
+  }*/
 
   private static Intent intentImagePicker() {
     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -211,7 +199,11 @@ public class Utils {
 
   public static void shareImage(Context context, Uri imageUri) {
     Intent intent = intentShareImage("Share", imageUri);
-    if (Utils.isAvailable(context, intent)) context.startActivity(intent);
+    try {
+      if (Utils.isAvailable(context, intent)) context.startActivity(intent);
+    } catch (Exception e) {
+      CrashLog.logError("shareImage", e);
+    }
   }
 
   @TargetApi(HONEYCOMB)
@@ -235,15 +227,27 @@ public class Utils {
 
   public static void openImageView(final Context context, final Uri imageUri) {
     Intent intent = intentOpenImage(imageUri);
-    if (Utils.isAvailable(context, intent)) context.startActivity(intent);
+    try {
+      if (Utils.isAvailable(context, intent)) context.startActivity(intent);
+    } catch (Exception e) {
+      CrashLog.logError("openImageView", e);
+    }
   }
 
-  /* TODO: pm == null? ||Check if any apps are installed on the app to receive this intent. */
-  public static boolean isAvailable(Context ctx, Intent intent) {
-    final PackageManager pm = ctx.getApplicationContext().getPackageManager();
-    final List<ResolveInfo> list =
-        pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-    return list.size() > 0;
+  /**
+   * Check if any apps are installed on the app to receive this intent.
+   * FIXME: NPE
+   */
+  public static boolean isAvailable(Context ctx, Intent intent) throws Exception {
+    try {
+      final PackageManager pm = ctx.getApplicationContext().getPackageManager();
+      final List<ResolveInfo> list =
+          pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+      return list.size() > 0;
+    } catch (Exception e) {
+      CrashLog.logError("Intent isAvailable", e);
+      return false;
+    }
   }
 
   public static void hideSoftKeyboard(Context context, View view) {
@@ -257,11 +261,13 @@ public class Utils {
     try {
       return pm.getInstalledApplications(flags);
     } catch (Exception ignored) {
+      CrashLog.logError("getInstalledApplications", ignored);
     }
     List<ApplicationInfo> result = new ArrayList<>();
     try {
       Process process = Runtime.getRuntime().exec("pm list packages");
-      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      BufferedReader reader =
+          new BufferedReader(new InputStreamReader(process.getInputStream(), "iso-8859-1"));
       String line;
       while ((line = reader.readLine()) != null) {
         final String packageName = line.substring(line.indexOf(':') + 1);

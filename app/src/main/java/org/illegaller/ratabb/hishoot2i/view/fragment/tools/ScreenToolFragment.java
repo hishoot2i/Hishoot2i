@@ -11,21 +11,15 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
+import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
-
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.FRAME_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.GLARE_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SHADOW_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SS_DOUBLE_ENABLE;
 
 public class ScreenToolFragment extends BaseFragment {
   static final int REQ_IMAGE_PIC_SS1 = 0x01;
@@ -37,10 +31,11 @@ public class ScreenToolFragment extends BaseFragment {
   @BindView(R.id.scGlare) SwitchCompat scGlare;
   @BindView(R.id.scFrame) SwitchCompat scFrame;
   @BindView(R.id.layoutSS2) View layoutSS2;
-  @Inject @Named(SS_DOUBLE_ENABLE) BooleanTray ssDoubleEnableTray;
-  @Inject @Named(GLARE_ENABLE) BooleanTray glareEnableTray;
-  @Inject @Named(SHADOW_ENABLE) BooleanTray shadowEnableTray;
-  @Inject @Named(FRAME_ENABLE) BooleanTray frameEnableTray;
+  @Inject TrayManager mTrayManager;
+  private BooleanTray mDoubleEnableTray;
+  private BooleanTray mGlareEnableTray;
+  private BooleanTray mShadowEnableTray;
+  private BooleanTray mFrameEnableTray;
 
   public ScreenToolFragment() {
   }
@@ -56,35 +51,40 @@ public class ScreenToolFragment extends BaseFragment {
     return R.layout.bottom_tool_screen;
   }
 
-  @Override protected void setupComponent(ApplicationComponent appComponent) {
-    appComponent.inject(this);
+  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    getActivityComponent().inject(this);
+    mDoubleEnableTray = mTrayManager.getDoubleEnable();
+    mGlareEnableTray = mTrayManager.getGlareEnable();
+    mShadowEnableTray = mTrayManager.getShadowEnable();
+    mFrameEnableTray = mTrayManager.getFrameEnable();
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    boolean isDouble = ssDoubleEnableTray.get();
+    boolean isDouble = mDoubleEnableTray.isValue();
     scDoubleSS.setChecked(isDouble);
     layoutSS2.setVisibility(isDouble ? View.VISIBLE : View.GONE);
-    scGlare.setChecked(glareEnableTray.get());
-    scShadow.setChecked(shadowEnableTray.get());
-    scFrame.setChecked(frameEnableTray.get());
+    scGlare.setChecked(mGlareEnableTray.isValue());
+    scShadow.setChecked(mShadowEnableTray.isValue());
+    scFrame.setChecked(mFrameEnableTray.isValue());
   }
 
   @OnCheckedChanged({
       R.id.scDoubleSS, R.id.scGlare, R.id.scShadow, R.id.scFrame
   }) void onCheckedChanged(CompoundButton cb, boolean check) {
     if (cb == scDoubleSS) {
-      ssDoubleEnableTray.set(check);
+      mDoubleEnableTray.setValue(check);
       if (check) {
         AnimUtils.fadeIn(layoutSS2);
       } else {
         AnimUtils.fadeOut(layoutSS2);
       }
     } else if (cb == scGlare) {
-      glareEnableTray.set(check);
+      mGlareEnableTray.setValue(check);
     } else if (cb == scShadow) {
-      shadowEnableTray.set(check);
-    } else if (cb == scFrame) frameEnableTray.set(check);
+      mShadowEnableTray.setValue(check);
+    } else if (cb == scFrame) mFrameEnableTray.setValue(check);
   }
 
   @OnClick({ R.id.cbfScreen1, R.id.cbfScreen2 }) void onClick(View v) {

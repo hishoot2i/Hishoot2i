@@ -6,24 +6,24 @@ import com.squareup.leakcanary.RefWatcher;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedulers;
+import net.grandcentrix.tray.AppPreferences;
 
 @Module public class ApplicationModule {
-  private final Application app;
+  private final Application mApplication;
 
   public ApplicationModule(Application app) {
-    this.app = app;
+    this.mApplication = app;
   }
 
   @Provides @Singleton Application provideApplication() {
-    return app;
-  }
-
-  @Provides @Singleton SimpleSchedulers provideSimpleSchedulers() {
-    return new SimpleSchedulers();
+    return mApplication;
   }
 
   @Provides @Singleton RefWatcher provideRefWatcher() {
-    return LeakCanary.install(app);
+    return LeakCanary.install(mApplication);
+  }
+
+  @Provides @Singleton AppPreferences provideAppPreferences() {
+    return new AppPreferences(mApplication);
   }
 }

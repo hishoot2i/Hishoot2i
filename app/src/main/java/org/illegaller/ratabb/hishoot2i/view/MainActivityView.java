@@ -3,9 +3,9 @@ package org.illegaller.ratabb.hishoot2i.view;
 import android.support.annotation.Nullable;
 import org.illegaller.ratabb.hishoot2i.model.ImageReceive;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.view.common.IVew;
+import org.illegaller.ratabb.hishoot2i.view.common.Mvp;
 
-public interface MainActivityView extends IVew {
+public interface MainActivityView extends Mvp.View {
   void showFab(boolean isShow);
 
   void showProgress(boolean isShow);

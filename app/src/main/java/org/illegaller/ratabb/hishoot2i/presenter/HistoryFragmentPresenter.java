@@ -3,47 +3,35 @@ package org.illegaller.ratabb.hishoot2i.presenter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.FileExtensionFilter;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleObserver;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedulers;
-import org.illegaller.ratabb.hishoot2i.view.fragment.HistoryFragmentView;
+import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule;
+import org.illegaller.ratabb.hishoot2i.view.common.BasePresenter;
+import org.illegaller.ratabb.hishoot2i.view.fragment.historyview.HistoryFragmentView;
 import rx.Observable;
+import rx.Subscription;
 
-public class HistoryFragmentPresenter implements IPresenter<HistoryFragmentView> {
-  private HistoryFragmentView mView;
-  private SimpleSchedulers schedulers;
-  private FileExtensionFilter filter = new FileExtensionFilter("png");
+public class HistoryFragmentPresenter extends BasePresenter<HistoryFragmentView> {
 
-  public HistoryFragmentPresenter(SimpleSchedulers schedulers) {
-    this.schedulers = schedulers;
-  }
+  private final FileExtensionFilter mFileExtFilter = new FileExtensionFilter("png");
+  private Subscription mSubscription;
 
-  @Override public void attachView(HistoryFragmentView view) {
-    this.mView = view;
+  @Inject public HistoryFragmentPresenter() {
   }
 
   @Override public void detachView() {
-    this.mView = null;
+    if (mSubscription != null) mSubscription.unsubscribe();
+    super.detachView();
   }
 
   public void perform() {
-    this.mView.showProgress(true);
-    getListObservable().subscribe(new SimpleObserver<List<String>>() {
-      @Override public void onNext(List<String> list) {
-        mView.setList(list);
-      }
-
-      @Override public void onCompleted() {
-        mView.showProgress(false);
-      }
-
-      @Override public void onError(Throwable e) {
-        mView.showProgress(false);
-        CrashLog.logError("list", e);
-      }
-    });
+    checkViewAttached();
+    getView().showProgress(true);
+    mSubscription = getListObservable().compose(SimpleSchedule.schedule())
+        .subscribe(list -> getView().setList(list),
+            throwable -> CrashLog.logError("list", throwable), () -> getView().showProgress(false));
   }
 
   Observable<List<String>> getListObservable() {
@@ -51,7 +39,7 @@ public class HistoryFragmentPresenter implements IPresenter<HistoryFragmentView>
       try {
         final List<String> result = new ArrayList<>();
         final File folder = AppConstants.getHishootDir();
-        File[] files = folder.listFiles(filter);
+        final File[] files = folder.listFiles(mFileExtFilter);
         for (File file : files) {
           result.add(file.getAbsolutePath());
         }
@@ -60,6 +48,6 @@ public class HistoryFragmentPresenter implements IPresenter<HistoryFragmentView>
       } catch (Exception e) {
         subscriber.onError(e);
       }
-    }).subscribeOn(schedulers.backgroundThread()).observeOn(schedulers.mainThread());
+    });
   }
 }

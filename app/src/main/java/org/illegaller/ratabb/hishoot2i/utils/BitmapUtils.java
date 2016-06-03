@@ -53,8 +53,8 @@ public class BitmapUtils {
     Paint mPaintGray = new Paint();
     mPaintWhite.setColor(0xffffffff);
     mPaintGray.setColor(0xffcbcbcb);
-    int numRectanglesHorizontal = (int) Math.ceil((width / rectangleSize));
-    int numRectanglesVertical = (int) Math.ceil(height / rectangleSize);
+    int numRectanglesHorizontal = (width / rectangleSize);
+    int numRectanglesVertical = (height / rectangleSize);
     Bitmap result;
     try {
       result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -310,8 +310,7 @@ public class BitmapUtils {
     return Color.argb(128, Color.red(source), Color.green(source), Color.blue(source));
   }
 
-  ////////////////// Template Default //////////////////
-  // FIXME: Api 16 - template default not show ?
+  /*  {@link DefaultBuilder}  */
   public static Bitmap getNinePatch(@NonNull final Context context, @DrawableRes int drawableID,
       int width, int height) {
     Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);

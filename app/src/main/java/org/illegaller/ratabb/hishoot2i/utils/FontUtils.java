@@ -4,11 +4,16 @@ import android.graphics.Typeface;
 import java.io.File;
 
 public class FontUtils {
-  private static Typeface sBadgeTypeface = sDefault();
+  private static final Typeface DEFAULT_TYPEFACE =
+      Typeface.create("sans-serif-black", Typeface.BOLD);
+  private static Typeface sBadgeTypeface;
 
-  private FontUtils() { /*no instance*/ }
+  private FontUtils() {
+    throw new UnsupportedOperationException("no instance");
+  }
 
   public static Typeface getBadgeTypeface() {
+    if (sBadgeTypeface == null) sBadgeTypeface = DEFAULT_TYPEFACE;
     return sBadgeTypeface;
   }
 
@@ -23,10 +28,6 @@ public class FontUtils {
   }
 
   public static void setBadgeTypefaceDefault() {
-    sBadgeTypeface = sDefault();
-  }
-
-  private static Typeface sDefault() {
-    return Typeface.create("sans-serif-black", Typeface.BOLD);
+    sBadgeTypeface = DEFAULT_TYPEFACE;
   }
 }

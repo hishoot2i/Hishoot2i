@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 
 public class JavaBlurProcess implements BlurProcess {
 
-  private static final short[] stackblur_mul = {
+  private static final short[] sSTACKBLUR_MUL = {
       512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 335, 292, 512, 454, 405, 364,
       328, 298, 271, 496, 456, 420, 388, 360, 335, 312, 292, 273, 512, 482, 454, 428, 405, 383, 364,
       345, 328, 312, 298, 284, 271, 259, 496, 475, 456, 437, 420, 404, 388, 374, 360, 347, 335, 323,
@@ -46,7 +46,7 @@ public class JavaBlurProcess implements BlurProcess {
       273, 271, 269, 267, 265, 263, 261, 259
   };
 
-  private static final byte[] stackblur_shr = {
+  private static final byte[] sSTACKBLUR_SHR = {
       9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 18, 18,
       18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20,
       20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21,
@@ -64,21 +64,21 @@ public class JavaBlurProcess implements BlurProcess {
       int step) {
     int x, y, xp, yp, i;
     int sp;
-    int stack_start;
-    int stack_i;
+    int stackStart;
+    int stackI;
 
-    int src_i;
-    int dst_i;
+    int srcI;
+    int dstI;
 
-    long sum_r, sum_g, sum_b,
-        sum_in_r, sum_in_g, sum_in_b,
-        sum_out_r, sum_out_g, sum_out_b;
+    long sumR, sumG, sumB,
+        sumInR, sumInG, sumInB,
+        sumOutR, sumOutG, sumOutB;
 
     int wm = w - 1;
     int hm = h - 1;
     int div = (radius * 2) + 1;
-    int mul_sum = stackblur_mul[radius];
-    byte shr_sum = stackblur_shr[radius];
+    int mulSum = sSTACKBLUR_MUL[radius];
+    byte shrSum = sSTACKBLUR_SHR[radius];
     int[] stack = new int[div];
 
     if (step == 1) {
@@ -86,167 +86,162 @@ public class JavaBlurProcess implements BlurProcess {
       int maxY = (core + 1) * h / cores;
 
       for (y = minY; y < maxY; y++) {
-        sum_r =
-            sum_g = sum_b = sum_in_r = sum_in_g = sum_in_b = sum_out_r = sum_out_g = sum_out_b = 0;
+        sumR = sumG = sumB = sumInR = sumInG = sumInB = sumOutR = sumOutG = sumOutB = 0;
 
-        src_i = w * y; // start of line (0,y)
+        srcI = w * y; // start of line (0,y)
 
         for (i = 0; i <= radius; i++) {
-          stack_i = i;
-          stack[stack_i] = src[src_i];
-          sum_r += ((src[src_i] >>> 16) & 0xff) * (i + 1);
-          sum_g += ((src[src_i] >>> 8) & 0xff) * (i + 1);
-          sum_b += (src[src_i] & 0xff) * (i + 1);
-          sum_out_r += ((src[src_i] >>> 16) & 0xff);
-          sum_out_g += ((src[src_i] >>> 8) & 0xff);
-          sum_out_b += (src[src_i] & 0xff);
+          stackI = i;
+          stack[stackI] = src[srcI];
+          sumR += ((src[srcI] >>> 16) & 0xff) * (i + 1);
+          sumG += ((src[srcI] >>> 8) & 0xff) * (i + 1);
+          sumB += (src[srcI] & 0xff) * (i + 1);
+          sumOutR += ((src[srcI] >>> 16) & 0xff);
+          sumOutG += ((src[srcI] >>> 8) & 0xff);
+          sumOutB += (src[srcI] & 0xff);
         }
 
         for (i = 1; i <= radius; i++) {
-          if (i <= wm) src_i += 1;
-          stack_i = i + radius;
-          stack[stack_i] = src[src_i];
-          sum_r += ((src[src_i] >>> 16) & 0xff) * (radius + 1 - i);
-          sum_g += ((src[src_i] >>> 8) & 0xff) * (radius + 1 - i);
-          sum_b += (src[src_i] & 0xff) * (radius + 1 - i);
-          sum_in_r += ((src[src_i] >>> 16) & 0xff);
-          sum_in_g += ((src[src_i] >>> 8) & 0xff);
-          sum_in_b += (src[src_i] & 0xff);
+          if (i <= wm) srcI += 1;
+          stackI = i + radius;
+          stack[stackI] = src[srcI];
+          sumR += ((src[srcI] >>> 16) & 0xff) * (radius + 1 - i);
+          sumG += ((src[srcI] >>> 8) & 0xff) * (radius + 1 - i);
+          sumB += (src[srcI] & 0xff) * (radius + 1 - i);
+          sumInR += ((src[srcI] >>> 16) & 0xff);
+          sumInG += ((src[srcI] >>> 8) & 0xff);
+          sumInB += (src[srcI] & 0xff);
         }
 
         sp = radius;
         xp = radius;
         if (xp > wm) xp = wm;
-        src_i = xp + y * w; //   img.pix_ptr(xp, y);
-        dst_i = y * w; // img.pix_ptr(0, y);
+        srcI = xp + y * w; //   img.pix_ptr(xp, y);
+        dstI = y * w; // img.pix_ptr(0, y);
         for (x = 0; x < w; x++) {
-          src[dst_i] = (int) ((src[dst_i] & 0xff000000) |
-              ((((sum_r * mul_sum) >>> shr_sum) & 0xff) << 16) |
-              ((((sum_g * mul_sum) >>> shr_sum) & 0xff) << 8) |
-              ((((sum_b * mul_sum) >>> shr_sum) & 0xff)));
-          dst_i += 1;
+          src[dstI] = (int) ((src[dstI] & 0xff000000) |
+              ((((sumR * mulSum) >>> shrSum) & 0xff) << 16) |
+              ((((sumG * mulSum) >>> shrSum) & 0xff) << 8) |
+              ((((sumB * mulSum) >>> shrSum) & 0xff)));
+          dstI += 1;
 
-          sum_r -= sum_out_r;
-          sum_g -= sum_out_g;
-          sum_b -= sum_out_b;
+          sumR -= sumOutR;
+          sumG -= sumOutG;
+          sumB -= sumOutB;
 
-          stack_start = sp + div - radius;
-          if (stack_start >= div) stack_start -= div;
-          stack_i = stack_start;
+          stackStart = sp + div - radius;
+          if (stackStart >= div) stackStart -= div;
+          stackI = stackStart;
 
-          sum_out_r -= ((stack[stack_i] >>> 16) & 0xff);
-          sum_out_g -= ((stack[stack_i] >>> 8) & 0xff);
-          sum_out_b -= (stack[stack_i] & 0xff);
+          sumOutR -= ((stack[stackI] >>> 16) & 0xff);
+          sumOutG -= ((stack[stackI] >>> 8) & 0xff);
+          sumOutB -= (stack[stackI] & 0xff);
 
           if (xp < wm) {
-            src_i += 1;
+            srcI += 1;
             ++xp;
           }
 
-          stack[stack_i] = src[src_i];
+          stack[stackI] = src[srcI];
 
-          sum_in_r += ((src[src_i] >>> 16) & 0xff);
-          sum_in_g += ((src[src_i] >>> 8) & 0xff);
-          sum_in_b += (src[src_i] & 0xff);
-          sum_r += sum_in_r;
-          sum_g += sum_in_g;
-          sum_b += sum_in_b;
+          sumInR += ((src[srcI] >>> 16) & 0xff);
+          sumInG += ((src[srcI] >>> 8) & 0xff);
+          sumInB += (src[srcI] & 0xff);
+          sumR += sumInR;
+          sumG += sumInG;
+          sumB += sumInB;
 
           ++sp;
           if (sp >= div) sp = 0;
-          stack_i = sp;
+          stackI = sp;
 
-          sum_out_r += ((stack[stack_i] >>> 16) & 0xff);
-          sum_out_g += ((stack[stack_i] >>> 8) & 0xff);
-          sum_out_b += (stack[stack_i] & 0xff);
-          sum_in_r -= ((stack[stack_i] >>> 16) & 0xff);
-          sum_in_g -= ((stack[stack_i] >>> 8) & 0xff);
-          sum_in_b -= (stack[stack_i] & 0xff);
+          sumOutR += ((stack[stackI] >>> 16) & 0xff);
+          sumOutG += ((stack[stackI] >>> 8) & 0xff);
+          sumOutB += (stack[stackI] & 0xff);
+          sumInR -= ((stack[stackI] >>> 16) & 0xff);
+          sumInG -= ((stack[stackI] >>> 8) & 0xff);
+          sumInB -= (stack[stackI] & 0xff);
         }
       }
-    }
-
-    // step 2
-    else if (step == 2) {
+    } else if (step == 2) { // step 2
       int minX = core * w / cores;
       int maxX = (core + 1) * w / cores;
 
       for (x = minX; x < maxX; x++) {
-        sum_r =
-            sum_g = sum_b = sum_in_r = sum_in_g = sum_in_b = sum_out_r = sum_out_g = sum_out_b = 0;
+        sumR = sumG = sumB = sumInR = sumInG = sumInB = sumOutR = sumOutG = sumOutB = 0;
 
-        src_i = x; // x,0
+        srcI = x; // x,0
         for (i = 0; i <= radius; i++) {
-          stack_i = i;
-          stack[stack_i] = src[src_i];
-          sum_r += ((src[src_i] >>> 16) & 0xff) * (i + 1);
-          sum_g += ((src[src_i] >>> 8) & 0xff) * (i + 1);
-          sum_b += (src[src_i] & 0xff) * (i + 1);
-          sum_out_r += ((src[src_i] >>> 16) & 0xff);
-          sum_out_g += ((src[src_i] >>> 8) & 0xff);
-          sum_out_b += (src[src_i] & 0xff);
+          stackI = i;
+          stack[stackI] = src[srcI];
+          sumR += ((src[srcI] >>> 16) & 0xff) * (i + 1);
+          sumG += ((src[srcI] >>> 8) & 0xff) * (i + 1);
+          sumB += (src[srcI] & 0xff) * (i + 1);
+          sumOutR += ((src[srcI] >>> 16) & 0xff);
+          sumOutG += ((src[srcI] >>> 8) & 0xff);
+          sumOutB += (src[srcI] & 0xff);
         }
         for (i = 1; i <= radius; i++) {
-          if (i <= hm) src_i += w; // +stride
+          if (i <= hm) srcI += w; // +stride
 
-          stack_i = i + radius;
-          stack[stack_i] = src[src_i];
-          sum_r += ((src[src_i] >>> 16) & 0xff) * (radius + 1 - i);
-          sum_g += ((src[src_i] >>> 8) & 0xff) * (radius + 1 - i);
-          sum_b += (src[src_i] & 0xff) * (radius + 1 - i);
-          sum_in_r += ((src[src_i] >>> 16) & 0xff);
-          sum_in_g += ((src[src_i] >>> 8) & 0xff);
-          sum_in_b += (src[src_i] & 0xff);
+          stackI = i + radius;
+          stack[stackI] = src[srcI];
+          sumR += ((src[srcI] >>> 16) & 0xff) * (radius + 1 - i);
+          sumG += ((src[srcI] >>> 8) & 0xff) * (radius + 1 - i);
+          sumB += (src[srcI] & 0xff) * (radius + 1 - i);
+          sumInR += ((src[srcI] >>> 16) & 0xff);
+          sumInG += ((src[srcI] >>> 8) & 0xff);
+          sumInB += (src[srcI] & 0xff);
         }
 
         sp = radius;
         yp = radius;
         if (yp > hm) yp = hm;
-        src_i = x + yp * w; // img.pix_ptr(x, yp);
-        dst_i = x;               // img.pix_ptr(x, 0);
+        srcI = x + yp * w; // img.pix_ptr(x, yp);
+        dstI = x;               // img.pix_ptr(x, 0);
         for (y = 0; y < h; y++) {
-          src[dst_i] = (int) ((src[dst_i] & 0xff000000) |
-              ((((sum_r * mul_sum) >>> shr_sum) & 0xff) << 16) |
-              ((((sum_g * mul_sum) >>> shr_sum) & 0xff) << 8) |
-              ((((sum_b * mul_sum) >>> shr_sum) & 0xff)));
-          dst_i += w;
+          src[dstI] = (int) ((src[dstI] & 0xff000000) |
+              ((((sumR * mulSum) >>> shrSum) & 0xff) << 16) |
+              ((((sumG * mulSum) >>> shrSum) & 0xff) << 8) |
+              ((((sumB * mulSum) >>> shrSum) & 0xff)));
+          dstI += w;
 
-          sum_r -= sum_out_r;
-          sum_g -= sum_out_g;
-          sum_b -= sum_out_b;
+          sumR -= sumOutR;
+          sumG -= sumOutG;
+          sumB -= sumOutB;
 
-          stack_start = sp + div - radius;
-          if (stack_start >= div) stack_start -= div;
-          stack_i = stack_start;
+          stackStart = sp + div - radius;
+          if (stackStart >= div) stackStart -= div;
+          stackI = stackStart;
 
-          sum_out_r -= ((stack[stack_i] >>> 16) & 0xff);
-          sum_out_g -= ((stack[stack_i] >>> 8) & 0xff);
-          sum_out_b -= (stack[stack_i] & 0xff);
+          sumOutR -= ((stack[stackI] >>> 16) & 0xff);
+          sumOutG -= ((stack[stackI] >>> 8) & 0xff);
+          sumOutB -= (stack[stackI] & 0xff);
 
           if (yp < hm) {
-            src_i += w; // stride
+            srcI += w; // stride
             ++yp;
           }
 
-          stack[stack_i] = src[src_i];
+          stack[stackI] = src[srcI];
 
-          sum_in_r += ((src[src_i] >>> 16) & 0xff);
-          sum_in_g += ((src[src_i] >>> 8) & 0xff);
-          sum_in_b += (src[src_i] & 0xff);
-          sum_r += sum_in_r;
-          sum_g += sum_in_g;
-          sum_b += sum_in_b;
+          sumInR += ((src[srcI] >>> 16) & 0xff);
+          sumInG += ((src[srcI] >>> 8) & 0xff);
+          sumInB += (src[srcI] & 0xff);
+          sumR += sumInR;
+          sumG += sumInG;
+          sumB += sumInB;
 
           ++sp;
           if (sp >= div) sp = 0;
-          stack_i = sp;
+          stackI = sp;
 
-          sum_out_r += ((stack[stack_i] >>> 16) & 0xff);
-          sum_out_g += ((stack[stack_i] >>> 8) & 0xff);
-          sum_out_b += (stack[stack_i] & 0xff);
-          sum_in_r -= ((stack[stack_i] >>> 16) & 0xff);
-          sum_in_g -= ((stack[stack_i] >>> 8) & 0xff);
-          sum_in_b -= (stack[stack_i] & 0xff);
+          sumOutR += ((stack[stackI] >>> 16) & 0xff);
+          sumOutG += ((stack[stackI] >>> 8) & 0xff);
+          sumOutB += (stack[stackI] & 0xff);
+          sumInR -= ((stack[stackI] >>> 16) & 0xff);
+          sumInG -= ((stack[stackI] >>> 8) & 0xff);
+          sumInB -= (stack[stackI] & 0xff);
         }
       }
     }
@@ -282,26 +277,26 @@ public class JavaBlurProcess implements BlurProcess {
   }
 
   private static class BlurTask implements Callable<Void> {
-    private final int[] _src;
-    private final int _w;
-    private final int _h;
-    private final int _radius;
-    private final int _totalCores;
-    private final int _coreIndex;
-    private final int _round;
+    private final int[] mSrc;
+    private final int mWidth;
+    private final int mHeight;
+    private final int mRadius;
+    private final int mTotalCores;
+    private final int mCoreIndex;
+    private final int mRound;
 
     public BlurTask(int[] src, int w, int h, int radius, int totalCores, int coreIndex, int round) {
-      _src = src;
-      _w = w;
-      _h = h;
-      _radius = radius;
-      _totalCores = totalCores;
-      _coreIndex = coreIndex;
-      _round = round;
+      mSrc = src;
+      mWidth = w;
+      mHeight = h;
+      mRadius = radius;
+      mTotalCores = totalCores;
+      mCoreIndex = coreIndex;
+      mRound = round;
     }
 
     @Override public Void call() throws Exception {
-      blurIteration(_src, _w, _h, _radius, _totalCores, _coreIndex, _round);
+      blurIteration(mSrc, mWidth, mHeight, mRadius, mTotalCores, mCoreIndex, mRound);
       return null;
     }
   }

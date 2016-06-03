@@ -10,9 +10,8 @@ import javax.inject.Singleton;
 
 @Module public class SystemServiceModule {
 
-  @SuppressWarnings("unchecked") <T> T getSystemService(final Context context,
-      final String serviceConstant) {
-    return (T) context.getSystemService(serviceConstant);
+  @SuppressWarnings("unchecked") <T> T getSystemService(Context context, String serviceName) {
+    return (T) context.getSystemService(serviceName);
   }
 
   @Provides @Singleton WindowManager provideWindowManager(Application app) {

@@ -11,34 +11,34 @@ import org.illegaller.ratabb.hishoot2i.utils.BitmapUtils;
 
 public class BadgeDrawable extends Drawable {
 
-  private final Bitmap bitmap;
-  private final int width;
-  private final int height;
-  private final Paint paint;
+  private final Bitmap mBitmap;
+  private final int mWidth;
+  private final int mHeight;
+  private final Paint mPaint;
 
   public BadgeDrawable(Context context, String badgeText, @ColorInt int badgeColor, int badgeSize) {
-    bitmap = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
-    width = bitmap.getWidth();
-    height = bitmap.getHeight();
-    paint = new Paint();
+    mBitmap = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
+    mWidth = mBitmap.getWidth();
+    mHeight = mBitmap.getHeight();
+    mPaint = new Paint();
   }
 
   @Override public int getIntrinsicWidth() {
-    return width;
+    return mWidth;
   }
 
   @Override public int getIntrinsicHeight() {
-    return height;
+    return mHeight;
   }
 
   @Override public void draw(Canvas canvas) {
-    canvas.drawBitmap(bitmap, getBounds().left, getBounds().top, paint);
+    canvas.drawBitmap(mBitmap, getBounds().left, getBounds().top, mPaint);
   }
 
   @Override public void setAlpha(int i) { /*no-op*/ }
 
   @Override public void setColorFilter(ColorFilter colorFilter) {
-    paint.setColorFilter(colorFilter);
+    mPaint.setColorFilter(colorFilter);
   }
 
   @Override public int getOpacity() {

@@ -10,12 +10,12 @@ import android.support.annotation.Nullable;
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.ApkV1Builder;
@@ -30,23 +30,23 @@ import static org.illegaller.ratabb.hishoot2i.AppConstants.MESSAGE_TEMPLATE_CANT
 public class TemplateProvider {
   public static final Comparator<Template> TEMPLATE_NAME_COMPARATOR =
       (t0, t1) -> Collator.getInstance().compare(t0.name, t1.name);
-  private final Context mContext;
-  private Template DEFAULT;
-  private Map<String, Template> templateMap;
-  private List<Template> templateList;
+  @Inject Context mContext;
+  private Template mTemplateDefault;
+  private Map<String, Template> mTemplateMap;
+  private List<Template> mTemplateList;
 
-  public TemplateProvider(Context context) {
-    this.mContext = context.getApplicationContext();
+  @Inject public TemplateProvider() {
   }
 
-  public Template getDEFAULT() {
-    return DEFAULT;
+  public Template getTemplateDefault() {
+    if (mTemplateDefault == null) mTemplateDefault = findById(AppConstants.DEFAULT_TEMPLATE_ID);
+    return mTemplateDefault;
   }
 
   @Nullable public Template findById(String templateID) {
-    Utils.checkNotNull(templateMap, "provideTemplate()");
-    if (templateMap.containsKey(templateID)) {
-      return templateMap.get(templateID);
+    Utils.checkNotNull(mTemplateMap, "TemplateProvider.provideTemplate() before call this method");
+    if (mTemplateMap.containsKey(templateID)) {
+      return mTemplateMap.get(templateID);
     } else {
       CrashLog.logError(String.format(Locale.US, MESSAGE_TEMPLATE_CANT_FIND, templateID), null);
       return null;
@@ -54,30 +54,26 @@ public class TemplateProvider {
   }
 
   public List<Template> asList() {
-    Utils.checkNotNull(templateMap, "provideTemplate()");
-    if (templateList == null) templateList = new ArrayList<>(templateMap.values());
-    DEFAULT = findById(AppConstants.DEFAULT_TEMPLATE_ID);
-    templateList.remove(DEFAULT);
-    Collections.sort(templateList, TEMPLATE_NAME_COMPARATOR);
-    templateList.add(0, DEFAULT);
-    return templateList;
+    Utils.checkNotNull(mTemplateMap, "TemplateProvider.provideTemplate() before call this method");
+    if (mTemplateList == null) mTemplateList = new ArrayList<>(mTemplateMap.values());
+    return mTemplateList;
   }
 
-  public void provideTemplate() {
-    templateMap = new HashMap<>();
+  public void provideTemplate() throws Exception {
+    mTemplateMap = new HashMap<>();
     provideTemplateDefault();
     provideTemplateApk();
     provideTemplateHtz();
     provideTemplateApkV2();
   }
 
-  //START Provide Template
-  void provideTemplateDefault() {
+  //START Providing Template
+  private void provideTemplateDefault()throws Exception  {
     final DefaultBuilder builder = new DefaultBuilder(mContext);
     putToTemplateMap(builder.id, builder.build());
   }
 
-  void provideTemplateApk() {
+  private void provideTemplateApk()throws Exception  {
     Intent intent = new Intent(Intent.ACTION_MAIN);
     intent.addCategory(AppConstants.CATEGORY_TEMPLATE_APK);
     final PackageManager manager = mContext.getPackageManager();
@@ -88,7 +84,7 @@ public class TemplateProvider {
     }
   }
 
-  void provideTemplateApkV2() {
+  private void provideTemplateApkV2()throws Exception  {
     List<ApplicationInfo> apps = null;
     try {
       apps = Utils.getInstalledApplications(mContext, PackageManager.GET_META_DATA);
@@ -108,7 +104,7 @@ public class TemplateProvider {
     }
   }
 
-  void provideTemplateHtz() {
+  private void provideTemplateHtz()throws Exception  {
     File htzDir = AppConstants.getHishootHtzDir(mContext);
     final File[] lisFiles = htzDir.listFiles();
     if (lisFiles == null) return;
@@ -122,11 +118,12 @@ public class TemplateProvider {
         }
       }
     }
-  }//END Provide Template
+  }
+  //END Provide Template
 
-  void putToTemplateMap(String templateID, Template template) {
+  private void putToTemplateMap(String templateID, Template template) {
         /* avoid duplicate template or failed build template*/
-    if (templateMap.containsKey(templateID) || template == null) return;
-    templateMap.put(templateID, template);
+    if (mTemplateMap.containsKey(templateID) || template == null) return;
+    mTemplateMap.put(templateID, template);
   }
 }

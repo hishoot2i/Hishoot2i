@@ -22,25 +22,26 @@ public final class Reflector {
 
       declaredMethod.setAccessible(true);
       declaredMethod.invoke(methodOwner, objects);
-    } catch (final Throwable ignored) {
+    } catch (Throwable ignored) {
+      CrashLog.logError("ignored", ignored);
     }
   }
 
   public static final class TypedObject {
-    private final Object object;
-    private final Class type;
+    private final Object mObject;
+    private final Class mType;
 
     public TypedObject(final Object object, final Class type) {
-      this.object = object;
-      this.type = type;
+      this.mObject = object;
+      this.mType = type;
     }
 
     Object getObject() {
-      return object;
+      return mObject;
     }
 
     Class getType() {
-      return type;
+      return mType;
     }
   }
 }

@@ -8,23 +8,21 @@ import org.illegaller.ratabb.hishoot2i.view.fragment.tools.BadgeToolFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.tools.ScreenToolFragment;
 
 public class ToolFragmentAdapter extends FragmentStatePagerAdapter {
+  private final Fragment[] mFragments;
+
   public ToolFragmentAdapter(FragmentManager fm) {
     super(fm);
+    mFragments = new Fragment[] {
+        ScreenToolFragment.newInstance(), BackgroundToolFragment.newInstance(),
+        BadgeToolFragment.newInstance()
+    };
   }
 
   @Override public Fragment getItem(int position) {
-    switch (position) {
-      default:
-      case 0:
-        return ScreenToolFragment.newInstance();
-      case 1:
-        return BackgroundToolFragment.newInstance();
-      case 2:
-        return BadgeToolFragment.newInstance();
-    }
+    return mFragments[position];
   }
 
   @Override public int getCount() {
-    return 3;
+    return mFragments.length;
   }
 }

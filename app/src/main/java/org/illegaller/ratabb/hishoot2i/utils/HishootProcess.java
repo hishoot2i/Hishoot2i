@@ -10,161 +10,142 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import java.io.IOException;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.illegaller.ratabb.hishoot2i.HishootApplication;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.model.DataImagePath;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
-import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
-import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
-
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_COLOR;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_SIZE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BADGE_TEXT;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_COLOR_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_COLOR_INT;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_BLUR_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_BLUR_RADIUS;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.FRAME_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.GLARE_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SHADOW_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.SS_DOUBLE_ENABLE;
+import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 
 public class HishootProcess {
-  private final Context context;
-  private final boolean doubleSSEnable;
-  private final boolean bgColorEnable;
-  private final boolean bgImageBlurEnable;
-  private final boolean badgeEnable;
-  private final boolean glareEnable;
-  private final boolean shadowEnable;
-  private final boolean frameEnable;
-  private final int bgImageBlurRadius;
-  private final String badgeText;
-  private final int badgeSize;
-  @ColorInt private final int bgColorInt;
-  @ColorInt private final int badgeColor;
-  @Inject @Named(SS_DOUBLE_ENABLE) BooleanTray ssDoubleEnableTray;
-  @Inject @Named(BG_COLOR_ENABLE) BooleanTray bgColorEnableTray;
-  @Inject @Named(BG_IMAGE_BLUR_ENABLE) BooleanTray bgImageBlurEnableTray;
-  @Inject @Named(BADGE_ENABLE) BooleanTray badgeEnableTray;
-  @Inject @Named(GLARE_ENABLE) BooleanTray glareEnableTray;
-  @Inject @Named(SHADOW_ENABLE) BooleanTray shadowEnableTray;
-  @Inject @Named(FRAME_ENABLE) BooleanTray frameEnableTray;
-  @Inject @Named(BG_COLOR_INT) IntTray bgColorIntTray;
-  @Inject @Named(BG_IMAGE_BLUR_RADIUS) IntTray bgImageBlurRadiusTray;
-  @Inject @Named(BADGE_COLOR) IntTray badgeColorTray;
-  @Inject @Named(BADGE_SIZE) IntTray badgeSizeTray;
-  @Inject @Named(BADGE_TEXT) StringTray badgeTextTray;
-  private Callback callback;
+  private final Context mContext;
+  private final boolean mDoubleSSEnable;
+  private final boolean mBackgroundColorEnable;
+  private final boolean mBackgroundImageBlurEnable;
+  private final boolean mBadgeEnable;
+  private final boolean mGlareEnable;
+  private final boolean mShadowEnable;
+  private final boolean mFrameEnable;
+  private final int mBackgroundImageBlurRadius;
+  private final String mBadgeText;
+  private final int mBadgeSize;
+  @ColorInt private final int mBackgroundColorInt;
+  @ColorInt private final int mBadgeColor;
+
+  @Inject TrayManager mTrayManager;
 
   public HishootProcess(Context context) {
-    this.context = context;
-    HishootApplication.get(context).getApplicationComponent().inject(this);
-    this.doubleSSEnable = ssDoubleEnableTray.get();
-    this.bgColorEnable = bgColorEnableTray.get();
-    this.bgImageBlurEnable = bgImageBlurEnableTray.get();
-    this.badgeEnable = badgeEnableTray.get();
-    this.glareEnable = glareEnableTray.get();
-    this.shadowEnable = shadowEnableTray.get();
-    this.frameEnable = frameEnableTray.get();
-    this.bgColorInt = bgColorIntTray.get();
-    this.bgImageBlurRadius = bgImageBlurRadiusTray.get();
-    this.badgeColor = badgeColorTray.get();
-    this.badgeText = badgeTextTray.get();
-    this.badgeSize = badgeSizeTray.get();
+    HishootApplication.get(context).getAppComponent().inject(this);
+    this.mContext = context;
+    this.mDoubleSSEnable = mTrayManager.getDoubleEnable().isValue();
+    this.mBackgroundColorEnable = mTrayManager.getBackgroundColorEnable().isValue();
+    this.mBackgroundImageBlurEnable = mTrayManager.getBackgroundImageBlurEnable().isValue();
+    this.mBadgeEnable = mTrayManager.getBadgeEnable().isValue();
+    this.mGlareEnable = mTrayManager.getGlareEnable().isValue();
+    this.mShadowEnable = mTrayManager.getShadowEnable().isValue();
+    this.mFrameEnable = mTrayManager.getFrameEnable().isValue();
+    this.mBackgroundColorInt = mTrayManager.getBackgroundColorInt().getValue();
+    this.mBackgroundImageBlurRadius = mTrayManager.getBackgroundImageBlurRadius().getValue();
+    this.mBadgeColor = mTrayManager.getBadgeColor().getValue();
+    this.mBadgeText = mTrayManager.getBadgeText().getValue();
+    this.mBadgeSize = mTrayManager.getBadgeSize().getValue();
   }
 
-  public void process(@NonNull DataImagePath dataImagePath, @NonNull Template template,
-      @NonNull Callback callback, boolean isSave) throws Exception {
-    if (Utils.isMainThread()) {
-      throw new IllegalThreadStateException("avoid HishootProcess#prosess on main thread");
-    }
+  public void process(@NonNull final DataImagePath dataImagePath, @NonNull final Template template,
+      @NonNull final Callback callback, boolean isSave) throws Exception {
+    if (Utils.isMainThread()) throw new ProcessException("avoid #process on main thread");
 
     final String pathImageBg = dataImagePath.pathImageBackground;
     final String pathImageSS1 = dataImagePath.pathImageScreen1;
     final String pathImageSS2 = dataImagePath.pathImageScreen2;
-    this.callback = callback;
+
     callback.startProcess(System.currentTimeMillis());
     int totalW = template.templatePoint.x;
     int totalH = template.templatePoint.y;
-    if (doubleSSEnable) totalW += totalW;
+    if (mDoubleSSEnable) totalW += totalW;
     Bitmap result;
     Canvas canvas;
     try { // FIXME ?
       result = Bitmap.createBitmap(totalW, totalH, Bitmap.Config.ARGB_8888);
       canvas = new Canvas(result);
     } catch (Exception e) {
-      failed("Oops error on create " + totalW + "x" + totalH, R.string.send_report, e);
+      failed("Oops error on create " + totalW + "x" + totalH, R.string.send_report, e, callback);
       return;
     }
-    ///////background///////
+
+    /////// BACKGROUND ///////
     try {
-      if (bgColorEnable) /*background color*/ {
-        canvas.drawColor(bgColorInt);
+      if (mBackgroundColorEnable) /*background color*/ {
+        canvas.drawColor(mBackgroundColorInt);
       } else { /*background image*/
         Bitmap background =
             pathImageBg != null ? UILHelper.loadImage(pathImageBg, new Point(totalW, totalH))
-                : BitmapUtils.alphaPatternBitmap(context, totalW, totalH);
+                : BitmapUtils.alphaPatternBitmap(mContext, totalW, totalH);
         Bitmap scaleCenterCrop = null;
         if (background != null) {
           scaleCenterCrop = BitmapUtils.scaleCenterCrop(background, totalW, totalH);
         }
         if (scaleCenterCrop != null) {
-          if (bgImageBlurEnable)/*background image blur*/ {
-            BitmapUtils.drawBlurToCanvas(canvas, scaleCenterCrop, bgImageBlurRadius);
+          if (mBackgroundImageBlurEnable)/*background image blur*/ {
+            BitmapUtils.drawBlurToCanvas(canvas, scaleCenterCrop, mBackgroundImageBlurRadius);
           } else {
             BitmapUtils.drawBitmapToCanvas(canvas, scaleCenterCrop, 0, 0);
           }
         }
       }
     } catch (Exception e) {
-      failed("Oops error draw background " + totalW + "x" + totalH, R.string.send_report, e);
+      failed("Oops error draw background " + totalW + "x" + totalH, R.string.send_report, e,
+          callback);
       return;
     }
-    ///////template+ss///////
+
+    /////// TEMPLATE and SCREEN///////
     Bitmap mix1, mix2 = null;
     try {
-      mix1 = BitmapUtils.mixTemplate(context, template, pathImageSS1, glareEnable, shadowEnable,
-          frameEnable);
-      if (doubleSSEnable) {
-        mix2 = BitmapUtils.mixTemplate(context, template, pathImageSS2, glareEnable, shadowEnable,
-            frameEnable);
+      mix1 = BitmapUtils.mixTemplate(mContext, template, pathImageSS1, mGlareEnable, mShadowEnable,
+          mFrameEnable);
+      if (mDoubleSSEnable) {
+        mix2 =
+            BitmapUtils.mixTemplate(mContext, template, pathImageSS2, mGlareEnable, mShadowEnable,
+                mFrameEnable);
       }
     } catch (Exception e) {
       String msg = template.name + " (" + totalW + "x" + totalH + ")";
-      failed("Template: " + msg + "\n...", R.string.send_report, e);
+      failed("Template: " + msg + "\n...", R.string.send_report, e, callback);
       return;
     }
     if (mix1 != null) BitmapUtils.drawBitmapToCanvas(canvas, mix1, 0, 0);
     if (mix2 != null) BitmapUtils.drawBitmapToCanvas(canvas, mix2, (totalW / 2), 0);
-    ///////badge///////
-    if (badgeEnable) {
-      final Bitmap badge = BitmapUtils.bitmapBadge(context, badgeText, badgeColor, badgeSize);
+
+    /////// BADGE ///////
+    if (mBadgeEnable) {
+      final Bitmap badge = BitmapUtils.bitmapBadge(mContext, mBadgeText, mBadgeColor, mBadgeSize);
       final int topBadge = totalH - (badge.getHeight() * 2);
       final int leftBadge = (totalW / 2) - (badge.getWidth() / 2);
       BitmapUtils.drawBitmapToCanvas(canvas, badge, leftBadge, topBadge);
     }
 
+    //////// RESULT ////////////
     try {
       callback.doneProcess(result, isSave ? Uri.fromFile(Utils.saveHishoot(result)) : null);
-    } catch (IOException e) { /* FIXME: reported */
-      failed(R.string.cant_save, R.string.save_failed, e);
+    } catch (IOException e) {
+      failed(R.string.cant_save, R.string.save_failed, e, callback);
     }
   }
 
-  void failed(int message, int extra, Throwable e) {
-    failed(context.getString(message), extra, e);
+  private void failed(int message, int extra, Throwable e, Callback callback) {
+    failed(mContext.getString(message), extra, e, callback);
   }
 
-  void failed(String message, int extra, Throwable e) {
-    failed(message, context.getString(extra), e);
+  private void failed(String message, int extra, Throwable e, Callback callback) {
+    failed(message, mContext.getString(extra), e, callback);
   }
 
-  void failed(String message, String extra, Throwable e) {
-    if (e != null) CrashLog.logError("HishootProcess: " + message, e);
+  private void failed(String message, String extra, Throwable e, Callback callback) {
+    if (e != null) {
+      CrashLog.logError("HishootProcess: " + message, e);
+    } else {
+      CrashLog.log(message);
+    }
     callback.failProcess(message, extra);
   }
 
@@ -175,5 +156,11 @@ public class HishootProcess {
     void failProcess(String message, String extra);
 
     void doneProcess(Bitmap result, @Nullable Uri uri);
+  }
+
+  private static class ProcessException extends IllegalStateException {
+    ProcessException(String cause) {
+      super("HishootProcess: " + cause);
+    }
   }
 }

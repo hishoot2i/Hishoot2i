@@ -2,7 +2,7 @@ buildscript {
   repositories {
     jcenter()
     mavenCentral()
-    maven { url "https://maven.fabric.io/public" }
+    maven { url 'https://maven.fabric.io/public' }
   }
   dependencies {
     classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
@@ -12,28 +12,38 @@ buildscript {
   }
 }
 
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: "com.neenbedankt.android-apt"
-apply plugin: "com.frogermcs.androiddevmetrics"
-apply plugin: "io.fabric"
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.frogermcs.androiddevmetrics'
+apply plugin: 'io.fabric'
+apply from: '../buildsystem/quality/quality.gradle'
 
 repositories {
   jcenter()
   mavenCentral()
-  maven { url "https://maven.fabric.io/public" }
+  maven { url 'https://maven.fabric.io/public' }
 }
-
-def versionMajor = 1
-def versionMinor = 1
-def versionPatch = 2
-def versionBuild = 0
-def buildTime = new Date().format("yyyyMMdd");
-def appName = "Hishoot2i"
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
+
+  defaultConfig {
+    applicationId rootProject.ext.applicationId
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode rootProject.ext.versionCode
+    versionName rootProject.ext.versionName
+    resValue("string", "tray__authority", "${applicationId}.tray")
+    resValue("string", "app_version", "$versionName")
+    resValue("string", "app_name", "$rootProject.ext.appName")
+    resValue("string", "app_build", "$rootProject.ext.buildTime")
+    vectorDrawables.useSupportLibrary = true
+    resConfig("en")
+    archivesBaseName = rootProject.ext.archivesBaseName //must sync gradle
+//    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
@@ -49,25 +59,8 @@ android {
     exclude "LICENSE.txt"
     exclude "NOTICE.txt"
   }
-
-  defaultConfig {
-    applicationId "org.illegaller.ratabb.hishoot2i"
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
-    versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-    resValue("string", "tray__authority", "${applicationId}.tray")
-    resValue("string", "app_version", "$versionName")
-    resValue("string", "app_name", "$appName")
-    resValue("string", "app_build", "$buildTime")
-    vectorDrawables.useSupportLibrary = true
-    resConfig("en")
-    archivesBaseName =
-        "$appName" + "-v${versionName}" + "-${buildTime}" + "-minApi${minSdkVersion.apiLevel}"
-  }
-
   signingConfigs {
-    if (file("sign.properties").exists()) {
+    if (isExists("sign.properties")) {
       release {
         Properties prop = loadProp("sign.properties")
         keyAlias prop["keyAlias"]
@@ -86,68 +79,97 @@ android {
       debuggable true
     }
     release {
-      manifestPlaceholders = [fabric_api_key: (file("sign.properties").exists()) ?
+      manifestPlaceholders = [fabric_api_key: isExists("fabric.properties") ?
           loadFromProp("fabric.properties", "apiKey") : ""]
-      if (file("sign.properties").exists()) {
+      if (isExists("sign.properties")) {
         minifyEnabled true
         shrinkResources true
         zipAlignEnabled true
         signingConfig android.signingConfigs.release
+        proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        final FileCollection proguardCollection = files {
+          file("../buildsystem/proguard").listFiles()
+        }
+        proguardFiles(proguardCollection)
       }
-      proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-      final FileCollection proguardCollection = files {
-        file("../buildsystem/proguard").listFiles()
-      }
-      proguardFiles(proguardCollection)
       buildConfigField "boolean", "USE_CRASHLYTICS", "true"
       ext.enableCrashlytics = true
       debuggable false
     }
   }
-  dexOptions { javaMaxHeapSize "2g" }
+  dexOptions {
+    javaMaxHeapSize "2g"
+    dexInProcess true
+    preDexLibraries true
+  }
   lintOptions {
     abortOnError false
-    disable "IconDensities", "IconMissingDensityFolder"
+    disable "UnusedResources", "IconDensities", "IconMissingDensityFolder"
   }
 }
 dependencies {
   def appDependencies = rootProject.ext.dependencies
-  apt appDependencies.getAt("com.jakewharton:butterknife-compiler")
-  apt appDependencies.getAt("com.google.dagger:dagger-compiler")
+  apt(appDependencies.butterknifeCompiler,
+      appDependencies.daggerCompiler)
 
-  provided appDependencies.getAt("javax.annotation:jsr250-api")
-  provided appDependencies.getAt("com.f2prateek.dart:dart-processor")
+  provided(appDependencies.javaxAnnotation,
+      appDependencies.dartProcessor)
 
-  compile appDependencies.getAt("com.android.support:appcompat-v7")
-  compile appDependencies.getAt("com.android.support:cardview-v7")
-  compile appDependencies.getAt("com.android.support:design")
-  compile appDependencies.getAt("com.android.support:preference-v7")
-  compile appDependencies.getAt("com.android.support:recyclerview-v7")
+  compile(appDependencies.appCompat,
+      appDependencies.cardView,
+      appDependencies.design,
+      appDependencies.recyclerView,
+      appDependencies.preferenceV7,
+      appDependencies.supportAnnotation,
+      appDependencies.customActivityOnCrash,
+      appDependencies.eventBus,
+      appDependencies.gson,
+      appDependencies.universalImageLoader,
+      appDependencies.dart,
+      appDependencies.dagger,
+      appDependencies.tray,
+      appDependencies.bottomBar,
+      appDependencies.smoothProgressbar,
+      appDependencies.materialSearchview,
+      appDependencies.recyclerviewAnimators,
+      appDependencies.swipeRevealLayout,
+      appDependencies.appUpdater,
+      appDependencies.rxJava,
+      appDependencies.rxAndroid,
+      appDependencies.butterknife,
+      appDependencies.stream)
 
-  compile appDependencies.getAt("cat.ereza:customactivityoncrash")
-  compile appDependencies.getAt("org.greenrobot:eventbus")
-  compile appDependencies.getAt("com.google.code.gson:gson")
-  compile appDependencies.getAt("com.nostra13.universalimageloader:universal-image-loader")
-  compile appDependencies.getAt("com.f2prateek.dart:dart")
-  compile appDependencies.getAt("com.google.dagger:dagger")
-  compile appDependencies.getAt("net.grandcentrix.tray:tray")
-  compile appDependencies.getAt("com.roughike:bottom-bar")
-  compile appDependencies.getAt("com.github.castorflex.smoothprogressbar:library")
-  compile appDependencies.getAt("com.miguelcatalan:materialsearchview")
-  compile appDependencies.getAt("jp.wasabeef:recyclerview-animators")
-  compile appDependencies.getAt("com.chauthai.swipereveallayout:swipe-reveal-layout")
-  compile appDependencies.getAt("com.github.javiersantos:AppUpdater")
-  compile appDependencies.getAt("io.reactivex:rxjava")
-  compile appDependencies.getAt("io.reactivex:rxandroid")
-  compile appDependencies.getAt("com.jakewharton:butterknife")
+  compile(appDependencies.crashlytics) { transitive = true }
+  compile(appDependencies.aboutLibraries) { transitive = true }
 
-  compile(appDependencies.getAt("com.crashlytics.sdk.android:crashlytics")) { transitive = true }
-  compile(appDependencies.getAt("com.mikepenz:aboutlibraries")) { transitive = true }
+  debugCompile appDependencies.leakcanary
+  releaseCompile appDependencies.leakcanaryNoop
 
-  debugCompile appDependencies.getAt("com.squareup.leakcanary:leakcanary-android")
-  releaseCompile appDependencies.getAt("com.squareup.leakcanary:leakcanary-android-no-op")
+  retrolambdaConfig appDependencies.retrolambda
 
-  retrolambdaConfig appDependencies.getAt("net.orfjackal.retrolambda:retrolambda")
+  //test
+  def testDependencies = rootProject.ext.testDependencies
+  //instrument/ui test
+//  androidTestCompile(testDependencies.mockitoCore,
+//      testDependencies.dexmaker,
+//      testDependencies.dexmakerMockito,
+//      testDependencies.espressoCore,
+//      testDependencies.testingSupport,
+//      testDependencies.runner,
+//      testDependencies.rules,
+//      testDependencies.uiautomator,
+//      appDependencies.supportAnnotation,)
+
+  //local/unit test
+//  testCompile(testDependencies.jUnit,
+//      testDependencies.mockitoCore,
+//      testDependencies.robolectric,
+//      // testDependencies.androidUnitTest,
+//      testDependencies.truth,)
+}
+
+Boolean isExists(String path) {
+  return file(path).exists()
 }
 
 String loadFromProp(String pathProp, String key) {

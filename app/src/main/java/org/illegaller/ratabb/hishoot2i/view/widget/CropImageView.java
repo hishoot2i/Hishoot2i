@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -21,7 +22,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
 
 public class CropImageView extends ImageView {
 
@@ -32,10 +32,10 @@ public class CropImageView extends ImageView {
   private static final int FRAME_STROKE_WEIGHT_IN_DP = 1;
   private static final int GUIDE_STROKE_WEIGHT_IN_DP = 1;
 
-  private final int TRANSPARENT;
-  private final int TRANSLUCENT_WHITE = 0xBBFFFFFF;
-  private final int WHITE = 0xFFFFFFFF;
-  private final int TRANSLUCENT_BLACK = 0xBB000000;
+  private static final int TRANSPARENT = Color.TRANSPARENT;
+  private static final int TRANSLUCENT_WHITE = 0xBBFFFFFF;
+  private static final int WHITE = 0xFFFFFFFF;
+  private static final int TRANSLUCENT_BLACK = 0xBB000000;
 
   // Member variables ////////////////////////////////////////////////////////////////////////////
 
@@ -89,7 +89,7 @@ public class CropImageView extends ImageView {
 
   public CropImageView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
-    TRANSPARENT = ResUtils.getColorInt(context, android.R.color.transparent);
+    //TRANSPARENT = ResUtils.getColorInt(context, android.R.color.transparent);
     float mDensity = getDensity();
     mHandleSize = (int) (mDensity * HANDLE_SIZE_IN_DP);
     mMinFrameSize = mDensity * MIN_FRAME_SIZE_IN_DP;
@@ -464,11 +464,16 @@ public class CropImageView extends ImageView {
   }
 
   private boolean isInsideFrame(float x, float y) {
-    if (mFrameRect.left <= x && mFrameRect.right >= x) {
+    /*if (mFrameRect.left <= x && mFrameRect.right >= x) {
       if (mFrameRect.top <= y && mFrameRect.bottom >= y) {
         mTouchArea = TouchArea.CENTER;
         return true;
       }
+    }*/
+    if ((mFrameRect.left <= x && mFrameRect.right >= x) && (mFrameRect.top <= y
+        && mFrameRect.bottom >= y)) {
+      mTouchArea = TouchArea.CENTER;
+      return true;
     }
     return false;
   }
@@ -1155,27 +1160,27 @@ public class CropImageView extends ImageView {
   public enum CropMode {
     RATIO_FIT_IMAGE(0), RATIO_4_3(1), RATIO_3_4(2), RATIO_1_1(3), RATIO_16_9(4), RATIO_9_16(
         5), RATIO_FREE(6), RATIO_CUSTOM(7);
-    private final int ID;
+    private final int mId;
 
-    private CropMode(final int id) {
-      this.ID = id;
+    CropMode(final int id) {
+      this.mId = id;
     }
 
     public int getId() {
-      return ID;
+      return mId;
     }
   }
 
   public enum ShowMode {
     SHOW_ALWAYS(1), SHOW_ON_TOUCH(2), NOT_SHOW(3);
-    private final int ID;
+    private final int mId;
 
-    private ShowMode(final int id) {
-      this.ID = id;
+    ShowMode(final int id) {
+      this.mId = id;
     }
 
     public int getId() {
-      return ID;
+      return mId;
     }
   }
 
@@ -1184,7 +1189,6 @@ public class CropImageView extends ImageView {
   public static class SavedState extends BaseSavedState {
     public static final Parcelable.Creator<SavedState> CREATOR =
         new Parcelable.Creator<SavedState>() {
-
           @Override public SavedState createFromParcel(Parcel parcel) {
             return new SavedState(parcel);
           }

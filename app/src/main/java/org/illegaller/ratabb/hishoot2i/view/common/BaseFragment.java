@@ -11,44 +11,44 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.squareup.leakcanary.RefWatcher;
-import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.HishootApplication;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 
 public abstract class BaseFragment extends Fragment {
-  protected Unbinder unbinder;
-  @Inject protected RefWatcher refWatcher;
+  protected Unbinder mBinder;
+  protected RefWatcher mRefWatcher;
 
-  public Context context() {
+  public Context getContext() {
     return getActivity();
   }
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ApplicationComponent component = HishootApplication.get(context()).getApplicationComponent();
-    component.inject(this);
-    setupComponent(component);
+    mRefWatcher =
+        HishootApplication.get(getContext()).getAppComponent().refWatcher();
+  }
+
+  public ActivityComponent getActivityComponent() {
+    return ((BaseActivity) getContext()).getActivityComponent();
   }
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(layoutRes(), container, false);
-    unbinder = ButterKnife.bind(this, view);
+    mBinder = ButterKnife.bind(this, view);
     return view;
   }
 
   @Override public void onDestroy() {
-    refWatcher.watch(this);
+    mRefWatcher.watch(this);
     super.onDestroy();
   }
 
   @Override public void onDestroyView() {
-    unbinder.unbind();
+    mBinder.unbind();
     super.onDestroyView();
   }
 
   @LayoutRes protected abstract int layoutRes();
-
-  protected abstract void setupComponent(ApplicationComponent appComponent);
 }

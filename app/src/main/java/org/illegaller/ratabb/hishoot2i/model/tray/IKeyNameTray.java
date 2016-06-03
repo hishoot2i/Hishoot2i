@@ -14,7 +14,6 @@ public interface IKeyNameTray {
   String BG_IMAGE_CROP_ENABLE = "bg_image_crop_enable";
   String DEVICE_HEIGHT = "device_height";
   String DEVICE_WIDTH = "device_width";
-  /*String DEVICE_DENSITY = "device_density";*/
   String DEVICE_NAME = "device_name";
   String DEVICE_OS = "device_os";
   String FRAME_ENABLE = "frame_enable";

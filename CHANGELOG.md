@@ -1,5 +1,9 @@
 # Changelog
 -----
+##**v1.1.3 (WIP)**
+
+- bug's fix 
+
 ##**v1.1.2 (20160501)**
 
 - fix bug's FC send image to Hishoot

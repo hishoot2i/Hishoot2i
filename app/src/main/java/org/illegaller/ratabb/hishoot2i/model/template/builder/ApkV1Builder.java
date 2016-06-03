@@ -47,7 +47,7 @@ public class ApkV1Builder extends BaseBuilder {
     }
   }
 
-  @Override public Template build() {
+  @Override public Template build()throws Exception  {
     if (isSuccessBuild) {
       return Template.build(this);
     } else {
@@ -88,7 +88,7 @@ public class ApkV1Builder extends BaseBuilder {
             } else if (xppName.equalsIgnoreCase("botx")) {
               this.bx = parseInt(value);
             } else if (xppName.equalsIgnoreCase("boty")) this.by = parseInt(value);
-                        /*else if (xppName.equalsIgnoreCase("deviceDpi")) this.densType = parseInt(value);*/
+            /*else if (xppName.equalsIgnoreCase("deviceDpi")) this.densType = parseInt(value);*/
             break;
           default:
             break;

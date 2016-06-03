@@ -17,6 +17,7 @@ public class Template implements Parcelable {
       return new Template[size];
     }
   };
+
   public String id;
   public String name;
   public String author;
@@ -52,7 +53,7 @@ public class Template implements Parcelable {
     this.type = tmpType == -1 ? null : TemplateType.values()[tmpType];
   }
 
-  public static Template build(BaseBuilder builder) {
+  public static Template build(BaseBuilder builder) throws Exception {
     Template template = new Template();
     template.id = builder.id;
     template.name = builder.name;
@@ -72,43 +73,22 @@ public class Template implements Parcelable {
   }
 
   @Override public String toString() {
-    return "Template{"
-        + "id='"
-        + id
-        + '\''
-        + ", name='"
-        + name
-        + '\''
-        + ", author='"
-        + author
-        + '\''
-        + ", frameFile='"
-        + frameFile
-        + '\''
-        + ", previewFile='"
-        + previewFile
-        + '\''
-        + ", glareFile='"
-        + glareFile
-        + '\''
-        + ", shadowFile='"
-        + shadowFile
-        + '\''
-        + ", overlayOffset="
-        + overlayOffset
-        + ", templatePoint="
-        + templatePoint
-        + ", leftTop="
-        + leftTop
-        + ", rightTop="
-        + rightTop
-        + ", leftBottom="
-        + leftBottom
-        + ", rightBottom="
-        + rightBottom
-        + ", type="
-        + type
-        + '}';
+    return "Template{" +
+        "id='" + id + '\'' +
+        ", name='" + name + '\'' +
+        ", author='" + author + '\'' +
+        ", frameFile='" + frameFile + '\'' +
+        ", previewFile='" + previewFile + '\'' +
+        ", glareFile='" + glareFile + '\'' +
+        ", shadowFile='" + shadowFile + '\'' +
+        ", overlayOffset=" + overlayOffset +
+        ", templatePoint=" + templatePoint +
+        ", leftTop=" + leftTop +
+        ", rightTop=" + rightTop +
+        ", leftBottom=" + leftBottom +
+        ", rightBottom=" + rightBottom +
+        ", type=" + type +
+        '}';
   }
 
   @Override public int describeContents() {

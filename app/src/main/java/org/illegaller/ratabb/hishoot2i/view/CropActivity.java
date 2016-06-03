@@ -17,8 +17,6 @@ import com.f2prateek.dart.Dart;
 import com.f2prateek.dart.InjectExtra;
 import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.CropActivityModule;
 import org.illegaller.ratabb.hishoot2i.presenter.CropActivityPresenter;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseActivity;
 import org.illegaller.ratabb.hishoot2i.view.widget.CropImageView;
@@ -43,6 +41,7 @@ public class CropActivity extends BaseActivity implements CropActivityView {
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Dart.inject(this);
+    getActivityComponent().inject(this);
     presenter.attachView(this);
     presenter.initView(pathImage);
   }
@@ -54,10 +53,6 @@ public class CropActivity extends BaseActivity implements CropActivityView {
 
   @Override protected int getToolbarId() {
     return View.NO_ID;
-  }
-
-  @Override protected void setupComponent(ApplicationComponent component) {
-    component.plus(new CropActivityModule()).inject(this);
   }
 
   @Override protected int layoutRes() {
@@ -93,7 +88,7 @@ public class CropActivity extends BaseActivity implements CropActivityView {
     showProgress(false);
   }
 
-  @Override public Context context() {
+  @Override public Context getContext() {
     return this;
   }
 }

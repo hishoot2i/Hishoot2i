@@ -2,48 +2,112 @@ allprojects {
   repositories {
     jcenter()
     maven { url 'https://jitpack.io' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
 }
+def versionMajor = 1
+def versionMinor = 1
+def versionPatch = 3
+def versionBuild = 0
+
 ext {
   ////// App //////
   compileSdkVersion = 23
   buildToolsVersion = '24.0.0 rc3'
   minSdkVersion = 16
   targetSdkVersion = 23
+  applicationId = "org.illegaller.ratabb.hishoot2i"
+  versionCode = getVersionCode(versionMajor, versionMinor, versionPatch, versionBuild)
+  versionName = getVersionName(versionMajor, versionMinor, versionPatch)
+  buildTime = new Date().format("yyyyMMdd");
+  appName = "Hishoot2i"
+  archivesBaseName = getArchivesBaseName(appName, versionName, buildTime, minSdkVersion)
+
   ////// Library //////
-  supportVersion = '23.3.0'
-  leakCanaryVersion = '1.4-beta2'
-  daggerVersion = '2.4'
-  dependencies =
-      ["com.android.support:appcompat-v7"                        : "com.android.support:appcompat-v7:${supportVersion}",
-       "com.android.support:cardview-v7"                         : "com.android.support:cardview-v7:${supportVersion}",
-       "com.android.support:design"                              : "com.android.support:design:${supportVersion}",
-       "com.android.support:recyclerview-v7"                     : "com.android.support:recyclerview-v7:${supportVersion}",
-       "com.android.support:preference-v7"                       : "com.android.support:preference-v7:${supportVersion}",
-       "com.jakewharton:butterknife"                             : "com.jakewharton:butterknife:8.0.1",
-       "com.jakewharton:butterknife-compiler"                    : "com.jakewharton:butterknife-compiler:8.0.1",
-       "com.roughike:bottom-bar"                                 : "com.roughike:bottom-bar:1.2.7",
-       "com.mikepenz:aboutlibraries"                             : "com.mikepenz:aboutlibraries:5.6.5@aar",
-       "com.github.castorflex.smoothprogressbar:library"         : "com.github.castorflex.smoothprogressbar:library:1.1.0",
-       "com.google.code.gson:gson"                               : "com.google.code.gson:gson:2.6.2",
-       "cat.ereza:customactivityoncrash"                         : "cat.ereza:customactivityoncrash:1.5.0",
-       "com.nostra13.universalimageloader:universal-image-loader": "com.nostra13.universalimageloader:universal-image-loader:1.9.5",
-       "com.crashlytics.sdk.android:crashlytics"                 : "com.crashlytics.sdk.android:crashlytics:2.5.5@aar",
-       "com.github.javiersantos:AppUpdater"                      : "com.github.javiersantos:AppUpdater:2.1",
-       "com.miguelcatalan:materialsearchview"                    : "com.miguelcatalan:materialsearchview:1.4.0",
-       "jp.wasabeef:recyclerview-animators"                      : "jp.wasabeef:recyclerview-animators:2.2.1",
-       "net.grandcentrix.tray:tray"                              : "net.grandcentrix.tray:tray:1.0.0-rc3",
-       "com.f2prateek.dart:dart"                                 : "com.f2prateek.dart:dart:2.0.0",
-       "com.f2prateek.dart:dart-processor"                       : "com.f2prateek.dart:dart-processor:2.0.0",
-       "org.greenrobot:eventbus"                                 : "org.greenrobot:eventbus:3.0.0",
-       "com.google.dagger:dagger-compiler"                       : "com.google.dagger:dagger-compiler:${daggerVersion}",
-       "com.google.dagger:dagger-producers"                      : "com.google.dagger:dagger-producers:${daggerVersion}",
-       "com.google.dagger:dagger"                                : "com.google.dagger:dagger:${daggerVersion}",
-       "javax.annotation:jsr250-api"                             : "javax.annotation:jsr250-api:1.0",
-       "com.squareup.leakcanary:leakcanary-android"              : "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
-       "com.squareup.leakcanary:leakcanary-android-no-op"        : "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
-       "io.reactivex:rxjava"                                     : "io.reactivex:rxjava:1.1.5",
-       "io.reactivex:rxandroid"                                  : "io.reactivex:rxandroid:1.2.0",
-       "net.orfjackal.retrolambda:retrolambda"                   : "net.orfjackal.retrolambda:retrolambda:2.3.0",
-       "com.chauthai.swipereveallayout:swipe-reveal-layout"      : "com.chauthai.swipereveallayout:swipe-reveal-layout:1.0.0"]
+  version = /////////////////////
+      ['support'    : '23.4.0',
+       'butterknife': '8.0.1',
+       'leakCanary' : '1.4-beta2',
+       'dagger'     : '2.4',
+       'autoDagger' : '1.2-SNAPSHOT', //1.1
+
+       'dexmaker'   : '1.2',
+       'jUnit'      : '4.12',
+       'mockito'    : '2.0.52-beta',
+       'robolectric': '3.0',
+       'checkstyle' : '6.19',
+       ////////////////////////////////////////////////////////////////////////////////////////////
+      ]
+
+  dependencies = //////////////////////////////////////////////////////////////////////////////////
+      ['appCompat'            : "com.android.support:appcompat-v7: ${version.support}",
+       'cardView'             : "com.android.support:cardview-v7:${version.support}",
+       'design'               : "com.android.support:design:${version.support}",
+       'recyclerView'         : "com.android.support:recyclerview-v7:${version.support}",
+       'preferenceV7'         : "com.android.support:preference-v7:${version.support}",
+       'supportAnnotation'    : "com.android.support:support-annotations:${version.support}",
+       'butterknife'          : "com.jakewharton:butterknife:${version.butterknife}",
+       'butterknifeCompiler'  : "com.jakewharton:butterknife-compiler:${version.butterknife}",
+       'bottomBar'            : 'com.roughike:bottom-bar:1.2.7',
+       'aboutLibraries'       : 'com.mikepenz:aboutlibraries:5.6.5@aar',
+       'smoothProgressbar'    : 'com.github.castorflex.smoothprogressbar:library:1.1.0',
+       'gson'                 : 'com.google.code.gson:gson:2.6.2',
+       'customActivityOnCrash': 'cat.ereza:customactivityoncrash:1.5.0',
+       'universalImageLoader' : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
+       'crashlytics'          : 'com.crashlytics.sdk.android:crashlytics:2.5.5@aar',
+       'appUpdater'           : 'com.github.javiersantos:AppUpdater:2.1',
+       'materialSearchview'   : 'com.miguelcatalan:materialsearchview:1.4.0',
+       'recyclerviewAnimators': 'jp.wasabeef:recyclerview-animators:2.2.1',
+       'tray'                 : 'net.grandcentrix.tray:tray:1.0.0-rc3',
+       'dart'                 : 'com.f2prateek.dart:dart:2.0.0',
+       'dartProcessor'        : 'com.f2prateek.dart:dart-processor:2.0.0',
+       'eventBus'             : 'org.greenrobot:eventbus:3.0.0',
+       'daggerCompiler'       : "com.google.dagger:dagger-compiler:${version.dagger}",
+       'daggerProducers'      : "com.google.dagger:dagger-producers:${version.dagger}",
+       'dagger'               : "com.google.dagger:dagger:${version.dagger}",
+       'javaxAnnotation'      : 'javax.annotation:jsr250-api:1.0',
+       'leakcanary'           : "com.squareup.leakcanary:leakcanary-android:${version.leakCanary}",
+       'leakcanaryNoop'       : "com.squareup.leakcanary:leakcanary-android-no-op:${version.leakCanary}",
+       'rxJava'               : 'io.reactivex:rxjava:1.1.5',
+       'rxAndroid'            : 'io.reactivex:rxandroid:1.2.0',
+       'retrolambda'          : 'net.orfjackal.retrolambda:retrolambda:2.3.0',
+       'stream'               : 'com.annimon:stream:1.0.9',
+
+       'swipeRevealLayout'    : 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.0.0',
+       'autoDaggerCompiler'   : "com.github.lukaspili.autodagger2:autodagger2-compiler:${version.autoDagger}",
+       'autoDagger'           : "com.github.lukaspili.autodagger2:autodagger2:${version.autoDagger}",
+       ////////////////////////////////////////////////////////////////////////////////////////////
+      ]
+
+  testDependencies = //////////////////////////////////////////////////////////////////////////////
+      ['jUnit'          : "junit:junit:${version.jUnit}",
+       'mockitoCore'    : "org.mockito:mockito-core:${version.mockito}",
+       'robolectric'    : "org.robolectric:robolectric:${version.robolectric}",
+       'dexmaker'       : "com.google.dexmaker:dexmaker:${version.dexmaker}",
+       'dexmakerMockito': "com.google.dexmaker:dexmaker-mockito:${version.dexmaker}",
+       'androidUnitTest': 'com.github.florent37:androidunittest:1.0.0',
+       'truth'          : 'com.google.truth:truth:0.28',
+
+       'espressoCore'   : 'com.android.support.test.espresso:espresso-core:2.2.1',
+       'testingSupport' : 'com.android.support.test:testing-support-lib:0.1',
+       "runner"           : 'com.android.support.test:runner:0.5',
+       "rules"            : 'com.android.support.test:rules:0.5',
+       "uiautomator"      : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
+       'hamcrest'         : 'org.hamcrest:hamcrest-library:1.3',
+       ////////////////////////////////////////////////////////////////////////////////////////////
+      ]
+  quality = ///////////////////////////////////////////////
+      ['checkstyle': "com.puppycrawl.tools:checkstyle:${version.checkstyle}",]
+}
+
+Integer getVersionCode(int major, int minor, int patch, int build) {
+  return major * 10000 + minor * 1000 + patch * 100 + build
+}
+
+String getVersionName(int major, int minor, int patch) {
+  return "${major}.${minor}.${patch}"
+}
+
+String getArchivesBaseName(String appName, String version, String build, int minApi) {
+  return "$appName" + "-v${version}" + "-${build}" + "-minApi${minApi}"
 }

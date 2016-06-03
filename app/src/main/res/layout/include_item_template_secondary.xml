@@ -57,7 +57,7 @@
         android:baselineAligned="false"
         >
       <FrameLayout
-          android:id="@+id/deleteLayout"
+          android:id="@+id/layoutDelete"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
@@ -72,7 +72,7 @@
             />
       </FrameLayout>
       <FrameLayout
-          android:id="@+id/favLayout"
+          android:id="@+id/layoutFav"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"

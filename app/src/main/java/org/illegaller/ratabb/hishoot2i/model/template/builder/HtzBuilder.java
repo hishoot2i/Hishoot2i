@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,7 +30,7 @@ import org.illegaller.ratabb.hishoot2i.utils.Utils;
 public class HtzBuilder extends BaseBuilder {
   public static final String HTZ_FILE_CFG = "template.cfg";
   private static final int BUFFER_SIZE = 1024;
-  private String htzName;
+  private String mHtzName;
   private Context mContext;
   @Nullable private Callback mCallback;
 
@@ -40,14 +39,14 @@ public class HtzBuilder extends BaseBuilder {
     this.mCallback = callback;
   }
 
-  public void setHtzName(String htzName) {
-    this.htzName = htzName;
-    this.id = getTemplateId(htzName);
+  public void setHtzName(String mHtzName) {
+    this.mHtzName = mHtzName;
+    this.id = getTemplateId(mHtzName);
     init();
   }
 
-  @Override public Template build() {
-    if (null == htzName || null == id) throw new RuntimeException("setHtzName(:String) first");
+  @Override public Template build() throws Exception {
+    if (null == mHtzName || null == id) throw new RuntimeException("setHtzName(:String) first");
     if (isSuccessBuild) {
       return Template.build(this);
     } else {
@@ -89,10 +88,13 @@ public class HtzBuilder extends BaseBuilder {
     String result = null;
     BufferedReader reader = null;
     try {
-      reader = new BufferedReader(new FileReader(json.getAbsolutePath()));
+      //reader = new BufferedReader(new FileReader(json));
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(json), "iso-8859-1"));
       StringBuilder sb = new StringBuilder();
       String line;
-      while ((line = reader.readLine()) != null) sb.append(line).append("\n");
+      while ((line = reader.readLine()) != null) {
+        sb.append(line).append('\n');
+      }
       result = sb.toString();
     } catch (IOException e) {
       CrashLog.logError("getModelHtzFrom", e);
@@ -123,12 +125,17 @@ public class HtzBuilder extends BaseBuilder {
           BufferedReader reader = new BufferedReader(new InputStreamReader(fis, "iso-8859-1"), 8);
           StringBuilder sb = new StringBuilder();
           String line;
-          while ((line = reader.readLine()) != null) sb.append(line).append("\n");
+          while ((line = reader.readLine()) != null) {
+            sb.append(line).append('\n');
+          }
           Utils.tryClose(fis, reader, zipFile);
           HtzModel htzModel = GsonUtils.fromJson(sb.toString(), HtzModel.class);
           if (htzModel == null) continue;
           file = new File(AppConstants.getHishootHtzDir(mContext), getTemplateId(htzModel.name));
-          if (!file.exists()) file.mkdirs();
+          if (!file.exists()) {
+            boolean ignore = file.mkdirs();
+            CrashLog.log(String.valueOf(ignore));
+          }
           break;
         }
       }
@@ -148,12 +155,12 @@ public class HtzBuilder extends BaseBuilder {
   }
 
   class UnzipTask extends AsyncTask<Void, Void, String> {
-    private final String htzFile;
-    private final String outputFile;
+    private final String mHtzFile;
+    private final String mOutputFile;
 
-    private UnzipTask(String htzFile, String outputFile) {
-      this.htzFile = htzFile;
-      this.outputFile = outputFile;
+    private UnzipTask(String mHtzFile, String mOutputFile) {
+      this.mHtzFile = mHtzFile;
+      this.mOutputFile = mOutputFile;
     }
 
     @Override protected String doInBackground(Void... voids) {
@@ -161,10 +168,10 @@ public class HtzBuilder extends BaseBuilder {
       byte[] buffer = new byte[BUFFER_SIZE];
       try {
         ZipInputStream zis =
-            new ZipInputStream(new BufferedInputStream(new FileInputStream(htzFile), BUFFER_SIZE));
+            new ZipInputStream(new BufferedInputStream(new FileInputStream(mHtzFile), BUFFER_SIZE));
         ZipEntry ze;
         while ((ze = zis.getNextEntry()) != null) {
-          File unzipFile = new File(outputFile, ze.getName());
+          File unzipFile = new File(mOutputFile, ze.getName());
           FileOutputStream out = new FileOutputStream(unzipFile, false);
           BufferedOutputStream outputStream = new BufferedOutputStream(out, BUFFER_SIZE);
           try {
@@ -188,7 +195,7 @@ public class HtzBuilder extends BaseBuilder {
         CrashLog.logError("cekHtz", e);
         return null;
       }
-      return outputFile;
+      return mOutputFile;
     }
 
     @Override protected void onPostExecute(String result) {

@@ -4,31 +4,28 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.utils.FileExtensionFilter;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 public class FontProvider {
-  private static final String[] pathFonts = new String[] { "fonts", "Fonts" };
-  private final Map<String, File> fontFileMap; // fontName ,fontFile
-  private FileExtensionFilter filter = new FileExtensionFilter("ttf");
-  private List<File> fontFileList;
+  private static final String[] mPathFonts = new String[] { "fonts", "Fonts" };
+  private final Map<String, File> mFontFileMap = new HashMap<>(); // fontName ,fontFile
+  private final FileExtensionFilter mFileExtFilter = new FileExtensionFilter("ttf");
+  private List<File> mFontFileList;
 
-  public FontProvider() {
-    this.fontFileMap = new HashMap<>();
+  @Inject public FontProvider() {
+    //TODO: move method to individual call and avoid access on main thread
     provideFontSdcard();
   }
 
   public List<File> asListFile() {
-    if (fontFileList == null) fontFileList = new ArrayList<>(fontFileMap.values());
-    return fontFileList;
+    if (mFontFileList == null) mFontFileList = new ArrayList<>(mFontFileMap.values());
+    return mFontFileList;
   }
 
   public List<String> asListName() {
@@ -41,15 +38,15 @@ public class FontProvider {
   }
 
   @Nullable public File find(@NonNull final String name) {
-    return fontFileMap.get(name);
+    return mFontFileMap.get(name);
   }
 
   /////// private method ////////
   private void provideFontSdcard() {
-    for (String font : pathFonts) {
+    for (String font : mPathFonts) {
       File dir = new File(Environment.getExternalStorageDirectory(), font);
       if (dir.isDirectory()) {
-        File[] files = dir.listFiles(filter);
+        File[] files = dir.listFiles(mFileExtFilter);
         for (File file : files) {
           if (file != null) putToMapFonts(file);
         }
@@ -59,8 +56,7 @@ public class FontProvider {
 
   private void putToMapFonts(@NonNull final File file) {
     final String name = Utils.getFileNameWithoutExtension(file.getAbsolutePath());
-    if (fontFileMap.containsKey(name) && !file.canRead()) return;
-    fontFileMap.put(name, file);
+    if (mFontFileMap.containsKey(name) && !file.canRead()) return;
+    mFontFileMap.put(name, file);
   }
-
 }

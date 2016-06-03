@@ -4,16 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ImageReceive implements Parcelable {
-  public static final Parcelable.Creator<ImageReceive> CREATOR =
-      new Parcelable.Creator<ImageReceive>() {
-        @Override public ImageReceive createFromParcel(Parcel source) {
-          return new ImageReceive(source);
-        }
+  public static final Creator<ImageReceive> CREATOR = new Creator<ImageReceive>() {
+    @Override public ImageReceive createFromParcel(Parcel source) {
+      return new ImageReceive(source);
+    }
 
-        @Override public ImageReceive[] newArray(int size) {
-          return new ImageReceive[size];
-        }
-      };
+    @Override public ImageReceive[] newArray(int size) {
+      return new ImageReceive[size];
+    }
+  };
   /* image file path*/
   public final String imagePath;
   /* type image for background or not*/
@@ -36,5 +35,12 @@ public class ImageReceive implements Parcelable {
   @Override public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(this.imagePath);
     dest.writeByte(isBackground ? (byte) 1 : (byte) 0);
+  }
+
+  @Override public String toString() {
+    return "ImageReceive{" +
+        "imagePath='" + imagePath + '\'' +
+        ", isBackground=" + isBackground +
+        '}';
   }
 }

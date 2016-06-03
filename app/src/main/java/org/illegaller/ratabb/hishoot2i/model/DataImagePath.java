@@ -41,16 +41,10 @@ public class DataImagePath implements Parcelable {
   }
 
   @Override public String toString() {
-    return "DataImagePath{"
-        + "pathImageScreen1='"
-        + pathImageScreen1
-        + '\''
-        + ", pathImageScreen2='"
-        + pathImageScreen2
-        + '\''
-        + ", pathImageBackground='"
-        + pathImageBackground
-        + '\''
-        + '}';
+    return "DataImagePath{" +
+        "pathImageScreen1='" + pathImageScreen1 + '\'' +
+        ", pathImageScreen2='" + pathImageScreen2 + '\'' +
+        ", pathImageBackground='" + pathImageBackground + '\'' +
+        '}';
   }
 }

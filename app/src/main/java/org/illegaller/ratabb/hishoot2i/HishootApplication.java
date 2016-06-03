@@ -6,45 +6,34 @@ import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import io.fabric.sdk.android.Fabric;
+import java.util.Locale;
 import javax.inject.Inject;
-import javax.inject.Named;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
+import org.illegaller.ratabb.hishoot2i.di.compenent.AppComponent;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
-import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
+import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
 
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.APP_RUNNING_COUNT;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.CRASHLYTIC_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_HEIGHT;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_NAME;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_OS;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.DEVICE_WIDTH;
-
 public class HishootApplication extends Application {
-  @Inject @Named(CRASHLYTIC_ENABLE) BooleanTray crashlyticEnableTray;
-  @Inject @Named(APP_RUNNING_COUNT) IntTray appRunningCountTray;
-  @Inject @Named(DEVICE_HEIGHT) IntTray deviceHeightTray;
-  @Inject @Named(DEVICE_WIDTH) IntTray deviceWidthTray;
-  @Inject @Named(DEVICE_NAME) StringTray deviceNameTray;
-  @Inject @Named(DEVICE_OS) StringTray deviceOSTray;
-  private ApplicationComponent applicationComponent;
+  @Inject TrayManager mTrayManager;
+  private AppComponent mAppComponent;
 
   public static HishootApplication get(Context context) {
     return (HishootApplication) context.getApplicationContext();
   }
 
-  public synchronized ApplicationComponent getApplicationComponent() {
-    if (applicationComponent == null) {
-      applicationComponent = ApplicationComponent.Initializer.init(this);
-    }
-    return applicationComponent;
+  public TrayManager getTrayManager() {
+    return mTrayManager;
   }
 
-  public boolean isCrashlyticEnable() {
-    return !BuildConfig.DEBUG && crashlyticEnableTray.get();
+  public AppComponent getAppComponent() {
+    if (mAppComponent == null) mAppComponent = AppComponent.Initializer.init(this);
+    return mAppComponent;
+  }
+
+  public boolean analyticEnable() {
+    return !BuildConfig.DEBUG && mTrayManager.getCrashlyticEnable().isValue();
   }
 
   @Override public void onCreate() {
@@ -53,22 +42,19 @@ public class HishootApplication extends Application {
     setupInjection();
     setupCAOC();
 
-    if (isCrashlyticEnable()) {
-      Fabric.with(this, new Crashlytics());
-    }
-    UILHelper.init(this, deviceWidthTray.get(), deviceHeightTray.get());
-   /* mWatcher = LeakCanary.install(this);*/
+    if (analyticEnable()) Fabric.with(this, new Crashlytics());
+
+    UILHelper.init(this, mTrayManager.getDeviceWidth().getValue(),
+        mTrayManager.getDeviceHeight().getValue());
     logCount();
   }
 
   void logCount() {
-    appRunningCountTray.set(appRunningCountTray.get() + 1);
-    CrashLog.log("Device name: "
-        + deviceNameTray.get()
-        + " OS: "
-        + deviceOSTray.get()
-        + " runningCount:"
-        + appRunningCountTray.get());
+    final IntTray appRunningCount = mTrayManager.getAppRunningCount();
+    final String logFormat = "Device name: %s\n OS: %s\n runningCount: %d";
+    appRunningCount.setValue(appRunningCount.getValue() + 1);
+    CrashLog.log(String.format(Locale.US, logFormat, mTrayManager.getDeviceName(),
+        mTrayManager.getDeviceOS(), appRunningCount.getValue()));
   }
 
   void setupCAOC() {
@@ -79,7 +65,7 @@ public class HishootApplication extends Application {
   }
 
   void setupInjection() {
-    applicationComponent = getApplicationComponent();
-    applicationComponent.inject(this);
+    mAppComponent = getAppComponent();
+    mAppComponent.inject(this);
   }
 }

@@ -17,8 +17,6 @@ import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.LauncherActivityModule;
 import org.illegaller.ratabb.hishoot2i.events.EventBadgeBB;
 import org.illegaller.ratabb.hishoot2i.events.EventProgress;
 import org.illegaller.ratabb.hishoot2i.presenter.LauncherActivityPresenter;
@@ -36,13 +34,10 @@ public class LauncherActivity extends BaseActivity
     return new Intent(context, LauncherActivity.class);
   }
 
-  @Override protected void setupComponent(ApplicationComponent component) {
-    component.plus(new LauncherActivityModule()).inject(this);
-  }
-
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     setTheme(R.style.HishootTheme);
     super.onCreate(savedInstanceState);
+    getActivityComponent().inject(this);
     mPresenter.attachView(this);
     mPresenter.attachBottomBar(this, savedInstanceState);
     PermissionHelper.storagePermission().with(this, this).build().runRequest();
@@ -125,7 +120,7 @@ public class LauncherActivity extends BaseActivity
     fragmentManager.executePendingTransactions();
   }
 
-  @Override public Context context() {
+  @Override public Context getContext() {
     return this;
   }
 

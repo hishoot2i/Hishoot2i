@@ -7,16 +7,16 @@ import java.util.Locale;
 import java.util.Set;
 
 public class FileExtensionFilter implements FilenameFilter {
-  private Set<String> extSet = new HashSet<>();
+  private final Set<String> mSetExt = new HashSet<>();
 
   public FileExtensionFilter(String... extension) {
     for (String ext : extension) {
-      extSet.add("." + ext.toLowerCase(Locale.US).trim());
+      mSetExt.add("." + ext.toLowerCase(Locale.US).trim());
     }
   }
 
   @Override public boolean accept(File file, String s) {
-    for (String ext : extSet) {
+    for (String ext : mSetExt) {
       if (s.toLowerCase(Locale.US).endsWith(ext)) return true;
     }
     return false;

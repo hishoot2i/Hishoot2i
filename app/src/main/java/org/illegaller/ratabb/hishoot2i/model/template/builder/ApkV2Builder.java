@@ -50,7 +50,7 @@ public class ApkV2Builder extends BaseBuilder {
     }
   }
 
-  @Override public Template build() {
+  @Override public Template build() throws Exception {
     if (isSuccessBuild) {
       return Template.build(this);
     } else {
@@ -60,11 +60,14 @@ public class ApkV2Builder extends BaseBuilder {
 
   @Nullable private ApkV2Model parsingAndCloseStream(InputStream inputStream) {
     String result = null;
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    BufferedReader reader = null;
     StringBuilder stringBuilder = new StringBuilder();
     String line;
     try {
-      while ((line = reader.readLine()) != null) stringBuilder.append(line).append("\n");
+      reader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+      while ((line = reader.readLine()) != null) {
+        stringBuilder.append(line).append('\n');
+      }
       result = stringBuilder.toString();
     } catch (IOException e) {
       CrashLog.logError("parsingAndCloseStream", e);

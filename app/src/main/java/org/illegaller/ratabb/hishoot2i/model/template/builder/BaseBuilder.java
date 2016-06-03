@@ -22,5 +22,5 @@ public abstract class BaseBuilder {
 
   public boolean isSuccessBuild;
 
-  public abstract Template build();
+  public abstract Template build() throws Exception;
 }

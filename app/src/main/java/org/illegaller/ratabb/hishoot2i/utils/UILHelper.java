@@ -114,7 +114,9 @@ public class UILHelper {
       CrashLog.logError("diskCache", e);
     }
     if (diskCache != null) {
-      for (File cache : diskCache.getDirectory().listFiles()) result += cache.length();
+      for (File cache : diskCache.getDirectory().listFiles()) {
+        result += cache.length();
+      }
     }
     return result;
   }
@@ -152,7 +154,7 @@ public class UILHelper {
   }
 
   /**
-   *  ***
+   * ***
    * {@link UILHelper#stringTemplateApp(String, int)}<br>
    * inspired by: http://stackoverflow.com/a/28010629
    */

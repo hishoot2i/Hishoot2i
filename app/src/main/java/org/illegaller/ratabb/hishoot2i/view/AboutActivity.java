@@ -6,16 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
-import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
-import org.illegaller.ratabb.hishoot2i.di.module.AboutActivityModule;
-import org.illegaller.ratabb.hishoot2i.presenter.AboutActivityPresenter;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseActivity;
 import org.illegaller.ratabb.hishoot2i.view.fragment.AboutFragment;
 
-public class AboutActivity extends BaseActivity implements AboutActivityView {
-  @Inject AboutActivityPresenter presenter;
+public class AboutActivity extends BaseActivity {
 
   public static boolean start(Context context) {
     Intent starter = new Intent(context, AboutActivity.class);
@@ -35,10 +30,6 @@ public class AboutActivity extends BaseActivity implements AboutActivityView {
     actionBar.setDisplayHomeAsUpEnabled(true);
   }
 
-  @Override protected void setupComponent(ApplicationComponent component) {
-    component.plus(new AboutActivityModule()).inject(this);
-  }
-
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     final int itemId = item.getItemId();
     if (itemId == android.R.id.home) {
@@ -51,22 +42,8 @@ public class AboutActivity extends BaseActivity implements AboutActivityView {
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    presenter.attachView(this);
-    presenter.init();
-  }
-
-  @Override protected void onDestroy() {
-    presenter.detachView();
-    super.onDestroy();
-  }
-
-  @Override public void setFragmentAboutLibs(AboutFragment fragment) {
     getSupportFragmentManager().beginTransaction()
-        .replace(R.id.flContent, fragment)
+        .replace(R.id.flContent, AboutFragment.newInstance())
         .commitAllowingStateLoss();
-  }
-
-  @Override public Context context() {
-    return this;
   }
 }

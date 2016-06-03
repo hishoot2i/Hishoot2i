@@ -9,7 +9,7 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingEnd="?android:attr/scrollbarSize"
     android:paddingRight="?android:attr/scrollbarSize"
-    tools:ignore="DisableBaselineAlignment,RtlSymmetry"
+    tools:ignore="DisableBaselineAlignment,RtlSymmetry,Overdraw"
     >
 
   <FrameLayout

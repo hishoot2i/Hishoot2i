@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
     >
-  <android.support.v7.widget.RecyclerView
-      android:id="@+id/recyclerView"
+  <org.illegaller.ratabb.hishoot2i.view.fragment.historyview.HistoryRecyclerView
+      android:id="@+id/historyRecyclerView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      app:layoutManager="android.support.v7.widget.GridLayoutManager"
-      app:spanCount="3"
       />
   <TextView
       android:id="@+id/noContent"
@@ -26,8 +19,8 @@
       android:textColor="?android:textColorSecondary"
       android:textSize="24sp"
       android:textStyle="bold"
-      tools:ignore="HardcodedText"
       android:visibility="gone"
+      tools:ignore="HardcodedText"
       />
 
 </FrameLayout>

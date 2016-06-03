@@ -3,82 +3,74 @@ package org.illegaller.ratabb.hishoot2i.presenter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import java.io.File;
-import java.io.IOException;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleObserver;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedulers;
+import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.CropActivityView;
+import org.illegaller.ratabb.hishoot2i.view.common.BasePresenter;
 import org.illegaller.ratabb.hishoot2i.view.widget.CropImageView;
 import rx.Observable;
+import rx.Subscription;
 
-public class CropActivityPresenter implements IPresenter<CropActivityView> {
-  private SimpleSchedulers schedulers;
-  private CropActivityView view;
+public class CropActivityPresenter extends BasePresenter<CropActivityView> {
+  private Subscription mSubscription;
 
-  public CropActivityPresenter(SimpleSchedulers schedulers) {
-    this.schedulers = schedulers;
-  }
-
-  @Override public void attachView(CropActivityView view) {
-    this.view = view;
+  @Inject public CropActivityPresenter() {
   }
 
   @Override public void detachView() {
-    this.view = null;
+    if (mSubscription != null) mSubscription.unsubscribe();
+    super.detachView();
   }
 
   public void initView(String pathImage) {
-    view.showProgress(true);
-    imageObservable(pathImage).subscribe(new SimpleObserver<Bitmap>() {
-      @Override public void onNext(Bitmap bitmap) {
-        view.setCropImageView(bitmap);
-      }
-    });
+    checkViewAttached();
+    getView().showProgress(true);
+    mSubscription = imageObservable(pathImage).compose(SimpleSchedule.schedule())
+        .subscribe(bitmap -> getView().setCropImageView(bitmap),
+            throwable -> CrashLog.logError("initCropView", throwable),
+            () -> getView().showProgress(false));
   }
 
   public void performSaveCrop(CropImageView cropImageView) {
-    saveObservable(cropImageView).subscribe(new SimpleObserver<Uri>() {
-      @Override public void onNext(Uri uri) {
-        view.onResult(uri);
-      }
-
-      @Override public void onError(Throwable e) {
-        CrashLog.logError("doSaveCrop", e);
-        view.onResult(Uri.EMPTY);
-      }
-    });
+    checkViewAttached();
+    getView().showProgress(true);
+    mSubscription = saveObservable(cropImageView).compose(SimpleSchedule.schedule())
+        .subscribe(uri -> getView().onResult(uri), throwable -> {
+          CrashLog.logError("doSaveCrop", throwable);
+          getView().onResult(Uri.EMPTY);
+        }, () -> getView().showProgress(false));
   }
 
   Observable<Bitmap> imageObservable(final String pathImage) {
-    view.showProgress(true);
     return Observable.create((Observable.OnSubscribe<Bitmap>) subscriber -> {
       try {
         Bitmap bitmap = UILHelper.loadImage(pathImage);
         subscriber.onNext(bitmap);
         subscriber.onCompleted();
       } catch (Exception e) {
-        subscriber.onError(new Exception("display image crop"));
+        subscriber.onError(e);
       }
-    }).subscribeOn(schedulers.backgroundThread()).observeOn(schedulers.mainThread());
+    });
   }
 
   Observable<Uri> saveObservable(final CropImageView cropImageView) {
     return Observable.create((Observable.OnSubscribe<Uri>) subscriber -> {
+      Bitmap bitmap = null;
       try {
-        Bitmap bitmap = null;
-        try {
-          bitmap = cropImageView.getCroppedBitmap();
-        } catch (Exception e) {
-          subscriber.onError(e);
+        bitmap = cropImageView.getCroppedBitmap();
+        if (bitmap != null) {
+          File file = Utils.saveTempBackgroundCrop(cropImageView.getContext(), bitmap);
+          subscriber.onNext(Uri.fromFile(file));
+          subscriber.onCompleted();
+        } else {
+          subscriber.onError(new Exception("bitmap crop is null"));
         }
-        File file = Utils.saveTempBackgroundCrop(view.context(), bitmap);
-        subscriber.onNext(Uri.fromFile(file));
-        subscriber.onCompleted();
-      } catch (IOException e) {
+      } catch (Exception e) {
         subscriber.onError(e);
       }
-    }).subscribeOn(schedulers.backgroundThread()).observeOn(schedulers.mainThread());
+    });
   }
 }

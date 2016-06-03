@@ -14,9 +14,8 @@ import android.view.View;
 import butterknife.ButterKnife;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
-import com.roughike.bottombar.OnTabClickListener;
 import java.io.File;
-import java.util.List;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.HishootService;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.TemplateManager;
@@ -25,85 +24,78 @@ import org.illegaller.ratabb.hishoot2i.model.DataImagePath;
 import org.illegaller.ratabb.hishoot2i.model.ImageReceive;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
+import org.illegaller.ratabb.hishoot2i.utils.BottomBarOnTabClickListener;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.FileUtils;
 import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleObserver;
+import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule;
 import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.MainActivityView;
 import org.illegaller.ratabb.hishoot2i.view.adapter.ToolFragmentAdapter;
+import org.illegaller.ratabb.hishoot2i.view.common.BasePresenter;
 import org.illegaller.ratabb.hishoot2i.view.widget.PipetteView;
+import rx.Subscription;
 
-public class MainActivityPresenter
-    implements IPresenter<MainActivityView>, OnTabClickListener, ViewPager.OnPageChangeListener,
-    View.OnTouchListener {
+public class MainActivityPresenter extends BasePresenter<MainActivityView> {
+  private final ViewPagerChangeListener mViewPagerChange = new ViewPagerChangeListener();
+  private final MainBottomBarOnTab mBottomBarOnTab = new MainBottomBarOnTab();
+  @Inject TemplateManager mTemplateManager;
   private ViewPager mViewPager;
   private BottomBar mBottomBar;
-  private View flBottom;
-  private PipetteView pipetteView;
-  private MainActivityView mView;
-  private TemplateManager templateManager;
+  private View mViewBottom;
+  private Subscription mSubscription;
 
-  public MainActivityPresenter(TemplateManager templateManager) {
-    this.templateManager = templateManager;
+  @Inject public MainActivityPresenter() {
   }
 
   public void onSaveInstanceState(Bundle outState) {
     mBottomBar.onSaveInstanceState(outState);
   }
 
-  @Override public void attachView(MainActivityView view) {
-    this.mView = view;
-  }
-
   @Override public void detachView() {
-    this.mViewPager.removeOnPageChangeListener(this);
+    this.mViewPager.removeOnPageChangeListener(mViewPagerChange);
     this.mBottomBar = null;
     this.mViewPager = null;
-    this.flBottom = null;
-    this.pipetteView = null;
-    this.mView = null;
+    this.mViewBottom = null;
+    if (mSubscription != null) mSubscription.unsubscribe();
+    super.detachView();
   }
 
   public void setup(AppCompatActivity activity, Bundle saveState) {
-    this.flBottom = ButterKnife.findById(activity, R.id.flBottom);
+    this.mViewBottom = ButterKnife.findById(activity, R.id.flBottom);
     this.mViewPager = ButterKnife.findById(activity, R.id.viewPager);
     this.mViewPager.setAdapter(new ToolFragmentAdapter(activity.getSupportFragmentManager()));
-    this.mViewPager.addOnPageChangeListener(this);
+    this.mViewPager.addOnPageChangeListener(mViewPagerChange);
     this.mBottomBar = bottomBar(activity, saveState);
     openTool();
   }
 
   public void handleImageReceive(Uri imageUri, final String templateId) {
-    String stringUri = FileUtils.getPath(mView.context(), imageUri);
+    String stringUri = FileUtils.getPath(getView().getContext(), imageUri);
     final String sImagePath = UILHelper.stringFiles(new File(stringUri));
-    templateManager.getTemplateList(TemplateManager.NO_FAV)
-        .subscribe(new SimpleObserver<List<Template>>() {
-          @Override public void onCompleted() {
-            showDialog(sImagePath, templateManager.getTemplateById(templateId));
-          }
-        });
+    mSubscription = mTemplateManager.getTemplateList(TemplateManager.NO_FAV)
+        .compose(SimpleSchedule.schedule())
+        .subscribe(t -> showDialog(sImagePath, mTemplateManager.getTemplateById(templateId)));
   }
 
   public boolean isToolOpen() {
-    return flBottom.getTranslationY() == 0;
+    return mViewBottom.getTranslationY() == 0;
   }
 
   public void closeTool(boolean needPerform) {
-    AnimUtils.translateY(flBottom, 0, flBottom.getHeight());
+    AnimUtils.translateY(mViewBottom, 0, mViewBottom.getHeight());
     showShadowBottomBar();
-    mView.showFab(needPerform);
-    if (needPerform) mView.perform();
+    getView().showFab(needPerform);
+    if (needPerform) getView().perform();
   }
 
   public void perform(boolean isSaving, DataImagePath dataImagePath, Template template) {
-    mView.showProgress(true);
-    mView.showFab(false);
+    getView().showProgress(true);
+    getView().showFab(false);
     if (isSaving) {
-      HishootService.startActionSave(mView.context(), dataImagePath, template);
+      HishootService.startActionSave(getView().getContext(), dataImagePath, template);
     } else {
-      HishootService.startActionPreview(mView.context(), dataImagePath, template);
+      HishootService.startActionPreview(getView().getContext(), dataImagePath, template);
     }
   }
 
@@ -111,58 +103,38 @@ public class MainActivityPresenter
     if (event.isShow) {
       closeTool(false);
       view.setDrawingCacheEnabled(true);
-      this.pipetteView = pipetteView;
-      view.setOnTouchListener(this);
-      this.pipetteView.setColor(event.color);
-      this.pipetteView.open();
-      mView.showActionBar(false);
+      view.setOnTouchListener((v, me) -> {
+        if (me.getAction() == MotionEvent.ACTION_DOWN) {
+          try {
+            int color = v.getDrawingCache().getPixel((int) me.getX(), (int) me.getY());
+            if (color != PipetteView.CANCEL) pipetteView.setColor(color);
+          } catch (IllegalArgumentException e) {
+            CrashLog.logError("getPixel", e);
+          }
+          return true;
+        }
+        return false;
+      });
+      pipetteView.setColor(event.color);
+      pipetteView.open();
+      getView().showActionBar(false);
     } else {
       view.setDrawingCacheEnabled(false);
       view.setOnTouchListener(null);
-      mView.showActionBar(true);
+      getView().showActionBar(true);
       if (event.color != PipetteView.CANCEL) {
-        mView.pipetteResult(event.color);
+        getView().pipetteResult(event.color);
       } else {
-        mView.showFab(true);
+        getView().showFab(true);
       }
     }
   }
-
-  @Override public boolean onTouch(View view, MotionEvent me) {
-    if (me.getAction() == MotionEvent.ACTION_DOWN) {
-      try {
-        int color = view.getDrawingCache().getPixel((int) me.getX(), (int) me.getY());
-        if (color != PipetteView.CANCEL) pipetteView.setColor(color);
-      } catch (IllegalArgumentException e) {
-        CrashLog.logError("getPixel", e);
-      }
-      return true;
-    }
-    return false;
-  }
-
-  @Override public void onTabSelected(int p) {
-    if (p != mViewPager.getCurrentItem()) mViewPager.setCurrentItem(p, true);
-    if (!isToolOpen()) openTool();
-  }
-
-  @Override public void onTabReSelected(int p) {
-    if (!isToolOpen()) openTool();
-  }
-
-  @Override public void onPageSelected(int p) {
-    mBottomBar.selectTabAtPosition(p, true);
-  }
-
-  @Override public void onPageScrollStateChanged(int i) { /*no-op*/ }
-
-  @Override public void onPageScrolled(int i, float f, int i2) { /*no-op*/ }
 
   void openTool() {
-    mView.closePipette();
-    AnimUtils.translateY(flBottom, flBottom.getHeight(), 0);
+    getView().closePipette();
+    AnimUtils.translateY(mViewBottom, mViewBottom.getHeight(), 0);
     mBottomBar.hideShadow();
-    mView.showFab(false);
+    getView().showFab(false);
   }
 
   void showShadowBottomBar() {
@@ -172,12 +144,18 @@ public class MainActivityPresenter
 
   ///////////////////////////////////////////////////////
   void showDialog(String sImagePath, @NonNull Template template) {
-    AlertDialog dialog = new AlertDialog.Builder(mView.context()).create();
+    AlertDialog dialog = new AlertDialog.Builder(getView().getContext()).create();
     dialog.setTitle(R.string.what_image);
     dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.background),
-        new DialogOnClick(sImagePath, true, template));
+        (dialogInterface, i) -> {
+          getView().setImageReceiveTemplate(new ImageReceive(sImagePath, true), template);
+          dialogInterface.dismiss();
+        });
     dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.screen),
-        new DialogOnClick(sImagePath, false, template));
+        (dialogInterface, i) -> {
+          getView().setImageReceiveTemplate(new ImageReceive(sImagePath, false), template);
+          dialogInterface.dismiss();
+        });
     dialog.show();
   }
 
@@ -195,29 +173,34 @@ public class MainActivityPresenter
     }
     BottomBar bottomBar = BottomBar.attach(activity, saveState);
     bottomBar.setItems(barTabs);
-    bottomBar.setOnTabClickListener(this);
+    bottomBar.setOnTabClickListener(mBottomBarOnTab);
     bottomBar.selectTabAtPosition(0, false);
     return bottomBar;
   }
 
   String getString(@StringRes int resId) {
-    return mView.context().getString(resId);
+    return getView().getContext().getString(resId);
   }
 
-  class DialogOnClick implements DialogInterface.OnClickListener {
-    private final String imagePath;
-    private final boolean isBackground;
-    private final Template template;
+  private class ViewPagerChangeListener extends ViewPager.SimpleOnPageChangeListener {
+    @Override public void onPageSelected(int position) {
+      if (mBottomBar == null) return;
+      mBottomBar.selectTabAtPosition(position, true);
+    }
+  }
 
-    private DialogOnClick(String imagePath, boolean isBackground, Template template) {
-      this.imagePath = imagePath;
-      this.isBackground = isBackground;
-      this.template = template;
+  private class MainBottomBarOnTab extends BottomBarOnTabClickListener {
+
+    @Override public void onTabSelected(int position) {
+      if (mViewPager == null) return;
+      if (position != mViewPager.getCurrentItem()) {
+        mViewPager.setCurrentItem(position, true); //FIXME : #228
+      }
+      if (!isToolOpen()) openTool();
     }
 
-    @Override public void onClick(DialogInterface dialog, int i) {
-      mView.setImageReceiveTemplate(new ImageReceive(imagePath, isBackground), template);
-      dialog.dismiss();
+    @Override public void onTabReSelected(int position) {
+      if (!isToolOpen()) openTool();
     }
   }
 }

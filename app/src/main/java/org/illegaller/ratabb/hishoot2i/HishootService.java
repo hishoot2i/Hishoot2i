@@ -34,32 +34,33 @@ public class HishootService extends IntentService {
   private static final String ACTION_PREVIEW = PACKAGE_NAME + ".services.action.PREVIEW";
   private static final String KEY_DATA_IMAGE_PATH = "data_image_path";
   private static final String KEY_TEMPLATE = "template";
-  @InjectExtra(KEY_DATA_IMAGE_PATH) DataImagePath dataImagePath;
-  @InjectExtra(KEY_TEMPLATE) Template template;
-  @Inject NotificationManager notificationManager;
-  private NotificationCompat.Builder notificationBuilder;
-  private HishootProcess.Callback saveCallback = new HishootProcess.Callback() {
-    private final Context context = HishootService.this;
+  @InjectExtra(KEY_DATA_IMAGE_PATH) DataImagePath mDataImagePath;
+  @InjectExtra(KEY_TEMPLATE) Template mTemplate;
+  @Inject NotificationManager mNotificationManager;
+  private HishootProcess mHishootProcess;
+  private NotificationCompat.Builder mNotificationBuilder;
+  private HishootProcess.Callback mSaveCallback = new HishootProcess.Callback() {
+    private final Context mContext = HishootService.this;
 
     @Override public void startProcess(long startTime) {
-      Intent nullIntent = LauncherActivity.getIntent(context);
+      Intent nullIntent = LauncherActivity.getIntent(mContext);
       nullIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      notificationBuilder = new NotificationCompat.Builder(context);
-      notificationBuilder.setTicker(getString(R.string.saving))
+      mNotificationBuilder = new NotificationCompat.Builder(mContext);
+      mNotificationBuilder.setTicker(getString(R.string.saving))
           .setContentTitle(getString(R.string.app_name))
           .setSmallIcon(R.drawable.ic_notif)
           .setWhen(startTime)
-          .setContentIntent(PendingIntent.getActivity(context, 0, nullIntent, 0))
+          .setContentIntent(PendingIntent.getActivity(mContext, 0, nullIntent, 0))
           .setProgress(0, 0, true)
           .setOngoing(true)
           .setAutoCancel(false);
-      Notification notification = notificationBuilder.build();
-      notificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
+      Notification notification = mNotificationBuilder.build();
+      mNotificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
     }
 
     @Override public void failProcess(String message, String extra) {
       final String title = getString(R.string.app_name);
-      notificationBuilder.setTicker(title)
+      mNotificationBuilder.setTicker(title)
           .setContentTitle(title)
           .setContentText(message)
           .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title)
@@ -70,34 +71,35 @@ public class HishootService extends IntentService {
           .setOngoing(false)
           .setAutoCancel(true)
           .setContentIntent(
-              PendingIntent.getActivity(context, 0, new Intent(context, LauncherActivity.class), 0))
+              PendingIntent.getActivity(mContext, 0, new Intent(mContext, LauncherActivity.class),
+                  0))
           .build();
-      Notification notification = notificationBuilder.build();
-      notificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
+      Notification notification = mNotificationBuilder.build();
+      mNotificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
     }
 
     @Override public void doneProcess(Bitmap result, final Uri uri) {
       postRunnableMain(() -> EventBus.getDefault().post(new EventSave(uri)));
       final String share = getString(R.string.share);
       final Intent sharingIntent = Utils.intentShareImage(share, uri);
-      notificationBuilder.addAction(android.R.drawable.ic_menu_share, share,
-          PendingIntent.getActivity(context, 0, sharingIntent, PendingIntent.FLAG_CANCEL_CURRENT));
+      mNotificationBuilder.addAction(android.R.drawable.ic_menu_share, share,
+          PendingIntent.getActivity(mContext, 0, sharingIntent, PendingIntent.FLAG_CANCEL_CURRENT));
       final Intent openIntent = Utils.intentOpenImage(uri);
       final File file = new File(uri.getPath());
       final Bitmap previewBigPicture = BitmapUtils.previewBigPicture(result);
-      final Bitmap largeIcon = BitmapUtils.roundedLargeIcon(context, previewBigPicture);
-      notificationBuilder.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, 0))
+      final Bitmap largeIcon = BitmapUtils.roundedLargeIcon(mContext, previewBigPicture);
+      mNotificationBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, openIntent, 0))
           .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(previewBigPicture))
           .setLargeIcon(largeIcon)
           .setContentText(file.getName())
           .setProgress(0, 0, false)
           .setOngoing(false)
           .setAutoCancel(true);
-      Notification notification = notificationBuilder.build();
-      notificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
+      Notification notification = mNotificationBuilder.build();
+      mNotificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
     }
   };
-  private HishootProcess.Callback previewCallback = new HishootProcess.Callback() {
+  private HishootProcess.Callback mPreviewCallback = new HishootProcess.Callback() {
 
     @Override public void startProcess(long startTime) { /*no-op*/ }
 
@@ -145,7 +147,7 @@ public class HishootService extends IntentService {
 
   @Override public void onCreate() {
     super.onCreate();
-    HishootApplication.get(this).getApplicationComponent().inject(this);
+    HishootApplication.get(this).getAppComponent().inject(this);
   }
 
   @Override protected void onHandleIntent(Intent intent) {
@@ -154,17 +156,18 @@ public class HishootService extends IntentService {
     HishootProcess.Callback callback = null;
     boolean isSave = false;
     if (ACTION_SAVE.equals(action)) {
-      callback = saveCallback;
+      callback = mSaveCallback;
       isSave = true;
     } else if (ACTION_PREVIEW.equals(action)) {
-      callback = previewCallback;
+      callback = mPreviewCallback;
       isSave = false;
     }
     Utils.checkNotNull(callback, "no valid action");
     try {
-      new HishootProcess(this).process(dataImagePath, template, callback, isSave);
+      if (mHishootProcess == null) mHishootProcess = new HishootProcess(this);
+      mHishootProcess.process(mDataImagePath, mTemplate, callback, isSave);
     } catch (Exception e) {
-      CrashLog.logError(template.toString() + "\naction: " + action, e);
+      CrashLog.logError(mTemplate.toString() + "\naction: " + action, e);
     }
   }
 }

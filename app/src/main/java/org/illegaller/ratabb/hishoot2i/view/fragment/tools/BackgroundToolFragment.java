@@ -17,14 +17,13 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import java.io.File;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.di.compenent.ApplicationComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.events.EventPipette;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
+import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.FileUtils;
@@ -33,14 +32,9 @@ import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.CropActivity;
 import org.illegaller.ratabb.hishoot2i.view.MainActivity;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
-import org.illegaller.ratabb.hishoot2i.view.fragment.ColorPickerDialog;
+import org.illegaller.ratabb.hishoot2i.view.fragment.colorpick.ColorPickerDialog;
+import org.illegaller.ratabb.hishoot2i.view.fragment.colorpick.ColorPickerDialogBuilder;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
-
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_COLOR_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_COLOR_INT;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_BLUR_ENABLE;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_BLUR_RADIUS;
-import static org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray.BG_IMAGE_CROP_ENABLE;
 
 public class BackgroundToolFragment extends BaseFragment
     implements SeekBar.OnSeekBarChangeListener {
@@ -53,12 +47,14 @@ public class BackgroundToolFragment extends BaseFragment
   @BindView(R.id.cpfMixer) CircleButton cpfMixer;
   @BindView(R.id.cpfPipette) CircleButton cpfPipette;
   @BindView(R.id.cbCrop) AppCompatCheckBox cbCrop;
-  @Inject @Named(BG_COLOR_ENABLE) BooleanTray colorEnableTray;
-  @Inject @Named(BG_IMAGE_BLUR_ENABLE) BooleanTray blurEnableTray;
-  @Inject @Named(BG_COLOR_INT) IntTray colorTray;
-  @Inject @Named(BG_IMAGE_BLUR_RADIUS) IntTray blurRadiusTray;
-  @Inject @Named(BG_IMAGE_CROP_ENABLE) BooleanTray cropEnableTray;
-  private Point bgPoint = new Point(256, 256);
+
+  @Inject TrayManager mTrayManager;
+  private BooleanTray mColorEnableTray;
+  private BooleanTray mBlurEnableTray;
+  private IntTray mColorTray;
+  private IntTray mBlurRadiusTray;
+  private BooleanTray mCropEnableTray;
+  private Point mBackgroundPoint = new Point(256, 256);
 
   public BackgroundToolFragment() {
   }
@@ -70,18 +66,28 @@ public class BackgroundToolFragment extends BaseFragment
     return fragment;
   }
 
+  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    getActivityComponent().inject(this);
+    mColorEnableTray = mTrayManager.getBackgroundColorEnable();
+    mBlurEnableTray = mTrayManager.getBackgroundImageBlurEnable();
+    mColorTray = mTrayManager.getBackgroundColorInt();
+    mBlurRadiusTray = mTrayManager.getBackgroundImageBlurRadius();
+    mCropEnableTray = mTrayManager.getBackgroundImageCrop();
+  }
+
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    boolean isBgColor = colorEnableTray.get();
-    boolean isImageBlur = blurEnableTray.get();
-    int color = colorTray.get();
+    boolean isBgColor = mColorEnableTray.isValue();
+    boolean isImageBlur = mBlurEnableTray.isValue();
+    int color = mColorTray.getValue();
     cpfMixer.setColor(color);
     cpfPipette.setColor(color);
     cbImage.setChecked(!isBgColor);
-    cbCrop.setChecked(cropEnableTray.get());
+    cbCrop.setChecked(mCropEnableTray.isValue());
     cbBlur.setChecked(isImageBlur);
     sbBlurRadius.setEnabled(isImageBlur);
-    sbBlurRadius.setProgress(blurRadiusTray.get());
+    sbBlurRadius.setProgress(mBlurRadiusTray.getValue());
     sbBlurRadius.setOnSeekBarChangeListener(this);
   }
 
@@ -90,34 +96,38 @@ public class BackgroundToolFragment extends BaseFragment
   @Override public void onStartTrackingTouch(SeekBar sb) { /*no-op*/ }
 
   @Override public void onStopTrackingTouch(SeekBar sb) {
-    blurRadiusTray.set(sb.getProgress());
+    mBlurRadiusTray.setValue(sb.getProgress());
   }
 
   @OnCheckedChanged({
       R.id.cbImage, R.id.cbBlurBg, R.id.cbCrop
   }) void onCheckChange(CompoundButton cb, boolean check) {
     if (cb == cbImage) {
-      colorEnableTray.set(!check);
+      mColorEnableTray.setValue(!check);
       vfDisplay(!check);
     } else if (cb == cbBlur) {
-      blurEnableTray.set(check);
+      mBlurEnableTray.setValue(check);
       sbBlurRadius.setEnabled(check);
-    } else if (cb == cbCrop) cropEnableTray.set(check);
+    } else if (cb == cbCrop) mCropEnableTray.setValue(check);
   }
 
   @OnClick({ R.id.img_config_bg, R.id.cpfMixer, R.id.cpfPipette }) void onClick(View view) {
     if (view == cpfMixer) {
-      new ColorPickerDialog.Builder().colorInit(colorTray.get()).listener((dialog, color) -> {
-        colorTray.set(color);
-        cpfMixer.setColor(color);
-        cpfPipette.setColor(color);
-        EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
-      }).create().show(getFragmentManager(), ColorPickerDialog.TAG);
+      ColorPickerDialogBuilder.create()
+          .colorInit(mColorTray.getValue())
+          .listener((dialog, color) -> {
+            mColorTray.setValue(color);
+            cpfMixer.setColor(color);
+            cpfPipette.setColor(color);
+            EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
+          })
+          .build()
+          .show(getFragmentManager(), ColorPickerDialog.TAG);
     } else if (view == cpfPipette) {
-      EventBus.getDefault().post(new EventPipette(true, colorTray.get()));
+      EventBus.getDefault().post(new EventPipette(true, mColorTray.getValue()));
     } else if (view.getId() == R.id.img_config_bg) {
-      boolean isCrop = cropEnableTray.get();
-      if (isCrop) bgPoint = getPointBackground();
+      boolean isCrop = mCropEnableTray.isValue();
+      if (isCrop) mBackgroundPoint = getPointBackground();
       Utils.openImagePicker(this, "Background", isCrop ? REQ_IMAGE_CROP_BG : REQ_IMAGE_BG);
     }
   }
@@ -138,7 +148,7 @@ public class BackgroundToolFragment extends BaseFragment
       } else {
         Intent intent =
             CropActivity.getIntent(getActivity(), UILHelper.stringFiles(new File(imagePath)),
-                bgPoint);
+                mBackgroundPoint);
         this.startActivityForResult(intent, REQ_IMAGE_BG);
       }
     } else if (requestCode == REQ_IMAGE_BG) {
@@ -158,9 +168,5 @@ public class BackgroundToolFragment extends BaseFragment
 
   @Override protected int layoutRes() {
     return R.layout.bottom_tool_background;
-  }
-
-  @Override protected void setupComponent(ApplicationComponent appComponent) {
-    appComponent.inject(this);
   }
 }
