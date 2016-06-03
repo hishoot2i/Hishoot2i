@@ -21,7 +21,7 @@ before_script:
     - echo yes | android update sdk --no-ui --all --filter extra-android-m2repository --force > /dev/null
 
 script:
-  ./gradlew clean check -s -d
+  ./gradlew check
 
 cache:
   directories:
