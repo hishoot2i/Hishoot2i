@@ -13,7 +13,7 @@ def versionBuild = 0
 ext {
   ////// App //////
   compileSdkVersion = 23
-  buildToolsVersion = '24.0.0 rc3'
+  buildToolsVersion = '23.0.2' //'24.0.0 rc3' /*24.0.0 rc3 preview | 23.0.2 latest*/
   minSdkVersion = 16
   targetSdkVersion = 23
   applicationId = "org.illegaller.ratabb.hishoot2i"
@@ -90,10 +90,10 @@ ext {
 
        'espressoCore'   : 'com.android.support.test.espresso:espresso-core:2.2.1',
        'testingSupport' : 'com.android.support.test:testing-support-lib:0.1',
-       "runner"           : 'com.android.support.test:runner:0.5',
-       "rules"            : 'com.android.support.test:rules:0.5',
-       "uiautomator"      : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
-       'hamcrest'         : 'org.hamcrest:hamcrest-library:1.3',
+       "runner"         : 'com.android.support.test:runner:0.5',
+       "rules"          : 'com.android.support.test:rules:0.5',
+       "uiautomator"    : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
+       'hamcrest'       : 'org.hamcrest:hamcrest-library:1.3',
        ////////////////////////////////////////////////////////////////////////////////////////////
       ]
   quality = ///////////////////////////////////////////////

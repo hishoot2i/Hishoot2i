@@ -1,9 +1,9 @@
 language: android
-jdk: oraclejdk8
+jdk:
+ - oraclejdk8
 sudo: false
 android:
   components:
-    - platform-tools
     - tools
     - build-tools-23.0.2
     - android-23
@@ -14,5 +14,21 @@ android:
     
 before_script:
     - chmod +x gradlew
+    - echo yes | android update sdk --no-ui --all --filter platform-tools,tools --force > /dev/null
+    - echo yes | android update sdk --no-ui --all --filter build-tools-23.0.2 --force > /dev/null
+    - echo yes | android update sdk --no-ui --all --filter android-23 --force > /dev/null
+    - echo yes | android update sdk --no-ui --all --filter extra-android-support --force > /dev/null
+    - echo yes | android update sdk --no-ui --all --filter extra-android-m2repository --force > /dev/null
 
-script: ./gradlew clean check -s -d
+script:
+  ./gradlew clean check -s -d
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.gradle/native
+    - $HOME/.gradle/daemon
+    - $HOME/.gradle/caches/jars-1
+    - $HOME/.gradle/caches/2.12

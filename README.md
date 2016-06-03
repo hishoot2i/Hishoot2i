@@ -1,5 +1,8 @@
 # Hishoot2i
 -----
+
+[![Build Status](https://travis-ci.org/ratabb/Hishoot2i.svg?branch=master)][travis]
+
 ![banner][banner]
 
 Hishoot2i *grepe* [**Hishoot**][hishoot] by [**JMKL**][jmkl]
@@ -62,3 +65,4 @@ local modification [Android StackBlur][stackblur]
 [stackblur]: https://github.com/kikoso/android-stackblur
 [fbjmkl]: http://www.facebook.com/jimikill666
 [release]: https://github.com/ratabb/Hishoot2i/releases
+[travis]: https://travis-ci.org/ratabb/Hishoot2i
