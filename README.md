@@ -1,7 +1,7 @@
 # Hishoot2i
 -----
 
-[![Build Status](https://travis-ci.org/ratabb/Hishoot2i.svg?branch=master)][travis]
+[![Build Status][ico_travis]][travis]
 
 ![banner][banner]
 
@@ -19,10 +19,10 @@ Hishoot2i *grepe* [**Hishoot**][hishoot] by [**JMKL**][jmkl]
 
 ##Todo
 
-- create ui and local test ?
+- create ui and local unit test ?
 
 ## Changelog
-###**v1.1.3 (WIP)**
+###**v1.1.3 (20160604)**
 
 - bug's fix
 
@@ -66,3 +66,4 @@ local modification [Android StackBlur][stackblur]
 [fbjmkl]: http://www.facebook.com/jimikill666
 [release]: https://github.com/ratabb/Hishoot2i/releases
 [travis]: https://travis-ci.org/ratabb/Hishoot2i
+[ico_travis]: https://travis-ci.org/ratabb/Hishoot2i.svg?branch=master
