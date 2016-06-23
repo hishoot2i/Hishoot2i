@@ -12,20 +12,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
   private List<String> mListPath = new ArrayList<>();
   private ViewBinderHelper mBinderHelper = new ViewBinderHelper();
 
-  @Inject public HistoryAdapter() {
+  @Inject HistoryAdapter() {
   }
 
-  public void setListPath(List<String> list) {
+  void setListPath(List<String> list) {
     this.mListPath.clear();
     this.mListPath.addAll(list);
     notifyDataSetChanged();
   }
 
-  public void saveStates(Bundle bundle) {
+  void saveStates(Bundle bundle) {
     mBinderHelper.saveStates(bundle);
   }
 
-  public void restoreStates(Bundle bundle) {
+  void restoreStates(Bundle bundle) {
     mBinderHelper.restoreStates(bundle);
   }
 
@@ -38,7 +38,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     mBinderHelper.bind(holder.swipeRevealLayout, getItem(position));
   }
 
-  String getItem(int position) {
+  private String getItem(int position) {
     return mListPath.get(position);
   }
 

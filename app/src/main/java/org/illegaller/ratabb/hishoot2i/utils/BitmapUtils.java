@@ -34,7 +34,9 @@ import static org.illegaller.ratabb.hishoot2i.AppConstants.DEFAULT_TEMPLATE_ID;
 public class BitmapUtils {
   private static final int MAX_BLUR_RADIUS = 100;
 
-  private BitmapUtils() { /*no instance*/ }
+  private BitmapUtils() {
+    throw new AssertionError("no instance");
+  }
 
   @Nullable public static Bitmap alphaPatternBitmap(Context context) {
     final AppPreferences appPreferences = new AppPreferences(context);

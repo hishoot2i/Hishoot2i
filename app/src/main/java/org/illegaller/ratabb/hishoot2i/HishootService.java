@@ -3,7 +3,6 @@ package org.illegaller.ratabb.hishoot2i;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,15 +16,22 @@ import com.f2prateek.dart.InjectExtra;
 import java.io.File;
 import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
+import org.illegaller.ratabb.hishoot2i.di.compenent.IntentServiceComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventPreview;
 import org.illegaller.ratabb.hishoot2i.events.EventSave;
 import org.illegaller.ratabb.hishoot2i.model.DataImagePath;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.utils.BitmapUtils;
-import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.HishootProcess;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
+
+import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
+import static android.app.PendingIntent.getActivity;
+import static org.illegaller.ratabb.hishoot2i.utils.BitmapUtils.previewBigPicture;
+import static org.illegaller.ratabb.hishoot2i.utils.BitmapUtils.roundedLargeIcon;
+import static org.illegaller.ratabb.hishoot2i.utils.CrashLog.logError;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.checkNotNull;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.intentOpenImage;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.intentShareImage;
 
 public class HishootService extends IntentService {
   private static final int HISHOOT_NOTIFICATION_ID = 0x01;
@@ -34,10 +40,11 @@ public class HishootService extends IntentService {
   private static final String ACTION_PREVIEW = PACKAGE_NAME + ".services.action.PREVIEW";
   private static final String KEY_DATA_IMAGE_PATH = "data_image_path";
   private static final String KEY_TEMPLATE = "template";
+  private final Handler mMainHandler = new Handler(Looper.getMainLooper());
   @InjectExtra(KEY_DATA_IMAGE_PATH) DataImagePath mDataImagePath;
   @InjectExtra(KEY_TEMPLATE) Template mTemplate;
   @Inject NotificationManager mNotificationManager;
-  private HishootProcess mHishootProcess;
+  @Inject HishootProcess mHishootProcess;
   private NotificationCompat.Builder mNotificationBuilder;
   private HishootProcess.Callback mSaveCallback = new HishootProcess.Callback() {
     private final Context mContext = HishootService.this;
@@ -50,7 +57,7 @@ public class HishootService extends IntentService {
           .setContentTitle(getString(R.string.app_name))
           .setSmallIcon(R.drawable.ic_notif)
           .setWhen(startTime)
-          .setContentIntent(PendingIntent.getActivity(mContext, 0, nullIntent, 0))
+          .setContentIntent(getActivity(mContext, 0, nullIntent, 0))
           .setProgress(0, 0, true)
           .setOngoing(true)
           .setAutoCancel(false);
@@ -71,24 +78,25 @@ public class HishootService extends IntentService {
           .setOngoing(false)
           .setAutoCancel(true)
           .setContentIntent(
-              PendingIntent.getActivity(mContext, 0, new Intent(mContext, LauncherActivity.class),
-                  0))
+              getActivity(mContext, 0, new Intent(mContext, LauncherActivity.class), 0))
           .build();
       Notification notification = mNotificationBuilder.build();
+      notification.flags |= Notification.FLAG_AUTO_CANCEL;
       mNotificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
     }
 
+    /* FIXME: StrictMode: file:// Uri exposed through Intent.getData() */
     @Override public void doneProcess(Bitmap result, final Uri uri) {
-      postRunnableMain(() -> EventBus.getDefault().post(new EventSave(uri)));
+      postRunnableMain(() -> EventBus.getDefault().post(EventSave.create(uri)));
       final String share = getString(R.string.share);
-      final Intent sharingIntent = Utils.intentShareImage(share, uri);
+      final Intent sharingIntent = intentShareImage(share, uri);
       mNotificationBuilder.addAction(android.R.drawable.ic_menu_share, share,
-          PendingIntent.getActivity(mContext, 0, sharingIntent, PendingIntent.FLAG_CANCEL_CURRENT));
-      final Intent openIntent = Utils.intentOpenImage(uri);
+          getActivity(mContext, 0, sharingIntent, FLAG_CANCEL_CURRENT));
+      final Intent openIntent = intentOpenImage(uri);
       final File file = new File(uri.getPath());
-      final Bitmap previewBigPicture = BitmapUtils.previewBigPicture(result);
-      final Bitmap largeIcon = BitmapUtils.roundedLargeIcon(mContext, previewBigPicture);
-      mNotificationBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, openIntent, 0))
+      final Bitmap previewBigPicture = previewBigPicture(result);
+      final Bitmap largeIcon = roundedLargeIcon(mContext, previewBigPicture);
+      mNotificationBuilder.setContentIntent(getActivity(mContext, 0, openIntent, 0))
           .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(previewBigPicture))
           .setLargeIcon(largeIcon)
           .setContentText(file.getName())
@@ -96,6 +104,7 @@ public class HishootService extends IntentService {
           .setOngoing(false)
           .setAutoCancel(true);
       Notification notification = mNotificationBuilder.build();
+      notification.flags |= Notification.FLAG_AUTO_CANCEL;
       mNotificationManager.notify(HISHOOT_NOTIFICATION_ID, notification);
     }
   };
@@ -104,13 +113,14 @@ public class HishootService extends IntentService {
     @Override public void startProcess(long startTime) { /*no-op*/ }
 
     @Override public void failProcess(final String message, final String extra) {
-      postRunnableMain(() -> EventBus.getDefault().post(new EventPreview(null, message, extra)));
+      postRunnableMain(() -> EventBus.getDefault().post(EventPreview.messageExtra(message, extra)));
     }
 
     @Override public void doneProcess(final Bitmap result, @Nullable final Uri uri) {
-      postRunnableMain(() -> EventBus.getDefault().post(new EventPreview(result, "", "")));
+      postRunnableMain(() -> EventBus.getDefault().post(EventPreview.result(result)));
     }
   };
+  private IntentServiceComponent mIntentServiceComponent;
 
   public HishootService() {
     super("HishootService");
@@ -130,24 +140,22 @@ public class HishootService extends IntentService {
     context.startService(starterPreview);
   }
 
-  static Intent thisIntent(Context context) {
+  private static Intent thisIntent(Context context) {
     return new Intent(context, HishootService.class);
   }
 
-  static void putExtra(Intent intent, DataImagePath path, Template template) {
-    Utils.checkNotNull(template, "Template == null");
-    Utils.checkNotNull(path, "DataImagePath == null");
-    intent.putExtra(KEY_DATA_IMAGE_PATH, path);
-    intent.putExtra(KEY_TEMPLATE, template);
+  private static void putExtra(Intent intent, DataImagePath path, Template template) {
+    intent.putExtra(KEY_DATA_IMAGE_PATH, checkNotNull(path, "DataImagePath == null"));
+    intent.putExtra(KEY_TEMPLATE, checkNotNull(template, "Template == null"));
   }
 
-  void postRunnableMain(Runnable runnable) {
-    new Handler(Looper.getMainLooper()).post(runnable);
+  private void postRunnableMain(Runnable runnable) {
+    mMainHandler.post(runnable);
   }
 
   @Override public void onCreate() {
     super.onCreate();
-    HishootApplication.get(this).getAppComponent().inject(this);
+    getIntentServiceComponent().inject(this);
   }
 
   @Override protected void onHandleIntent(Intent intent) {
@@ -162,12 +170,18 @@ public class HishootService extends IntentService {
       callback = mPreviewCallback;
       isSave = false;
     }
-    Utils.checkNotNull(callback, "no valid action");
     try {
-      if (mHishootProcess == null) mHishootProcess = new HishootProcess(this);
-      mHishootProcess.process(mDataImagePath, mTemplate, callback, isSave);
+      mHishootProcess.process(mDataImagePath, mTemplate, checkNotNull(callback, "no valid action"),
+          isSave);
     } catch (Exception e) {
-      CrashLog.logError(mTemplate.toString() + "\naction: " + action, e);
+      logError(mTemplate.toString() + "\naction: " + action, e);
     }
+  }
+
+  public IntentServiceComponent getIntentServiceComponent() {
+    if (mIntentServiceComponent == null) {
+      mIntentServiceComponent = IntentServiceComponent.Initializer.init(this);
+    }
+    return mIntentServiceComponent;
   }
 }

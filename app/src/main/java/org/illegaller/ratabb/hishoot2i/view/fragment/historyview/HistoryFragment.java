@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventBadgeBB;
 import org.illegaller.ratabb.hishoot2i.events.EventDeleteFile;
 import org.illegaller.ratabb.hishoot2i.events.EventProgress;
@@ -43,7 +44,10 @@ public class HistoryFragment extends BaseFragment implements HistoryFragmentView
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
-    getActivityComponent().inject(this);
+  }
+
+  @Override protected void injectComponent(ActivityComponent activityComponent) {
+    activityComponent.inject(this);
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {

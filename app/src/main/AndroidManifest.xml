@@ -17,7 +17,8 @@
       android:largeHeap="true"
       android:supportsRtl="false"
       android:theme="@style/HishootTheme"
-      tools:ignore="GoogleAppIndexingWarning">
+      tools:ignore="GoogleAppIndexingWarning"
+      >
     <activity
         android:name=".view.LauncherActivity"
         android:launchMode="singleInstance"
@@ -58,8 +59,8 @@
 
     <service android:name=".HishootService"/>
 
-    <meta-data
-        android:name="io.fabric.ApiKey"
-        android:value="${fabric_api_key}"/>
+    <!--<meta-data-->
+        <!--android:name="io.fabric.ApiKey"-->
+        <!--android:value="${fabric_api_key}"/>-->
   </application>
 </manifest>

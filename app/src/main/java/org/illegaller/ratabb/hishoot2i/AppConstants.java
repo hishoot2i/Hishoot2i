@@ -30,13 +30,15 @@ public class AppConstants {
   public static final String MESSAGE_TEMPLATE_CANT_LOAD = "Template %s can't load";
   public static final String MESSAGE_TEMPLATE_CANT_FIND = "Template %s can't find";
 
-  private AppConstants() { /*no instance*/ }
+  private AppConstants() {
+    throw new AssertionError("no instance");
+  }
 
   /**
    * File directory Hishoot on external Storage,<br>
    * create new file if we don't have it
    *
-   * @return a {@link File} directory
+   * @return a {@link File} directory <storage>/HiShoot
    */
   public static File getHishootDir() {
     final File result = new File(Environment.getExternalStorageDirectory(), "HiShoot");
@@ -47,7 +49,7 @@ public class AppConstants {
   }
 
   /**
-   * {@code /data/data/packageName/files/htz}
+   * {@code /data/data/<packageName>/files/htz}
    */
   public static File getHishootHtzDir(final Context context) {
     File file = new File(context.getFilesDir(), "htz");

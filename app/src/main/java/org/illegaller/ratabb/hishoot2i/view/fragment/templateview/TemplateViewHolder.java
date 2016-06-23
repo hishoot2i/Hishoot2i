@@ -12,21 +12,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.SwipeRevealLayout.SimpleSwipeListener;
-import java.util.List;
 import org.greenrobot.eventbus.EventBus;
-import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.events.EventTemplateFav;
 import org.illegaller.ratabb.hishoot2i.events.EventUninstallTemplate;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
-import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
-import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import org.illegaller.ratabb.hishoot2i.view.MainActivity;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseAnimateViewHolder;
 import org.illegaller.ratabb.hishoot2i.view.widget.AlphaPatternDrawable;
 
-public class TemplateViewHolder extends BaseAnimateViewHolder {
+import static org.illegaller.ratabb.hishoot2i.AppConstants.DEFAULT_TEMPLATE_ID;
+import static org.illegaller.ratabb.hishoot2i.model.template.TemplateType.HTZ;
+import static org.illegaller.ratabb.hishoot2i.utils.ResUtils.getVectorDrawable;
+import static org.illegaller.ratabb.hishoot2i.utils.UILHelper.displayPreview;
+
+class TemplateViewHolder extends BaseAnimateViewHolder<TemplateAndFavList> {
   @BindView(R.id.swipe_layout) SwipeRevealLayout swipeRevealLayout;
   @BindView(R.id.previewPrimary) ImageView previewPrimary;
   @BindView(R.id.previewSecondary) ImageView previewSecondary;
@@ -44,60 +44,66 @@ public class TemplateViewHolder extends BaseAnimateViewHolder {
   private boolean mIsFav = false;
   private Template mTemplate;
   private boolean mIsOpen = false;
-  private final SimpleSwipeListener mSwipeListener = new SimpleSwipeListener() {
-    @Override public void onOpened(SwipeRevealLayout view) {
-      mIsOpen = true;
-    }
 
-    @Override public void onClosed(SwipeRevealLayout view) {
-      mIsOpen = false;
-    }
-  };
-
-  public TemplateViewHolder(View view) {
+  private TemplateViewHolder(View view) {
     super(view);
     ButterKnife.bind(this, view);
     final AlphaPatternDrawable drawable = new AlphaPatternDrawable(recSize);
     previewPrimary.setBackground(drawable);
     previewSecondary.setBackground(drawable);
-    swipeRevealLayout.setSwipeListener(mSwipeListener);
 
-    layoutDelete.setOnClickListener(
-        v -> EventBus.getDefault().post(new EventUninstallTemplate(mTemplate.id)));
+    swipeRevealLayout.setSwipeListener(new SimpleSwipeListener() {
+      @Override public void onOpened(SwipeRevealLayout view) {
+        mIsOpen = true;
+      }
 
-    layoutFav.setOnClickListener(v -> {
-      mIsFav = !mIsFav;
-      updateFavIcon(getContext(), mIsFav);
-      EventBus.getDefault().post(new EventTemplateFav(mTemplate.id, mIsFav));
+      @Override public void onClosed(SwipeRevealLayout view) {
+        mIsOpen = false;
+      }
     });
-
-    layoutPrimary.setOnClickListener(v -> startMainActivity(getContext()));
-    layoutSecondary.setOnClickListener(v -> startMainActivity(getContext()));
+    layoutDelete.setOnClickListener(this::clickDelete);
+    layoutFav.setOnClickListener(this::clickFav);
+    layoutPrimary.setOnClickListener(this::clickStartMain);
+    layoutSecondary.setOnClickListener(this::clickStartMain);
   }
 
-  public static TemplateViewHolder inflate(ViewGroup parent) {
+  static TemplateViewHolder inflate(ViewGroup parent) {
     View view =
         LayoutInflater.from(parent.getContext()).inflate(R.layout.row_template, parent, false);
     return new TemplateViewHolder(view);
   }
 
-  public boolean isOpen() {
-    return mIsOpen;
+  private void clickDelete(View view) {
+    EventBus.getDefault().post(new EventUninstallTemplate(mTemplate.id));
   }
 
-  public void onBind(Template template, List<String> favList) {
-    this.mTemplate = template;
-    titlePrimary.setText(template.name);
-    titleSecondary.setText(template.name);
-    authorSecondary.setText(template.author);
-    idSecondary.setText(template.id);
-    if (template.previewFile != null) {
-      UILHelper.displayPreview(previewPrimary, template.previewFile);
-      UILHelper.displayPreview(previewSecondary, template.previewFile);
+  private void clickFav(View view) {
+    mIsFav = !mIsFav;
+    updateFavIcon(mIsFav);
+    EventBus.getDefault().post(new EventTemplateFav(mTemplate.id, mIsFav));
+  }
+
+  private void clickStartMain(View view) {
+    startMainActivity(getContext());
+  }
+
+  @Override protected void onBind(TemplateAndFavList templateAndFavList) {
+    mTemplate = templateAndFavList.mTemplate;
+    titlePrimary.setText(mTemplate.name);
+    titleSecondary.setText(mTemplate.name);
+    authorSecondary.setText(mTemplate.author);
+    idSecondary.setText(mTemplate.id);
+    if (mTemplate.previewFile != null) {
+      displayPreview(previewPrimary, mTemplate.previewFile);
+      displayPreview(previewSecondary, mTemplate.previewFile);
     }
-    mIsFav = favList.contains(template.id);
-    updateFavIcon(getContext(), mIsFav);
+    mIsFav = templateAndFavList.mFavList.contains(mTemplate.id);
+    updateFavIcon(mIsFav);
     layoutDelete.setVisibility(isNotHtzOrDefaultTemplate() ? View.VISIBLE : View.GONE);
+  }
+
+  public boolean isOpen() {
+    return mIsOpen;
   }
 
   ///////////////////////////////////////////////
@@ -105,13 +111,12 @@ public class TemplateViewHolder extends BaseAnimateViewHolder {
     MainActivity.start(context, mTemplate);
   }
 
-  private void updateFavIcon(final Context context, boolean isFav) {
-    favIcon.setImageDrawable(ResUtils.getVectorDrawable(context,
+  private void updateFavIcon(boolean isFav) {
+    favIcon.setImageDrawable(getVectorDrawable(getContext(),
         isFav ? R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp));
   }
 
   private boolean isNotHtzOrDefaultTemplate() {
-    return mTemplate.type != TemplateType.HTZ && !mTemplate.id.equalsIgnoreCase(
-        AppConstants.DEFAULT_TEMPLATE_ID);
+    return mTemplate.type != HTZ && !mTemplate.id.equalsIgnoreCase(DEFAULT_TEMPLATE_ID);
   }
 }

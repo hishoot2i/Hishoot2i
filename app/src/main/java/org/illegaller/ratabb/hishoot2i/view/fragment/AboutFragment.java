@@ -15,9 +15,7 @@ import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import java.util.HashMap;
 import java.util.Map;
-import org.illegaller.ratabb.hishoot2i.HishootApplication;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
 import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule;
@@ -25,7 +23,7 @@ import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
 import rx.Observable;
 
 public class AboutFragment extends PreferenceFragmentCompat {
-  private BooleanTray mAnalyticTray;
+  //private BooleanTray mAnalyticTray;
 
   public AboutFragment() {
   }
@@ -40,7 +38,7 @@ public class AboutFragment extends PreferenceFragmentCompat {
   @Override public void onCreatePreferences(Bundle bundle, String s) {
     addPreferencesFromResource(R.xml.about);
     final Context context = getActivity();
-    mAnalyticTray = HishootApplication.get(context).getTrayManager().getCrashlyticEnable();
+    //mAnalyticTray = HishootApplication.get(context).getTrayManager().getAnalyticsEnable();
     fixVectorIcon(context);
 
     findPreference("pref_libs").setOnPreferenceClickListener(pref -> startAboutLibs(context));
@@ -60,15 +58,18 @@ public class AboutFragment extends PreferenceFragmentCompat {
 
     SwitchPreferenceCompat spcAnalytic =
         (SwitchPreferenceCompat) findPreference("crashlytic_enable");
-    spcAnalytic.setChecked(mAnalyticTray.isValue());
-    spcAnalytic.setOnPreferenceChangeListener((preference, o) -> {
-      if (o instanceof Boolean) mAnalyticTray.setValue((boolean) o);
-      return true;
-    });
+    //spcAnalytic.setChecked(mAnalyticTray.isValue());
+    //spcAnalytic.setOnPreferenceChangeListener((preference, o) -> {
+    //  if (o instanceof Boolean) mAnalyticTray.setValue((boolean) o);
+    //  return true;
+    //});
+    //remove Fabric
+    spcAnalytic.setChecked(false);
+    spcAnalytic.setEnabled(false);
   }
 
   /* d' uglier */
-  void fixVectorIcon(final Context context) {
+  private void fixVectorIcon(final Context context) {
     final Map<String, Integer> keyIcons = new HashMap<>();
     keyIcons.put("pref_check_update", R.drawable.ic_sync_black_24dp);
     keyIcons.put("crashlytic_enable", R.drawable.ic_bug_report_black_24dp);
@@ -94,7 +95,7 @@ public class AboutFragment extends PreferenceFragmentCompat {
 
   private boolean startAboutLibs(final Context context) {
     final String[] libs = new String[] {
-        "AboutLibraries", "Android-Universal-Image-Loader", "Butter Knife", "Crashlytics",
+        "AboutLibraries", "Android-Universal-Image-Loader", "Butter Knife", /*"Crashlytics",*/
         "Dagger 2", "Eventbus", "Gson", "SmoothProgressBar", "BottomBar", "LeakCanary",
         "CustomActivityOnCrash", "Dart", "RecyclerView Animators", "MaterialSearchView", "Tray",
         "Android StackBlur", "RxAndroid", "Support Library", "SwipeRevealLayout"
@@ -126,7 +127,7 @@ public class AboutFragment extends PreferenceFragmentCompat {
   }
 
   private Observable<String> clearCache(final Context context) {
-    return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+    return Observable.create(subscriber -> {
       try {
         UILHelper.clearCache();
         subscriber.onNext(sizeCache(context));

@@ -1,27 +1,47 @@
 package org.illegaller.ratabb.hishoot2i.view.common;
 
+import android.support.annotation.NonNull;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import rx.Subscription;
+
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.checkNotNull;
+
 public class BasePresenter<T extends Mvp.View> implements Mvp.Presenter<T> {
-  private T mMvpView;
+  private Subscription mSubscription;
+  private Reference<T> mViewRef;
 
   @Override public void attachView(T mvpView) {
-    this.mMvpView = mvpView;
+    this.mViewRef = new WeakReference<>(mvpView);
   }
 
   @Override public void detachView() {
-    this.mMvpView = null;
+    if (mViewRef != null) {
+      this.mViewRef.clear();
+      this.mViewRef = null;
+    }
+    if (mSubscription != null) {
+      mSubscription.unsubscribe();
+      mSubscription = null;
+    }
   }
 
-  public T getView() {
-    return mMvpView;
+  protected T getMvpView() {
+    checkViewAttached();
+    return mViewRef.get();
   }
 
-  public boolean isViewAttached() {
-    return this.mMvpView != null;
+  private boolean isViewAttached() {
+    return this.mViewRef.get() != null;
   }
 
-  public void checkViewAttached() {
+  protected void addAutoUnSubscribe(@NonNull final Subscription subscription) {
+    mSubscription = checkNotNull(subscription, "Subscription must be not null");
+  }
+
+  protected void checkViewAttached() {
     if (!isViewAttached()) {
-      throw new RuntimeException("Presenter.attachView(MvpVew) before perform");
+      throw new RuntimeException("Presenter.attachView(View) first");
     }
   }
 }

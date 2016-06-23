@@ -1,10 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.utils;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
-import io.fabric.sdk.android.Fabric;
 import org.illegaller.ratabb.hishoot2i.BuildConfig;
 
 /**
@@ -16,12 +14,21 @@ import org.illegaller.ratabb.hishoot2i.BuildConfig;
  */
 public class CrashLog {
 
-  static String className;
-  static String methodName;
-  static int lineNumber;
+  private static String mClassName;
+  private static String mMethodName;
+  private static int mLineNumber;
 
   private CrashLog() {
-    throw new UnsupportedOperationException("no instance");
+    throw new AssertionError("no instance");
+  }
+
+  /**
+   * log with only throwable
+   *
+   * @param e a {@link Throwable}
+   */
+  public static void logError(@NonNull Throwable e) {
+    logError(null, e);
   }
 
   /**
@@ -45,32 +52,43 @@ public class CrashLog {
     doLog(3, msg, null);
   }
 
-  static void doLog(int priority, @Nullable String msg, @Nullable Throwable e) {
-    if (BuildConfig.USE_CRASHLYTICS) {
-      if (!Fabric.isInitialized()) return;
-      CrashlyticsCore core = Crashlytics.getInstance().core;
-      if (msg != null) core.log(priority, className, createLog(msg));
-      if (e != null) core.logException(e);
-    } else if (BuildConfig.DEBUG && msg != null) {
+  private static void doLog(int priority, @Nullable String msg, @Nullable Throwable e) {
+    //if (BuildConfig.USE_CRASHLYTICS) {
+    //  if (!Fabric.isInitialized()) return;
+    //  CrashlyticsCore core = Crashlytics.getInstance().core;
+    //  if (msg != null) core.log(priority, mClassName, createLog(msg));
+    //  if (e != null) core.logException(e);
+    //} else if (BuildConfig.DEBUG && msg != null) {
+    //  if (priority == 3) {
+    //    Log.d(mClassName, createLog(msg));
+    //  } else if (priority == 6) {
+    //    if (e != null) {
+    //      Log.e(mClassName, createLog(msg), e);
+    //    } else {
+    //      Log.e(mClassName, createLog(msg));
+    //    }
+    //  }
+    //}
+    if (BuildConfig.DEBUG && msg != null) {
       if (priority == 3) {
-        Log.d(className, createLog(msg));
+        Log.d(mClassName, createLog(msg));
       } else if (priority == 6) {
         if (e != null) {
-          Log.e(className, createLog(msg), e);
+          Log.e(mClassName, createLog(msg), e);
         } else {
-          Log.e(className, createLog(msg));
+          Log.e(mClassName, createLog(msg));
         }
       }
     }
   }
 
-  static String createLog(String log) {
-    return "[" + methodName + ":" + lineNumber + "]" + log;
+  private static String createLog(String log) {
+    return "[" + mMethodName + ":" + mLineNumber + "]" + log;
   }
 
-  static void getMethodNames(StackTraceElement[] sElements) {
-    className = sElements[1].getFileName();
-    methodName = sElements[1].getMethodName();
-    lineNumber = sElements[1].getLineNumber();
+  private static void getMethodNames(StackTraceElement[] sElements) {
+    mClassName = sElements[1].getFileName();
+    mMethodName = sElements[1].getMethodName();
+    mLineNumber = sElements[1].getLineNumber();
   }
 }

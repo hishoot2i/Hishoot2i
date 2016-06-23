@@ -14,10 +14,10 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateViewHolder> {
   private final List<String> mFavList = new ArrayList<>();
   private final ViewBinderHelper mBinderHelper = new ViewBinderHelper();
 
-  @Inject public TemplateAdapter() {
+  @Inject TemplateAdapter() {
   }
 
-  public void setFavList(List<String> mFavList) {
+  void setFavList(List<String> mFavList) {
     this.mFavList.clear();
     this.mFavList.addAll(mFavList);
   }
@@ -27,7 +27,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateViewHolder> {
   }
 
   @Override public void onBindViewHolder(TemplateViewHolder holder, int position) {
-    holder.onBind(getItem(position), mFavList);
+    holder.onBind(new TemplateAndFavList(getItem(position), mFavList));
     mBinderHelper.bind(holder.swipeRevealLayout, getItem(position).id);
   }
 
@@ -35,15 +35,15 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateViewHolder> {
     return mTemplateList.size();
   }
 
-  public void saveStates(Bundle bundle) {
+  void saveStates(Bundle bundle) {
     mBinderHelper.saveStates(bundle);
   }
 
-  public void restoreStates(Bundle bundle) {
+  void restoreStates(Bundle bundle) {
     mBinderHelper.restoreStates(bundle);
   }
 
-  public void animateTo(List<Template> templates) {
+  void animateTo(List<Template> templates) {
     applyAndAnimateRemovals(templates);
     applyAndAnimateAdditions(templates);
     applyAndAnimateMovedItems(templates);

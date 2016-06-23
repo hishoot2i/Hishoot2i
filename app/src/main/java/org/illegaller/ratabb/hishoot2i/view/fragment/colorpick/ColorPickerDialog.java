@@ -2,14 +2,14 @@ package org.illegaller.ratabb.hishoot2i.view.fragment.colorpick;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,38 +17,55 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import butterknife.Unbinder;
+import com.f2prateek.dart.Dart;
+import com.f2prateek.dart.InjectExtra;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxSeekBar;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import org.illegaller.ratabb.hishoot2i.R;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
+import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
-public class ColorPickerDialog extends DialogFragment
-    implements SeekBar.OnSeekBarChangeListener, TextView.OnEditorActionListener {
-  public static final String TAG = "ColorDialog";
+import static android.support.v4.view.ViewCompat.setElevation;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.checkNotNull;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.hideSoftKeyboard;
+
+public class ColorPickerDialog extends DialogFragment {
   private static final String KEY_COLOR = "key_color";
   @BindView(R.id.colorPreview) View colorPreview;
   @BindView(R.id.sbColorRed) AppCompatSeekBar sbRed;
   @BindView(R.id.sbColorGreen) AppCompatSeekBar sbGreen;
   @BindView(R.id.sbColorBlue) AppCompatSeekBar sbBlue;
   @BindView(R.id.etHex) EditText etHex;
-  @ColorInt private int mColor;
+  @ColorInt @InjectExtra(KEY_COLOR) int mColor;
+  @BindView(R.id.btnOk) AppCompatButton mBtnOk;
+  @BindView(R.id.btnCancel) AppCompatButton mBtnCancel;
   private ColorChangeListener mListener;
+  private Unbinder mUnBinder;
+  private Subscription mSubscription;
 
   public ColorPickerDialog() {
   }
 
-  static ColorPickerDialog newInstance(@ColorInt int initColor) {
+  private static ColorPickerDialog newInstance(@ColorInt int initColor) {
     ColorPickerDialog fragment = new ColorPickerDialog();
     fragment.setArguments(makeArg(initColor));
     return fragment;
   }
 
-  static Bundle makeArg(@ColorInt int color) {
+  private static Bundle makeArg(@ColorInt int color) {
     Bundle bundle = new Bundle();
     bundle.putInt(KEY_COLOR, color);
     return bundle;
+  }
+
+  public void show(FragmentManager fragmentManager) {
+    this.show(fragmentManager, "ColorDialog");
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {
@@ -58,82 +75,98 @@ public class ColorPickerDialog extends DialogFragment
 
   @Override public void onDestroyView() {
     mListener = null;
+    if (mSubscription != null) {
+      mSubscription.unsubscribe();
+      mSubscription = null;
+    }
+    mUnBinder.unbind();
     super.onDestroyView();
   }
 
   @NonNull @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
     @SuppressLint("InflateParams") View view =
         LayoutInflater.from(getActivity()).inflate(R.layout.dialog_color_picker, null, false);
-    ButterKnife.bind(this, view);
-    if (savedInstanceState == null) {
-      mColor = getArguments().getInt(KEY_COLOR);
-    } else {
-      mColor = savedInstanceState.getInt(KEY_COLOR);
-    }
-    return createDialog(getActivity(), view, mColor);
+    mUnBinder = ButterKnife.bind(this, view);
+    Dart.inject(this, getArguments());
+    setElevation(colorPreview, 4f);
+    updateView(mColor);
+    mSubscription = subscription();
+    return new AlertDialog.Builder(getActivity(), getTheme()).setView(view).create();
   }
 
-  Dialog createDialog(Context context, View view, @ColorInt int color) {
-    colorPreview.setBackgroundColor(color);
-    ViewCompat.setElevation(colorPreview, 4f);
-    sbRed.setProgress(Color.red(color));
-    sbGreen.setProgress(Color.green(color));
-    sbBlue.setProgress(Color.blue(color));
-    etHex.setText(getHexRGB(color));
-    sbRed.setOnSeekBarChangeListener(this);
-    sbGreen.setOnSeekBarChangeListener(this);
-    sbBlue.setOnSeekBarChangeListener(this);
-    etHex.setOnEditorActionListener(this);
-    return new AlertDialog.Builder(context, getTheme()).setView(view).create();
+  private Subscription subscription() {
+    final CompositeSubscription sub = new CompositeSubscription();
+    sub.add(RxTextView.editorActionEvents(etHex)
+        .subscribe(this::editorActionEvents, CrashLog::logError));
+
+    sub.add(RxView.clicks(mBtnOk).subscribe(click -> {
+      if (mListener != null) mListener.onColorChange(ColorPickerDialog.this, mColor);
+      ColorPickerDialog.this.dismissAllowingStateLoss();
+    }, CrashLog::logError));
+
+    sub.add(RxView.clicks(mBtnCancel).subscribe(click -> {
+      ColorPickerDialog.this.dismissAllowingStateLoss();
+    }, CrashLog::logError));
+
+    sub.add(seekBarSubscription(sbRed));
+    sub.add(seekBarSubscription(sbGreen));
+    sub.add(seekBarSubscription(sbBlue));
+    return sub;
   }
 
-  @Override public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+  private void editorActionEvents(TextViewEditorActionEvent event) {
+    final int actionId = event.actionId();
+    final KeyEvent keyEvent = event.keyEvent();
     if (actionId == EditorInfo.IME_ACTION_DONE
         || keyEvent.getAction() == KeyEvent.ACTION_DOWN
         && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-      String value = textView.getText().toString().trim();
-      int parseColor = -1;
+      final String value = event.view().getText().toString().trim();
+      int colorParse = -1; //invalid color
       try {
-        parseColor = Color.parseColor("#ff" + value);
-      } catch (IllegalArgumentException ignore) { /*ignore*/ }
-      if (parseColor != -1) {
-        updateView(parseColor);
-        Utils.hideSoftKeyboard(getActivity(), etHex);
-        return true;
+        colorParse = Color.parseColor("#ff" + value);
+      } catch (IllegalArgumentException iae) {
+        CrashLog.logError(iae);
+      }
+      if (colorParse != -1) {
+        updateView(colorParse);
+        hideSoftKeyboard(etHex);
       }
     }
-    return false;
   }
 
-  void updateView(@ColorInt int color) {
-    etHex.setText(getHexRGB(color));
+  private Subscription seekBarSubscription(SeekBar seekBar) {
+    return RxSeekBar.changes(seekBar).subscribe(progress -> {
+      updateView(Color.rgb(sbRed.getProgress(), sbGreen.getProgress(), sbBlue.getProgress()));
+    }, CrashLog::logError);
+  }
+
+  private void updateView(@ColorInt int color) {
+    etHex.setText(Integer.toHexString(color).substring(2));
     colorPreview.setBackgroundColor(color);
     sbRed.setProgress(Color.red(color));
     sbGreen.setProgress(Color.green(color));
     sbBlue.setProgress(Color.blue(color));
-    mColor = color;
+    if (mColor != color) mColor = color;
   }
 
-  String getHexRGB(@ColorInt int color) {
-    String result = Integer.toHexString(color);
-    return result.substring(2);
-  }
-
-  @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-    updateView(Color.rgb(sbRed.getProgress(), sbGreen.getProgress(), sbBlue.getProgress()));
-  }
-
-  @Override public void onStartTrackingTouch(SeekBar seekBar) { /*no-op*/ }
-
-  @Override public void onStopTrackingTouch(SeekBar seekBar) { /*no-op*/ }
-
-  @OnClick({ R.id.btnOk, R.id.btnCancel }) void onClick(View view) {
-    final Dialog dialog = this.getDialog();
-    if (mListener != null && view.getId() == R.id.btnOk) mListener.onColorChange(dialog, mColor);
-    dialog.dismiss();
-  }
-
-  void setListener(ColorChangeListener listener) {
+  private void setListener(ColorChangeListener listener) {
     mListener = listener;
+  }
+
+  public interface ColorChangeListener {
+    void onColorChange(ColorPickerDialog pickerDialog, @ColorInt int color);
+  }
+
+  public static final class Builder {
+    private Builder() {
+      throw new AssertionError("no instance");
+    }
+
+    public static ColorPickerDialog build(@ColorInt int color,
+        @NonNull final ColorChangeListener listener) {
+      ColorPickerDialog result = ColorPickerDialog.newInstance(color);
+      result.setListener(checkNotNull(listener, "listener == null"));
+      return result;
+    }
   }
 }

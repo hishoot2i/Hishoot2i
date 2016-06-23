@@ -21,6 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    injectComponent(getActivityComponent());
     setContentView(layoutRes());
     mContentView = ButterKnife.findById(this, android.R.id.content);
     ButterKnife.bind(this);
@@ -50,7 +51,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   protected abstract void setupToolbar(ActionBar actionBar);
 
-  public ActivityComponent getActivityComponent() {
+  protected abstract void injectComponent(ActivityComponent activityComponent);
+
+  ActivityComponent getActivityComponent() {
     if (mActivityComponent == null) mActivityComponent = ActivityComponent.Initializer.init(this);
     return mActivityComponent;
   }

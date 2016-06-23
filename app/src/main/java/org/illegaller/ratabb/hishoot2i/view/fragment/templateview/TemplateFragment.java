@@ -13,17 +13,19 @@ import com.f2prateek.dart.InjectExtra;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.TemplateManager;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventBadgeBB;
 import org.illegaller.ratabb.hishoot2i.events.EventProgress;
 import org.illegaller.ratabb.hishoot2i.events.EventTemplateFav;
 import org.illegaller.ratabb.hishoot2i.events.EventUninstallTemplate;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
+import org.illegaller.ratabb.hishoot2i.model.tray.IKeyNameTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
-import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 import org.illegaller.ratabb.hishoot2i.presenter.TemplateFragmentPresenter;
 import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
@@ -35,9 +37,8 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
   @BindView(R.id.templateRecyclerView) TemplateRecyclerView mRecyclerView;
   @BindView(R.id.noContent) View noContent;
   @Inject TemplateFragmentPresenter mPresenter;
-  @Inject TrayManager mTrayManager;
   @InjectExtra(KEY_FAV_FRAGMENT) Boolean isFavFragment;
-  private StringTray mTemplateFavTray;
+  @Inject @Named(IKeyNameTray.TEMPLATE_FAV) StringTray mTemplateFavTray;
   private String mIdPendingRemove;
 
   public TemplateFragment() {
@@ -65,13 +66,15 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
     Dart.inject(this, getArguments());
-    getActivityComponent().inject(this);
-    mTemplateFavTray = mTrayManager.getTemplateFav();
+  }
+
+  @Override protected void injectComponent(ActivityComponent activityComponent) {
+    activityComponent.inject(this);
   }
 
   @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     menu.findItem(R.id.action_search).setVisible(true);
-    mPresenter.setupSearchView(getActivity(), menu.findItem(R.id.action_search));
+    mPresenter.setupSearchView(getContext(), menu.findItem(R.id.action_search));
     super.onCreateOptionsMenu(menu, inflater);
   }
 
@@ -82,19 +85,19 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     mPresenter.attachView(this);
-    mRecyclerView.mTemplateAdapter.setFavList(getFavList());
+    mRecyclerView.mAdapter.setFavList(getFavList());
     mPresenter.performList(isFavFragment ? mTemplateFavTray.getValue() : TemplateManager.NO_FAV);
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    if (mRecyclerView.mTemplateAdapter != null) mRecyclerView.mTemplateAdapter.saveStates(outState);
+    if (mRecyclerView.mAdapter != null) mRecyclerView.mAdapter.saveStates(outState);
   }
 
   @Override public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
     super.onViewStateRestored(savedInstanceState);
-    if (mRecyclerView.mTemplateAdapter != null) {
-      mRecyclerView.mTemplateAdapter.restoreStates(savedInstanceState);
+    if (mRecyclerView.mAdapter != null) {
+      mRecyclerView.mAdapter.restoreStates(savedInstanceState);
     }
   }
 
@@ -113,12 +116,12 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
     updateView();
   }
 
-  void updateView() {
+  private void updateView() {
     if (mTemplateList.size() == 0) {
       noContent.setVisibility(View.VISIBLE);
       mRecyclerView.setVisibility(View.GONE);
     } else {
-      mRecyclerView.mTemplateAdapter.animateTo(mTemplateList);
+      mRecyclerView.mAdapter.animateTo(mTemplateList);
       noContent.setVisibility(View.GONE);
       mRecyclerView.setVisibility(View.VISIBLE);
     }
@@ -145,17 +148,17 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
     }
   }
 
-  List<String> getFavList() {
+  private List<String> getFavList() {
     return Utils.stringToList(mTemplateFavTray.getValue());
   }
 
-  void updateBadgeBottomBar(int count) {
+  private void updateBadgeBottomBar(int count) {
     EventBus.getDefault()
         .post(new EventBadgeBB(isFavFragment ? EventBadgeBB.Type.FAV : EventBadgeBB.Type.INSTALLED,
             count));
   }
 
-  void addTemplateFav(String templateId) {
+  private void addTemplateFav(String templateId) {
     String value = null;
     if (Utils.isEmpty(mTemplateFavTray.getValue())) {
       value = templateId;
@@ -168,7 +171,7 @@ public class TemplateFragment extends BaseFragment implements TemplateFragmentVi
     if (value != null) mTemplateFavTray.setValue(value);
   }
 
-  void removeTemplateFav(String templateId) {
+  private void removeTemplateFav(String templateId) {
     final List<String> list = getFavList();
     if (!list.contains(templateId)) return;
     list.remove(templateId);

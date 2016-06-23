@@ -4,13 +4,22 @@ import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 
 public class EventPreview {
+  private static final String EMPTY = "";
   public final String message;
   public final String extra;
-  @Nullable public final Bitmap result;
+  @Nullable public final Bitmap bitmap;
 
-  public EventPreview(@Nullable Bitmap result, String message, String extra) {
-    this.result = result;
+  private EventPreview(@Nullable Bitmap bitmap, String message, String extra) {
+    this.bitmap = bitmap;
     this.message = message;
     this.extra = extra;
+  }
+
+  public static EventPreview messageExtra(String message, String extra) {
+    return new EventPreview(null, message, extra);
+  }
+
+  public static EventPreview result(Bitmap bitmap) {
+    return new EventPreview(bitmap, EMPTY, EMPTY);
   }
 }

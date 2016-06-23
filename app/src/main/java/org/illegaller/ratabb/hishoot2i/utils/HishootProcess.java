@@ -17,7 +17,6 @@ import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
 
 public class HishootProcess {
-  private final Context mContext;
   private final boolean mDoubleSSEnable;
   private final boolean mBackgroundColorEnable;
   private final boolean mBackgroundImageBlurEnable;
@@ -30,11 +29,10 @@ public class HishootProcess {
   private final int mBadgeSize;
   @ColorInt private final int mBackgroundColorInt;
   @ColorInt private final int mBadgeColor;
+  private final Context mContext;
 
-  @Inject TrayManager mTrayManager;
-
-  public HishootProcess(Context context) {
-    HishootApplication.get(context).getAppComponent().inject(this);
+  @Inject HishootProcess(Context context) {
+    final TrayManager mTrayManager = HishootApplication.get(context).getTrayManager();
     this.mContext = context;
     this.mDoubleSSEnable = mTrayManager.getDoubleEnable().isValue();
     this.mBackgroundColorEnable = mTrayManager.getBackgroundColorEnable().isValue();
@@ -52,19 +50,19 @@ public class HishootProcess {
 
   public void process(@NonNull final DataImagePath dataImagePath, @NonNull final Template template,
       @NonNull final Callback callback, boolean isSave) throws Exception {
-    if (Utils.isMainThread()) throw new ProcessException("avoid #process on main thread");
-
+    Utils.avoidUiThread("process on main thread");
+    final long times = System.currentTimeMillis();
+    callback.startProcess(times);
     final String pathImageBg = dataImagePath.pathImageBackground;
     final String pathImageSS1 = dataImagePath.pathImageScreen1;
     final String pathImageSS2 = dataImagePath.pathImageScreen2;
 
-    callback.startProcess(System.currentTimeMillis());
     int totalW = template.templatePoint.x;
     int totalH = template.templatePoint.y;
     if (mDoubleSSEnable) totalW += totalW;
     Bitmap result;
     Canvas canvas;
-    try { // FIXME ?
+    try { // FIXME: how to handle exception here ex. OOM ?
       result = Bitmap.createBitmap(totalW, totalH, Bitmap.Config.ARGB_8888);
       canvas = new Canvas(result);
     } catch (Exception e) {
@@ -125,11 +123,15 @@ public class HishootProcess {
     }
 
     //////// RESULT ////////////
-    try {
+    try { /*FIXME: StrictMode: file:// Uri exposed through Intent.getData()*/
       callback.doneProcess(result, isSave ? Uri.fromFile(Utils.saveHishoot(result)) : null);
     } catch (IOException e) {
       failed(R.string.cant_save, R.string.save_failed, e, callback);
     }
+    CrashLog.log((isSave ? "saving" : "preview")
+        + " process time: "
+        + (System.currentTimeMillis() - times)
+        + " ms");
   }
 
   private void failed(int message, int extra, Throwable e, Callback callback) {
@@ -156,11 +158,5 @@ public class HishootProcess {
     void failProcess(String message, String extra);
 
     void doneProcess(Bitmap result, @Nullable Uri uri);
-  }
-
-  private static class ProcessException extends IllegalStateException {
-    ProcessException(String cause) {
-      super("HishootProcess: " + cause);
-    }
   }
 }

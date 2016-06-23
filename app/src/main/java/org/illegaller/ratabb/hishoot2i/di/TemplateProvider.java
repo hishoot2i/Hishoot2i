@@ -8,9 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import java.io.File;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,44 +20,45 @@ import org.illegaller.ratabb.hishoot2i.model.template.builder.ApkV1Builder;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.ApkV2Builder;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.DefaultBuilder;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.HtzBuilder;
-import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 
 import static org.illegaller.ratabb.hishoot2i.AppConstants.MESSAGE_TEMPLATE_CANT_FIND;
+import static org.illegaller.ratabb.hishoot2i.utils.CrashLog.logError;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.avoidUiThread;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.checkNotNull;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.getInstalledApplications;
 
 public class TemplateProvider {
-  public static final Comparator<Template> TEMPLATE_NAME_COMPARATOR =
-      (t0, t1) -> Collator.getInstance().compare(t0.name, t1.name);
   @Inject Context mContext;
   private Template mTemplateDefault;
   private Map<String, Template> mTemplateMap;
   private List<Template> mTemplateList;
 
-  @Inject public TemplateProvider() {
+  @Inject TemplateProvider() {
   }
 
-  public Template getTemplateDefault() {
+  Template getTemplateDefault() {
     if (mTemplateDefault == null) mTemplateDefault = findById(AppConstants.DEFAULT_TEMPLATE_ID);
     return mTemplateDefault;
   }
 
-  @Nullable public Template findById(String templateID) {
-    Utils.checkNotNull(mTemplateMap, "TemplateProvider.provideTemplate() before call this method");
+  @Nullable Template findById(String templateID) {
+    checkNotNull(mTemplateMap, "TemplateProvider.provideTemplate() before call this method");
     if (mTemplateMap.containsKey(templateID)) {
       return mTemplateMap.get(templateID);
-    } else {
-      CrashLog.logError(String.format(Locale.US, MESSAGE_TEMPLATE_CANT_FIND, templateID), null);
-      return null;
     }
+    final String msg = String.format(Locale.US, MESSAGE_TEMPLATE_CANT_FIND, templateID);
+    logError("TemplateProvider.findById", new RuntimeException(msg));
+    return null;
   }
 
-  public List<Template> asList() {
-    Utils.checkNotNull(mTemplateMap, "TemplateProvider.provideTemplate() before call this method");
+  List<Template> asList() {
+    checkNotNull(mTemplateMap, "TemplateProvider.provideTemplate() before call this method");
     if (mTemplateList == null) mTemplateList = new ArrayList<>(mTemplateMap.values());
     return mTemplateList;
   }
 
-  public void provideTemplate() throws Exception {
+  void provideTemplate() throws Exception {
+    avoidUiThread("provideTemplate on main thread");
     mTemplateMap = new HashMap<>();
     provideTemplateDefault();
     provideTemplateApk();
@@ -68,28 +67,28 @@ public class TemplateProvider {
   }
 
   //START Providing Template
-  private void provideTemplateDefault()throws Exception  {
+  private void provideTemplateDefault() throws Exception {
     final DefaultBuilder builder = new DefaultBuilder(mContext);
-    putToTemplateMap(builder.id, builder.build());
+    putToMap(builder.id, builder.build());
   }
 
-  private void provideTemplateApk()throws Exception  {
+  private void provideTemplateApk() throws Exception {
     Intent intent = new Intent(Intent.ACTION_MAIN);
     intent.addCategory(AppConstants.CATEGORY_TEMPLATE_APK);
     final PackageManager manager = mContext.getPackageManager();
-    List<ResolveInfo> ifs = manager.queryIntentActivities(intent, 0);
-    for (ResolveInfo info : ifs) {
+    List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+    for (ResolveInfo info : infos) {
       final ApkV1Builder builder = new ApkV1Builder(mContext, info.activityInfo.packageName);
-      putToTemplateMap(builder.id, builder.build());
+      putToMap(builder.id, builder.build());
     }
   }
 
-  private void provideTemplateApkV2()throws Exception  {
+  private void provideTemplateApkV2() throws Exception {
     List<ApplicationInfo> apps = null;
     try {
-      apps = Utils.getInstalledApplications(mContext, PackageManager.GET_META_DATA);
+      apps = getInstalledApplications(mContext, PackageManager.GET_META_DATA);
     } catch (Exception e) {
-      CrashLog.logError("provideTemplateApkV2", e);
+      logError("getInstalledApplications", e);
     }
     if (apps == null) return;
     for (ApplicationInfo app : apps) {
@@ -98,30 +97,30 @@ public class TemplateProvider {
         int version = metaData.getInt(AppConstants.META_DATA_TEMPLATE);
         if (version == 2) {
           final ApkV2Builder builder = new ApkV2Builder(mContext, app.packageName);
-          putToTemplateMap(builder.id, builder.build());
+          putToMap(builder.id, builder.build());
         }
       }
     }
   }
 
-  private void provideTemplateHtz()throws Exception  {
-    File htzDir = AppConstants.getHishootHtzDir(mContext);
+  private void provideTemplateHtz() throws Exception {
+    final File htzDir = AppConstants.getHishootHtzDir(mContext);
     final File[] lisFiles = htzDir.listFiles();
     if (lisFiles == null) return;
     for (File htzFile : lisFiles) {
       if (htzFile.isDirectory()) {
-        File cfg = new File(htzFile, HtzBuilder.HTZ_FILE_CFG);
+        final File cfg = new File(htzFile, HtzBuilder.HTZ_FILE_CFG);
         if (cfg.exists()) {
-          HtzBuilder builder = new HtzBuilder(mContext, null);
+          final HtzBuilder builder = new HtzBuilder(mContext);
           builder.setHtzName(htzFile.getName());
-          putToTemplateMap(builder.id, builder.build());
+          putToMap(builder.id, builder.build());
         }
       }
     }
   }
   //END Provide Template
 
-  private void putToTemplateMap(String templateID, Template template) {
+  private void putToMap(String templateID, Template template) {
         /* avoid duplicate template or failed build template*/
     if (mTemplateMap.containsKey(templateID) || template == null) return;
     mTemplateMap.put(templateID, template);

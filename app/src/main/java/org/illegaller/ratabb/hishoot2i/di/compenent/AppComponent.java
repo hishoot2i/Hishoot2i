@@ -5,8 +5,10 @@ import javax.inject.Singleton;
 import org.illegaller.ratabb.hishoot2i.HishootApplication;
 import org.illegaller.ratabb.hishoot2i.di.module.ApplicationModule;
 import org.illegaller.ratabb.hishoot2i.di.module.SystemServiceModule;
+import org.illegaller.ratabb.hishoot2i.model.tray.TrayModule;
 
-@Singleton @Component(modules = { ApplicationModule.class, SystemServiceModule.class })
+@Singleton
+@Component(modules = { ApplicationModule.class, TrayModule.class, SystemServiceModule.class })
 public interface AppComponent extends AppGraph {
   final class Initializer {
     private Initializer() {
@@ -17,6 +19,7 @@ public interface AppComponent extends AppGraph {
       return DaggerAppComponent.builder()
           .applicationModule(new ApplicationModule(app))
           .systemServiceModule(new SystemServiceModule())
+          .trayModule(new TrayModule(app))
           .build();
     }
   }

@@ -7,43 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import rx.Observable;
+
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.isEmpty;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.stringToArray;
 
 public class TemplateManager {
   public static final String NO_FAV = "no_fav";
-  @Inject TemplateProvider templateProvider;
+  @Inject TemplateProvider mTemplateProvider;
 
-  @Inject public TemplateManager() {
+  @Inject TemplateManager() {
   }
 
   public Observable<List<Template>> getTemplateList(@NonNull final String favListId) {
-    return Observable.create((Observable.OnSubscribe<List<Template>>) subscriber -> {
+    return Observable.create(subscriber -> {
       try {
-        templateProvider.provideTemplate();
-        final List<Template> templateList = templateProvider.asList();
+        mTemplateProvider.provideTemplate();
+        final List<Template> source = mTemplateProvider.asList();
         final List<Template> result = new ArrayList<>();
-        if (!favListId.equalsIgnoreCase(NO_FAV) && !Utils.isEmpty(favListId)) {
-          final String[] arrayIdFav = Utils.stringToArray(favListId);
-          for (String templateId : arrayIdFav) {
-            result.addAll(Stream.of(templateList)
-                .filter(template -> templateId.equalsIgnoreCase(template.id))
-                .sorted(TemplateProvider.TEMPLATE_NAME_COMPARATOR)
-                .collect(Collectors.toList()));
+        if (!isEmpty(favListId)) {
+          if (!favListId.equalsIgnoreCase(NO_FAV)) {
+            /* template Fav fragment */
+            for (String templateId : stringToArray(favListId)) {
+              result.addAll(Stream.of(source)
+                  .filter(template -> templateId.equalsIgnoreCase(template.id))
+                  .collect(Collectors.toList()));
+            }
+          } else {
+            result.addAll(Stream.of(source).collect(Collectors.toList()));
           }
-        } else if (!Utils.isEmpty(favListId)) {
-          result.addAll(Stream.of(templateList)
-              .sorted(TemplateProvider.TEMPLATE_NAME_COMPARATOR)
-              .collect(Collectors.toList()));
         }
-        /* Template Default always on top list*/
-        final Template DEFAULT = templateProvider.getTemplateDefault();
-        final boolean containsDefault = result.contains(DEFAULT);
-        if (containsDefault) {
-          result.remove(DEFAULT);
-          result.add(0, DEFAULT);
-        }
-        subscriber.onNext(result);
+        subscriber.onNext(sortedAndDefaultOnTop(result));
         subscriber.onCompleted();
       } catch (Exception e) {
         subscriber.onError(e);
@@ -51,7 +45,23 @@ public class TemplateManager {
     });
   }
 
+  /**
+   * Template Default always on top list
+   */
+  private List<Template> sortedAndDefaultOnTop(List<Template> list) {
+    final List<Template> result = new ArrayList<>();
+    result.addAll(Stream.of(list)
+        .sorted((t0, t1) -> t0.name.compareTo(t1.name))
+        .collect(Collectors.toList()));
+    final Template templateDefault = mTemplateProvider.getTemplateDefault();
+    if (result.contains(templateDefault)) {
+      result.remove(templateDefault);
+      result.add(0, templateDefault);
+    }
+    return result;
+  }
+
   public Template getTemplateById(String templateId) {
-    return templateProvider.findById(templateId);
+    return mTemplateProvider.findById(templateId);
   }
 }

@@ -7,7 +7,7 @@ public class Mvp {
     Context getContext();
   }
 
-  public interface Presenter<V extends View> {
+  interface Presenter<V extends View> {
     void attachView(V mvpView);
 
     void detachView();

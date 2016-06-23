@@ -36,7 +36,9 @@ public class UILHelper {
   private static final String DRAWABLES = "drawable://";
   private static final String SEPARATOR = "/";
 
-  private UILHelper() { /*no instance*/ }
+  private UILHelper() {
+    throw new AssertionError("no instance");
+  }
 
   /**
    * Image path from app template
@@ -60,7 +62,7 @@ public class UILHelper {
   }
 
   /**
-   * Image path from user storage
+   * Image path from storage
    *
    * @param file image file
    * @return {@linkplain String}  <b>file://{@code absolute-path-of-file}</b>
@@ -126,7 +128,7 @@ public class UILHelper {
     if (diskCache != null) diskCache.clear();
   }
 
-  static DiskCache diskCache() throws IllegalStateException {
+  private static DiskCache diskCache() throws IllegalStateException {
     return ImageLoader.getInstance().getDiskCache();
   }
 
@@ -135,13 +137,13 @@ public class UILHelper {
         .loadImageSync(pathImage, UILHelper.getDisplayImageOptions(false));
   }
 
-  @Nullable public static Bitmap loadImage(final String pathImage, final Point point) {
+  @Nullable static Bitmap loadImage(final String pathImage, final Point point) {
     return ImageLoader.getInstance()
         .loadImageSync(pathImage, new ImageSize(point.x, point.y),
             UILHelper.getDisplayImageOptions(false));
   }
 
-  static DisplayImageOptions getDisplayImageOptions(boolean isPreview) {
+  private static DisplayImageOptions getDisplayImageOptions(boolean isPreview) {
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inScaled = isPreview;
     DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder().bitmapConfig(
@@ -158,9 +160,9 @@ public class UILHelper {
    * {@link UILHelper#stringTemplateApp(String, int)}<br>
    * inspired by: http://stackoverflow.com/a/28010629
    */
-  static class TemplateImageDownloader extends BaseImageDownloader {
+  private static final class TemplateImageDownloader extends BaseImageDownloader {
 
-    public TemplateImageDownloader(Context context) {
+    TemplateImageDownloader(Context context) {
       super(context);
     }
 

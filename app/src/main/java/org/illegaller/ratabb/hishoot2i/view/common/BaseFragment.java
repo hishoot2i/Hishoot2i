@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.squareup.leakcanary.RefWatcher;
-import org.illegaller.ratabb.hishoot2i.HishootApplication;
+import javax.inject.Inject;
 import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 
 public abstract class BaseFragment extends Fragment {
-  protected Unbinder mBinder;
-  protected RefWatcher mRefWatcher;
+  @Inject RefWatcher mRefWatcher;
+  private Unbinder mBinder;
 
   public Context getContext() {
     return getActivity();
@@ -24,11 +24,12 @@ public abstract class BaseFragment extends Fragment {
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mRefWatcher =
-        HishootApplication.get(getContext()).getAppComponent().refWatcher();
+    final ActivityComponent activityComponent = getActivityComponent();
+    activityComponent.inject(this);
+    injectComponent(activityComponent);
   }
 
-  public ActivityComponent getActivityComponent() {
+  protected ActivityComponent getActivityComponent() {
     return ((BaseActivity) getContext()).getActivityComponent();
   }
 
@@ -49,6 +50,8 @@ public abstract class BaseFragment extends Fragment {
     mBinder.unbind();
     super.onDestroyView();
   }
+
+  protected abstract void injectComponent(ActivityComponent activityComponent);
 
   @LayoutRes protected abstract int layoutRes();
 }

@@ -77,20 +77,20 @@ public class PermissionHelper {
     } else if (getCallback() != null) getCallback().allow();
   }
 
-  protected Object getObject() {
+  private Object getObject() {
     return mWeakObject.get();
   }
 
-  protected Callback getCallback() {
+  private Callback getCallback() {
     return mWeakCallback.get();
   }
 
-  protected boolean checkSelfPermission() {
+  private boolean checkSelfPermission() {
     return ContextCompat.checkSelfPermission(contextFromObject(), this.mSinglePermission)
         != PERMISSION_GRANTED;
   }
 
-  @TargetApi(M) protected void requestPermission() {
+  @TargetApi(M) private void requestPermission() {
     final Object object = getObject();
     if (object instanceof Activity) {
       ActivityCompat.requestPermissions((Activity) object, new String[] { mSinglePermission },
@@ -106,7 +106,7 @@ public class PermissionHelper {
     }
   }
 
-  @TargetApi(M) protected boolean shouldShowRequestPermissionRationale() {
+  @TargetApi(M) private boolean shouldShowRequestPermissionRationale() {
     final Object object = getObject();
     if (object instanceof Activity) {
       return ActivityCompat.shouldShowRequestPermissionRationale((Activity) object,
@@ -122,7 +122,7 @@ public class PermissionHelper {
     }
   }
 
-  protected Context contextFromObject() {
+  private Context contextFromObject() {
     final Object object = getObject();
     if (object instanceof Activity) {
       return (Activity) object;
@@ -146,7 +146,7 @@ public class PermissionHelper {
     static final PermissionHelper sINSTANCE = new PermissionHelper();
 
     private InstanceHolder() {
-      throw new UnsupportedOperationException("no instance");
+      throw new AssertionError("no instance");
     }
   }
 
@@ -157,7 +157,7 @@ public class PermissionHelper {
     private Object mObject;
     private Callback mCallback;
 
-    public Builder(int requestCode, String permission) {
+    Builder(int requestCode, String permission) {
       this.mRequestCode = requestCode;
       this.mPermission = permission;
     }
@@ -187,7 +187,7 @@ public class PermissionHelper {
   }
 
   /* exception */
-  protected static class PermissionHelperException extends RuntimeException {
+  private static class PermissionHelperException extends RuntimeException {
     PermissionHelperException(String cause) {
       super("PermissionHelper exception " + cause);
     }

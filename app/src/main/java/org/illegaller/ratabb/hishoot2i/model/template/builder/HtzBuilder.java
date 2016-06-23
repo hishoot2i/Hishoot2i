@@ -1,7 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.model.template.builder;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import java.io.BufferedInputStream;
@@ -18,36 +17,42 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.model.template.HtzModel;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
-import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.GsonUtils;
-import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
+
+import static org.illegaller.ratabb.hishoot2i.AppConstants.getHishootHtzDir;
+import static org.illegaller.ratabb.hishoot2i.utils.CrashLog.log;
+import static org.illegaller.ratabb.hishoot2i.utils.CrashLog.logError;
+import static org.illegaller.ratabb.hishoot2i.utils.GsonUtils.fromJson;
+import static org.illegaller.ratabb.hishoot2i.utils.ResUtils.getStringFilePathHtz;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.checkNotNull;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.createPoint;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.tryClose;
 
 public class HtzBuilder extends BaseBuilder {
   public static final String HTZ_FILE_CFG = "template.cfg";
   private static final int BUFFER_SIZE = 1024;
   private String mHtzName;
-  private Context mContext;
-  @Nullable private Callback mCallback;
+  /** for import Htz */
+  private Callback mCallback;
 
-  public HtzBuilder(Context context, @Nullable Callback callback) {
-    this.mContext = context;
-    this.mCallback = callback;
+  public HtzBuilder(Context context) {
+    super(context);
+  }
+
+  public void setCallback(Callback mCallback) {
+    this.mCallback = mCallback;
   }
 
   public void setHtzName(String mHtzName) {
     this.mHtzName = mHtzName;
-    this.id = getTemplateId(mHtzName);
     init();
   }
 
   @Override public Template build() throws Exception {
-    if (null == mHtzName || null == id) throw new RuntimeException("setHtzName(:String) first");
-    if (isSuccessBuild) {
+    checkNotNull(this.mHtzName, "HtzName == null");
+    if (this.isSuccessBuild) {
       return Template.build(this);
     } else {
       return null;
@@ -55,29 +60,30 @@ public class HtzBuilder extends BaseBuilder {
   }
 
   private void init() {
-    type = TemplateType.HTZ;
-    HtzModel modelHtz = getModelHtzFrom(getHtzFileConfig());
-    if (modelHtz == null) {
-      CrashLog.logError("init htz builder", null);
+    this.id = getTemplateHtzId(mHtzName);
+    this.type = TemplateType.HTZ;
+    final HtzModel htz = getModelHtzFrom(getHtzFileConfig());
+    if (htz != null) {
+      this.name = htz.name;
+      this.author = htz.author;
+      this.templatePoint = createPoint(htz.template_width, htz.template_height);
+      this.previewFile = getStringFilePathHtz(currentPath(), htz.preview);
+      this.frameFile = getStringFilePathHtz(currentPath(), htz.template_file);
+      this.glareFile = getStringFilePathHtz(currentPath(), htz.overlay_file);
+      this.overlayOffset = createPoint(htz.overlay_x, htz.overlay_y);
+      this.leftTop = createPoint(htz.screen_x, htz.screen_y);
+      this.rightTop = createPoint(htz.screen_x + htz.screen_width, htz.screen_y);
+      this.leftBottom = createPoint(htz.screen_x, htz.screen_height + htz.screen_y);
+      this.rightBottom =
+          createPoint(htz.screen_width + htz.screen_x, htz.screen_height + htz.screen_y);
+      this.isSuccessBuild = true;
     } else {
-      name = modelHtz.name;
-      author = modelHtz.author;
-      templatePoint = new Point(modelHtz.template_width, modelHtz.template_height);
-      previewFile = ResUtils.getStringFilePathHtz(currentPath(), modelHtz.preview);
-      frameFile = ResUtils.getStringFilePathHtz(currentPath(), modelHtz.template_file);
-      glareFile = ResUtils.getStringFilePathHtz(currentPath(), modelHtz.overlay_file);
-      overlayOffset = new Point(modelHtz.overlay_x, modelHtz.overlay_y);
-      leftTop = new Point(modelHtz.screen_x, modelHtz.screen_y);
-      rightTop = new Point(modelHtz.screen_x + modelHtz.screen_width, modelHtz.screen_y);
-      leftBottom = new Point(modelHtz.screen_x, modelHtz.screen_height + modelHtz.screen_y);
-      rightBottom = new Point(modelHtz.screen_width + modelHtz.screen_x,
-          modelHtz.screen_height + modelHtz.screen_y);
-      isSuccessBuild = true;
+      logError("init htz builder", null);
     }
   }
 
   private File currentPath() {
-    return new File(AppConstants.getHishootHtzDir(mContext), id);
+    return new File(getHishootHtzDir(getContext()), id);
   }
 
   private File getHtzFileConfig() {
@@ -88,7 +94,6 @@ public class HtzBuilder extends BaseBuilder {
     String result = null;
     BufferedReader reader = null;
     try {
-      //reader = new BufferedReader(new FileReader(json));
       reader = new BufferedReader(new InputStreamReader(new FileInputStream(json), "iso-8859-1"));
       StringBuilder sb = new StringBuilder();
       String line;
@@ -97,19 +102,20 @@ public class HtzBuilder extends BaseBuilder {
       }
       result = sb.toString();
     } catch (IOException e) {
-      CrashLog.logError("getModelHtzFrom", e);
+      logError("getModelHtzFrom", e);
     } finally {
-      Utils.tryClose(reader);
+      tryClose(reader);
     }
-    return GsonUtils.fromJson(result, HtzModel.class);
+    return fromJson(result, HtzModel.class);
   }
 
-  private String getTemplateId(String templateName) {
+  private String getTemplateHtzId(String templateName) {
     String result = (templateName.contains(" ")) ? templateName.replace(" ", "_") : templateName;
     return result.toLowerCase(Locale.US).trim();
   }
 
-  public boolean cekHtz(final String fileHtzPath) {
+  /** for import Htz */
+  public boolean importHtz(final String fileHtzPath) {
     if (!fileHtzPath.endsWith(".htz")) return false;
     boolean result;
     File file = null;
@@ -128,13 +134,13 @@ public class HtzBuilder extends BaseBuilder {
           while ((line = reader.readLine()) != null) {
             sb.append(line).append('\n');
           }
-          Utils.tryClose(fis, reader, zipFile);
-          HtzModel htzModel = GsonUtils.fromJson(sb.toString(), HtzModel.class);
+          tryClose(fis, reader, zipFile);
+          HtzModel htzModel = fromJson(sb.toString(), HtzModel.class);
           if (htzModel == null) continue;
-          file = new File(AppConstants.getHishootHtzDir(mContext), getTemplateId(htzModel.name));
+          file = new File(getHishootHtzDir(getContext()), getTemplateHtzId(htzModel.name));
           if (!file.exists()) {
-            boolean ignore = file.mkdirs();
-            CrashLog.log(String.valueOf(ignore));
+            boolean mkdirs = file.mkdirs();
+            log(String.valueOf(mkdirs));
           }
           break;
         }
@@ -142,19 +148,19 @@ public class HtzBuilder extends BaseBuilder {
       if (file != null) new UnzipTask(fileHtzPath, file.getAbsolutePath()).execute();
       result = true;
     } catch (IOException e) {
-      CrashLog.logError("cekHtz", e);
+      logError("importHtz", e);
       result = false;
     } finally {
-      Utils.tryClose(zis);
+      tryClose(zis);
     }
     return result;
   }
 
-  public interface Callback {
+  interface Callback {
     void onDone(final String result);
   }
 
-  class UnzipTask extends AsyncTask<Void, Void, String> {
+  private class UnzipTask extends AsyncTask<Void, Void, String> {
     private final String mHtzFile;
     private final String mOutputFile;
 
@@ -167,32 +173,36 @@ public class HtzBuilder extends BaseBuilder {
       int size;
       byte[] buffer = new byte[BUFFER_SIZE];
       try {
-        ZipInputStream zis =
+        final ZipInputStream zis =
             new ZipInputStream(new BufferedInputStream(new FileInputStream(mHtzFile), BUFFER_SIZE));
         ZipEntry ze;
         while ((ze = zis.getNextEntry()) != null) {
-          File unzipFile = new File(mOutputFile, ze.getName());
-          FileOutputStream out = new FileOutputStream(unzipFile, false);
-          BufferedOutputStream outputStream = new BufferedOutputStream(out, BUFFER_SIZE);
+          final File unzipFile = new File(mOutputFile, ze.getName());
+          final FileOutputStream out = new FileOutputStream(unzipFile, false);
+          final BufferedOutputStream outputStream = new BufferedOutputStream(out, BUFFER_SIZE);
           try {
             while ((size = zis.read(buffer, 0, BUFFER_SIZE)) != -1) {
               outputStream.write(buffer, 0, size);
             }
             zis.closeEntry();
           } finally {
-            outputStream.flush();
-            outputStream.close();
+            try {
+              outputStream.flush();
+              outputStream.close();
+            } catch (IOException e) {
+              logError("stream flush close", e);
+            }
           }
         }
         zis.close();
       } catch (FileNotFoundException e) {
-        CrashLog.logError("cekHtz", e);
+        logError("importHtz", e);
         return null;
       } catch (IOException e) {
-        CrashLog.logError("cekHtz", e);
+        logError("importHtz", e);
         return null;
       } catch (NullPointerException e) {
-        CrashLog.logError("cekHtz", e);
+        logError("importHtz", e);
         return null;
       }
       return mOutputFile;

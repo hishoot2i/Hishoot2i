@@ -6,7 +6,7 @@ import com.squareup.leakcanary.RefWatcher;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
-import net.grandcentrix.tray.AppPreferences;
+import org.illegaller.ratabb.hishoot2i.BuildConfig;
 
 @Module public class ApplicationModule {
   private final Application mApplication;
@@ -20,10 +20,6 @@ import net.grandcentrix.tray.AppPreferences;
   }
 
   @Provides @Singleton RefWatcher provideRefWatcher() {
-    return LeakCanary.install(mApplication);
-  }
-
-  @Provides @Singleton AppPreferences provideAppPreferences() {
-    return new AppPreferences(mApplication);
+    return (BuildConfig.DEBUG) ? LeakCanary.install(mApplication) : RefWatcher.DISABLED;
   }
 }

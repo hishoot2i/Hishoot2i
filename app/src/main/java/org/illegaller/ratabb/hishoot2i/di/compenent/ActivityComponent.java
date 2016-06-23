@@ -10,14 +10,11 @@ import org.illegaller.ratabb.hishoot2i.di.scope.ActivityScope;
     extends ActivityGraph {
   final class Initializer {
     private Initializer() {
-      throw new UnsupportedOperationException("no instance");
+      throw new AssertionError("no instance");
     }
 
     public static ActivityComponent init(Activity activity) {
-      return HishootApplication.get(activity)
-          .getAppComponent()
-          .plus(new ActivityModule(activity));
+      return HishootApplication.get(activity).getAppComponent().plus(new ActivityModule(activity));
     }
   }
 }
-

@@ -12,8 +12,8 @@ def versionBuild = 0
 
 ext {
   ////// App //////
-  compileSdkVersion = 23
-  buildToolsVersion = '23.0.2' //'24.0.0 rc3' /*24.0.0 rc3 preview | 23.0.2 latest*/
+  compileSdkVersion = 24
+  buildToolsVersion = '24.0.0'
   minSdkVersion = 16
   targetSdkVersion = 23
   applicationId = "org.illegaller.ratabb.hishoot2i"
@@ -25,57 +25,66 @@ ext {
 
   ////// Library //////
   version = /////////////////////
-      ['support'    : '23.4.0',
+      ['support'    : '24.0.0',
        'butterknife': '8.0.1',
        'leakCanary' : '1.4-beta2',
        'dagger'     : '2.4',
-       'autoDagger' : '1.2-SNAPSHOT', //1.1
+       'autoDagger' : '1.2-SNAPSHOT',
 
        'dexmaker'   : '1.2',
        'jUnit'      : '4.12',
        'mockito'    : '2.0.52-beta',
        'robolectric': '3.0',
        'checkstyle' : '6.19',
+
+       'rxBinding'  : '0.4.0',
        ////////////////////////////////////////////////////////////////////////////////////////////
       ]
 
   dependencies = //////////////////////////////////////////////////////////////////////////////////
-      ['appCompat'            : "com.android.support:appcompat-v7: ${version.support}",
-       'cardView'             : "com.android.support:cardview-v7:${version.support}",
-       'design'               : "com.android.support:design:${version.support}",
-       'recyclerView'         : "com.android.support:recyclerview-v7:${version.support}",
-       'preferenceV7'         : "com.android.support:preference-v7:${version.support}",
-       'supportAnnotation'    : "com.android.support:support-annotations:${version.support}",
-       'butterknife'          : "com.jakewharton:butterknife:${version.butterknife}",
-       'butterknifeCompiler'  : "com.jakewharton:butterknife-compiler:${version.butterknife}",
-       'bottomBar'            : 'com.roughike:bottom-bar:1.2.7',
-       'aboutLibraries'       : 'com.mikepenz:aboutlibraries:5.6.5@aar',
-       'smoothProgressbar'    : 'com.github.castorflex.smoothprogressbar:library:1.1.0',
-       'gson'                 : 'com.google.code.gson:gson:2.6.2',
-       'customActivityOnCrash': 'cat.ereza:customactivityoncrash:1.5.0',
-       'universalImageLoader' : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
-       'crashlytics'          : 'com.crashlytics.sdk.android:crashlytics:2.5.5@aar',
-       'appUpdater'           : 'com.github.javiersantos:AppUpdater:2.1',
-       'materialSearchview'   : 'com.miguelcatalan:materialsearchview:1.4.0',
-       'recyclerviewAnimators': 'jp.wasabeef:recyclerview-animators:2.2.1',
-       'tray'                 : 'net.grandcentrix.tray:tray:1.0.0-rc3',
-       'dart'                 : 'com.f2prateek.dart:dart:2.0.0',
-       'dartProcessor'        : 'com.f2prateek.dart:dart-processor:2.0.0',
-       'eventBus'             : 'org.greenrobot:eventbus:3.0.0',
-       'daggerCompiler'       : "com.google.dagger:dagger-compiler:${version.dagger}",
-       'daggerProducers'      : "com.google.dagger:dagger-producers:${version.dagger}",
-       'dagger'               : "com.google.dagger:dagger:${version.dagger}",
-       'javaxAnnotation'      : 'javax.annotation:jsr250-api:1.0',
-       'leakcanary'           : "com.squareup.leakcanary:leakcanary-android:${version.leakCanary}",
-       'leakcanaryNoop'       : "com.squareup.leakcanary:leakcanary-android-no-op:${version.leakCanary}",
-       'rxJava'               : 'io.reactivex:rxjava:1.1.5',
-       'rxAndroid'            : 'io.reactivex:rxandroid:1.2.0',
-       'retrolambda'          : 'net.orfjackal.retrolambda:retrolambda:2.3.0',
-       'stream'               : 'com.annimon:stream:1.0.9',
+      ['appCompat'              : "com.android.support:appcompat-v7: ${version.support}",
+       'cardView'               : "com.android.support:cardview-v7:${version.support}",
+       'design'                 : "com.android.support:design:${version.support}",
+       'recyclerView'           : "com.android.support:recyclerview-v7:${version.support}",
+       'preferenceCompat'       : "com.android.support:preference-v7:${version.support}",
+       'supportAnnotation'      : "com.android.support:support-annotations:${version.support}",
+       'butterknife'            : "com.jakewharton:butterknife:${version.butterknife}",
+       'butterknifeCompiler'    : "com.jakewharton:butterknife-compiler:${version.butterknife}",
+       'bottomBar'              : 'com.roughike:bottom-bar:1.2.7',
+       'aboutLibraries'         : 'com.mikepenz:aboutlibraries:5.6.5@aar',
+       'smoothProgressbar'      : 'com.github.castorflex.smoothprogressbar:library:1.1.0',
+       'gson'                   : 'com.google.code.gson:gson:2.6.2',
+       'customActivityOnCrash'  : 'cat.ereza:customactivityoncrash:1.5.0',
+       'universalImageLoader'   : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
+       'crashlytics'            : 'com.crashlytics.sdk.android:crashlytics:2.5.5@aar',
+       'appUpdater'             : 'com.github.javiersantos:AppUpdater:2.1',
+       'materialSearchview'     : 'com.miguelcatalan:materialsearchview:1.4.0',
+       'recyclerviewAnimators'  : 'jp.wasabeef:recyclerview-animators:2.2.1',
+       'tray'                   : 'net.grandcentrix.tray:tray:1.0.0-rc3',
+       'dart'                   : 'com.f2prateek.dart:dart:2.0.0',
+       'dartProcessor'          : 'com.f2prateek.dart:dart-processor:2.0.0',
+       'eventBus'               : 'org.greenrobot:eventbus:3.0.0',
+       'daggerCompiler'         : "com.google.dagger:dagger-compiler:${version.dagger}",
+       'daggerProducers'        : "com.google.dagger:dagger-producers:${version.dagger}",
+       'dagger'                 : "com.google.dagger:dagger:${version.dagger}",
+       'javaxAnnotation'        : 'javax.annotation:jsr250-api:1.0',
+       'leakcanary'             : "com.squareup.leakcanary:leakcanary-android:${version.leakCanary}",
+       'leakcanaryNoop'         : "com.squareup.leakcanary:leakcanary-android-no-op:${version.leakCanary}",
+       'rxJava'                 : 'io.reactivex:rxjava:1.1.6',
+       'rxAndroid'              : 'io.reactivex:rxandroid:1.2.1',
+       'retrolambda'            : 'net.orfjackal.retrolambda:retrolambda:2.3.0',
+       'stream'                 : 'com.annimon:stream:1.0.9',
 
-       'swipeRevealLayout'    : 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.0.0',
-       'autoDaggerCompiler'   : "com.github.lukaspili.autodagger2:autodagger2-compiler:${version.autoDagger}",
-       'autoDagger'           : "com.github.lukaspili.autodagger2:autodagger2:${version.autoDagger}",
+       'swipeRevealLayout'      : 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.0.0',
+       'autoDaggerCompiler'     : "com.github.lukaspili.autodagger2:autodagger2-compiler:${version.autoDagger}",
+       'autoDagger'             : "com.github.lukaspili.autodagger2:autodagger2:${version.autoDagger}",
+
+       'rxBinding'              : "com.jakewharton.rxbinding:rxbinding:${version.rxBinding}",
+       'rxBindingSupportV4'     : "com.jakewharton.rxbinding:rxbinding-support-v4:${version.rxBinding}",
+       'rxBindingAppcompatV7'   : "com.jakewharton.rxbinding:rxbinding-appcompat-v7:${version.rxBinding}",
+       'rxBindingDesign'        : "com.jakewharton.rxbinding:rxbinding-design:${version.rxBinding}",
+       'rxBindingRecyclerviewV7': "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:${version.rxBinding}",
+       'rxBindingLeanbackV17'   : "com.jakewharton.rxbinding:rxbinding-leanback-v17:${version.rxBinding}",
        ////////////////////////////////////////////////////////////////////////////////////////////
       ]
 

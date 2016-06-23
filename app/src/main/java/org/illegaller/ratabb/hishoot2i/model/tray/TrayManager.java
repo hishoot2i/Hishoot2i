@@ -1,106 +1,121 @@
 package org.illegaller.ratabb.hishoot2i.model.tray;
 
-import android.graphics.Color;
 import javax.inject.Inject;
-import net.grandcentrix.tray.AppPreferences;
-import org.illegaller.ratabb.hishoot2i.AppConstants;
-import org.illegaller.ratabb.hishoot2i.utils.DeviceUtils;
+import javax.inject.Named;
 
 public class TrayManager {
-  @Inject AppPreferences mAppPreferences;
 
-  @Inject TrayManager() {
+  @Inject @Named(IKeyNameTray.BADGE_COLOR) IntTray mBadgeColor;
+  @Inject @Named(IKeyNameTray.BADGE_SIZE) IntTray mBadgeSize;
+  @Inject @Named(IKeyNameTray.BG_COLOR_INT) IntTray mBackgroundColorInt;
+  @Inject @Named(IKeyNameTray.BG_IMAGE_BLUR_RADIUS) IntTray mBackgroundImageBlurRadius;
+  @Inject @Named(IKeyNameTray.DEVICE_HEIGHT) IntTray mDeviceHeight;
+  @Inject @Named(IKeyNameTray.DEVICE_WIDTH) IntTray mDeviceWidth;
+  @Inject @Named(IKeyNameTray.APP_RUNNING_COUNT) IntTray mAppRunningCount;
+  @Inject @Named(IKeyNameTray.BADGE_ENABLE) BooleanTray mBadgeEnable;
+  @Inject @Named(IKeyNameTray.BG_COLOR_ENABLE) BooleanTray mBackgroundColorEnable;
+  @Inject @Named(IKeyNameTray.BG_IMAGE_BLUR_ENABLE) BooleanTray mBackgroundImageBlurEnable;
+  @Inject @Named(IKeyNameTray.GLARE_ENABLE) BooleanTray mGlareEnable;
+  @Inject @Named(IKeyNameTray.SHADOW_ENABLE) BooleanTray mShadowEnable;
+  @Inject @Named(IKeyNameTray.FRAME_ENABLE) BooleanTray mFrameEnable;
+  @Inject @Named(IKeyNameTray.SS_DOUBLE_ENABLE) BooleanTray mScreenDoubleEnable;
+  @Inject @Named(IKeyNameTray.BG_IMAGE_CROP_ENABLE) BooleanTray mBackgroundImageCropEnable;
+  @Inject @Named(IKeyNameTray.CRASHLYTIC_ENABLE) BooleanTray mAnalyticsEnable;
+  @Inject @Named(IKeyNameTray.BADGE_TEXT) StringTray mBadgeText;
+  @Inject @Named(IKeyNameTray.BADGE_TYPEFACE) StringTray mBadgeTypeface;
+  @Inject @Named(IKeyNameTray.DEVICE_NAME) StringTray mDeviceName;
+  @Inject @Named(IKeyNameTray.DEVICE_OS) StringTray mDeviceOS;
+  @Inject @Named(IKeyNameTray.TEMPLATE_ID) StringTray mTemplateId;
+  @Inject @Named(IKeyNameTray.TEMPLATE_FAV) StringTray mTemplateFav;
+
+  @Inject public TrayManager() {
   }
 
   public IntTray getBadgeColor() {
-    return new IntTray(mAppPreferences, IKeyNameTray.BADGE_COLOR, AppConstants.BADGE_COLOR);
+    return mBadgeColor;
   }
 
   public BooleanTray getBadgeEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.BADGE_ENABLE, true);
+    return mBadgeEnable;
   }
 
   public IntTray getBadgeSize() {
-    return new IntTray(mAppPreferences, IKeyNameTray.BADGE_SIZE, AppConstants.BADGE_SIZE);
+    return mBadgeSize;
   }
 
   public StringTray getBadgeText() {
-    return new StringTray(mAppPreferences, IKeyNameTray.BADGE_TEXT, AppConstants.BADGE_TEXT);
+    return mBadgeText;
   }
 
   public StringTray getBadgeTypeface() {
-    return new StringTray(mAppPreferences, IKeyNameTray.BADGE_TYPEFACE,
-        AppConstants.BADGE_TYPEFACE);
+    return mBadgeTypeface;
   }
 
   public BooleanTray getBackgroundColorEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.BG_COLOR_ENABLE, true);
+    return mBackgroundColorEnable;
   }
 
   public IntTray getBackgroundColorInt() {
-    return new IntTray(mAppPreferences, IKeyNameTray.BG_COLOR_INT, Color.CYAN);
+    return mBackgroundColorInt;
   }
 
   public BooleanTray getBackgroundImageBlurEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.BG_IMAGE_BLUR_ENABLE, false);
+    return mBackgroundImageBlurEnable;
   }
 
   public IntTray getBackgroundImageBlurRadius() {
-    return new IntTray(mAppPreferences, IKeyNameTray.BG_IMAGE_BLUR_RADIUS,
-        AppConstants.BG_IMAGE_BLUR_RADIUS);
+    return mBackgroundImageBlurRadius;
   }
 
   public IntTray getDeviceHeight() {
-    return new IntTray(mAppPreferences, IKeyNameTray.DEVICE_HEIGHT, DeviceUtils.getDeviceHeight());
+    return mDeviceHeight;
   }
 
   public IntTray getDeviceWidth() {
-    return new IntTray(mAppPreferences, IKeyNameTray.DEVICE_WIDTH, DeviceUtils.getDeviceWidth());
+    return mDeviceWidth;
   }
 
   public StringTray getDeviceName() {
-    return new StringTray(mAppPreferences, IKeyNameTray.DEVICE_NAME, DeviceUtils.getDeviceName());
+    return mDeviceName;
   }
 
   public StringTray getDeviceOS() {
-    return new StringTray(mAppPreferences, IKeyNameTray.DEVICE_OS, DeviceUtils.getDeviceOS());
+    return mDeviceOS;
   }
 
   public BooleanTray getGlareEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.GLARE_ENABLE, false);
+    return mGlareEnable;
   }
 
   public BooleanTray getShadowEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.SHADOW_ENABLE, false);
+    return mShadowEnable;
   }
 
   public BooleanTray getDoubleEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.SS_DOUBLE_ENABLE, false);
+    return mScreenDoubleEnable;
   }
 
   public StringTray getTemplateID() {
-    return new StringTray(mAppPreferences, IKeyNameTray.TEMPLATE_ID,
-        AppConstants.DEFAULT_TEMPLATE_ID);
+    return mTemplateId;
   }
 
   public StringTray getTemplateFav() {
-    return new StringTray(mAppPreferences, IKeyNameTray.TEMPLATE_FAV,
-        AppConstants.DEFAULT_TEMPLATE_ID);
+    return mTemplateFav;
   }
 
   public BooleanTray getBackgroundImageCrop() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.BG_IMAGE_CROP_ENABLE, false);
+    return mBackgroundImageCropEnable;
   }
 
   public IntTray getAppRunningCount() {
-    return new IntTray(mAppPreferences, IKeyNameTray.APP_RUNNING_COUNT, 0);
+    return mAppRunningCount;
   }
 
   public BooleanTray getFrameEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.FRAME_ENABLE, true);
+    return mFrameEnable;
   }
 
-  public BooleanTray getCrashlyticEnable() {
-    return new BooleanTray(mAppPreferences, IKeyNameTray.CRASHLYTIC_ENABLE, false);
+  public BooleanTray getAnalyticsEnable() {
+    return mAnalyticsEnable;
   }
 }

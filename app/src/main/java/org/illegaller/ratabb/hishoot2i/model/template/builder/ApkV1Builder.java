@@ -2,71 +2,74 @@ package org.illegaller.ratabb.hishoot2i.model.template.builder;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.model.template.TemplateType;
-import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.ResUtils;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import static org.illegaller.ratabb.hishoot2i.AppConstants.MESSAGE_TEMPLATE_CANT_LOAD;
+import static org.illegaller.ratabb.hishoot2i.utils.CrashLog.logError;
+import static org.illegaller.ratabb.hishoot2i.utils.ResUtils.getPointBitmapTemplate;
+import static org.illegaller.ratabb.hishoot2i.utils.ResUtils.getStringFilePath;
+import static org.illegaller.ratabb.hishoot2i.utils.ResUtils.openStreamFromAsset;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.createPoint;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.tryClose;
 
 public class ApkV1Builder extends BaseBuilder {
   public ApkV1Builder(Context context, String packageName) {
+    super(context);
     final String errorMessage = String.format(Locale.US, MESSAGE_TEMPLATE_CANT_LOAD, packageName);
-    id = packageName;
-    type = TemplateType.APK_V1;
+    this.id = packageName;
+    this.type = TemplateType.APK_V1;
     TemplateXmlReader reader = null;
     InputStream inputStream = null;
     try {
-      inputStream = ResUtils.openStreamFromAsset(context, packageName, "keterangan.xml");
+      inputStream = openStreamFromAsset(getContext(), packageName, "keterangan.xml");
       reader = new TemplateXmlReader(inputStream);
-      templatePoint = ResUtils.getPointBitmapTemplate(context, packageName, "skin");
-      previewFile = frameFile = ResUtils.getStringFilePath(context, packageName, "skin");
+      this.templatePoint = getPointBitmapTemplate(getContext(), packageName, "skin");
+      this.previewFile = this.frameFile = getStringFilePath(getContext(), packageName, "skin");
     } catch (PackageManager.NameNotFoundException | XmlPullParserException | IOException e) {
-      CrashLog.logError(errorMessage, e);
+      logError(errorMessage, e);
     } finally {
-      Utils.tryClose(inputStream);
+      tryClose(inputStream);
     }
-    if (reader == null) {
-      CrashLog.logError(errorMessage, null);
+    if (reader != null) {
+      this.name = reader.device;
+      this.author = reader.author;
+      this.leftTop = createPoint(reader.tx, reader.ty);
+      this.rightTop = createPoint(templatePoint.x - reader.bx, reader.ty);
+      this.leftBottom = createPoint(reader.tx, templatePoint.y - reader.by);
+      this.rightBottom = createPoint(templatePoint.x - reader.bx, templatePoint.y - reader.by);
+      this.isSuccessBuild = true;
     } else {
-      name = reader.device;
-      author = reader.author;
-      leftTop = new Point(reader.tx, reader.ty);
-      rightTop = new Point(templatePoint.x - reader.bx, reader.ty);
-      leftBottom = new Point(reader.tx, templatePoint.y - reader.by);
-      rightBottom = new Point(templatePoint.x - reader.bx, templatePoint.y - reader.by);
-      isSuccessBuild = true;
+      logError(errorMessage, null);
     }
   }
 
-  @Override public Template build()throws Exception  {
-    if (isSuccessBuild) {
+  @Override public Template build() throws Exception {
+    if (this.isSuccessBuild) {
       return Template.build(this);
     } else {
       return null;
     }
   }
 
-  private class TemplateXmlReader {
+  private final class TemplateXmlReader {
     String device, author = null;
     int tx, ty, bx, by;
     //int densType;
 
     TemplateXmlReader(InputStream inputStream) throws IOException, XmlPullParserException {
-      String value = null;
-      XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+      final XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
       factory.setNamespaceAware(true);
-      XmlPullParser xpp = factory.newPullParser();
+      final XmlPullParser xpp = factory.newPullParser();
       xpp.setInput(inputStream, null);
       int eventType = xpp.getEventType();
+      String value = null;
       while (eventType != XmlPullParser.END_DOCUMENT) {
         String xppName = xpp.getName();
         switch (eventType) {

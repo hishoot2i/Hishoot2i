@@ -40,7 +40,7 @@ public class StackBlurManager {
    */
   private final BlurProcess mBlurProcess;
   /**
-   * Most recent result of blurring
+   * Most recent bitmap of blurring
    */
   private Bitmap mResult;
 

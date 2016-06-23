@@ -3,8 +3,13 @@ package org.illegaller.ratabb.hishoot2i.utils;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * Helper for create custom viewGroup
+ */
 public class LayoutUtils {
-  private LayoutUtils() { /*no instance*/ }
+  private LayoutUtils() {
+    throw new AssertionError("no instance");
+  }
 
   public static void layoutView(View view, int left, int top, int width, int height) {
     ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) view.getLayoutParams();

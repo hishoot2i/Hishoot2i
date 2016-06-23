@@ -9,7 +9,7 @@ public class SimpleSchedule<T> implements Observable.Transformer<T, T> {
   }
 
   public static <T> SimpleSchedule<T> schedule() {
-    return new SimpleSchedule<T>();
+    return new SimpleSchedule<>();
   }
 
   @Override public Observable<T> call(Observable<T> observable) {

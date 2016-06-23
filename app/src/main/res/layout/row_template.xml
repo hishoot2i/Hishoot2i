@@ -17,8 +17,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:dragEdge="left"
-      app:mode="same_level"
       app:flingVelocity="@android:integer/config_shortAnimTime"
+      app:mode="same_level"
       >
     <include layout="@layout/include_item_template_secondary"/>
     <include layout="@layout/include_item_template_primary"/>

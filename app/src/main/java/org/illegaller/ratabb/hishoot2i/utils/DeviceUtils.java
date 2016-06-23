@@ -14,7 +14,9 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 public class DeviceUtils {
-  private DeviceUtils() { /*no instance*/ }
+  private DeviceUtils() {
+    throw new AssertionError("no instance");
+  }
 
   /*********** StatusBar ***********/
   @TargetApi(LOLLIPOP) public static void setTransparentStatusBar(@NonNull final Window window) {

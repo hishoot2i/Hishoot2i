@@ -9,28 +9,29 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import java.io.File;
 
 import static android.os.Build.VERSION_CODES.KITKAT;
 
 public class FileUtils {
-  private FileUtils() { /*no instance*/ }
+  private FileUtils() {
+    throw new AssertionError("no instance");
+  }
 
-  @TargetApi(KITKAT) public static String getPath(final Context context, final Uri uri) {
-    final File f = new File(uri.getPath());
+ /* @TargetApi(KITKAT) public static String getPath(final Context context, final Uri create) {
+    final File f = new File(create.getPath());
     if (f.isFile()) {
       return f.getAbsolutePath();
     } else {
-      return FileUtils.getPathNonFile(context, uri);
+      return FileUtils.getRealPath(context, create);
     }
-  }
+  }*/
 
   //http://stackoverflow.com/a/33014219
-  @Nullable @TargetApi(KITKAT) static String getPathNonFile(final Context context, final Uri uri) {
+  @Nullable @TargetApi(KITKAT) public static String getRealPath(final Context context,
+      final Uri uri) {
     // DocumentProvider
     if (DeviceUtils.isCompatible(KITKAT) && DocumentsContract.isDocumentUri(context, uri)) {
-      // ExternalStorageProvider
-      if (isExternalStorageDocument(uri)) {
+      if (FileUtils.isExternalStorageDocument(uri)) { // ExternalStorageProvider
         final String docId = DocumentsContract.getDocumentId(uri);
         final String[] split = docId.split(":");
         final String type = split[0];
@@ -38,13 +39,13 @@ public class FileUtils {
           return Environment.getExternalStorageDirectory() + "/" + split[1];
         }
         // TODO handle non-primary volumes
-      } else if (isDownloadsDocument(uri)) { // DownloadsProvider
+      } else if (FileUtils.isDownloadsDocument(uri)) { // DownloadsProvider
         final String id = DocumentsContract.getDocumentId(uri);
         final Uri contentUri =
             ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
                 Long.parseLong(id));
-        return getDataColumn(context, contentUri, null, null);
-      } else if (isMediaDocument(uri)) { // MediaProvider
+        return FileUtils.getDataColumn(context, contentUri, null, null);
+      } else if (FileUtils.isMediaDocument(uri)) { // MediaProvider
         final String docId = DocumentsContract.getDocumentId(uri);
         final String[] split = docId.split(":");
         final String type = split[0];
@@ -58,10 +59,10 @@ public class FileUtils {
         }
         final String selection = "_id=?";
         final String[] selectionArgs = new String[] { split[1] };
-        return getDataColumn(context, contentUri, selection, selectionArgs);
+        return FileUtils.getDataColumn(context, contentUri, selection, selectionArgs);
       }
     } else if ("content".equalsIgnoreCase(uri.getScheme())) { // MediaStore (and general)
-      return getDataColumn(context, uri, null, null);
+      return FileUtils.getDataColumn(context, uri, null, null);
     } else if ("file".equalsIgnoreCase(uri.getScheme())) { // File
       return uri.getPath();
     }
@@ -78,7 +79,7 @@ public class FileUtils {
    * @param selectionArgs (Optional) Selection arguments used in the query.
    * @return The value of the _data column, which is typically a file path.
    */
-  public static String getDataColumn(Context context, Uri uri, String selection,
+  private static String getDataColumn(Context context, Uri uri, String selection,
       String[] selectionArgs) {
     Cursor cursor = null;
     final String column = "_data";
@@ -99,7 +100,7 @@ public class FileUtils {
    * @param uri The Uri to check.
    * @return Whether the Uri authority is ExternalStorageProvider.
    */
-  public static boolean isExternalStorageDocument(Uri uri) {
+  private static boolean isExternalStorageDocument(Uri uri) {
     return "com.android.externalstorage.documents".equals(uri.getAuthority());
   }
 
@@ -107,7 +108,7 @@ public class FileUtils {
    * @param uri The Uri to check.
    * @return Whether the Uri authority is DownloadsProvider.
    */
-  public static boolean isDownloadsDocument(Uri uri) {
+  private static boolean isDownloadsDocument(Uri uri) {
     return "com.android.providers.downloads.documents".equals(uri.getAuthority());
   }
 
@@ -115,7 +116,7 @@ public class FileUtils {
    * @param uri The Uri to check.
    * @return Whether the Uri authority is MediaProvider.
    */
-  public static boolean isMediaDocument(Uri uri) {
+  private static boolean isMediaDocument(Uri uri) {
     return "com.android.providers.media.documents".equals(uri.getAuthority());
   }
 }

@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="HishootTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/colorBackgroundWindow</item>
-        <item name="spbStyle">@style/Widget.Hishoot.ProgressBar</item>
-        <item name="preferenceTheme">@style/Hishoot.PreferenceTheme</item>
-    </style>
+  <style name="HishootTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:windowBackground">@color/colorBackgroundWindow</item>
+    <item name="spbStyle">@style/Widget.Hishoot.ProgressBar</item>
+    <item name="preferenceTheme">@style/Hishoot.PreferenceTheme</item>
+  </style>
 
-    <style name="HishootTheme.Branded" parent="HishootTheme">
-        <item name="android:windowBackground">@drawable/branded_logo</item>
-    </style>
+  <style name="HishootTheme.Branded" parent="HishootTheme">
+    <item name="android:windowBackground">@drawable/branded_logo</item>
+  </style>
 
-    <style name="Hishoot.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert"/>
+  <style name="Hishoot.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert"/>
 
-    <style name="Hishoot.PreferenceTheme" parent="PreferenceThemeOverlay">
-        <item name="preferenceCategoryStyle">@style/Hishoot.Preference.Category</item>
-        <item name="preferenceFragmentCompatStyle">@style/Hishoot.PreferenceFragment
-        </item>
-        <item name="preferenceStyle">@style/Hishoot.Preference</item>
-        <item name="switchPreferenceCompatStyle">@style/Hishoot.SwitchPreferenceCompat</item>
-    </style>
+  <style name="Hishoot.PreferenceTheme" parent="PreferenceThemeOverlay">
+    <item name="preferenceCategoryStyle">@style/HishootPref.Preference.Category</item>
+    <item name="preferenceFragmentCompatStyle">@style/HishootPref.PreferenceFragment
+    </item>
+    <item name="preferenceStyle">@style/HishootPref.Preference</item>
+    <item name="switchPreferenceCompatStyle">@style/HishootPref.SwitchPreferenceCompat</item>
+  </style>
 </resources>

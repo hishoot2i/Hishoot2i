@@ -17,7 +17,9 @@ import java.io.InputStream;
 import static android.content.pm.PackageManager.NameNotFoundException;
 
 public class ResUtils {
-  protected ResUtils() { /*no instance*/ }
+  protected ResUtils() {
+    throw new AssertionError("no instance");
+  }
 
   public static InputStream openStreamFromAsset(final Context context, final String packageName,
       final String assetName) throws NameNotFoundException, IOException {

@@ -16,7 +16,9 @@ public class AnimUtils {
   private static final long sANIM_DURATION = 300;
   private static final AccelerateInterpolator sINTERPOLATOR = new AccelerateInterpolator(1.0f);
 
-  private AnimUtils() { /*no instance*/ }
+  private AnimUtils() {
+    throw new AssertionError("no instance");
+  }
 
   public static void height(final View view, int from, int to) {
     AnimUtils.height(view, from, to, sANIM_DURATION);

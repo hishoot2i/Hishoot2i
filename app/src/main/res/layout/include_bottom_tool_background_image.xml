@@ -14,7 +14,7 @@
       >
 
     <org.illegaller.ratabb.hishoot2i.view.widget.CircleButton
-        android:id="@+id/img_config_bg"
+        android:id="@+id/pick_image_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

@@ -2,13 +2,12 @@ buildscript {
   repositories {
     jcenter()
     mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
+    //    maven { url 'https://maven.fabric.io/public' }
   }
   dependencies {
-    classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
     classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
-    classpath 'io.fabric.tools:gradle:1.21.5'
+    //    classpath 'io.fabric.tools:gradle:1.21.5'
   }
 }
 
@@ -16,13 +15,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric' //FIXME: travis ci config with fabric ?
 apply from: '../buildsystem/quality/quality.gradle'
 
 repositories {
   jcenter()
   mavenCentral()
-  maven { url 'https://maven.fabric.io/public' }
+  //  maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
@@ -42,7 +41,7 @@ android {
     vectorDrawables.useSupportLibrary = true
     resConfig("en")
     archivesBaseName = rootProject.ext.archivesBaseName //must sync gradle
-//    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    //    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -72,19 +71,23 @@ android {
   }
   buildTypes {
     debug {
-      manifestPlaceholders = [fabric_api_key: ""]
+      //      manifestPlaceholders = [fabric_api_key: ""]
+      //      buildConfigField "boolean", "USE_CRASHLYTICS", "false"
+      //      ext.enableCrashlytics = false
       minifyEnabled false
-      buildConfigField "boolean", "USE_CRASHLYTICS", "false"
-      ext.enableCrashlytics = false
       debuggable true
     }
     release {
-      manifestPlaceholders = [fabric_api_key: isExists("fabric.properties") ?
-          loadFromProp("fabric.properties", "apiKey") : ""]
-      if (isExists("sign.properties")) {
-        minifyEnabled true
-        shrinkResources true
-        zipAlignEnabled true
+      //      manifestPlaceholders = [fabric_api_key: isExists("fabric.properties") ?
+      //          loadFromProp("fabric.properties", "apiKey") : ""]
+      //      buildConfigField "boolean", "USE_CRASHLYTICS", "true"
+      //      ext.enableCrashlytics = true
+      def signPropExist = isExists("sign.properties")
+      debuggable false
+      minifyEnabled signPropExist
+      shrinkResources signPropExist
+      zipAlignEnabled true
+      if (signPropExist) {
         signingConfig android.signingConfigs.release
         proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         final FileCollection proguardCollection = files {
@@ -92,9 +95,6 @@ android {
         }
         proguardFiles(proguardCollection)
       }
-      buildConfigField "boolean", "USE_CRASHLYTICS", "true"
-      ext.enableCrashlytics = true
-      debuggable false
     }
   }
   dexOptions {
@@ -103,7 +103,9 @@ android {
     preDexLibraries true
   }
   lintOptions {
+    quiet true
     abortOnError false
+    ignoreWarnings true
     disable "UnusedResources", "IconDensities", "IconMissingDensityFolder"
   }
 }
@@ -119,8 +121,9 @@ dependencies {
       appDependencies.cardView,
       appDependencies.design,
       appDependencies.recyclerView,
-      appDependencies.preferenceV7,
+      appDependencies.preferenceCompat,
       appDependencies.supportAnnotation,
+      appDependencies.butterknife,
       appDependencies.customActivityOnCrash,
       appDependencies.eventBus,
       appDependencies.gson,
@@ -136,36 +139,39 @@ dependencies {
       appDependencies.appUpdater,
       appDependencies.rxJava,
       appDependencies.rxAndroid,
-      appDependencies.butterknife,
+      appDependencies.rxBinding,
+      appDependencies.rxBindingSupportV4,
+      appDependencies.rxBindingRecyclerviewV7,
       appDependencies.stream)
 
-  compile(appDependencies.crashlytics) { transitive = true }
+  //  compile(appDependencies.crashlytics) { transitive = true }
   compile(appDependencies.aboutLibraries) { transitive = true }
 
   debugCompile appDependencies.leakcanary
   releaseCompile appDependencies.leakcanaryNoop
+  testCompile appDependencies.leakcanaryNoop
 
   retrolambdaConfig appDependencies.retrolambda
 
   //test
-  def testDependencies = rootProject.ext.testDependencies
+  //  def testDependencies = rootProject.ext.testDependencies
   //instrument/ui test
-//  androidTestCompile(testDependencies.mockitoCore,
-//      testDependencies.dexmaker,
-//      testDependencies.dexmakerMockito,
-//      testDependencies.espressoCore,
-//      testDependencies.testingSupport,
-//      testDependencies.runner,
-//      testDependencies.rules,
-//      testDependencies.uiautomator,
-//      appDependencies.supportAnnotation,)
+  //  androidTestCompile(testDependencies.mockitoCore,
+  //      testDependencies.dexmaker,
+  //      testDependencies.dexmakerMockito,
+  //      testDependencies.espressoCore,
+  //      testDependencies.testingSupport,
+  //      testDependencies.runner,
+  //      testDependencies.rules,
+  //      testDependencies.uiautomator,
+  //      appDependencies.supportAnnotation,)
 
   //local/unit test
-//  testCompile(testDependencies.jUnit,
-//      testDependencies.mockitoCore,
-//      testDependencies.robolectric,
-//      // testDependencies.androidUnitTest,
-//      testDependencies.truth,)
+  //  testCompile(testDependencies.jUnit,
+  //      testDependencies.mockitoCore,
+  //      testDependencies.robolectric,
+  //      // testDependencies.androidUnitTest,
+  //      testDependencies.truth,)
 }
 
 Boolean isExists(String path) {

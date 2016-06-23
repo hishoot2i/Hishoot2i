@@ -5,7 +5,11 @@ import android.net.Uri;
 public class EventSave {
   public final Uri uri;
 
-  public EventSave(Uri uri) {
+  private EventSave(Uri uri) {
     this.uri = uri;
+  }
+
+  public static EventSave create(Uri uri) {
+    return new EventSave(uri);
   }
 }

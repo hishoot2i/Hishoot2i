@@ -13,51 +13,70 @@ import java.io.File;
 import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.events.EventDeleteFile;
-import org.illegaller.ratabb.hishoot2i.utils.UILHelper;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseAnimateViewHolder;
 
-public class HistoryViewHolder extends BaseAnimateViewHolder {
+import static org.illegaller.ratabb.hishoot2i.utils.UILHelper.displayPreview;
+import static org.illegaller.ratabb.hishoot2i.utils.UILHelper.stringFiles;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.openImageView;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.shareImage;
+
+class HistoryViewHolder extends BaseAnimateViewHolder<String> {
   @BindView(R.id.ivHistory) ImageView mImageHistory;
   @BindView(R.id.swipe_layout) SwipeRevealLayout swipeRevealLayout;
   @BindView(R.id.layoutDelete) View layoutDelete;
   @BindView(R.id.layoutShare) View layoutShare;
   private String mPathImage;
   private boolean mIsOpen = false;
-  private final SimpleSwipeListener mSwipeListener = new SimpleSwipeListener() {
-    @Override public void onClosed(SwipeRevealLayout view) {
-      mIsOpen = false;
-    }
 
-    @Override public void onOpened(SwipeRevealLayout view) {
-      mIsOpen = true;
-    }
-  };
-
-  public HistoryViewHolder(View itemView) {
+  private HistoryViewHolder(View itemView) {
     super(itemView);
     ButterKnife.bind(this, itemView);
-    swipeRevealLayout.setSwipeListener(mSwipeListener);
-    mImageHistory.setOnClickListener(
-        v -> Utils.openImageView(getContext(), Uri.fromFile(new File(mPathImage))));
-    layoutDelete.setOnClickListener(
-        v -> EventBus.getDefault().post(new EventDeleteFile(mPathImage)));
+    swipeRevealLayout.setSwipeListener(new SimpleSwipeListener() {
+      @Override public void onOpened(SwipeRevealLayout view) {
+        mIsOpen = true;
+      }
 
-    layoutShare.setOnClickListener(v -> Utils.shareImage(getContext(), Uri.parse(mPathImage)));
+      @Override public void onClosed(SwipeRevealLayout view) {
+        mIsOpen = false;
+      }
+    });
+    mImageHistory.setOnClickListener(this::clickOpen);
+    layoutShare.setOnClickListener(this::clickShare);
+    layoutDelete.setOnClickListener(this::clickDelete);
   }
 
-  public static HistoryViewHolder inflate(ViewGroup parent) {
+  static HistoryViewHolder inflate(ViewGroup parent) {
     View view =
         LayoutInflater.from(parent.getContext()).inflate(R.layout.row_history, parent, false);
     return new HistoryViewHolder(view);
+  }
+
+  private void clickOpen(View view) {
+    openImageView(getContext(), getUri());
+  }
+
+  private void clickShare(View view) {
+    shareImage(getContext(), getUri());
+  }
+
+  private void clickDelete(View view) {
+    EventBus.getDefault().post(new EventDeleteFile(mPathImage));
+  }
+
+  private File getFile() {
+    return new File(mPathImage);
+  }
+
+  private Uri getUri() {
+    return Uri.fromFile(getFile());
   }
 
   public boolean isOpen() {
     return mIsOpen;
   }
 
-  public void onBind(String path) {
+  @Override protected void onBind(String path) {
     mPathImage = path;
-    UILHelper.displayPreview(mImageHistory, UILHelper.stringFiles(new File(mPathImage)));
+    displayPreview(mImageHistory, stringFiles(getFile()));
   }
 }

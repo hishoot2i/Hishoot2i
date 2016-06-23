@@ -1,8 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.MenuItem;
-import butterknife.ButterKnife;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -13,79 +12,79 @@ import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.TemplateManager;
 import org.illegaller.ratabb.hishoot2i.model.template.Template;
 import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
-import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
+import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
 import org.illegaller.ratabb.hishoot2i.view.common.BasePresenter;
 import org.illegaller.ratabb.hishoot2i.view.fragment.templateview.TemplateFragmentView;
-import rx.Subscription;
+import org.illegaller.ratabb.hishoot2i.view.rx.RxMaterialSearchView;
+
+import static org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule.schedule;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.containsLowerCase;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.isEmpty;
 
 public class TemplateFragmentPresenter extends BasePresenter<TemplateFragmentView> {
-  private final List<Template> mTemplateList = new ArrayList<>();
   @Inject TemplateManager mTemplateManager;
-  private Subscription mSubscription;
+  private List<Template> mTemporaryList;
 
-  @Inject public TemplateFragmentPresenter() {
+  @Inject TemplateFragmentPresenter() {
   }
 
   public Template getTemplateById(String templateId) {
     return mTemplateManager.getTemplateById(templateId);
   }
 
-  @Override public void detachView() {
-    if (mSubscription != null) mSubscription.unsubscribe();
-    super.detachView();
-  }
-
   public void performList(String favListId) {
     checkViewAttached();
-    getView().showProgress(true);
-    mSubscription = mTemplateManager.getTemplateList(favListId)
-        .compose(SimpleSchedule.schedule())
-        .subscribe(this::setTemplates,
-            throwable -> CrashLog.logError("perform populate list template", throwable),
-            () -> getView().showProgress(false));
+    showProgress();
+    addAutoUnSubscribe(mTemplateManager.getTemplateList(favListId)
+        .compose(schedule())
+        .subscribe(this::setTemporaryList, CrashLog::logError, this::hideProgress));
   }
 
-  public void setupSearchView(Activity activity, MenuItem item) {
-    MaterialSearchView searchView = ButterKnife.findById(activity, R.id.search_view);
-    searchView.setMenuItem(item);
-    searchView.setVoiceSearch(false);
-    searchView.setOnQueryTextListener(new SearchOnQueryTextListener());
-    searchView.setTextColor(R.color.colorAccent);
-    searchView.setHintTextColor(R.color.colorAccent);
+  public void setupSearchView(Context context, MenuItem item) {
+    final MaterialSearchView view = ((LauncherActivity) context).getSearchView();
+    view.setMenuItem(item);
+    view.setVoiceSearch(false);
+    view.setTextColor(R.color.colorAccent);
+    view.setHintTextColor(R.color.colorAccent);
+    addAutoUnSubscribe(RxMaterialSearchView.queryTextChanges(view)
+        .subscribe(this::queryTextChanges, CrashLog::logError));
   }
 
-  void setTemplates(List<Template> list) {
-    mTemplateList.clear();
-    mTemplateList.addAll(list);
-    getView().setTemplateList(mTemplateList);
+  private void showProgress() {
+    getMvpView().showProgress(true);
   }
 
-  boolean contains(Template template, String query) {
-    return Utils.containsLowerCase(template.name, query) || Utils.containsLowerCase(template.author,
-        query);
+  private void hideProgress() {
+    getMvpView().showProgress(false);
   }
 
-  //////////////////////////////////////////////////////////////
-  class SearchOnQueryTextListener implements MaterialSearchView.OnQueryTextListener {
-
-    @Override public boolean onQueryTextSubmit(String query) {
-      return false;
-    }
-
-    @Override public boolean onQueryTextChange(String newText) {
-      final List<Template> filterList = new ArrayList<>();
-      if (mTemplateList.size() != 0) {
-        if (Utils.isEmpty(newText)) {
-          filterList.addAll(mTemplateList);
-        } else {
-          filterList.addAll(Stream.of(mTemplateList)
-              .filter(template -> contains(template, newText))
-              .collect(Collectors.toList()));
-        }
+  private void queryTextChanges(String query) {
+    final List<Template> filterList = new ArrayList<>();
+    if (getTemporaryList().size() != 0) {
+      if (isEmpty(query)) {
+        filterList.addAll(getTemporaryList());
+      } else {
+        filterList.addAll(Stream.of(getTemporaryList())
+            .filter(template -> contains(template, query))
+            .collect(Collectors.toList()));
       }
-      getView().setTemplateList(filterList);
-      return false;
     }
+    getMvpView().setTemplateList(filterList);
+  }
+
+  private boolean contains(Template template, String query) {
+    return containsLowerCase(template.name, query) || containsLowerCase(template.author, query);
+  }
+
+  private List<Template> getTemporaryList() {
+    if (mTemporaryList == null) mTemporaryList = new ArrayList<>();
+    return mTemporaryList;
+  }
+
+  private void setTemporaryList(List<Template> list) {
+    final List<Template> temp = getTemporaryList();
+    temp.clear();
+    temp.addAll(list);
+    getMvpView().setTemplateList(list);
   }
 }

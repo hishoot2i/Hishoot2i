@@ -4,18 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.SwitchCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.AdapterViewSelectionEvent;
+import com.jakewharton.rxbinding.widget.RxAdapterView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.widget.RxSeekBar;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import java.io.File;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,29 +26,36 @@ import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.AppConstants;
 import org.illegaller.ratabb.hishoot2i.R;
 import org.illegaller.ratabb.hishoot2i.di.FontProvider;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.IntTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.StringTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
-import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
-import org.illegaller.ratabb.hishoot2i.utils.FontUtils;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
+import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.colorpick.ColorPickerDialog;
-import org.illegaller.ratabb.hishoot2i.view.fragment.colorpick.ColorPickerDialogBuilder;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
-public class BadgeToolFragment extends BaseFragment
-    implements SeekBar.OnSeekBarChangeListener, AdapterView.OnItemSelectedListener, TextWatcher {
+import static org.illegaller.ratabb.hishoot2i.utils.AnimUtils.fadeIn;
+import static org.illegaller.ratabb.hishoot2i.utils.AnimUtils.fadeOut;
+import static org.illegaller.ratabb.hishoot2i.utils.FontUtils.setBadgeTypeface;
+import static org.illegaller.ratabb.hishoot2i.utils.FontUtils.setBadgeTypefaceDefault;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.hideSoftKeyboard;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.isEmpty;
+
+public class BadgeToolFragment extends BaseFragment {
   @BindView(R.id.cbHide) SwitchCompat cbHide;
   @BindView(R.id.layout_badge) View vBadge;
   @BindView(R.id.seekBar_BadgeSize) AppCompatSeekBar sbSize;
   @BindView(R.id.spinnerBadgeFont) Spinner spFont;
   @BindView(R.id.etBadge) EditText etBadge;
   @BindView(R.id.cpBadge) CircleButton cpBadge;
-  @Inject TrayManager mTrayManager;
   @Inject FontProvider mFontProvider;
+  @Inject TrayManager mTrayManager;
+  private Subscription mSubscription;
   private BooleanTray mBadgeEnableTray;
   private IntTray mBadgeColorTray;
   private IntTray mBadgeSizeTray;
@@ -68,12 +78,15 @@ public class BadgeToolFragment extends BaseFragment
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getActivityComponent().inject(this);
     mBadgeEnableTray = mTrayManager.getBadgeEnable();
     mBadgeColorTray = mTrayManager.getBadgeColor();
     mBadgeSizeTray = mTrayManager.getBadgeSize();
     mBadgeTextTray = mTrayManager.getBadgeText();
     mBadgeTypefaceTray = mTrayManager.getBadgeTypeface();
+  }
+
+  @Override protected void injectComponent(ActivityComponent activityComponent) {
+    activityComponent.inject(this);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -83,19 +96,9 @@ public class BadgeToolFragment extends BaseFragment
     vBadge.setVisibility(badgeEnable ? View.VISIBLE : View.GONE);
     sbSize.setProgress(mBadgeSizeTray.getValue());
     etBadge.setText(mBadgeTextTray.getValue());
-    sbSize.setOnSeekBarChangeListener(this);
-    etBadge.addTextChangedListener(this);
     cpBadge.setColor(mBadgeColorTray.getValue());
-    viewSpinner();
-  }
 
-  @Override public void onDestroyView() {
-    etBadge.removeTextChangedListener(this);
-    super.onDestroyView();
-  }
-
-  private void viewSpinner() {
-    List<String> list = mFontProvider.asListName();
+    final List<String> list = mFontProvider.asListName();
     list.add(0, AppConstants.BADGE_TYPEFACE);
     ArrayAdapter<String> adapter =
         new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, list);
@@ -103,60 +106,74 @@ public class BadgeToolFragment extends BaseFragment
     int position = adapter.getPosition(typeface);
     spFont.setAdapter(adapter);
     spFont.setSelection(position);
-    spFont.setOnItemSelectedListener(this);
+    mSubscription = viewSubscription();
   }
 
-  @Override public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-    String selected = (String) adapterView.getItemAtPosition(pos);
+  @Override public void onDestroyView() {
+    if (mSubscription != null) {
+      mSubscription.unsubscribe();
+      mSubscription = null;
+    }
+    super.onDestroyView();
+  }
+
+  private Subscription viewSubscription() {
+    final CompositeSubscription sub = new CompositeSubscription();
+    sub.add(RxTextView.editorActionEvents(etBadge).subscribe(this::textBadge, CrashLog::logError));
+
+    sub.add(RxSeekBar.changes(sbSize).subscribe(this::sizeBadge, CrashLog::logError));
+
+    sub.add(RxAdapterView.selectionEvents(spFont).subscribe(this::fontBadge, CrashLog::logError));
+
+    sub.add(RxView.clicks(cpBadge).subscribe(click -> colorBadge(), CrashLog::logError));
+
+    sub.add(RxCompoundButton.checkedChanges(cbHide).subscribe(this::hideBadge, CrashLog::logError));
+    return sub;
+  }
+
+  private void textBadge(TextViewEditorActionEvent event) {
+    final int actionId = event.actionId();
+    final KeyEvent keyEvent = event.keyEvent();
+    final TextView view = event.view();
+    if (actionId == EditorInfo.IME_ACTION_DONE
+        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+        && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+      final String value = view.getText().toString().trim();
+      boolean empty = isEmpty(value);
+      mBadgeTextTray.setValue(!empty ? value : AppConstants.BADGE_TEXT);
+      hideSoftKeyboard(view);
+    }
+  }
+
+  private void sizeBadge(int progress) {
+    mBadgeSizeTray.setValue(progress);
+  }
+
+  private void fontBadge(AdapterViewSelectionEvent event) {
+    final String selected = (String) event.view().getSelectedItem();
     if (selected.equalsIgnoreCase(AppConstants.BADGE_TYPEFACE)) {
-      FontUtils.setBadgeTypefaceDefault();
+      setBadgeTypefaceDefault();
     } else {
-      final File file = mFontProvider.find(selected);
-      if (file != null && file.canRead()) FontUtils.setBadgeTypeface(file);
+      final File fontFile = mFontProvider.find(selected);
+      if (fontFile != null && fontFile.canRead()) setBadgeTypeface(fontFile);
     }
     mBadgeTypefaceTray.setValue(selected);
   }
 
-  @Override public void onNothingSelected(AdapterView<?> adapterView) { /*no-op*/ }
-
-  @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) { /*no-op*/ }
-
-  @Override public void onStartTrackingTouch(SeekBar seekBar) { /*no-op*/ }
-
-  @Override public void onStopTrackingTouch(SeekBar seekBar) {
-    mBadgeSizeTray.setValue(seekBar.getProgress());
+  private void colorBadge() {
+    ColorPickerDialog.Builder.build(mBadgeColorTray.getValue(), ((dialog, color) -> {
+      mBadgeColorTray.setValue(color);
+      cpBadge.setColor(color);
+      EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
+    })).show(getFragmentManager());
   }
 
-  @Override
-  public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { /*no-op*/ }
-
-  @Override
-  public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { /*no-op*/ }
-
-  @Override public void afterTextChanged(Editable editable) {
-    final String value = editable.toString().trim();
-    boolean empty = Utils.isEmpty(value);
-    mBadgeTextTray.setValue(!empty ? value : AppConstants.BADGE_TEXT);
-  }
-
-  @OnCheckedChanged(R.id.cbHide) void onCheckedChanged(CompoundButton cb, boolean checked) {
+  private void hideBadge(boolean checked) {
     mBadgeEnableTray.setValue(!checked);
     if (checked) {
-      AnimUtils.fadeOut(vBadge);
+      fadeOut(vBadge);
     } else {
-      AnimUtils.fadeIn(vBadge);
+      fadeIn(vBadge);
     }
-  }
-
-  @OnClick(R.id.cpBadge) void onClick(View view) {
-    ColorPickerDialogBuilder.create()
-        .colorInit(mBadgeColorTray.getValue())
-        .listener((dialog, color) -> {
-          mBadgeColorTray.setValue(color);
-          cpBadge.setColor(color);
-          EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.NONE, ""));
-        })
-        .build()
-        .show(getFragmentManager(), ColorPickerDialog.TAG);
   }
 }

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Template Default-->
-    <dimen name="def_tl">26dp</dimen>
-    <dimen name="def_tt">27dp</dimen>
-    <dimen name="def_bl">27dp</dimen>
-    <dimen name="def_bt">54dp</dimen>
+  <!--Template Default-->
+  <dimen name="def_tl">26dp</dimen>
+  <dimen name="def_tt">27dp</dimen>
+  <dimen name="def_bl">27dp</dimen>
+  <dimen name="def_bt">54dp</dimen>
 
-    <dimen name="toolbar_elevation">8dp</dimen>
-    <dimen name="fab_elevation">8dp</dimen>
-    <dimen name="progress_bar_height">4dp</dimen>
-    <dimen name="item_template_min_height">96dp</dimen>
-    <dimen name="item_template_max_height">240dp</dimen>
-    <dimen name="item_template_height">120dp</dimen>
-    <dimen name="item_margin">2dp</dimen>
-    <dimen name="item_text_margin_vertical">2dp</dimen>
-    <dimen name="item_text_margin_horizontal">8dp</dimen>
-    <dimen name="rectangle_size">6dp</dimen>
-    <dimen name="fab_margin_horizontal">36dp</dimen>
-    <dimen name="item_template_circle_button_size">34dp</dimen>
+  <dimen name="toolbar_elevation">8dp</dimen>
+  <dimen name="fab_elevation">8dp</dimen>
+  <dimen name="progress_bar_height">4dp</dimen>
+  <dimen name="item_template_min_height">96dp</dimen>
+  <dimen name="item_template_max_height">240dp</dimen>
+  <dimen name="item_template_height">120dp</dimen>
+  <dimen name="item_margin">2dp</dimen>
+  <dimen name="item_text_margin_vertical">2dp</dimen>
+  <dimen name="item_text_margin_horizontal">8dp</dimen>
+  <dimen name="rectangle_size">6dp</dimen>
+  <dimen name="fab_margin_horizontal">36dp</dimen>
+  <dimen name="item_template_circle_button_size">34dp</dimen>
 </resources>

@@ -1,8 +1,8 @@
-package org.illegaller.ratabb.hishoot2i.utils;
+package org.illegaller.ratabb.hishoot2i.view.rx;
 
 import com.roughike.bottombar.OnTabClickListener;
 
-public class BottomBarOnTabClickListener implements OnTabClickListener {
+class BottomBarOnTabClickListener implements OnTabClickListener {
   @Override public void onTabSelected(int position) {
   }
 

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseActivity;
 import org.illegaller.ratabb.hishoot2i.view.fragment.AboutFragment;
 
@@ -45,5 +46,8 @@ public class AboutActivity extends BaseActivity {
     getSupportFragmentManager().beginTransaction()
         .replace(R.id.flContent, AboutFragment.newInstance())
         .commitAllowingStateLoss();
+  }
+
+  @Override protected void injectComponent(ActivityComponent activityComponent) { /*no-op*/
   }
 }

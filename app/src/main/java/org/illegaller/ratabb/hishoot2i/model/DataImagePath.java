@@ -24,7 +24,7 @@ public class DataImagePath implements Parcelable {
     this.pathImageBackground = pathImageBackground;
   }
 
-  protected DataImagePath(Parcel in) {
+  private DataImagePath(Parcel in) {
     this.pathImageScreen1 = in.readString();
     this.pathImageScreen2 = in.readString();
     this.pathImageBackground = in.readString();

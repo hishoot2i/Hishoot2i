@@ -11,31 +11,25 @@ import org.illegaller.ratabb.hishoot2i.utils.SimpleSchedule;
 import org.illegaller.ratabb.hishoot2i.view.common.BasePresenter;
 import org.illegaller.ratabb.hishoot2i.view.fragment.historyview.HistoryFragmentView;
 import rx.Observable;
-import rx.Subscription;
 
 public class HistoryFragmentPresenter extends BasePresenter<HistoryFragmentView> {
-
-  private final FileExtensionFilter mFileExtFilter = new FileExtensionFilter("png");
-  private Subscription mSubscription;
+  private final FileExtensionFilter mFileExtFilter;
 
   @Inject public HistoryFragmentPresenter() {
-  }
-
-  @Override public void detachView() {
-    if (mSubscription != null) mSubscription.unsubscribe();
-    super.detachView();
+    this.mFileExtFilter = new FileExtensionFilter("png");
   }
 
   public void perform() {
     checkViewAttached();
-    getView().showProgress(true);
-    mSubscription = getListObservable().compose(SimpleSchedule.schedule())
-        .subscribe(list -> getView().setList(list),
-            throwable -> CrashLog.logError("list", throwable), () -> getView().showProgress(false));
+    getMvpView().showProgress(true);
+    addAutoUnSubscribe(getListObservable().compose(SimpleSchedule.schedule())
+        .subscribe(list -> getMvpView().setList(list),
+            throwable -> CrashLog.logError("list", throwable),
+            () -> getMvpView().showProgress(false)));
   }
 
-  Observable<List<String>> getListObservable() {
-    return Observable.create((Observable.OnSubscribe<List<String>>) subscriber -> {
+  private Observable<List<String>> getListObservable() {
+    return Observable.create(subscriber -> {
       try {
         final List<String> result = new ArrayList<>();
         final File folder = AppConstants.getHishootDir();

@@ -6,24 +6,29 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
-import android.widget.CompoundButton;
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 import org.illegaller.ratabb.hishoot2i.R;
+import org.illegaller.ratabb.hishoot2i.di.compenent.ActivityComponent;
 import org.illegaller.ratabb.hishoot2i.events.EventImageSet;
 import org.illegaller.ratabb.hishoot2i.model.tray.BooleanTray;
 import org.illegaller.ratabb.hishoot2i.model.tray.TrayManager;
-import org.illegaller.ratabb.hishoot2i.utils.AnimUtils;
-import org.illegaller.ratabb.hishoot2i.utils.Utils;
+import org.illegaller.ratabb.hishoot2i.utils.CrashLog;
 import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.widget.CircleButton;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
+
+import static org.illegaller.ratabb.hishoot2i.utils.AnimUtils.fadeIn;
+import static org.illegaller.ratabb.hishoot2i.utils.AnimUtils.fadeOut;
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.openImagePicker;
 
 public class ScreenToolFragment extends BaseFragment {
-  static final int REQ_IMAGE_PIC_SS1 = 0x01;
-  static final int REQ_IMAGE_PIC_SS2 = 0x02;
+  private static final int REQ_IMAGE_PIC_SS1 = 0x01;
+  private static final int REQ_IMAGE_PIC_SS2 = 0x02;
   @BindView(R.id.cbfScreen1) CircleButton cbfScreen1;
   @BindView(R.id.cbfScreen2) CircleButton cbfScreen2;
   @BindView(R.id.scDoubleSS) SwitchCompat scDoubleSS;
@@ -36,6 +41,7 @@ public class ScreenToolFragment extends BaseFragment {
   private BooleanTray mGlareEnableTray;
   private BooleanTray mShadowEnableTray;
   private BooleanTray mFrameEnableTray;
+  private Subscription mSubscription;
 
   public ScreenToolFragment() {
   }
@@ -53,11 +59,14 @@ public class ScreenToolFragment extends BaseFragment {
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getActivityComponent().inject(this);
     mDoubleEnableTray = mTrayManager.getDoubleEnable();
     mGlareEnableTray = mTrayManager.getGlareEnable();
     mShadowEnableTray = mTrayManager.getShadowEnable();
     mFrameEnableTray = mTrayManager.getFrameEnable();
+  }
+
+  @Override protected void injectComponent(ActivityComponent activityComponent) {
+    activityComponent.inject(this);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -68,47 +77,58 @@ public class ScreenToolFragment extends BaseFragment {
     scGlare.setChecked(mGlareEnableTray.isValue());
     scShadow.setChecked(mShadowEnableTray.isValue());
     scFrame.setChecked(mFrameEnableTray.isValue());
+    mSubscription = viewSubscription();
   }
 
-  @OnCheckedChanged({
-      R.id.scDoubleSS, R.id.scGlare, R.id.scShadow, R.id.scFrame
-  }) void onCheckedChanged(CompoundButton cb, boolean check) {
-    if (cb == scDoubleSS) {
-      mDoubleEnableTray.setValue(check);
-      if (check) {
-        AnimUtils.fadeIn(layoutSS2);
-      } else {
-        AnimUtils.fadeOut(layoutSS2);
-      }
-    } else if (cb == scGlare) {
-      mGlareEnableTray.setValue(check);
-    } else if (cb == scShadow) {
-      mShadowEnableTray.setValue(check);
-    } else if (cb == scFrame) mFrameEnableTray.setValue(check);
+  @Override public void onDestroyView() {
+    if (mSubscription != null) {
+      mSubscription.unsubscribe();
+      mSubscription = null;
+    }
+    super.onDestroyView();
   }
 
-  @OnClick({ R.id.cbfScreen1, R.id.cbfScreen2 }) void onClick(View v) {
-    if (v == cbfScreen1) {
-      Utils.openImagePicker(this, R.string.screen_1, REQ_IMAGE_PIC_SS1);
-    } else if (v == cbfScreen2) Utils.openImagePicker(this, R.string.screen_2, REQ_IMAGE_PIC_SS2);
+  private Subscription viewSubscription() {
+    final CompositeSubscription sub = new CompositeSubscription();
+    sub.add(RxView.clicks(cbfScreen1)
+        .subscribe(click -> openImagePicker(this, R.string.screen_1, REQ_IMAGE_PIC_SS1),
+            CrashLog::logError));
+
+    sub.add(RxView.clicks(cbfScreen2)
+        .subscribe(click -> openImagePicker(this, R.string.screen_2, REQ_IMAGE_PIC_SS2),
+            CrashLog::logError));
+
+    sub.add(RxCompoundButton.checkedChanges(scDoubleSS)
+        .subscribe(this::ssDoubleChecked, CrashLog::logError));
+
+    sub.add(RxCompoundButton.checkedChanges(scFrame)
+        .subscribe(checked -> mFrameEnableTray.setValue(checked), CrashLog::logError));
+
+    sub.add(RxCompoundButton.checkedChanges(scGlare)
+        .subscribe(checked -> mGlareEnableTray.setValue(checked), CrashLog::logError));
+
+    sub.add(RxCompoundButton.checkedChanges(scShadow)
+        .subscribe(checked -> mShadowEnableTray.setValue(checked), CrashLog::logError));
+    return sub;
+  }
+
+  private void ssDoubleChecked(boolean checked) {
+    mDoubleEnableTray.setValue(checked);
+    if (checked) {
+      fadeIn(layoutSS2);
+    } else {
+      fadeOut(layoutSS2);
+    }
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode != Activity.RESULT_OK) return;
     final String dataString = data.getDataString();
-    EventImageSet.Type wImage;
-    switch (requestCode) {
-      case REQ_IMAGE_PIC_SS1:
-        wImage = EventImageSet.Type.SS1;
-        break;
-      case REQ_IMAGE_PIC_SS2:
-        wImage = EventImageSet.Type.SS2;
-        break;
-      default:
-        wImage = null;
-        break;
+    if (requestCode == REQ_IMAGE_PIC_SS1) {
+      EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.SS1, dataString));
+    } else if (requestCode == REQ_IMAGE_PIC_SS2) {
+      EventBus.getDefault().post(new EventImageSet(EventImageSet.Type.SS2, dataString));
     }
-    if (wImage != null) EventBus.getDefault().post(new EventImageSet(wImage, dataString));
   }
 }

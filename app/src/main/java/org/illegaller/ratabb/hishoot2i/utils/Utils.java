@@ -8,8 +8,12 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Looper;
+import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,6 +35,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import org.illegaller.ratabb.hishoot2i.AppConstants;
+import org.illegaller.ratabb.hishoot2i.BuildConfig;
+import org.illegaller.ratabb.hishoot2i.HishootApplication;
+import org.illegaller.ratabb.hishoot2i.HishootService;
+import org.illegaller.ratabb.hishoot2i.view.AboutActivity;
+import org.illegaller.ratabb.hishoot2i.view.CropActivity;
+import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
+import org.illegaller.ratabb.hishoot2i.view.MainActivity;
 
 import static android.os.Build.VERSION_CODES.HONEYCOMB;
 
@@ -39,11 +50,22 @@ public class Utils {
   private static final String sSEPARATOR = ",";
 
   private Utils() {
-    throw new UnsupportedOperationException("no instance");
+    throw new AssertionError("no instance");
   }
 
-  public static boolean isMainThread() {
-    return Looper.myLooper() == Looper.getMainLooper();
+  public static void avoidUiThread(String msg) {
+    if (Looper.myLooper() == Looper.getMainLooper()) throw new IllegalThreadStateException(msg);
+  }
+
+  public static void onlyUiThread() {
+    if (Looper.myLooper() != Looper.getMainLooper()) {
+      throw new IllegalThreadStateException(
+          "Must be called from the main thread. Was: " + Thread.currentThread());
+    }
+  }
+
+  public static Point createPoint(int x, int y) {
+    return new Point(x, y);
   }
 
   public static void tryClose(Closeable... closeables) {
@@ -85,7 +107,8 @@ public class Utils {
         : filePath.substring(filePos + 1));
   }
 
-  public static File saveHishoot(final Bitmap bitmap) throws IOException {
+  static File saveHishoot(final Bitmap bitmap) throws IOException {
+    avoidUiThread("avoid save on main thread");
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
     String imageFileName = "HiShoot_" + timeStamp + ".png";
     File hishootDir = AppConstants.getHishootDir();
@@ -97,8 +120,9 @@ public class Utils {
     return file;
   }
 
-  public static File saveTempBackgroundCrop(final Context context, final Bitmap bitmap)
+  public static File saveBackgroundCrop(final Context context, final Bitmap bitmap)
       throws IOException {
+    avoidUiThread("avoid save on main thread");
     File file = new File(StorageUtils.getCacheDirectory(context), ".crop");
     OutputStream outputStream = new FileOutputStream(file);
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
@@ -168,7 +192,7 @@ public class Utils {
 
   public static void openImagePicker(final android.support.v4.app.Fragment fragment,
       final String title, int requestCode) {
-    Intent intent = intentImagePicker();
+    final Intent intent = Utils.intentImagePicker();
     try {
       if (Utils.isAvailable(fragment.getActivity(), intent)) {
         fragment.startActivityForResult(Intent.createChooser(intent, title), requestCode);
@@ -192,13 +216,13 @@ public class Utils {
   }*/
 
   private static Intent intentImagePicker() {
-    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+    final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
     intent.setType("image/*");
     return intent;
   }
 
   public static void shareImage(Context context, Uri imageUri) {
-    Intent intent = intentShareImage("Share", imageUri);
+    final Intent intent = Utils.intentShareImage("Share", imageUri);
     try {
       if (Utils.isAvailable(context, intent)) context.startActivity(intent);
     } catch (Exception e) {
@@ -208,7 +232,7 @@ public class Utils {
 
   @TargetApi(HONEYCOMB)
   public static Intent intentShareImage(final String title, final Uri imageUri) {
-    Intent intent = new Intent(Intent.ACTION_SEND);
+    final Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("image/*");
     intent.putExtra(Intent.EXTRA_STREAM, imageUri);
     Intent chooser = Intent.createChooser(intent, title);
@@ -219,14 +243,14 @@ public class Utils {
   }
 
   public static Intent intentOpenImage(final Uri imageUri) {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
+    final Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.setDataAndType(imageUri, "image/*");
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     return intent;
   }
 
   public static void openImageView(final Context context, final Uri imageUri) {
-    Intent intent = intentOpenImage(imageUri);
+    final Intent intent = Utils.intentOpenImage(imageUri);
     try {
       if (Utils.isAvailable(context, intent)) context.startActivity(intent);
     } catch (Exception e) {
@@ -250,8 +274,8 @@ public class Utils {
     }
   }
 
-  public static void hideSoftKeyboard(Context context, View view) {
-    InputMethodManager imm = (InputMethodManager) context.
+  public static void hideSoftKeyboard(@NonNull final View view) {
+    InputMethodManager imm = (InputMethodManager) view.getContext().
         getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
   }
@@ -264,10 +288,10 @@ public class Utils {
       CrashLog.logError("getInstalledApplications", ignored);
     }
     List<ApplicationInfo> result = new ArrayList<>();
+    BufferedReader reader = null;
     try {
       Process process = Runtime.getRuntime().exec("pm list packages");
-      BufferedReader reader =
-          new BufferedReader(new InputStreamReader(process.getInputStream(), "iso-8859-1"));
+      reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "iso-8859-1"));
       String line;
       while ((line = reader.readLine()) != null) {
         final String packageName = line.substring(line.indexOf(':') + 1);
@@ -275,9 +299,10 @@ public class Utils {
         result.add(applicationInfo);
       }
       process.waitFor();
-      Utils.tryClose(reader);
     } catch (IOException | PackageManager.NameNotFoundException | InterruptedException e) {
       CrashLog.logError("getInstalledApplications", e);
+    } finally {
+      tryClose(reader);
     }
     return result;
   }
@@ -299,5 +324,28 @@ public class Utils {
     final Reflector.TypedObject view = new Reflector.TypedObject(null, View.class);
 
     Reflector.invokeMethodExceptionSafe(imm, "startGettingWindowFocus", view);
+  }
+
+  /**
+   * for Debug only
+   */
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB) public static void enableStrictMode() {
+    if (BuildConfig.DEBUG && DeviceUtils.isCompatible(Build.VERSION_CODES.GINGERBREAD)) {
+      StrictMode.ThreadPolicy.Builder threadPolicyBuilder =
+          new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog();
+      StrictMode.VmPolicy.Builder vmPolicyBuilder =
+          new StrictMode.VmPolicy.Builder().detectAll().penaltyLog();
+      if (DeviceUtils.isCompatible(Build.VERSION_CODES.HONEYCOMB)) {
+        threadPolicyBuilder.penaltyFlashScreen();
+        vmPolicyBuilder.setClassInstanceLimit(HishootApplication.class, 1)
+            .setClassInstanceLimit(AboutActivity.class, 1)
+            .setClassInstanceLimit(CropActivity.class, 1)
+            .setClassInstanceLimit(LauncherActivity.class, 1)
+            .setClassInstanceLimit(MainActivity.class, 1)
+            .setClassInstanceLimit(HishootService.class, 1);
+      }
+      StrictMode.setThreadPolicy(threadPolicyBuilder.build());
+      StrictMode.setVmPolicy(vmPolicyBuilder.build());
+    }
   }
 }

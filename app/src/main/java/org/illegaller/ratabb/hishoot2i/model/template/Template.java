@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import org.illegaller.ratabb.hishoot2i.model.template.builder.BaseBuilder;
 
+import static org.illegaller.ratabb.hishoot2i.utils.Utils.checkNotNull;
+
 public class Template implements Parcelable {
 
   public static final Parcelable.Creator<Template> CREATOR = new Parcelable.Creator<Template>() {
@@ -33,7 +35,7 @@ public class Template implements Parcelable {
   public Point rightBottom;
   public TemplateType type;
 
-  private Template() { /*no instance*/ }
+  private Template() { /*empty construction*/ }
 
   protected Template(Parcel in) {
     this.id = in.readString();
@@ -55,20 +57,21 @@ public class Template implements Parcelable {
 
   public static Template build(BaseBuilder builder) throws Exception {
     Template template = new Template();
-    template.id = builder.id;
-    template.name = builder.name;
-    template.author = builder.author;
-    template.templatePoint = builder.templatePoint;
-    template.type = builder.type;
-    template.previewFile = builder.previewFile;
-    template.frameFile = builder.frameFile;
+    template.id = checkNotNull(builder.id, "id == null");
+    template.name = checkNotNull(builder.name, "name == null");
+    template.author = checkNotNull(builder.author, "author == null");
+    template.templatePoint = checkNotNull(builder.templatePoint, "templatePoint == null");
+    template.type = checkNotNull(builder.type, "type == null");
+    template.previewFile = checkNotNull(builder.previewFile, "previewFile == null");
+    template.frameFile = checkNotNull(builder.frameFile, "frameFile == null");
+    template.leftTop = checkNotNull(builder.leftTop, "leftTop == null");
+    template.rightTop = checkNotNull(builder.rightTop, "rightTop == null");
+    template.leftBottom = checkNotNull(builder.leftBottom, "leftBottom == null");
+    template.rightBottom = checkNotNull(builder.rightBottom, "rightBottom == null");
+
     template.glareFile = builder.glareFile;
     template.shadowFile = builder.shadowFile;
     template.overlayOffset = builder.overlayOffset;
-    template.leftTop = builder.leftTop;
-    template.rightTop = builder.rightTop;
-    template.leftBottom = builder.leftBottom;
-    template.rightBottom = builder.rightBottom;
     return template;
   }
 

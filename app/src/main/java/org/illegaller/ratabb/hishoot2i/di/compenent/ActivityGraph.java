@@ -4,6 +4,7 @@ import org.illegaller.ratabb.hishoot2i.view.AboutActivity;
 import org.illegaller.ratabb.hishoot2i.view.CropActivity;
 import org.illegaller.ratabb.hishoot2i.view.LauncherActivity;
 import org.illegaller.ratabb.hishoot2i.view.MainActivity;
+import org.illegaller.ratabb.hishoot2i.view.common.BaseFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.AboutFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.historyview.HistoryFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.historyview.HistoryRecyclerView;
@@ -13,7 +14,7 @@ import org.illegaller.ratabb.hishoot2i.view.fragment.tools.BackgroundToolFragmen
 import org.illegaller.ratabb.hishoot2i.view.fragment.tools.BadgeToolFragment;
 import org.illegaller.ratabb.hishoot2i.view.fragment.tools.ScreenToolFragment;
 
-public interface ActivityGraph {
+interface ActivityGraph {
 
   /* activity graph */
   AboutActivity inject(AboutActivity activity);
@@ -23,6 +24,9 @@ public interface ActivityGraph {
   LauncherActivity inject(LauncherActivity activity);
 
   MainActivity inject(MainActivity activity);
+
+  /* fragment */
+  BaseFragment inject(BaseFragment fragment);
 
   AboutFragment inject(AboutFragment fragment);
 
