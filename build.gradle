@@ -1,0 +1,37 @@
+buildscript {
+    ext.versions = [
+            'kotlin'        : '1.2.31',
+            'supportLibrary': '27.1.1',
+            'dagger'        : '2.15',         
+    ]
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:3.1.1") { exclude module: 'proguard-gradle' }
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath("net.sf.proguard:proguard-gradle:6.0") { force = true }
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()        
+    }
+    configurations*.resolutionStrategy {
+        eachDependency { detail ->
+            if (detail.requested.group == 'com.android.support') {
+                detail.useVersion(versions.supportLibrary)
+            }
+            if (detail.requested.group == 'org.jetbrains.kotlin') {
+                detail.useVersion(versions.kotlin)
+            }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
