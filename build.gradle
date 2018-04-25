@@ -1,31 +1,21 @@
 buildscript {
-    ext.versions = [
-            'kotlin'        : '1.2.31',
-            'supportLibrary': '27.1.1',
-            'dagger'        : '2.15',         
-    ]
-    repositories {
-        google()
-        jcenter()
-    }
+    apply from: "versions.gradle"
+    addRepos(repositories)
     dependencies {
-        classpath("com.android.tools.build:gradle:3.1.1") { exclude module: 'proguard-gradle' }
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        classpath("net.sf.proguard:proguard-gradle:6.0") { force = true }
+        classpath(classPathNotation.agp) { exclude module: 'proguard-gradle' }
+        classpath classPathNotation.kotlin
+        classpath(classPathNotation.proguard) { force = true }
     }
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()        
-    }
+    addRepos(repositories)
     configurations*.resolutionStrategy {
         eachDependency { detail ->
-            if (detail.requested.group == 'com.android.support') {
+            if (detail.requested.group == groups.supportLibrary) {
                 detail.useVersion(versions.supportLibrary)
             }
-            if (detail.requested.group == 'org.jetbrains.kotlin') {
+            if (detail.requested.group == groups.kotlin) {
                 detail.useVersion(versions.kotlin)
             }
         }
