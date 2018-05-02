@@ -31,8 +31,7 @@ check.dependsOn ktlint
 
 
 project.task("ktFormat", type: JavaExec, group: "formatting") {
-    inputs.files(inputFiles)
-    outputs.dir(outputDir)
+
     description = "Run formatting KtLint "
     main = ktlintMain
     classpath = configurations.ktlint
