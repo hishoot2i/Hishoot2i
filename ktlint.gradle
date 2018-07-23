@@ -1,6 +1,6 @@
 // KtLint
 def ktlintMain = 'com.github.shyiko.ktlint.Main'
-def ktlintVersion = '0.22.0'
+def ktlintVersion = '0.23.1'
 
 def outputDir = "${project.buildDir}/reports/ktlint/"
 def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")
@@ -27,11 +27,7 @@ project.task("ktlint", type: JavaExec, group: LifecycleBasePlugin.VERIFICATION_G
     ]
 }
 
-check.dependsOn ktlint
-
-
 project.task("ktFormat", type: JavaExec, group: "formatting") {
-
     description = "Run formatting KtLint "
     main = ktlintMain
     classpath = configurations.ktlint
