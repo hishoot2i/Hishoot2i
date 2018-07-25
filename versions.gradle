@@ -3,6 +3,7 @@
 def buildVersion = [:]
 buildVersion.minSdk = 16
 buildVersion.targetSdk = 27
+buildVersion.compileSdk = 27
 ext.buildVersion = buildVersion
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 def versions = [:]
