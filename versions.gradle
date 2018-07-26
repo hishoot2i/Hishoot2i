@@ -12,6 +12,7 @@ versions.dagger = '2.16'
 versions.kotlin = '1.2.50'
 versions.proguard = '6.0'
 versions.supportLibrary = '27.1.1'
+versions.leakcanary = '1.6.1'
 ext.versions = versions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 def groups = [:]
@@ -46,8 +47,12 @@ deps.kotlin = kotlin
 
 deps.kotpref = 'com.chibatching.kotpref:kotpref:2.5.0'
 deps.kpermissions = 'com.github.fondesa:kpermissions:1.0.0'
-deps.leakcanary = 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-deps.leakcanaryNoop = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+def leakcanary =[:]
+leakcanary.android = "com.squareup.leakcanary:leakcanary-android:$versions.leakcanary"
+leakcanary.supportFragment = "com.squareup.leakcanary:leakcanary-support-fragment:$versions.leakcanary"
+leakcanary.noop = "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakcanary"
+deps.leakcanary = leakcanary
 
 def rx = [:]
 rx.android = 'io.reactivex.rxjava2:rxandroid:2.0.2'
