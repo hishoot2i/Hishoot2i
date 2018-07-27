@@ -40,6 +40,8 @@ dagger.compiler = "$groups.dagger:dagger-compiler:$versions.dagger"
 dagger.core = "$groups.dagger:dagger:$versions.dagger"
 deps.dagger = dagger
 
+deps.inject = "javax.inject:javax.inject:1"
+
 def kotlin = [:]
 kotlin.stdlib = "$groups.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 kotlin.test = "$groups.kotlin:kotlin-test-junit:$versions.kotlin"
@@ -48,7 +50,7 @@ deps.kotlin = kotlin
 deps.kotpref = 'com.chibatching.kotpref:kotpref:2.5.0'
 deps.kpermissions = 'com.github.fondesa:kpermissions:1.0.0'
 
-def leakcanary =[:]
+def leakcanary = [:]
 leakcanary.android = "com.squareup.leakcanary:leakcanary-android:$versions.leakcanary"
 leakcanary.supportFragment = "com.squareup.leakcanary:leakcanary-support-fragment:$versions.leakcanary"
 leakcanary.noop = "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakcanary"
