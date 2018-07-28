@@ -39,3 +39,9 @@ project.task("ktFormat", type: JavaExec, group: "formatting") {
             "src/**/*.kt"
     ]
 }
+
+afterEvaluate {
+    if (project.tasks.findByName("check")) {
+        check.dependsOn(ktlint)
+    }
+}
