@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp8"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/toolBackgroundImageOptionGroup"
+            style="@style/AppWidget.RadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/toolBackgroundImageOptionScaleFill"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/toolBackgroundImageOptionScaleFill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/scale_fill" />
+
+            <RadioButton
+                android:id="@+id/toolBackgroundImageOptionCenterCrop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/center_crop" />
+
+            <RadioButton
+                android:id="@+id/toolBackgroundImageOptionManualCrop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/manual_crop" />
+        </RadioGroup>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/toolBackgroundImagePick"
+            style="@style/AppWidget.TextImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp16"
+            android:drawableTop="@drawable/ic_image_black_24dp"
+            android:text="@string/pick_image" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp8"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/toolBackgroundImageSwitchBlur"
+            style="@style/AppWidget.Switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/blur" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/toolBackgroundImageSeekBlur"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

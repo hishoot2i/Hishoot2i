@@ -1,0 +1,9 @@
+apply from: '../library_module.gradle'
+
+dependencies {
+    //
+    compileOnly deps.kotlin.stdlib
+    compileOnly deps.supportLibrary.annotations
+    compileOnly deps.inject
+    compileOnly project(':common')
+}

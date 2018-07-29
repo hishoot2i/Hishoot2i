@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    tools:context=".ui.template.TemplateManagerActivity">
+
+
+    <org.illegaller.ratabb.hishoot2i.ui.common.widget.NoScrollViewPager
+        android:id="@+id/templateManagerViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    <android.support.design.widget.AppBarLayout
+        style="@style/AppWidget.ActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/templateManagerToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:subtitle="@string/template_manager"
+            app:title="@string/app_name" />
+
+        <org.illegaller.ratabb.hishoot2i.ui.common.widget.BadgeTabLayout
+            android:id="@+id/templateManagerTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:scaleY="-1"
+            app:layout_scrollFlags="enterAlwaysCollapsed"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/white"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="fixed" />
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/templateManagerAddHtz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp20"
+        android:layout_marginRight="@dimen/dp20"
+        app:layout_behavior=".ui.common.behavior.FabQuickHideBehavior"
+        app:layout_dodgeInsetEdges="bottom"
+        app:layout_anchor="@id/templateManagerViewPager"
+        app:layout_anchorGravity="end|bottom"
+        app:srcCompat="@drawable/ic_htz_plus_black_24dp"
+        app:tint="@color/white"
+        app:useCompatPadding="true" />
+</android.support.design.widget.CoordinatorLayout>

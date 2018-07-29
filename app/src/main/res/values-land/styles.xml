@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.AppWidget.BottomSheetModal" parent="Widget.Design.BottomSheet.Modal">
+        <item name="behavior_peekHeight">@dimen/toolLayoutMinHeight</item>
+    </style>
+</resources>

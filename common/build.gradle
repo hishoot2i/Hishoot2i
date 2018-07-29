@@ -1,0 +1,11 @@
+apply from: '../library_module.gradle'
+
+dependencies {
+    //
+    compileOnly deps.kotlin.stdlib
+    compileOnly deps.supportLibrary.annotations
+    compileOnly deps.supportLibrary.coreUtils
+    compileOnly deps.timber
+    //
+    implementation deps.universalImageLoader
+}

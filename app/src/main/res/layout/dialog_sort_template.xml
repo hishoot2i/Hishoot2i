@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp16">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/sort_by"
+        android:textAppearance="@style/TextAppearance.App.Title" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp8"
+
+        >
+
+        <TableRow >
+
+            <TextView
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/name"
+                android:textAppearance="@style/TextAppearance.App" />
+
+            <TextView
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/version"
+                android:textAppearance="@style/TextAppearance.App" />
+
+            <TextView
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textAppearance="@style/TextAppearance.App" />
+        </TableRow>
+
+        <TableRow android:layout_marginTop="@dimen/dp10">
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/action_sort_name_asc"
+                style="?borderlessButtonStyle"
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="@dimen/dialogSortIconSize"
+                app:srcCompat="@drawable/ic_sort_az_up_black_24dp"
+                app:tint="?android:attr/textColorPrimary"
+                tools:background="@drawable/sort_selected" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/action_sort_type_asc"
+                style="?borderlessButtonStyle"
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="@dimen/dialogSortIconSize"
+                app:srcCompat="@drawable/ic_sort_type_up_black_24dp"
+                app:tint="?android:attr/textColorPrimary" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/action_sort_date_asc"
+                style="?borderlessButtonStyle"
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="@dimen/dialogSortIconSize"
+                app:srcCompat="@drawable/ic_sort_clock_up_black_24dp"
+                app:tint="?android:attr/textColorPrimary" />
+        </TableRow>
+
+        <TableRow>
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/action_sort_name_desc"
+                style="?borderlessButtonStyle"
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="@dimen/dialogSortIconSize"
+                app:srcCompat="@drawable/ic_sort_az_down_black_24dp"
+                app:tint="?android:attr/textColorPrimary" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/action_sort_type_desc"
+                style="?borderlessButtonStyle"
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="@dimen/dialogSortIconSize"
+                app:srcCompat="@drawable/ic_sort_type_down_black_24dp"
+                app:tint="?android:attr/textColorPrimary" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/action_sort_date_desc"
+                style="?borderlessButtonStyle"
+                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_height="@dimen/dialogSortIconSize"
+                app:srcCompat="@drawable/ic_sort_clock_down_black_24dp"
+                app:tint="?android:attr/textColorPrimary" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

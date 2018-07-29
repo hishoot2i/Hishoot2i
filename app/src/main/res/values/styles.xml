@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppAnimation.Windows" parent="">
+        <item name="android:windowEnterAnimation">@anim/window_enter</item>
+        <item name="android:windowExitAnimation">@anim/window_exit</item>
+    </style>
+
+    <style name="AppWidget.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@drawable/app_bar_background</item>
+        <item name="android:theme">@style/AppThemeOverlay.ActionBar</item>
+        <item name="popupTheme">@style/AppThemeOverlay.ActionBar.Popup</item>
+        <item name="elevation">@dimen/toolbarElevation</item>
+    </style>
+
+    <style name="AppWidget.ActionBar.Bottom">
+        <item name="android:background">@drawable/bottom_nav_background</item>
+    </style>
+
+    <style name="AppWidget.ActionBar.Overlay">
+        <item name="android:background">@color/grey300HalfAlpha</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="AppWidget.CardView" parent="CardView.Dark" />
+
+    <style name="AppWidget.Light.CardView" parent="CardView.Light" />
+
+    <style name="AppWidget.CoordinatorLayout" parent="Widget.Design.CoordinatorLayout" />
+
+    <style name="AppWidget.ProgressBar" parent="Widget.AppCompat.ProgressBar" />
+
+    <style name="AppWidget.ProgressBar.Horizontal" parent="Widget.AppCompat.ProgressBar.Horizontal" />
+    <!--FIXME: drawableTint... newApi ?-->
+    <style name="AppWidget.TextImage" parent="">
+        <item name="android:drawablePadding">@dimen/dp8</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?attr/colorAccent</item>
+        <item name="android:drawableTintMode" tools:ignore="NewApi">src_atop</item>
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:textAppearance">@style/TextAppearance.App</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="AppWidget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:textAppearance">@style/TextAppearance.App</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="AppWidget.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="thumbTint">?attr/colorAccent</item>
+        <item name="thumbTintMode">src_in</item>
+        <item name="switchPadding">@dimen/dp16</item>
+        <item name="android:paddingTop">@dimen/dp4</item>
+        <item name="android:paddingBottom">@dimen/dp4</item>
+    </style>
+    <!--activity_main-->
+    <style name="AppWidget.BottomNavigation" parent="">
+        <item name="android:background">@drawable/bottom_nav_background</item>
+        <item name="itemIconTint">@color/white</item>
+        <item name="itemTextColor">@color/white</item>
+        <item name="menu">@menu/tool</item>
+    </style>
+    <!--activity_crop, dialog_color_mix-->
+    <style name="AppWidget.Button.Borderless" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
+    </style>
+    <!--dialog_color_mix-->
+    <style name="AppWidget.InfoHexColor" parent="">
+        <item name="android:minWidth">@dimen/dp30</item>
+        <item name="android:maxWidth">@dimen/dp30</item>
+        <item name="android:maxLength">2</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.App</item>
+    </style>
+    <!--themes-->
+    <style name="Base.AppWidget.BottomSheetModal" parent="Widget.Design.BottomSheet.Modal">
+        <item name="behavior_peekHeight">auto</item>
+    </style>
+
+    <style name="AppWidget.BottomSheetModal" parent="Base.AppWidget.BottomSheetModal">
+        <item name="android:background">@drawable/top_10_rounded</item>
+    </style>
+
+    <style name="AppWidget.Light.BottomSheetModal" parent="Base.AppWidget.BottomSheetModal">
+        <item name="android:background">@drawable/top_10_rounded_light</item>
+    </style>
+    <!--TextAppearance-->
+    <style name="TextAppearance.App" parent="TextAppearance.AppCompat">
+        <item name="android:typeface">normal</item>
+    </style>
+
+    <style name="TextAppearance.App.Button" parent="TextAppearance.AppCompat.Widget.Button">
+        <item name="android:shadowColor">?android:colorSecondary</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="TextAppearance.App.Tab">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:padding">@dimen/dp4</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.App.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.App.SubTitle">
+        <item name="android:textSize">10sp</item>
+    </style>
+    <!---->
+    <attr name="backgroundTextRow" format="color|reference" />
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="25">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_template"
+        android:shortcutDisabledMessage="@string/shortcut_template_disable"
+        android:shortcutId="template"
+        android:shortcutLongLabel="@string/shortcut_template_long_label"
+        android:shortcutShortLabel="@string/shortcut_template_short_label">
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="org.illegaller.ratabb.hishoot2i.ui.main.MainActivity"
+            android:targetPackage="org.illegaller.ratabb.hishoot2i" />
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="org.illegaller.ratabb.hishoot2i.ui.template.TemplateManagerActivity"
+            android:targetPackage="org.illegaller.ratabb.hishoot2i" />
+
+    </shortcut>
+</shortcuts>

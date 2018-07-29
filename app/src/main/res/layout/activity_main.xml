@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    tools:context=".ui.main.MainActivity">
+
+    <org.illegaller.ratabb.hishoot2i.ui.common.widget.CoreImagePreview
+        android:id="@+id/mainImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottomNavHeight"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        tools:src="@drawable/default_preview" />
+
+    <android.support.design.widget.AppBarLayout
+        style="@style/AppWidget.ActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/mainToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:subtitle="@string/app_version"
+            app:title="@string/app_name" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/mainBottomNav"
+        style="@style/AppWidget.BottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottomNavHeight"
+        android:layout_gravity="bottom"
+        app:layout_behavior=".ui.common.behavior.BottomNavigationBehavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/mainFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp20"
+        android:layout_marginRight="@dimen/dp20"
+        app:fabSize="normal"
+        app:layout_anchor="@id/mainToolbar"
+        app:layout_anchorGravity="end|bottom"
+        app:srcCompat="@drawable/ic_save_black_24dp"
+        app:tint="@color/white"
+        app:useCompatPadding="true" />
+    <!-- TODO: UnusedAttribute: elevation, indeterminateTint     -->
+    <ProgressBar
+        android:id="@+id/loading"
+        style="@style/AppWidget.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateOnly="true"
+        android:indeterminateTint="@color/white"
+        android:visibility="invisible"
+        app:elevation="@dimen/dp20"
+        app:layout_anchor="@id/mainFab"
+        app:layout_anchorGravity="center"
+        tools:ignore="UnusedAttribute"
+        tools:visibility="visible" />
+
+</android.support.design.widget.CoordinatorLayout>

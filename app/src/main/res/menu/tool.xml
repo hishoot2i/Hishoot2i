@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_template"
+        android:icon="@drawable/ic_template_black_24dp"
+        android:title="@string/template" />
+    <item
+        android:id="@+id/action_screen"
+        android:icon="@drawable/ic_phone_android_black_24dp"
+        android:title="@string/screen" />
+    <item
+        android:id="@+id/action_background"
+        android:icon="@drawable/ic_image_black_24dp"
+        android:title="@string/background" />
+    <item
+        android:id="@+id/action_badge"
+        android:icon="@drawable/ic_style_black_24dp"
+        android:title="@string/badge" />
+</menu>

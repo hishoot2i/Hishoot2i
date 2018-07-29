@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/toolLayoutMinHeight"
+    android:orientation="vertical"
+    android:padding="@dimen/toolLayoutMargin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp16"
+        android:layout_marginTop="@dimen/dp8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/screen"
+            android:textAppearance="@style/TextAppearance.App.Title" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/toolScreenSwitchDoubleSS"
+            style="@style/AppWidget.Switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/double_" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:minHeight="@dimen/dp100"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp8">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/toolScreen1"
+            style="@style/AppWidget.TextImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_image_black_24dp"
+            android:text="@string/screen_1" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/toolScreen2"
+            style="@style/AppWidget.TextImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_image_black_24dp"
+            android:text="@string/screen_2" />
+
+    </LinearLayout>
+
+</LinearLayout>

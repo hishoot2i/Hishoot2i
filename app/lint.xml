@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ObsoleteLintCustomCheck">
+        <ignore regexp="timber.lint" />
+    </issue>
+    <issue id="UnusedResources" severity="ignore" />
+</lint>

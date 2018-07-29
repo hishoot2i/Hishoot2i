@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!---->
+    <color name="black">#FF000000</color>
+    <color name="blackHalfAlpha">#7F000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="grey900">#FF212121</color>
+    <color name="grey900HalfAlpha">#7F212121</color>
+    <color name="grey300">#FFE0E0E0</color>
+    <color name="grey300HalfAlpha">#7FE0E0E0</color>
+    <color name="red">#FFFF0000</color>
+    <color name="green">#FF00FF00</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="transparent">#00000000</color>
+    <!---->
+    <color name="primary">#FF0281BB</color>
+    <color name="primaryDark">#FF034171</color>
+    <color name="accent">#FF689F38</color>
+    <!---->
+    <color name="dialogStroke">@color/grey300HalfAlpha</color>
+    <color name="dialogStrokeLight">@color/grey900HalfAlpha</color>
+    <color name="windowBackground">@color/grey900</color>
+    <color name="windowBackgroundLight">@color/grey300</color>
+    <color name="iconShortcutTemplateBackground">@color/primary</color>
+</resources>

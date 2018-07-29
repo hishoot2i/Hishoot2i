@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="def_tl">26dp</dimen>
+    <dimen name="def_tt">27dp</dimen>
+    <dimen name="def_bl">27dp</dimen>
+    <dimen name="def_bt">54dp</dimen>
+</resources>

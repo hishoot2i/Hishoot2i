@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp10">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/color_mixer"
+        android:textAppearance="@style/TextAppearance.App.Title" />
+
+    <LinearLayout
+        android:id="@+id/colorAlphaLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp4">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="@dimen/dp24"
+            android:layout_height="@dimen/dp24"
+            android:layout_gravity="center_vertical"
+            app:elevation="@dimen/dp4"
+            app:srcCompat="@drawable/ic_dot_alpha_24dp" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/colorAlphaSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp16"
+            android:layout_weight="1"
+            android:max="255"
+            app:tickMark="?colorAccent" />
+
+        <TextView
+            android:id="@+id/colorAlphaText"
+            style="@style/AppWidget.InfoHexColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="35" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="4dp">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="@dimen/dp24"
+            android:layout_height="@dimen/dp24"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_dot_black_24dp"
+            app:tint="@color/red" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/colorRedSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp16"
+            android:layout_weight="1"
+            android:max="255"
+            app:tickMark="?colorAccent" />
+
+        <TextView
+            android:id="@+id/colorRedText"
+            style="@style/AppWidget.InfoHexColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="00" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp8">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="@dimen/dp24"
+            android:layout_height="@dimen/dp24"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_dot_black_24dp"
+            app:tint="@color/green" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/colorGreenSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp16"
+            android:layout_weight="1"
+            android:max="255"
+            app:tickMark="?colorAccent" />
+
+        <TextView
+            android:id="@+id/colorGreenText"
+            style="@style/AppWidget.InfoHexColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="00" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp8">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="@dimen/dp24"
+            android:layout_height="@dimen/dp24"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_dot_black_24dp"
+            app:tint="@color/blue" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/colorBlueSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp16"
+            android:layout_weight="1"
+            android:max="255"
+            app:tickMark="?colorAccent" />
+
+        <TextView
+            android:id="@+id/colorBlueText"
+            style="@style/AppWidget.InfoHexColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:text="FF" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/colorHexLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingEnd="@dimen/dp10"
+            android:paddingRight="@dimen/dp10"
+            android:text="@string/hex_color"
+            android:textAppearance="@style/TextAppearance.App"
+            tools:ignore="RtlSymmetry" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:errorEnabled="false"
+            app:hintEnabled="false">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/colorHex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textNoSuggestions"
+                android:singleLine="true"
+                tools:text="350000FF" />
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp54">
+
+        <org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
+            android:id="@+id/colorPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:visibility="visible">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/colorCancel"
+                style="@style/AppWidget.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/cancel" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/colorDone"
+                style="@style/AppWidget.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/done" />
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<declare-styleable name="ImageTextButtonView">-->
+        <!--<attr name="iconColor" format="color|reference" />-->
+        <!--<attr name="android:src" />-->
+        <!--<attr name="android:text" />-->
+        <!--<attr name="android:textAppearance" />-->
+        <!--<attr name="android:padding" />-->
+    <!--</declare-styleable>-->
+</resources>
