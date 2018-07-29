@@ -15,7 +15,6 @@ before_install:
 - chmod a+x gradlew
 script:
 - "./gradlew -q --stacktrace check"
-- "./gradlew -q --stacktrace :app:assembleRelease"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
