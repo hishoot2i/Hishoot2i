@@ -46,7 +46,6 @@ class UilImageLoaderImpl(context: Context, isLogging: Boolean) : ImageLoader {
             .imageDecoder(BaseImageDecoder(isLogging))
             .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
             .threadPriority(Thread.NORM_PRIORITY)
-            .threadPoolSize(threadPoolSize)
             .tasksProcessingOrder(QueueProcessingType.FIFO)
             // / MemoryCache
             .memoryCache(memoryCache)
@@ -134,7 +133,6 @@ class UilImageLoaderImpl(context: Context, isLogging: Boolean) : ImageLoader {
     companion object {
         private const val MEMORY_CACHE_FACTOR = .75F
         private const val DISK_CACHE_SIZE: Long = 50 * 1024 * 1024 // 50MB
-        private val threadPoolSize = Runtime.getRuntime().availableProcessors() - 1
         private val memoryCacheSize = Math.round(
             MEMORY_CACHE_FACTOR * Runtime.getRuntime().maxMemory() / 1024
         )
