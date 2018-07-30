@@ -35,10 +35,10 @@ import org.illegaller.ratabb.hishoot2i.ui.main.tools.screen.ScreenTool
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.template.TemplateTool
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
 import rbb.hishoot2i.common.ext.activityPendingIntent
+import rbb.hishoot2i.common.ext.addToGallery
 import rbb.hishoot2i.common.ext.graphics.sizes
 import rbb.hishoot2i.common.ext.isVisible
 import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.toActionMediaScanner
 import rbb.hishoot2i.common.ext.toActionViewImage
 import timber.log.Timber
 import java.io.File
@@ -150,7 +150,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
             },
             activityPendingIntent { uri.toActionViewImage() }
         )
-        sendBroadcast(uri.toActionMediaScanner())
+        addToGallery(uri)
     }
 
     override fun startSave() {
