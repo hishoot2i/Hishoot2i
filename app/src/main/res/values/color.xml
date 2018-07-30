@@ -22,4 +22,5 @@
     <color name="windowBackground">@color/grey900</color>
     <color name="windowBackgroundLight">@color/grey300</color>
     <color name="iconShortcutTemplateBackground">@color/primary</color>
+    <color name="shadowTextButton">#7f5a595b</color>
 </resources>

@@ -91,7 +91,7 @@
     </style>
 
     <style name="TextAppearance.App.Button" parent="TextAppearance.AppCompat.Widget.Button">
-        <item name="android:shadowColor">?android:colorSecondary</item>
+        <item name="android:shadowColor">@color/shadowTextButton</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">1.0</item>
     </style>
