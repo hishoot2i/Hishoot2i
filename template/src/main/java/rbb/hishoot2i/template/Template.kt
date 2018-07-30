@@ -107,7 +107,7 @@ sealed class Template(
         val glare: Glare?
     ) : Template(id, author, name, desc, frame, preview, sizes, coordinate, installedDate)
 
-    /** @since 1.2.0 (yyyyMMdd) */
+    /** @since 1.2.0 (20180730) */
     data class Version3(
         override val id: String,
         override val author: String,
