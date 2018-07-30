@@ -20,6 +20,7 @@ import rbb.hishoot2i.common.ext.graphics.roundedLargeIcon
 import rbb.hishoot2i.common.ext.graphics.scaleCenterCrop
 import rbb.hishoot2i.common.ext.graphics.sizes
 import rbb.hishoot2i.common.ext.prepareNotificationChannel
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -93,7 +94,11 @@ class SaveNotification @Inject constructor(context: Context) {
 
     private fun NotificationCompat.Builder.send() {
         if (notificationManager.areNotificationsEnabled()) {
-            notificationManager.notify(ID, build())
+            try {
+                notificationManager.notify(ID, build())
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 
