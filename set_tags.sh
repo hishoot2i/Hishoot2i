@@ -7,10 +7,10 @@ if [ "$TRAVIS_BRANCH" = "$BRANCH" ]; then
 	  git config --global user.email "travis@travis-ci.org"
 	  git config --global user.name "Travis"
 
-	  # Version tag.
-	  MANIFEST="app/build/intermediates/manifests/full/release/AndroidManifest.xml"
-	  APK_VERSION=$(cat $MANIFEST | grep versionName | awk '{print $1}' | sed 's/android:versionName=//g' | sed 's/"//g' )
-	  echo -e "APK_VERSION=$APK_VERSION"
+	  # Version name for tag ???
+      VER="VERSION"
+      APK_VERSION=$(cat $VER | awk '{print $1}')
+      echo -e "APK_VERSION is $APK_VERSION"
 
 	  # Add tag and push to master.
 	  git tag -a "v${APK_VERSION}" -f -m "Travis build $APK_VERSION pushed a tag."

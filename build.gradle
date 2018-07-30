@@ -1,5 +1,6 @@
 buildscript {
     apply from: "versions.gradle"
+    apply from: "buildVersion.gradle"
     addRepos(repositories)
     dependencies {
         classpath(classPathNotation.agp) { exclude module: 'proguard-gradle' }
