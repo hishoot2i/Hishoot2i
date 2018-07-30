@@ -7,16 +7,14 @@ buildVersion.compileSdk = 27
 
 buildVersion.applicationId = "org.illegaller.ratabb.hishoot2i"
 
-static Integer getVersionCode() {
+Integer getVersionCode() {
     def s = getVersionName().tokenize('.')*.toInteger()
     Integer ret = (s[0] * 10000 + s[1] * 1000 + s[2] * 100)
     return ret
 }
 
-static String getVersionName() {
-    def ret = new File("VERSION").getText("UTF-8")
-    print("ret:$ret")
-    println()
+String getVersionName() {
+    def ret = project.rootProject.file("VERSION").getText("UTF-8")
     return ret
 }
 

@@ -1,5 +1,9 @@
 # Changelog
 -----
+##**v1.2.1 (20180731)**
+
+- Bug fixes and improvements
+
 ##**v1.2.0 (20180730)**
 
 - remove CrashLytics
