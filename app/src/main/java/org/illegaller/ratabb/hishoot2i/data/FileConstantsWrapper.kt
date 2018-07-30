@@ -6,6 +6,7 @@ import io.reactivex.flowables.ConnectableFlowable
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import rbb.hishoot2i.common.FileConstants
 import rbb.hishoot2i.common.FileConstantsImpl
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -24,10 +25,10 @@ class FileConstantsWrapper @Inject constructor(
             .publish()
 
     init {
-        ioConnection.subscribe {
+        ioConnection.subscribe({
             this.wrap = it
             isInitialized.set(true)
-        }
+        }, { Timber.e(it) })
         ioConnection.connect()
     }
 

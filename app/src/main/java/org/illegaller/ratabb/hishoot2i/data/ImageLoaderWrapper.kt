@@ -10,6 +10,7 @@ import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import rbb.hishoot2i.common.entity.Sizes
 import rbb.hishoot2i.common.imageloader.ImageLoader
 import rbb.hishoot2i.common.imageloader.uil.UilImageLoaderImpl
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -27,10 +28,10 @@ class ImageLoaderWrapper @Inject constructor(
             .publish()
 
     init {
-        ioConnection.subscribe {
+        ioConnection.subscribe({
             this.wrap = it
             isInitialized.set(true)
-        }
+        }, { Timber.e(it) })
         ioConnection.connect()
     }
 
