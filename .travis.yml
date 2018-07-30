@@ -13,8 +13,11 @@ android:
   - ".+"
 before_install:
 - chmod a+x gradlew
+- openssl aes-256-cbc -K $encrypted_86eb7daef4e0_key -iv $encrypted_86eb7daef4e0_iv -in hishoot2i.jks.enc -out hishoot2i.jks -d
+- chmod a+x set_tags.sh
 script:
 - "./gradlew -q --stacktrace check"
+- "./gradlew -q --stacktrace :app:assembleRelease"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -23,3 +26,17 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
+env:
+  global:
+  - secure: Zyj1qGowlcuWyi/4bb/vSoNR4QmyHitaGJ2uS0/gFWSZuCZP2CePuWkGC4mmpwW/vn/95vdxbxvmsHuwXs+OAmZSnw6KSzE/ozx7yW2WpvqCoUp5M123FC1v94ukPzKs+teAeRQlQI/jgqpmkmrFp83qMuRjpWjgHqxlIeXuCDM7U4Ub+Wm2dRdekYYmDZsWyyCJVuvldSUFS69B5IHchlJz0GoUejiSCy9OYaxgLf6cgJ7NtN68VqjL68yyKIY+JM/V4USEErrocVL83wIfRF1vEB+eCFFVzqcQZnoWodYV9uAG9Hu8n4De4Mfvky8YQkbeBGiEz8FJxhaDHlvr9DwhtdxkJ1XSxIPv+vqmQXn4FRYlxmk3THSxfNu6Kv8CPXFluCfrpOk0rf2yinNQZoCyaw2/GVhF4BBjHyJnK3Nj6RNxiQKWzEWTHoCaXOR7Qj7yJakMu59F7WzFVXeNmRHW+MbxKADd54gNurgWu16s5/SBeAnQJHwAWdUKoWJkcDpVvYeanUMJU7C3fqOLgCmPyKSr2tnrIuaCtI/CHdeA1xL8G1ybwO8JmDb6FxI7L5u+LbaIbbw0Gapc/ru0Aji5j09HDMpmc+EMYeCKcBcUwTkxl0ev9j+S+v0IzwKibUecRNxXj7iO7a/wKIJlca8rIkCnhf21MND5kixtHII=
+  - secure: irc+nTRzynd4otantc7WQwg4PPw8E0mIf31OhoEvk1GsYD5o6l6x0F9LtDD2tJfjvG+XJuCwCli9AP9bQa8UbhD921KGEVOQiB9D7Rkem7x2urflrZsEQTQs0rUasunDz6JzDaCUS2hIQ34hqoNf7j9NX5oOiIckdaRIHYMY1uJ3iuuecpznu3vdPZ/O6lZJTKng5sR81MMZmvQEMCClOQNzD+oAzF/43pEWnQ9rVoF9gsNwFsblqdgcUdMaJpbMw0Jh9drK96AmjmTt8ubkXEEuIGcAQ/gZJeMfSsnRoQomDrIb9p5KCZxmP4u6Nn2QXrTAV+NFZtJUhjpG4XYqgwSmcRYDxbjHeSVgojaBBuUyPxnFYONn7QREHyrlRPgAdqjmp2PhYhk4opZaFVusvVeMftpbXyDwv40IcLAFi/94lROR34Uzrcqppg5j9i6LAsBGggOX+vDdk1Adoqgaky/1PNm23c1O2kZIr9lVLD2FKUczHhs+/qKP+yLqNX0Mqqp1hlULqMQcPY4Co/vddCPNpV0V1znbj28/EX5ca+yKRQUF7PqXyDbSNUnGaVvn6+dIlINavLMZO1/fxyVpvAItxrms8sDmPP4l3M3wPwUyR8pagUpuNClEQ6idFLPYGo+SoIoVUKmxdKUUt/aJP5sOxhSXpdPpSZgvHYpVac0=
+after_success:
+- bash set_tags.sh
+deploy:
+  provider: releases
+  api_key:$GITHUB_TOKEN
+  file: app/build/outputs/apk/release/*.apk
+  file_glob: true
+  skip_cleanup: true
+  on:
+    branch: master
