@@ -4,7 +4,6 @@ import android.content.Context
 import rbb.hishoot2i.common.PathBuilder.stringTemplateApp
 import rbb.hishoot2i.common.entity.Glare
 import rbb.hishoot2i.common.entity.Sizes
-import rbb.hishoot2i.common.ext.drawableSizes
 import rbb.hishoot2i.common.ext.openAssetsFrom
 import rbb.hishoot2i.template.Template
 import rbb.hishoot2i.template.TemplateConstants.FRAME
@@ -32,14 +31,10 @@ class Version2Factory(
                 right_bottom_x, right_bottom_y
             ).map { it.toFloat() }
         }
-        val glare: Glare? = appContext.drawableSizes(packageName, GLARE)
-            ?.let { glareSizes: Sizes ->
-                Glare(
-                    stringTemplateApp(packageName, GLARE),
-                    glareSizes,
-                    Sizes.ZERO // v2 not have glare [position], use [0,0].
-                )
-            }
+        val templateSize = with(model) { Sizes(template_width, template_height) }
+        // NOTE: TemplateV2: Glare size == template size.
+        val glare = Glare(stringTemplateApp(packageName, GLARE), templateSize, Sizes.ZERO)
+
         return with(model) {
             Template.Version2(
                 packageName,
@@ -48,7 +43,7 @@ class Version2Factory(
                 "Template V2",
                 stringTemplateApp(packageName, FRAME),
                 stringTemplateApp(packageName, PREVIEW),
-                Sizes(template_width, template_height),
+                templateSize,
                 coordinate,
                 installedDate,
                 stringTemplateApp(packageName, SHADOW),
