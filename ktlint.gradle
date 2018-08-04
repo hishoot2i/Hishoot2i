@@ -1,6 +1,6 @@
 // KtLint
 def ktlintMain = 'com.github.shyiko.ktlint.Main'
-def ktlintVersion = '0.23.1'
+def ktlintVersion = '0.26.0'
 
 def outputDir = "${project.buildDir}/reports/ktlint/"
 def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")

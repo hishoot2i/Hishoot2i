@@ -53,7 +53,7 @@ deps.leakcanary = leakcanary
 
 def rx = [:]
 rx.android = 'io.reactivex.rxjava2:rxandroid:2.0.2'
-rx.java = 'io.reactivex.rxjava2:rxjava:2.1.14'
+rx.java = 'io.reactivex.rxjava2:rxjava:2.2.0'
 rx.kotlin = 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 deps.rx = rx
 
@@ -63,6 +63,8 @@ supportLibrary.appcompat = "$groups.supportLibrary:appcompat-v7:$versions.suppor
 supportLibrary.cardview = "$groups.supportLibrary:cardview-v7:$versions.supportLibrary"
 supportLibrary.coreUtils = "$groups.supportLibrary:support-core-utils:$versions.supportLibrary"
 supportLibrary.design = "$groups.supportLibrary:design:$versions.supportLibrary"
+supportLibrary.recyclerview = "$groups.supportLibrary:recyclerview-v7:$versions.supportLibrary"
+supportLibrary.vectorDrawable = "$groups.supportLibrary:support-vector-drawable:$versions.supportLibrary"
 deps.supportLibrary = supportLibrary
 
 deps.timber = 'com.jakewharton.timber:timber:4.7.0'
