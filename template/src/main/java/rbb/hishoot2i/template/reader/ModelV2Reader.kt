@@ -1,6 +1,7 @@
 package rbb.hishoot2i.template.reader
 
 import rbb.hishoot2i.common.ext.isNull
+import rbb.hishoot2i.common.ext.readObject
 import rbb.hishoot2i.template.TemplateException
 import rbb.hishoot2i.template.model.ModelV2
 import java.io.InputStream
@@ -10,8 +11,7 @@ class ModelV2Reader(inputStream: InputStream) : AbsJsonModelReader<ModelV2>(inpu
     @Throws(Exception::class)
     override fun model(): ModelV2 {
         val ret = ModelV2()
-        with(jsonReader) {
-            beginObject()
+        jsonReader.readObject {
             loop@ while (hasNext()) {
                 if (isNull) continue@loop
                 val tag = nextName()
@@ -31,11 +31,8 @@ class ModelV2Reader(inputStream: InputStream) : AbsJsonModelReader<ModelV2>(inpu
                     else -> skipValue()
                 }
             }
-            endObject()
         }
-        return when {
-            ret.isNotValid() -> throw TemplateException("NotValid ModelV2")
-            else -> ret
-        }
+        if (ret.isNotValid()) throw TemplateException("NotValid ModelV3")
+        return ret
     }
 }

@@ -25,3 +25,11 @@ inline fun JsonReader.nextStringSafe(): String? = try {
     skipValue()
     null
 }
+
+inline fun JsonReader.readObject(body: JsonReader.() -> Unit) {
+    beginObject()
+    while (hasNext()) {
+        body()
+    }
+    endObject()
+}

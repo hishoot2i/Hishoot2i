@@ -5,6 +5,10 @@ dependencies {
     compileOnly deps.kotlin.stdlib
     compileOnly deps.supportLibrary.annotations
     compileOnly deps.supportLibrary.coreUtils
+    compileOnly deps.supportLibrary.design
+    compileOnly deps.supportLibrary.appcompat
+    compileOnly deps.supportLibrary.recyclerview
+    compileOnly deps.supportLibrary.vectorDrawable
     compileOnly deps.timber
     //
     implementation deps.universalImageLoader

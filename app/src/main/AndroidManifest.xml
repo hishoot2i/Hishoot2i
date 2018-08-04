@@ -18,10 +18,12 @@
         android:appCategory="image"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+        <!-- android:largeHeap="true" Ouch! -->
         <!-- GoogleAppIndexingWarning: IDK -->
         <!-- UnusedAttribute:  android:appCategory="image" Api26+ -->
         <activity

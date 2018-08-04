@@ -6,13 +6,10 @@ import rbb.hishoot2i.common.entity.Sizes
 
 interface ImageLoader {
     /** Displaying [Bitmap] from [source] asynchronous to [imageView]. */
-    fun display(imageView: ImageView, source: String)
-
-    /** Return mutable [Bitmap] synchronously from [source]. */
-    fun loadSync(source: String, isSave: Boolean): Bitmap?
+    fun display(imageView: ImageView, source: String, reqSizes: Sizes? = null)
 
     /** Return mutable [Bitmap] synchronously from [source] with *optional* request size */
-    fun loadSync(source: String, reqSizes: Sizes?, isSave: Boolean): Bitmap?
+    fun loadSync(source: String, isSave: Boolean, reqSizes: Sizes): Bitmap?
 
     /** */
     fun clearMemoryCache()

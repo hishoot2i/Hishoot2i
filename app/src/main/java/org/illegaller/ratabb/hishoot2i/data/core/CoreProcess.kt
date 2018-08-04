@@ -5,6 +5,6 @@ import rbb.hishoot2i.common.entity.ImageSourcePath
 import rbb.hishoot2i.template.Template
 
 interface CoreProcess {
-    fun preview(template: Template, sourcePath: ImageSourcePath): Single<Result.Preview>
-    fun save(template: Template, sourcePath: ImageSourcePath): Single<Result.Save>
+    fun preview(template: Template, sourcePath: ImageSourcePath): Single<Result>
+    fun save(template: Template, sourcePath: ImageSourcePath): Single<Result>
 }
