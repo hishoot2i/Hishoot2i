@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.ui.common
+package rbb.hishoot2i.common.ext
 
 import android.annotation.SuppressLint
 import android.support.design.internal.BottomNavigationItemView
@@ -7,7 +7,6 @@ import android.support.design.widget.BottomNavigationView
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import rbb.hishoot2i.common.ext.forEach
 import timber.log.Timber
 
 @SuppressLint("RestrictedApi")

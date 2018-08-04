@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.ui.common
+package rbb.hishoot2i.common.ext
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import android.support.v7.util.DiffUtil
