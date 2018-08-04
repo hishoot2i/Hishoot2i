@@ -38,7 +38,7 @@ inline fun Drawable.toBitmap(
 }
 
 inline fun Context.drawable(@DrawableRes drawableId: Int): Drawable? =
-    AppCompatResources.getDrawable(this,drawableId)
+    AppCompatResources.getDrawable(this, drawableId)
 
 inline fun Context.createVectorDrawableTint(
     @DrawableRes id: Int,

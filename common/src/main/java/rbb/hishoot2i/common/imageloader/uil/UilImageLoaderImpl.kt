@@ -63,8 +63,7 @@ class UilImageLoaderImpl(appContext: Context, isLogging: Boolean) : ImageLoader 
 
     override fun loadSync(source: String, isSave: Boolean, reqSizes: Sizes): Bitmap? {
         val imageSize = with(reqSizes) { ImageSize(x, y) }
-        val imageScaleType =
-         if (isSave) ImageScaleType.NONE else ImageScaleType.NONE_SAFE
+        val imageScaleType = if (isSave) ImageScaleType.NONE else ImageScaleType.NONE_SAFE
         val options = displayImageOptions(source, isSave, imageScaleType)
         return uilImageLoader.loadImageSync(source, imageSize, options)
     }

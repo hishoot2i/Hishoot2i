@@ -1,5 +1,11 @@
 # Changelog
 -----
+##**v1.2.2 (20180804)**
+
+- Bug fixes incorrect size
+- Bug fixes out of memory :crossed_fingers:
+- Interfaces improvement
+
 ##**v1.2.1 (20180731)**
 
 - Bug fixes and improvements
