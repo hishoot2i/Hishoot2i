@@ -8,9 +8,12 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.Px
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.content.res.AppCompatResources
 
 @JvmOverloads
 inline fun Drawable.toBitmap(
@@ -35,4 +38,10 @@ inline fun Drawable.toBitmap(
 }
 
 inline fun Context.drawable(@DrawableRes drawableId: Int): Drawable? =
-    ContextCompat.getDrawable(this, drawableId)
+    AppCompatResources.getDrawable(this,drawableId)
+
+inline fun Context.createVectorDrawableTint(
+    @DrawableRes id: Int,
+    @ColorRes tint: Int
+): Drawable? = if (0 == id) null else VectorDrawableCompat.create(resources, id, theme)
+    ?.also { it.setTint(ContextCompat.getColor(this, tint)) }

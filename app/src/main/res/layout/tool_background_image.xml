@@ -47,7 +47,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp16"
-            android:drawableTop="@drawable/ic_image_black_24dp"
             android:text="@string/pick_image" />
 
     </LinearLayout>

@@ -11,6 +11,7 @@ import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import rbb.hishoot2i.common.ext.chooserGetContentWith
+import rbb.hishoot2i.common.ext.compoundVectorDrawables
 import rbb.hishoot2i.common.ext.isVisible
 import rbb.hishoot2i.common.ext.preventMultipleClick
 import javax.inject.Inject
@@ -31,6 +32,15 @@ class ScreenTool : AbsTools() {
             toolScreen1 = findViewById(R.id.toolScreen1)
             toolScreen2 = findViewById(R.id.toolScreen2)
         }
+
+        toolScreen1.compoundVectorDrawables(
+            top = R.drawable.ic_image_black_24dp,
+            tint = R.color.accent
+        )
+        toolScreen2.compoundVectorDrawables(
+            top = R.drawable.ic_image_black_24dp,
+            tint = R.color.accent
+        )
 
         toolScreen2.isVisible = appPref.doubleScreenEnable
         with(toolScreenSwitchDoubleSS) {

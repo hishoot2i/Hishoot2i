@@ -10,6 +10,7 @@ import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import org.illegaller.ratabb.hishoot2i.ui.template.TemplateManagerActivity
+import rbb.hishoot2i.common.entity.Sizes
 import rbb.hishoot2i.common.ext.preventMultipleClick
 import rbb.hishoot2i.common.ext.toDateTimeFormat
 import rbb.hishoot2i.common.imageloader.ImageLoader
@@ -60,6 +61,10 @@ class TemplateTool : AbsTools(), TemplateToolView {
     }
 
     override fun currentTemplate(template: Template, appPref: AppPref) {
+        val imSize = with(toolTemplatePreview) {
+            return@with if (width != 0 || height != 0) Sizes(width, height)
+            else null
+        }
         with(template) {
             when (this) {
                 is Template.Version2,
@@ -67,7 +72,7 @@ class TemplateTool : AbsTools(), TemplateToolView {
                 else -> disableOptions()
             }
 
-            imageLoader.display(toolTemplatePreview, preview)
+            imageLoader.display(toolTemplatePreview, preview, imSize)
             toolTemplateName.text = name
             toolTemplateId.text = id
             context?.getString(

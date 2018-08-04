@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
 import android.support.v7.widget.AppCompatSeekBar
+import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.AdapterView
@@ -14,10 +15,11 @@ import android.widget.Spinner
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.crop.CropActivity
-import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import org.illegaller.ratabb.hishoot2i.ui.main.ColorMixDialog
+import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import rbb.hishoot2i.common.entity.BackgroundMode
 import rbb.hishoot2i.common.ext.chooserGetContentWith
+import rbb.hishoot2i.common.ext.compoundVectorDrawables
 import rbb.hishoot2i.common.ext.isVisible
 import rbb.hishoot2i.common.ext.onSeekBarChange
 import rbb.hishoot2i.common.ext.preventMultipleClick
@@ -37,13 +39,13 @@ class BackgroundTool : AbsTools(), ColorMixDialog.OnColorChangeListener {
     private lateinit var toolBackgroundLayoutImage: View
     private lateinit var toolBackgroundLayoutTrans: View
     //
-    private lateinit var toolBackgroundImagePick: View
+    private lateinit var toolBackgroundImagePick: AppCompatTextView
     private lateinit var toolBackgroundImageSwitchBlur: SwitchCompat
     private lateinit var toolBackgroundImageSeekBlur: AppCompatSeekBar
     private lateinit var toolBackgroundImageOptionGroup: RadioGroup
     //
-    private lateinit var toolBackgroundColorMix: View
-    private lateinit var toolBackgroundColorPipette: View
+    private lateinit var toolBackgroundColorMix: AppCompatTextView
+    private lateinit var toolBackgroundColorPipette: AppCompatTextView
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(view) {
@@ -58,6 +60,13 @@ class BackgroundTool : AbsTools(), ColorMixDialog.OnColorChangeListener {
             toolBackgroundColorPipette = findViewById(R.id.toolBackgroundColorPipette)
             toolBackgroundImageOptionGroup = findViewById(R.id.toolBackgroundImageOptionGroup)
         }
+
+        toolBackgroundImagePick.compoundVectorDrawables(top = R.drawable.ic_image_black_24dp,
+            tint = R.color.accent)
+        toolBackgroundColorMix.compoundVectorDrawables(top = R.drawable.ic_color_lens_black_24dp,
+            tint = R.color.accent)
+        toolBackgroundColorPipette.compoundVectorDrawables(top = R.drawable.ic_colorize_black_24dp,
+            tint = R.color.accent)
         handleVisibleLayoutMode()
 
         with(toolBackgroundModes) {

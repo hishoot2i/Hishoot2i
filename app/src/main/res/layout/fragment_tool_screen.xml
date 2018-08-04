@@ -44,7 +44,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_image_black_24dp"
             android:text="@string/screen_1" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -53,7 +52,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_image_black_24dp"
             android:text="@string/screen_2" />
 
     </LinearLayout>

@@ -10,6 +10,9 @@ import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.CropImageView
 import rbb.hishoot2i.common.FileConstants
+import rbb.hishoot2i.common.entity.Sizes
+import rbb.hishoot2i.common.ext.deviceHeight
+import rbb.hishoot2i.common.ext.deviceWidth
 import rbb.hishoot2i.common.ext.isVisible
 import rbb.hishoot2i.common.ext.preventMultipleClick
 import rbb.hishoot2i.common.imageloader.ImageLoader
@@ -68,7 +71,7 @@ class CropActivity : BaseActivity(), CropActivityView {
             cropImageView.setCustomRatio(it.x, it.y)
         }
         intent.getStringExtra(KEY_IMAGE_PATH)?.let {
-            imageLoader.display(cropImageView, it)
+            imageLoader.display(cropImageView, it, Sizes(deviceWidth, deviceHeight))
         }
     }
 

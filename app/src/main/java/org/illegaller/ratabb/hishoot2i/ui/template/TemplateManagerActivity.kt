@@ -6,10 +6,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
@@ -18,8 +18,6 @@ import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.BadgeTabLayout
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.NoScrollViewPager
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
-import org.illegaller.ratabb.hishoot2i.ui.template.fragment.favorite.FavoriteFragment
-import org.illegaller.ratabb.hishoot2i.ui.template.fragment.installed.InstalledFragment
 import rbb.hishoot2i.common.ext.actionGetContentWith
 import rbb.hishoot2i.common.ext.preventMultipleClick
 import rbb.hishoot2i.common.ext.toFile
@@ -101,6 +99,7 @@ class TemplateManagerActivity : BaseActivity(), TemplateManagerView {
                 startActivityForResult(actionGetContentWith(type = "*/*"), REQ_HTZ_PICK)
             }
         }
+        reTintIconFab(addHtz)
     }
 
     fun updateTabBadge(position: Int, count: Int) {
@@ -108,23 +107,23 @@ class TemplateManagerActivity : BaseActivity(), TemplateManagerView {
     }
 
     override fun onSuccessImportHtz(htz: Template.VersionHtz) {
-        // TODO
-        Timber.d("onSuccessImportHtz: $htz")
+        Snackbar.make(
+            addHtz,
+            "Success import ${htz.name}",
+            Snackbar.LENGTH_SHORT
+        ).show() //
     }
 
     override fun onError(e: Throwable) {
         Timber.e(e)
     }
 
-    inner class TemplatePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val data = arrayOf(POSITION_INSTALLED, POSITION_FAVORITE)
-        override fun getItem(position: Int): Fragment = when (position) {
-            POSITION_INSTALLED -> InstalledFragment()
-            POSITION_FAVORITE -> FavoriteFragment()
-            else -> throw IllegalStateException("TemplatePagerAdapter unknown position:$position")
+    private fun reTintIconFab(fab: FloatingActionButton) {
+        with(fab) {
+            val d = DrawableCompat.wrap(drawable)
+            DrawableCompat.setTint(d, ContextCompat.getColor(context, R.color.white))
+            setImageDrawable(d)
         }
-
-        override fun getCount(): Int = data.size
     }
 
     companion object {

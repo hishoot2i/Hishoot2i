@@ -5,7 +5,6 @@
     </item>
     <item>
         <bitmap
-            android:alpha=".05"
             android:dither="true"
             android:filter="true"
             android:src="@drawable/app_texture"

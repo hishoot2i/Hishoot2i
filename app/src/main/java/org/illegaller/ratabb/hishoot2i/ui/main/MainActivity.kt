@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager.GET_META_DATA
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.ColorInt
@@ -26,7 +27,6 @@ import com.fondesa.kpermissions.extension.permissionsBuilder
 import org.illegaller.ratabb.hishoot2i.BuildConfig.IMAGE_RECEIVER
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
-import org.illegaller.ratabb.hishoot2i.ui.common.disableShiftMode
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.CoreImagePreview
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.background.BackgroundTool
@@ -36,6 +36,8 @@ import org.illegaller.ratabb.hishoot2i.ui.main.tools.template.TemplateTool
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
 import rbb.hishoot2i.common.ext.activityPendingIntent
 import rbb.hishoot2i.common.ext.addToGallery
+import rbb.hishoot2i.common.ext.disableShiftMode
+import rbb.hishoot2i.common.ext.graphics.createVectorDrawableTint
 import rbb.hishoot2i.common.ext.graphics.sizes
 import rbb.hishoot2i.common.ext.isVisible
 import rbb.hishoot2i.common.ext.preventMultipleClick
@@ -52,6 +54,12 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     lateinit var saveNotification: SaveNotification
     //
     private val permissionReq by lazy(NONE) { permissionsBuilder(WRITE_EXTERNAL_STORAGE).build() }
+    private val saveDrawable by lazy(NONE) {
+        createVectorDrawableTint(R.drawable.ic_save_black_24dp, R.color.white)
+    }
+    private val pipetteDrawable: Drawable? by lazy(NONE) {
+        createVectorDrawableTint(R.drawable.ic_pipette_done_black_24dp, R.color.white)
+    }
     //
     private lateinit var toolbar: Toolbar
     private lateinit var mainFab: FloatingActionButton
@@ -165,21 +173,21 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     override fun showProgress() {
         loading.isVisible = true
         isOnProgress = true
-        mainFab.setImageResource(R.drawable.ic_dot_black_24dp)
+        mainFab.setImageResource(R.drawable.ic_dot_white_24dp)
         mainFab.isEnabled = false
     }
 
     override fun hideProgress() {
         isOnProgress = false
         loading.isVisible = false
-        mainFab.setImageResource(R.drawable.ic_save_black_24dp)
+        mainFab.setImageDrawable(saveDrawable)
         mainFab.isEnabled = true
     }
 
     override fun startingPipette(@ColorInt srcColor: Int) {
         isOnPipette = true
         mainImage.startPipette(srcColor)
-        mainFab.setImageResource(R.drawable.ic_pipette_done_black_24dp)
+        mainFab.setImageDrawable(pipetteDrawable)
     }
 
     override fun onError(e: Throwable) {
@@ -214,7 +222,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     private fun stopPipette(isCancel: Boolean = false) {
         if (isCancel) {
             mainImage.stopPipette()
-            mainFab.setImageResource(R.drawable.ic_save_black_24dp)
+            mainFab.setImageDrawable(saveDrawable)
         } else {
             // NOTE: setBackgroundColorFromPipette -> hide/show progress
             mainImage.stopPipette(presenter::setBackgroundColorFromPipette)
@@ -263,7 +271,8 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
         val path = uri.toString() // FIXME: `uri.toString()` -> Let ImageLoader handle it?
         val info = packageManager.getActivityInfo(intent.component, GET_META_DATA)
         // NOTE: @see AndroidManifest.xml
-        // NOTE: <meta-data ...  android:resource /> returned Resources ID (Int), not a String
+        // NOTE: <meta-data ...  android:resource />
+        // returned Resources ID (Int), *not* a Resources value (String)
         val imageReceiverKey: Int? = info?.metaData?.getInt(IMAGE_RECEIVER)
         return when (imageReceiverKey) {
             R.string.screen -> true.also { changePathScreen1(path) }

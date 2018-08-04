@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.ui.common.asyncListDiffer
+import rbb.hishoot2i.common.ext.asyncListDiffer
 import rbb.hishoot2i.common.ext.graphics.color
 import rbb.hishoot2i.common.ext.inflateNotAttach
 import rbb.hishoot2i.common.ext.isVisible
@@ -26,7 +26,6 @@ class TemplateAdapter @Inject constructor(
     }
 
     private val differ = asyncListDiffer(templateDiffCallback)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemplateHolder =
         with(parent) { inflateNotAttach(R.layout.row_item_template).let { TemplateHolder(it) } }
 
