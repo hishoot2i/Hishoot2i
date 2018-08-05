@@ -14,13 +14,13 @@ import android.support.annotation.ColorInt
 import android.text.TextPaint
 import rbb.hishoot2i.common.entity.Sizes
 import rbb.hishoot2i.common.ext.POINT_OF_FIVE
+import rbb.hishoot2i.common.ext.dp2px
 import rbb.hishoot2i.common.ext.graphics.applyCanvas
 import rbb.hishoot2i.common.ext.graphics.darker
-import rbb.hishoot2i.common.ext.dp2px
 import rbb.hishoot2i.common.ext.graphics.halfAlpha
 import rbb.hishoot2i.common.ext.textSize
 
-class BadgeBitmap(val context: Context) {
+class BadgeBitmapBuilder(val context: Context) {
     private val rectF: RectF = RectF()
     private val padding = context.dp2px(DEF_PADDING)
     private val shadowStroke = context.dp2px(DEF_SHADOW_STROKE)
@@ -39,7 +39,7 @@ class BadgeBitmap(val context: Context) {
         strokeWidth = shadowStroke
     }
 
-    fun create(config: Config): Bitmap {
+    fun build(config: Config): Bitmap {
         val textUpperCase = config.text.toUpperCase()
         val localBound = Rect()
         textPaint.apply {

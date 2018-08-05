@@ -2,9 +2,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 def versions = [:]
-versions.agp = '3.2.0-alpha18'
+versions.agp = '3.2.0-beta05'
 versions.dagger = '2.16'
-versions.kotlin = '1.2.50'
+versions.kotlin = '1.2.60'
 versions.proguard = '6.0'
 versions.supportLibrary = '27.1.1'
 versions.leakcanary = '1.6.1'

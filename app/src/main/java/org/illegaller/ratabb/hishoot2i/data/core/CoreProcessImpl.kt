@@ -11,7 +11,7 @@ import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.CacheFileTypefaces
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import rbb.hishoot2i.common.FileConstants
-import rbb.hishoot2i.common.custombitmap.BadgeBitmap
+import rbb.hishoot2i.common.custombitmap.BadgeBitmapBuilder
 import rbb.hishoot2i.common.egl.MaxTextureCompat
 import rbb.hishoot2i.common.entity.BackgroundMode
 import rbb.hishoot2i.common.entity.BadgePosition
@@ -28,6 +28,7 @@ import rbb.hishoot2i.common.ext.graphics.drawBitmapBlur
 import rbb.hishoot2i.common.ext.graphics.drawBitmapPerspective
 import rbb.hishoot2i.common.ext.graphics.drawBitmapSafely
 import rbb.hishoot2i.common.ext.graphics.drawable
+import rbb.hishoot2i.common.ext.graphics.recycleSafely
 import rbb.hishoot2i.common.ext.graphics.resizeIfNotEqual
 import rbb.hishoot2i.common.ext.graphics.saveTo
 import rbb.hishoot2i.common.ext.graphics.scaleCenterCrop
@@ -36,6 +37,7 @@ import rbb.hishoot2i.common.ext.graphics.toBitmap
 import rbb.hishoot2i.common.ext.toDateTimeFormat
 import rbb.hishoot2i.common.imageloader.ImageLoader
 import rbb.hishoot2i.template.Template
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
@@ -49,32 +51,33 @@ class CoreProcessImpl @Inject constructor(
 ) : CoreProcess,
     FileConstants by fileConstants,
     ImageLoader by imageLoader {
-    private val deviceSizes by lazy { with(context) { Sizes(deviceWidth, deviceHeight) } }
-    private val mapSizes = hashMapOf<String, Sizes>()
-    //
+    private val backgroundMode get() = BackgroundMode.fromId(appPref.backgroundModeId)
+    private val badgeBitmapBuilder: BadgeBitmapBuilder by lazy(NONE) { BadgeBitmapBuilder(context) }
+    private val deviceSizes: Sizes by lazy(NONE) {
+        Sizes(context.deviceWidth, context.deviceHeight)
+    }
+    private val isART: Boolean by lazy(NONE) {
+        System.getProperty("java.vm.version", "")
+            .let { it.isNotEmpty() && it[0].toInt() >= 2 }
+    }
     private val maxTextureSize: Int? by lazy(NONE) {
         if (BuildConfig.DEBUG) 2048 // ...
         else MaxTextureCompat.get()
     }
-    private val badgeBitmap: BadgeBitmap by lazy(NONE) { BadgeBitmap(context) }
+    private val paddingBadgeBitmap: Int by lazy(NONE) { Math.round(context.dp2px(10)) }
     override fun preview(template: Template, sourcePath: ImageSourcePath): Single<Result> =
-        template.core(sourcePath, false)
-            .map { it.resizePreview() }
+        template.core(sourcePath, false).flatMap { it.singleResizePreview() }
             .map { Result.Preview(it) }
 
-    /**/
     override fun save(template: Template, sourcePath: ImageSourcePath): Single<Result> =
-        template.core(sourcePath, true)
-            .flatMap { bitmap: Bitmap ->
-                Single.fromCallable {
-                    val file = now().toDateTimeFormat("yyyyMMdd_HHmmss")
-                        .let { File(savedDir(), "HiShoot_$it.png") }
-                    bitmap.saveTo(file)
-                    file
-                }
-                    .map { FileProvider.getUriForFile(context, FILE_AUTHORITY, it) }
-                    .map { Result.Save(bitmap, it) }
+        template.core(sourcePath, true).flatMap { bitmap: Bitmap ->
+            Single.fromCallable {
+                val timeStamp = now().toDateTimeFormat("yyyyMMdd_HHmmss")
+                File(savedDir(), "HiShoot_$timeStamp.png").also { bitmap.saveTo(it) }
             }
+                .map { FileProvider.getUriForFile(context, FILE_AUTHORITY, it) }
+                .map { Result.Save(bitmap, it) }
+        }
 
     private fun Template.core(path: ImageSourcePath, isSave: Boolean): Single<Bitmap> = singleBase()
         .flatMap { it.singleBackground(path.background, isSave) }
@@ -82,9 +85,8 @@ class CoreProcessImpl @Inject constructor(
         .flatMap { it.singleBadgeBitmap() }
 
     private fun Template.singleBase(): Single<Bitmap> = Single.fromCallable {
-        if (!isArt()) System.gc()
-        checkFrameSize(this)
-        (mapSizes[id] ?: sizes).let {
+        if (!isART) System.gc()
+        sizes.let {
             when (appPref.doubleScreenEnable) {
                 true -> it * Sizes(2, 1)
                 false -> it
@@ -94,17 +96,17 @@ class CoreProcessImpl @Inject constructor(
 
     private fun Bitmap.singleBackground(backgroundPath: String?, isSave: Boolean): Single<Bitmap> =
         Single.fromCallable {
-            val backgroundMode = BackgroundMode.fromId(appPref.backgroundModeId)
             applyCanvas {
                 when (backgroundMode) {
                     is BackgroundMode.Color -> drawColor(appPref.backgroundColorInt)
                     is BackgroundMode.Image -> {
-                        val background: Bitmap = backgroundPath.backgroundImage(isSave, sizes)
-                        when (appPref.backgroundImageBlurEnable) {
-                            true -> drawBitmapBlur(background, appPref.backgroundImageBlurRadius)
-                            false -> drawBitmapSafely(background)
+                        backgroundPath.backgroundImage(isSave, sizes).let {
+                            when (appPref.backgroundImageBlurEnable) {
+                                true -> drawBitmapBlur(it, appPref.backgroundImageBlurRadius)
+                                false -> drawBitmapSafely(it)
+                            }
+                            it.recycleSafely()
                         }
-                        background.recycle()
                     }
                     is BackgroundMode.Transparent -> {
                     } // Do nothing.
@@ -118,36 +120,42 @@ class CoreProcessImpl @Inject constructor(
         isSave: Boolean
     ): Single<Bitmap> = Single.fromCallable {
         applyCanvas {
-            var ss = path.screen1.screenShootImage(isSave)
-            var mixed = mixIt(ss, template, isSave)
+            var mixed = template.mixIt(isSave, path.screen1)
             drawBitmapSafely(mixed)
             if (appPref.doubleScreenEnable) {
                 translate(mixed.width.toFloat(), 0F)
-                ss = path.screen2.screenShootImage(isSave)
-                mixed = mixIt(ss, template, isSave)
+                mixed = template.mixIt(isSave, path.screen2)
                 drawBitmapSafely(mixed)
             }
-            ss.recycle()
-            mixed.recycle()
+            mixed.recycleSafely()
         }
     }
 
     private fun Bitmap.singleBadgeBitmap(): Single<Bitmap> = when (appPref.badgeEnable) {
         false -> Single.just(this)
         true -> Single.fromCallable {
-            val bb = with(appPref) {
+            val badgeBitmap = with(appPref) {
                 val typeface = CacheFileTypefaces.getOrDefault(badgeTypefacePath)
-                BadgeBitmap.Config(badgeText, typeface, badgeSize, badgeColor)
-            }.let { badgeBitmap.create(it) }
-            val padding = Math.round(context.dp2px(10))
+                BadgeBitmapBuilder.Config(badgeText, typeface, badgeSize, badgeColor)
+            }.let { badgeBitmapBuilder.build(it) }
+            val totalSizes = sizes
             val (left, top) = BadgePosition.fromId(appPref.badgePositionId)
-                .apply {
-                    total = sizes
-                    source = bb.sizes
-                }
-                .getPosition(padding)
-            applyCanvas { drawBitmapSafely(bb, left, top) }
+                .apply { total = totalSizes; source = badgeBitmap.sizes }
+                .getPosition(paddingBadgeBitmap)
+            applyCanvas {
+                drawBitmapSafely(badgeBitmap, left, top)
+                badgeBitmap.recycleSafely()
+            }
         }
+    }
+
+    private fun Bitmap.singleResizePreview(): Single<Bitmap> = Single.fromCallable {
+        maxTextureSize?.let {
+            if (width > it || height > it) {
+                Timber.d("maxTextureSize")
+                resizeIfNotEqual(sizes.max(it))
+            } else this
+        } ?: this
     }
 
     private fun String?.backgroundImage(isSave: Boolean, reqSize: Sizes): Bitmap = this?.let {
@@ -165,142 +173,94 @@ class CoreProcessImpl @Inject constructor(
         loadSync(it, isSave, deviceSizes)
     } ?: context.alphaPatternBitmap(deviceSizes)
 
-    private fun Bitmap.resizePreview(): Bitmap = maxTextureSize?.let {
-        if (sizes.x > it || sizes.y > it) resizeIfNotEqual(sizes.max(it)) else this
-    } ?: this
-
-    private fun checkFrameSize(template: Template) {
-        if (mapSizes.containsKey(template.id)) return
-        when (template) {
-            is Template.Empty,
-            is Template.Default,
-            is Template.Version1 -> mapSizes[template.id] = template.sizes
-            is Template.Version2 -> {
-                template.frame.getBitmapSizesOnly(template.sizes) {
-                    var s = it
-                    if (s.x <= 1 || s.y <= 1) {
-                        template.glare?.let {
-                            it.name.getBitmapSizesOnly(it.size) {
-                                s = it
-                            }
-                        }
-                    }
-                    mapSizes[template.id] = s
-                }
-            }
-            is Template.Version3,
-            is Template.VersionHtz -> {
-                template.frame.getBitmapSizesOnly(template.sizes) {
-                    mapSizes[template.id] = it
-                }
-            }
+    private fun Template.mixIt(isSave: Boolean, ss: String?): Bitmap = sizes.createBitmap().let {
+        val coordinate = coordinateNormalize(it.sizes)
+        when (this) {
+            is Template.Default -> it.drawDefault(ss, coordinate, isSave)
+            is Template.Version1 -> it.drawVersion1(ss, coordinate, isSave, this)
+            is Template.Version2 -> it.drawVersion2(ss, coordinate, isSave, this)
+            is Template.Version3 -> it.drawVersion3(ss, coordinate, isSave, this)
+            is Template.VersionHtz -> it.drawVersionHtz(ss, coordinate, isSave, this)
+            is Template.Empty -> throw IllegalStateException("Unknown $id")
         }.exhaustive
     }
 
-    private fun String?.getBitmapSizesOnly(reqSize: Sizes, consume: (Sizes) -> Unit) {
-        this?.let {
-            loadSync(it, false, reqSize)?.let {
-                consume(it.sizes)
-                it.recycle()
+    private fun Template.coordinateNormalize(reqSizes: Sizes): FloatArray {
+        var ret = coordinate
+        if (reqSizes != sizes) {
+            val (x, y) = reqSizes.toSizeF() / sizes.toSizeF()
+            ret = ret.toMutableList().apply {
+                forEachIndexed { i, value ->
+                    val factor = if (i % 2 == 0) x else y
+                    set(i, value * factor)
+                }
             }
-        }
-    }
-
-    private fun mixIt(ss: Bitmap, template: Template, isSave: Boolean): Bitmap {
-        val mixedSize = with(template) { mapSizes[id] ?: sizes }
-        val mixed = mixedSize.createBitmap()
-        val coordinate = mixedSize.coordinateNormalize(template)
-        with(mixed) {
-            when (template) {
-                is Template.Default -> drawDefault(ss, coordinate)
-                is Template.Version1 -> drawVersion1(ss, coordinate, isSave, template)
-                is Template.Version2 -> drawVersion2(ss, coordinate, isSave, template)
-                is Template.Version3 -> drawVersion3(ss, coordinate, isSave, template)
-                is Template.VersionHtz -> drawVersionHtz(ss, coordinate, isSave, template)
-                is Template.Empty -> throw IllegalStateException("Unknown ${template.id}")
-            }.exhaustive
-        }
-        return mixed
-    }
-
-    //
-    private fun Sizes.coordinateNormalize(template: Template): FloatArray {
-        val ret: MutableList<Float> = template.coordinate.toMutableList()
-        if (this != template.sizes) {
-            val (x, y) = (this.toSizeF() / template.sizes.toSizeF())
-            ret[0] = x * ret[0]
-            ret[1] = y * ret[1]
-            ret[2] = x * ret[2]
-            ret[3] = y * ret[3]
-            ret[4] = x * ret[4]
-            ret[5] = y * ret[5]
-            ret[6] = x * ret[6]
-            ret[7] = y * ret[7]
         }
         return ret.toFloatArray()
     }
 
-    //
-    private fun Bitmap.drawDefault(
-        screenShoot: Bitmap,
-        coordinate: FloatArray
-    ): Bitmap = applyCanvas {
-        drawBitmapPerspective(screenShoot, coordinate)
-        context.drawable(R.drawable.frame1)
-            ?.toBitmap(width, height)
-            ?.let { drawBitmapSafely(it) }
-    }
+    private fun Bitmap.drawDefault(ss: String?, coordinate: FloatArray, isSave: Boolean): Bitmap =
+        applyCanvas {
+            drawBitmapPerspective(ss.screenShootImage(isSave), coordinate)
+            context.drawable(R.drawable.frame1)
+                ?.toBitmap(width, height)
+                ?.let { drawBitmapSafely(it); it.recycleSafely() }
+        }
 
     private fun Bitmap.drawVersion1(
-        screenShoot: Bitmap,
+        ss: String?,
         coordinate: FloatArray,
         isSave: Boolean,
         template: Template.Version1
     ): Bitmap = applyCanvas {
-        drawBitmapPerspective(screenShoot, coordinate)
-        assetTemplate(template.frame, isSave, sizes)
+        drawBitmapPerspective(ss.screenShootImage(isSave), coordinate)
+        drawAssetTemplate(template.frame, isSave, sizes)
     }
 
     private fun Bitmap.drawVersion2(
-        screenShoot: Bitmap,
+        ss: String?,
         coordinate: FloatArray,
         isSave: Boolean,
         template: Template.Version2
     ): Bitmap = applyCanvas {
-        if (appPref.templateShadowEnable) assetTemplate(template.shadow, isSave, sizes)
-        if (appPref.templateFrameEnable) assetTemplate(template.frame, isSave, sizes)
-        drawBitmapPerspective(screenShoot, coordinate)
+        if (appPref.templateShadowEnable) {
+            drawAssetTemplate(template.shadow, isSave, sizes)
+        }
+        if (appPref.templateFrameEnable) drawAssetTemplate(template.frame, isSave, sizes)
+        drawBitmapPerspective(ss.screenShootImage(isSave), coordinate)
         if (appPref.templateGlareEnable) {
-            template.glare?.let { assetTemplate(it.name, isSave, it.size, it.position) }
+            template.glare?.let { drawAssetTemplate(it.name, isSave, it.size, it.position) }
         }
     }
 
     private fun Bitmap.drawVersion3(
-        screenShoot: Bitmap,
+        ss: String?,
         coordinate: FloatArray,
         isSave: Boolean,
         template: Template.Version3
     ): Bitmap = applyCanvas {
-        if (appPref.templateShadowEnable) template.shadow?.let { assetTemplate(it, isSave, sizes) }
-        if (appPref.templateFrameEnable) assetTemplate(template.frame, isSave, sizes)
-        drawBitmapPerspective(screenShoot, coordinate)
+        if (appPref.templateShadowEnable) template.shadow?.let {
+            drawAssetTemplate(it, isSave, sizes)
+        }
+        if (appPref.templateFrameEnable) drawAssetTemplate(template.frame, isSave, sizes)
+        drawBitmapPerspective(ss.screenShootImage(isSave), coordinate)
         if (appPref.templateGlareEnable) {
-            template.glares?.forEach { assetTemplate(it.name, isSave, it.size, it.position) }
+            template.glares?.forEach { drawAssetTemplate(it.name, isSave, it.size, it.position) }
         }
     }
 
     private fun Bitmap.drawVersionHtz(
-        screenShoot: Bitmap,
+        ss: String?,
         coordinate: FloatArray,
         isSave: Boolean,
         template: Template.VersionHtz
     ): Bitmap = applyCanvas {
-        assetTemplate(template.frame, isSave, sizes)
-        drawBitmapPerspective(screenShoot, coordinate)
-        template.glare?.let { assetTemplate(it.name, isSave, it.size, it.position) }
+        drawAssetTemplate(template.frame, isSave, sizes)
+        drawBitmapPerspective(ss.screenShootImage(isSave), coordinate)
+        template.glare?.let { drawAssetTemplate(it.name, isSave, it.size, it.position) }
     }
 
-    private fun Canvas.assetTemplate(
+    private fun Canvas.drawAssetTemplate(
         source: String,
         isSave: Boolean,
         sizes: Sizes,
@@ -308,12 +268,8 @@ class CoreProcessImpl @Inject constructor(
     ) {
         loadSync(source, isSave, sizes)?.let {
             val (left, top) = position.toSizeF()
-            drawBitmapSafely(it, left, top)
+            drawBitmapSafely(it.resizeIfNotEqual(sizes), left, top)
+            it.recycleSafely()
         }
-    }
-
-    private fun isArt(): Boolean { //
-        val property = System.getProperty("java.vm.version", "")
-        return property.isNotEmpty() && property[0].toInt() >= 2
     }
 }

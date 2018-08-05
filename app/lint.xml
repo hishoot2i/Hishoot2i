@@ -4,7 +4,4 @@
         <ignore regexp="timber.lint" />
     </issue>
     <issue id="UnusedResources" severity="ignore" />
-    <!--TODO: -->
-    <issue id="IconDipSize" severity="ignore" />
-    <issue id="IconDensities" severity="ignore" />
 </lint>

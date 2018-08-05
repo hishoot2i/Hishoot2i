@@ -51,28 +51,31 @@ inline fun File.bitmapSize(): Sizes? {
 }
 
 val DEFAULT_PAINT_BITMAP = Paint(Paint.FILTER_BITMAP_FLAG)
-inline fun Bitmap.scaleCenterCrop(reqSizes: Sizes, config: Bitmap.Config? = null): Bitmap {
-    val source = this
-    val (xScale, yScale) = (reqSizes.toSizeF() / source.sizes.toSizeF())
+inline fun Bitmap.scaleCenterCrop(reqSizes: Sizes, reqConfig: Bitmap.Config? = null): Bitmap {
+    val (xScale, yScale) = (reqSizes.toSizeF() / sizes.toSizeF())
     val scale = xScale.coerceAtLeast(yScale)
-    val scaled = source.sizes.toSizeF() * scale
+    val scaled = sizes.toSizeF() * scale
     val (left, top) = (reqSizes.toSizeF() - scaled) * POINT_OF_FIVE
     val (right, bottom) = (scaled + SizesF(left, top)) + POINT_OF_FIVE
     val targetRect = RectF(left, top, right, bottom)
-    return reqSizes.createBitmap(config = config ?: source.config).applyCanvas {
-        drawBitmap(source, null, targetRect, DEFAULT_PAINT_BITMAP)
+    return reqSizes.createBitmap(config = reqConfig ?: config).applyCanvas {
+        drawBitmap(
+            this@scaleCenterCrop,
+            null,
+            targetRect,
+            DEFAULT_PAINT_BITMAP
+        )
     }
 }
 
 inline fun Bitmap.roundedLargeIcon(iconSize: Int, config: Bitmap.Config? = null): Bitmap {
-    val source = this
     val halfIconSize = iconSize * POINT_OF_FIVE
     val paint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     val iconSizes = Sizes(iconSize, iconSize)
     return iconSizes.createBitmap(config = config ?: ARGB_8888).applyCanvas {
         drawCircle(halfIconSize, halfIconSize, halfIconSize, paint)
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        drawBitmapSafely(source.resizeIfNotEqual(iconSizes, true), paint = paint)
+        drawBitmapSafely(this@roundedLargeIcon.resizeIfNotEqual(iconSizes, true), paint = paint)
     }
 }
 
@@ -92,5 +95,14 @@ inline fun Bitmap.saveTo(
     BufferedOutputStream(file.outputStream()).use { stream: BufferedOutputStream ->
         compress(compressFormat, quality, stream)
         stream.flush()
+    }
+}
+
+inline fun Bitmap.recycleSafely() {
+    if (!isRecycled) {
+        try {
+            recycle()
+        } catch (ignore: Exception) {
+        }
     }
 }

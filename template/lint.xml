@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--frame1.9.png @ mdpi only-->
+    <issue id="IconMissingDensityFolder" severity="ignore" />
+</lint>

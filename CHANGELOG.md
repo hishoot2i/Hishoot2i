@@ -1,16 +1,19 @@
 # Changelog
 -----
-##**v1.2.2 (20180804)**
+### **v1.2.3 (20180806)**
+- Bug fixes
+
+### **v1.2.2 (20180804)**
 
 - Bug fixes incorrect size
 - Bug fixes out of memory :crossed_fingers:
 - Interfaces improvement
 
-##**v1.2.1 (20180731)**
+### **v1.2.1 (20180731)**
 
 - Bug fixes and improvements
 
-##**v1.2.0 (20180730)**
+###**v1.2.0 (20180730)**
 
 - remove CrashLytics
 - remove AppUpdater
@@ -27,17 +30,17 @@
   - position
   - optional system font (default = false)
 
-##**v1.1.3 (20160604)**
+### **v1.1.3 (20160604)**
 
 - bug's fix 
 
-##**v1.1.2 (20160501)**
+### **v1.1.2 (20160501)**
 
 - fix bug's FC send image to Hishoot
 - fix bug's FC crop image from Document (API 19+)
 - test AppUpdater :v
 
-##**v1.1.1 (20160429)**
+### **v1.1.1 (20160429)**
 
 - switch (on/off) frame Template V2
 - template list slide/swipe to detail view
@@ -47,7 +50,7 @@
 - add clear preview cache
 - publish app with Github release (app update)
 
-##**v1.1.0 (20160411)**
+### **v1.1.0 (20160411)**
 
 - re-design (BottomBar & SearchView)
 - preview before save
@@ -59,23 +62,23 @@
 - publish app with CrashLytics BETA chanel
 - fix minor bug
 
-##**v1.0.5 (20160128)**
+### **v1.0.5 (20160128)**
 
 - drop SecurePreferences, use normal SharedPreferences
 - improve Template manager
 
-##**v1.0.4 (20160120)**
+### **v1.0.4 (20160120)**
 
 - add Badge size
 - clean up dead code
 
-##**v1.0.3 (20160114)**
+### **v1.0.3 (20160114)**
 
 - fix minor bug
 - add pick file Template Htz
 - Template V2 [**sample**](https://github.com/hishoot2i/TemplateHishoot/tree/master/templatev2)
 
-##**v1.0.2 (20151231)**
+### **v1.0.2 (20151231)**
 
 - hide FAB after click
 - fix clear notification add Button "Force clear notification"
@@ -83,13 +86,13 @@
 - re-add notification (normal style) Gingerbread
 - Badge custom font (/SDCard/fonts/)
 
-##**v1.0.1 (20151223)**
+### **v1.0.1 (20151223)**
 
 - remove notification Gingerbread
 - add ActivityLifecycleCallbacksCompat for pre-ICS
 - fixed Gingerbread
 
-##**v1.0.0 (20151223)**
+### **v1.0.0 (20151223)**
 
 - Runtime Permission Marshmallow
 - Template Apk v2 (?)

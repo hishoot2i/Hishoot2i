@@ -108,7 +108,7 @@ class SaveNotification @Inject constructor(context: Context) {
         summary: String
     ): NotificationCompat.BigPictureStyle = NotificationCompat.BigPictureStyle()
         .bigPicture(bitmap.bigPicture())
-        .bigLargeIcon(null) // NOTE: remove LargeIcon, when BigPicture show.
+        .bigLargeIcon(null) // NOTE: remove LargeIcon, when BigPicture is showing.
         .setBigContentTitle(title)
         .setSummaryText(summary)
 
@@ -116,12 +116,13 @@ class SaveNotification @Inject constructor(context: Context) {
         val (imageWidth, imageHeight) = sizes
         val shortSide = imageWidth.coerceAtMost(imageHeight)
         val shortSideSizes = Sizes(shortSide, shortSide)
-        val crop = scaleCenterCrop(shortSideSizes)
-        return shortSideSizes.createBitmap(Bitmap.Config.RGB_565)
-            .applyCanvas {
-                drawBitmapSafely(crop, paint = paintBigPicture)
-                drawColor(DARK_GRAY_HALF_ALPHA)
-            }
+        return shortSideSizes.createBitmap(CONFIG_BIG_PICTURE).applyCanvas {
+            drawBitmapSafely(
+                this@bigPicture.scaleCenterCrop(shortSideSizes, CONFIG_BIG_PICTURE),
+                paint = paintBigPicture
+            )
+            drawColor(DARK_GRAY_HALF_ALPHA)
+        }
     }
 
     private val paintBigPicture = ColorMatrixColorFilter(ColorMatrix().apply {
@@ -137,5 +138,6 @@ class SaveNotification @Inject constructor(context: Context) {
         private const val CHANNEL_NAME = "HiShoot2i"
         private const val POINT_OF_TWENTY_FIVE = .25F
         private val DARK_GRAY_HALF_ALPHA = Color.DKGRAY.halfAlpha
+        private val CONFIG_BIG_PICTURE = Bitmap.Config.RGB_565
     }
 }

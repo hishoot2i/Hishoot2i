@@ -18,7 +18,7 @@ sealed class BadgePosition(val id: Int) {
     var source: Sizes = Sizes.ZERO
     fun getPosition(@Px padding: Int): SizesF {
         if (total == Sizes.ZERO || source == Sizes.ZERO) {
-            throw IllegalStateException("total or size == ZERO")
+            throw IllegalStateException("total or source sizes == ZERO")
         }
         return when (this) {
             LeftTop -> Sizes(padding, padding)

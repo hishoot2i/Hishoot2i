@@ -31,4 +31,4 @@
 [fb_group]: https://www.facebook.com/groups/hishoot.template
 [gplus_communities]: https://plus.google.com/communities/115724885071998017281
 [ico_version]: https://img.shields.io/github/release/hishoot2i/hishoot2i.svg?style=flat-square&label=Download
-[link_version]: https://github.com/hishoot2i/releases/latest
+[link_version]: https://github.com/hishoot2i/hishoot2i/releases/latest

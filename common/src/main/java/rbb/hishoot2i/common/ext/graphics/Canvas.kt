@@ -55,6 +55,7 @@ inline fun Canvas.drawBitmapPerspective(
         }
         withConcatMatrix(matrix) {
             drawBitmapSafely(bitmap, paint = paint)
+            bitmap.recycleSafely()
         }
     }
 }
@@ -65,10 +66,13 @@ inline fun Canvas.drawBitmapBlur(bitmap: Bitmap?, radius: Int) {
         val rad = radius.coerceAtMost(MAX_BLUR_RADIUS)
         val sizes = bitmap.sizes
         val scaledSize = sizes / 2
-        val scaleDown = Bitmap.createScaledBitmap(bitmap, scaledSize.x, scaledSize.y, false)
+        val scaleDown = bitmap.resizeIfNotEqual(scaledSize)
         val stackBlurManager = StackBlurManager(scaleDown)
         val process = stackBlurManager.process(rad)
+        scaleDown.recycleSafely()
         val scaleUp = Bitmap.createScaledBitmap(process, sizes.x, sizes.y, false)
+        process.recycleSafely()
         drawBitmapSafely(scaleUp)
+        scaleUp.recycleSafely()
     }
 }
