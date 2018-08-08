@@ -10,10 +10,10 @@ class TemplateImageDownloader(context: Context) : BaseImageDownloader(context) {
     override fun getStreamFromOtherSource(imageUri: String, extra: Any?): InputStream {
         if (imageUri.startsWith(PathBuilder.TEMPLATE_APP)) {
             try {
-                val loc = imageUri.replace(PathBuilder.TEMPLATE_APP, "")
-                    .split(PathBuilder.SEPARATOR)
-                val resources = context.resourcesFrom(loc[0])
-                val drawableRes = resources.getIdentifier(loc[1], "drawable", loc[0])
+                val (pkg, id) = imageUri.removePrefix(PathBuilder.TEMPLATE_APP)
+                    .split(PathBuilder.SEPARATOR, limit = 2)
+                val resources = context.resourcesFrom(pkg)
+                val drawableRes = resources.getIdentifier(id, "drawable", pkg)
                 if (drawableRes > 0) {
                     return resources.openRawResource(drawableRes)
                 } else throw UnsupportedOperationException(imageUri)

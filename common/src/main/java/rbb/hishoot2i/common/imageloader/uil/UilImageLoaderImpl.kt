@@ -13,21 +13,27 @@ import com.nostra13.universalimageloader.core.assist.ImageSize
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware
-import com.nostra13.universalimageloader.utils.StorageUtils
+import com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory
 import rbb.hishoot2i.common.FileConstants
 import rbb.hishoot2i.common.PathBuilder
 import rbb.hishoot2i.common.entity.Sizes
 import rbb.hishoot2i.common.imageloader.ImageLoader
+import kotlin.LazyThreadSafetyMode.NONE
 import com.nostra13.universalimageloader.core.ImageLoader as UilImageLoader
 
-// TODO:
-class UilImageLoaderImpl(appContext: Context, isLogging: Boolean) : ImageLoader {
-    private val uilImageLoader: UilImageLoader by lazy(this) {
+class UilImageLoaderImpl(context: Context, isLogging: Boolean) : ImageLoader {
+    private val diskCache by lazy(NONE) {
+        try {
+            LruDiskCache(getCacheDirectory(context), DISK_CACHE_FILENAME_GEN, DISK_CACHE_SIZE)
+        } catch (ignore: Exception) {
+            null
+        }
+    }
+    private val uilImageLoader: UilImageLoader by lazy {
         val instance = UilImageLoader.getInstance()
         if (!instance.isInited) {
-            val diskCache = initializeDiskCache(appContext)
-            val configBuilder = ImageLoaderConfiguration.Builder(appContext)
-                .imageDownloader(TemplateImageDownloader(appContext))
+            val builder = ImageLoaderConfiguration.Builder(context)
+                .imageDownloader(TemplateImageDownloader(context))
                 .imageDecoder(BaseImageDecoder(isLogging))
                 .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
                 .threadPriority(Thread.NORM_PRIORITY)
@@ -36,44 +42,40 @@ class UilImageLoaderImpl(appContext: Context, isLogging: Boolean) : ImageLoader 
                 .denyCacheImageMultipleSizesInMemory()
                 .memoryCacheSizePercentage(MEMORY_CACHE_PERCENT)
             // DiskCache
-            diskCache?.let { configBuilder.diskCache(it) }
-            if (isLogging) configBuilder.writeDebugLogs()
-            instance.init(configBuilder.build())
+            diskCache?.let { builder.diskCache(it) }
+            if (isLogging) builder.writeDebugLogs()
+            instance.init(builder.build())
         }
         instance
     }
 
     override fun display(imageView: ImageView, source: String, reqSizes: Sizes?) {
-        val imageSize = reqSizes?.let { ImageSize(it.x, it.y) }
-        val options = displayImageOptions(
-            source,
-            false,
-            ImageScaleType.IN_SAMPLE_POWER_OF_2,
-            Bitmap.Config.RGB_565
-        )
-        uilImageLoader.displayImage(
-            source,
-            ImageViewAware(imageView),
-            options,
-            imageSize,
-            null,
-            null
-        )
+        source.displayImageOptions(
+            scaleType = ImageScaleType.IN_SAMPLE_POWER_OF_2,
+            config = Bitmap.Config.RGB_565
+        ).let {
+            uilImageLoader.displayImage(
+                source,
+                imageView.wrapAware(),
+                it,
+                reqSizes.toImageSize(),
+                null,
+                null
+            )
+        }
     }
 
-    override fun loadSync(source: String, isSave: Boolean, reqSizes: Sizes): Bitmap? {
-        val imageSize = with(reqSizes) { ImageSize(x, y) }
-        val imageScaleType = if (isSave) ImageScaleType.NONE else ImageScaleType.NONE_SAFE
-        val options = displayImageOptions(source, isSave, imageScaleType)
-        return uilImageLoader.loadImageSync(source, imageSize, options)
-    }
+    override fun loadSync(source: String, isSave: Boolean, reqSizes: Sizes): Bitmap? =
+        source.displayImageOptions(isSave).let {
+            uilImageLoader.loadImageSync(source, reqSizes.toImageSize(), it)
+        }
 
     override fun clearMemoryCache() {
         uilImageLoader.clearMemoryCache()
     }
 
     override fun clearDiskCache() {
-        uilImageLoader.diskCache?.clear()
+        diskCache?.clear()
     }
 
     /** @use
@@ -81,54 +83,46 @@ class UilImageLoaderImpl(appContext: Context, isLogging: Boolean) : ImageLoader 
      *  [android.text.format.Formatter.formatShortFileSize]
      * */
     override fun totalDiskCacheSize(): Long {
-        var ret = uilImageLoader.diskCache?.directory?.length() ?: 0L
+        var ret = diskCache?.directory?.length() ?: 0L
         try {
-            uilImageLoader.diskCache?.directory?.listFiles()
+            diskCache?.directory?.listFiles()
                 ?.forEach { ret += it.length() }
         } catch (ignore: Exception) { //
         }
         return ret
     }
 
-    private fun displayImageOptions(
-        source: String,
-        isSave: Boolean,
-        imageScaleType: ImageScaleType,
+    private fun String.displayImageOptions(
+        isSave: Boolean = false,
+        scaleType: ImageScaleType = ImageScaleType.NONE,
         config: Bitmap.Config = Bitmap.Config.ARGB_8888
     ): DisplayImageOptions = DisplayImageOptions.Builder()
         .considerExifParams(false)
-        .imageScaleType(imageScaleType)
-        .decodingOptions(decodingOptions(isSave, config, source))
-        .cacheInMemory(isCacheOnMemory(isSave, source))
-        .cacheOnDisk(isCacheOnDisk(isSave, source))
+        .imageScaleType(scaleType)
+        .decodingOptions(decodingOptions(isSave, config))
+        .cacheInMemory(isCacheOnMemory(isSave))
+        .cacheOnDisk(isCacheOnDisk(isSave))
         .build()
 
     /*cache to memory if not save and not background crop*/
-    private fun isCacheOnMemory(isSave: Boolean, source: String): Boolean =
-        !isSave && !source.endsWith(suffix = FileConstants.BG_CROP)
+    private fun String.isCacheOnMemory(isSave: Boolean): Boolean =
+        !isSave && !endsWith(suffix = FileConstants.BG_CROP)
 
     /*cache to disk if isCacheOnMemory and template asset only*/
-    private fun isCacheOnDisk(isSave: Boolean, source: String): Boolean =
-        isCacheOnMemory(isSave, source) && source.startsWith(PathBuilder.TEMPLATE_APP)
+    private fun String.isCacheOnDisk(isSave: Boolean): Boolean = diskCache != null &&
+            isCacheOnMemory(isSave) && startsWith(PathBuilder.TEMPLATE_APP)
 
-    private fun decodingOptions(
+    private fun String.decodingOptions(
         isSave: Boolean,
-        config: Bitmap.Config,
-        source: String
-    ): BitmapFactory.Options {
-        return BitmapFactory.Options().apply {
-            inScaled = !isSave
-            inPreferredConfig = config
-            uilImageLoader.memoryCache?.get(source)?.let { inBitmap = it }
-        }
+        config: Bitmap.Config
+    ): BitmapFactory.Options = BitmapFactory.Options().apply {
+        inScaled = !isSave
+        inPreferredConfig = config
+        uilImageLoader.memoryCache?.get(this@decodingOptions)?.let { inBitmap = it }
     }
 
-    private fun initializeDiskCache(context: Context): LruDiskCache? = try {
-        StorageUtils.getCacheDirectory(context)
-            .let { LruDiskCache(it, DISK_CACHE_FILENAME_GEN, DISK_CACHE_SIZE) }
-    } catch (ignore: Exception) {
-        null
-    }
+    private fun Sizes?.toImageSize(): ImageSize? = this?.let { ImageSize(x, y) }
+    private fun ImageView.wrapAware(): ImageViewAware = ImageViewAware(this)
 
     companion object {
         private const val MEMORY_CACHE_PERCENT = 70
