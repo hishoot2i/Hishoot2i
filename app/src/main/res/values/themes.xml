@@ -53,8 +53,6 @@
         <item name="bottomSheetStyle">@style/AppWidget.Light.BottomSheetModal</item>
     </style>
 
-    <style name="AppThemeOverlay" parent="ThemeOverlay.AppCompat" />
-
     <style name="AppThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="elevation">@dimen/toolbarElevation</item>
     </style>

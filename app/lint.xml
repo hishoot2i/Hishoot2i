@@ -3,5 +3,4 @@
     <issue id="ObsoleteLintCustomCheck">
         <ignore regexp="timber.lint" />
     </issue>
-    <issue id="UnusedResources" severity="ignore" />
 </lint>

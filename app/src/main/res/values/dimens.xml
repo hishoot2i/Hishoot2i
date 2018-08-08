@@ -2,7 +2,6 @@
 <resources>
     <dimen name="dp10">10dp</dimen>
     <dimen name="dp100">100dp</dimen>
-    <dimen name="dp12">12dp</dimen>
     <dimen name="dp120">120dp</dimen>
     <dimen name="dp140">140dp</dimen>
     <dimen name="dp16">16dp</dimen>

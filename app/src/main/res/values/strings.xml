@@ -6,7 +6,6 @@
     <string name="blur">Blur</string>
     <string name="color_mixer">Color Mixer</string>
     <string name="color_pipette">Color Pipette</string>
-    <string name="crop">Crop</string>
     <string name="double_">Double</string>
     <string name="font">Font</string>
     <string name="frame">Frame</string>
@@ -37,7 +36,6 @@
     <string name="color">Color</string>
     <string name="image">Image</string>
     <string name="transparent">Transparent</string>
-    <string name="hex_color_hint">`RGB` | `RRGGBB` | `AARRGGBB`</string>
     <string name="hex_color">Hex Color</string>
     <string name="sort_by">Sort by</string>
     <string name="name">Name</string>
