@@ -1,7 +1,4 @@
-# HiShoot2i
----
-[![Build Status][ico_travis]][travis]
-[![Current Version][ico_version]][link_version]
+# HiShoot2i [![Build Status][ico_travis]][travis] [![Current Version][ico_version]][link_version]
 
 
 ![APP BANNER][app_banner]
@@ -10,7 +7,7 @@
 
 ### **Template**
    
-  Guide how to create [**here**][template_repo]
+  [**Guide / Sample**][template_repo]
 
 
 ### **ChangeLog**
@@ -30,5 +27,5 @@
 [template_repo]: https://github.com/hishoot2i/TemplateHishoot
 [fb_group]: https://www.facebook.com/groups/hishoot.template
 [gplus_communities]: https://plus.google.com/communities/115724885071998017281
-[ico_version]: https://img.shields.io/github/release/hishoot2i/hishoot2i.svg?style=flat-square&label=Download
+[ico_version]: https://img.shields.io/github/release/hishoot2i/hishoot2i.svg?label=Current+Version
 [link_version]: https://github.com/hishoot2i/hishoot2i/releases/latest
