@@ -1,24 +1,21 @@
-package rbb.hishoot2i.common
+package org.illegaller.ratabb.hishoot2i.data
 
 import android.content.Context
+import android.net.Uri
 import android.os.Environment
+import android.support.v4.content.FileProvider
+import org.illegaller.ratabb.hishoot2i.BuildConfig
+import rbb.hishoot2i.common.FileConstants
 import java.io.File
 import java.io.IOException
+import javax.inject.Inject
 
-class FileConstantsImpl(private val context: Context) : FileConstants {
+class FileConstantsImpl @Inject constructor(val context: Context) : FileConstants {
     private var saved: File? = null
     private var htz: File? = null
     private var bgCrop: File? = null
-
-    init {
-        savedDir()
-        htzDir()
-        bgCrop()
-    }
-
     override fun savedDir(): File {
         saved?.let { return it }
-        //
         val result = File(Environment.getExternalStorageDirectory(), "HiShoot")
         if (!result.exists()) {
             result.mkdirs()
@@ -41,6 +38,9 @@ class FileConstantsImpl(private val context: Context) : FileConstants {
         htz = result
         return result
     }
+
+    override fun File.toUri(): Uri =
+        FileProvider.getUriForFile(context, BuildConfig.FILE_AUTHORITY, this)
 
     override fun bgCrop(): File {
         bgCrop?.let { return it }

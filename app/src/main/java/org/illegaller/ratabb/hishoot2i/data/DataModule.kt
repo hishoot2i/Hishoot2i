@@ -10,6 +10,8 @@ import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.data.rx.AppScheduler
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import rbb.hishoot2i.common.FileConstants
+import rbb.hishoot2i.common.egl.MaxTexture
+import rbb.hishoot2i.common.egl.MaxTextureCompat
 import rbb.hishoot2i.common.imageloader.ImageLoader
 import rbb.hishoot2i.common.imageloader.uil.UilImageLoaderImpl
 import rbb.hishoot2i.template.TemplateFactoryManager
@@ -34,7 +36,12 @@ object DataModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideFileConstants(wrapper: FileConstantsWrapper): FileConstants = wrapper
+    fun provideMaxTexture(): MaxTexture = MaxTextureCompat
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideFileConstants(impl: FileConstantsImpl): FileConstants = impl
 
     @Provides
     @Singleton

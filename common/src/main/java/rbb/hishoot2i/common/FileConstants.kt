@@ -1,5 +1,6 @@
 package rbb.hishoot2i.common
 
+import android.net.Uri
 import java.io.File
 
 interface FileConstants {
@@ -24,6 +25,9 @@ interface FileConstants {
      * @return a [File] `/data/data/<packageName>/cache/.crop`
      **/
     fun bgCrop(): File
+
+    /* */
+    fun File.toUri(): Uri
 
     companion object {
         const val NO_MEDIA = ".nomedia"
