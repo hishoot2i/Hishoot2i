@@ -14,7 +14,6 @@ import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.data.pref.asFlowable
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.computationUI
-import org.illegaller.ratabb.hishoot2i.data.rx.delayed
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
 import rbb.hishoot2i.common.entity.BackgroundMode
@@ -139,13 +138,11 @@ class MainPresenter @Inject constructor(
         }
             .asIterable()
             .mergeDelayError()
-            .delayed()
             .ioUI(schedulerProvider)
             .subscribeBy(::viewOnError) { onPreview() }
             .addTo(disposables)
 
         appPref.asFlowable(appPref::backgroundImageOptionId)
-            .delayed()
             .ioUI(schedulerProvider)
             .subscribeBy(::viewOnError) { imageOptionId: Int ->
                 // NOTE: `manual crop` excluded.

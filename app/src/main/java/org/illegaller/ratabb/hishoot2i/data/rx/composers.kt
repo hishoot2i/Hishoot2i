@@ -18,14 +18,6 @@ inline fun <T> Single<T>.computationUI(schedule: SchedulerProvider): Single<T> =
 inline fun <T> Single<T>.ioUI(schedule: SchedulerProvider): Single<T> =
     compose { subscribeOn(schedule.io()).observeOn(schedule.ui()) }
 
-// FIXME: ?
-@JvmOverloads
-inline fun <T> Flowable<T>.delayed(
-    durationOnMillis: Long = DEFAULT_DELAY_MS
-): Flowable<T> = throttleLatest(durationOnMillis, MILLISECONDS)
-    .debounce(durationOnMillis, MILLISECONDS)
-    .distinctUntilChanged()
-
 @JvmOverloads
 inline fun <T> Observable<T>.delayed(
     durationOnMillis: Long = DEFAULT_DELAY_MS
