@@ -1,7 +1,8 @@
-apply from: '../library_module.gradle'
+apply from: '../buildsystem/library_module.gradle'
 
 dependencies {
     //
+    compileOnly project(':entity')
     compileOnly deps.kotlin.stdlib
     compileOnly deps.supportLibrary.annotations
     compileOnly deps.supportLibrary.coreUtils
@@ -10,6 +11,5 @@ dependencies {
     compileOnly deps.supportLibrary.recyclerview
     compileOnly deps.supportLibrary.vectorDrawable
     compileOnly deps.timber
-    //
-    implementation deps.universalImageLoader
+    compileOnly deps.inject
 }

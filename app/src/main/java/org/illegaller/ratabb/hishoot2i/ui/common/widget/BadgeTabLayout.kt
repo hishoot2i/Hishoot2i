@@ -8,9 +8,9 @@ import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
 import android.widget.TextView
+import common.ext.inflateNotAttach
+import common.ext.isVisible
 import org.illegaller.ratabb.hishoot2i.R
-import rbb.hishoot2i.common.ext.inflateNotAttach
-import rbb.hishoot2i.common.ext.isVisible
 
 class BadgeTabLayout : TabLayout {
     constructor(context: Context) : super(context)

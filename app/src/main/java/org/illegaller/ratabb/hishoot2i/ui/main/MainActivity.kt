@@ -24,6 +24,14 @@ import com.fondesa.kpermissions.extension.onDenied
 import com.fondesa.kpermissions.extension.onPermanentlyDenied
 import com.fondesa.kpermissions.extension.onShouldShowRationale
 import com.fondesa.kpermissions.extension.permissionsBuilder
+import common.ext.activityPendingIntent
+import common.ext.addToGallery
+import common.ext.disableShiftMode
+import common.ext.graphics.createVectorDrawableTint
+import common.ext.graphics.sizes
+import common.ext.isVisible
+import common.ext.preventMultipleClick
+import common.ext.toActionViewImage
 import org.illegaller.ratabb.hishoot2i.BuildConfig.IMAGE_RECEIVER
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
@@ -34,14 +42,6 @@ import org.illegaller.ratabb.hishoot2i.ui.main.tools.badge.BadgeTool
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.screen.ScreenTool
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.template.TemplateTool
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
-import rbb.hishoot2i.common.ext.activityPendingIntent
-import rbb.hishoot2i.common.ext.addToGallery
-import rbb.hishoot2i.common.ext.disableShiftMode
-import rbb.hishoot2i.common.ext.graphics.createVectorDrawableTint
-import rbb.hishoot2i.common.ext.graphics.sizes
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.toActionViewImage
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -141,7 +141,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     }
 
     override fun preview(bitmap: Bitmap) {
-        ratioCrop = bitmap.sizes.toPoint()
+        ratioCrop = bitmap.sizes.let { Point(it.x, it.y) }
         mainImage.setImageBitmap(bitmap)
     }
 
@@ -192,7 +192,6 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
 
     override fun onError(e: Throwable) {
         Timber.e(e)
-        // NOTE: This is fatal error, so inform to User.
         Snackbar.make(mainImage, e.localizedMessage, Snackbar.LENGTH_SHORT)
     }
 
@@ -224,7 +223,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
             mainImage.stopPipette()
             mainFab.setImageDrawable(saveDrawable)
         } else {
-            // NOTE: setBackgroundColorFromPipette -> hide/show progress
+            // NOTE: presenter#setBackgroundColorFromPipette -> hide/show progress
             mainImage.stopPipette(presenter::setBackgroundColorFromPipette)
         }
         isOnPipette = false
@@ -236,7 +235,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
                 Snackbar.make(mainBottomNav, "PROGRESS", /*TODO:text!*/ Snackbar.LENGTH_SHORT)
                     .show()
             }
-            isOnPipette -> false.also {
+            isOnPipette -> false.also { _ ->
                 Snackbar.make(mainBottomNav, "PIPETTE", /*TODO: text!*/ Snackbar.LENGTH_SHORT)
                     .setAction(R.string.cancel) { stopPipette(isCancel = true) }
                     .show()
@@ -246,9 +245,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
                     R.id.action_template -> TemplateTool()
                     R.id.action_screen -> ScreenTool()
                     R.id.action_background -> BackgroundTool.newInstance(ratioCrop)
-                /* NOTE:
-                 [BadgeTool] need request permission READ_EXTERNAL_STORAGE Font file directory.
-                 */
+                    /* NOTE: [BadgeTool] permission READ_EXTERNAL_STORAGE Font file directory. */
                     R.id.action_badge -> BadgeTool()
                     else -> null
                 }?.let {

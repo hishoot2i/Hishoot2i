@@ -8,7 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.View
-import rbb.hishoot2i.common.custombitmap.AlphaPatternBitmap
+import common.custombitmap.AlphaPatternBitmap
 import kotlin.LazyThreadSafetyMode.NONE
 
 class ColorPreview : View {
@@ -41,10 +41,7 @@ class ColorPreview : View {
     private val alphaTiledDrawable by lazy(NONE) {
         BitmapDrawable(
             context.resources,
-            AlphaPatternBitmap(context).create(
-                width = measuredWidth,
-                height = measuredHeight
-            )
+            AlphaPatternBitmap(context).create(sizes = entity.Sizes(measuredWidth, measuredHeight))
         )
     }
     private val srcPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

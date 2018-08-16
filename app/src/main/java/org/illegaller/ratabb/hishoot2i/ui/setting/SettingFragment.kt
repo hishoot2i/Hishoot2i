@@ -8,7 +8,7 @@ import android.widget.CompoundButton
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseFragment
-import rbb.hishoot2i.common.ext.preventMultipleClick
+import common.ext.preventMultipleClick
 import javax.inject.Inject
 
 class SettingFragment : BaseFragment() {

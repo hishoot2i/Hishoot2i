@@ -1,6 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
 import android.support.annotation.ColorInt
+import common.ext.exhaustive
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -16,10 +17,7 @@ import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.computationUI
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
-import rbb.hishoot2i.common.entity.BackgroundMode
-import rbb.hishoot2i.common.entity.ImageSourcePath
-import rbb.hishoot2i.common.ext.exhaustive
-import rbb.hishoot2i.template.Template
+import template.Template
 import javax.inject.Inject
 
 class MainPresenter @Inject constructor(
@@ -30,7 +28,7 @@ class MainPresenter @Inject constructor(
 ) : BasePresenter<MainView>() {
     private val disposables: CompositeDisposable = CompositeDisposable()
     //
-    internal val sourcePath: ImageSourcePath = ImageSourcePath()
+    internal val sourcePath = entity.ImageSourcePath()
     private var lastTemplateId: String? = null
     private var lastTemplate: Template? = null
     //
@@ -106,15 +104,8 @@ class MainPresenter @Inject constructor(
 
     fun changeBackground(path: String) {
         sourcePath.apply { background = path }
-        when (appPref.backgroundModeId) {
-            BackgroundMode.ID_IMAGE -> onPreview()
-            else -> {
-                // NOTE: when we here, we have image from receiver.
-                // Changing BackgroundMode -> Image
-                // preferenceChangesSubscriber -> onPreview
-                appPref.backgroundModeId = BackgroundMode.ID_IMAGE
-            }
-        }
+        val mode = entity.BackgroundMode.fromId(appPref.backgroundModeId)
+        if (mode.isImage) onPreview() else appPref.backgroundModeId = entity.BackgroundMode.Image.id
     }
 
     private fun preferenceChangesSubscriber() {

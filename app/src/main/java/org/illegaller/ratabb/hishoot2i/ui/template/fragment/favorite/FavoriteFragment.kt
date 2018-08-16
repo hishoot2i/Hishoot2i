@@ -7,13 +7,13 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import common.ext.isVisible
+import common.ext.preventMultipleClick
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.template.SortTemplateDialog
 import org.illegaller.ratabb.hishoot2i.ui.template.fragment.AbsTemplateFragment
 import org.illegaller.ratabb.hishoot2i.ui.template.fragment.SwipeHelper
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.template.Template
+import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 

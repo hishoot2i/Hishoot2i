@@ -102,4 +102,5 @@
     </style>
     <!---->
     <attr name="backgroundTextRow" format="color|reference" />
+    <attr name="backgroundPopup" format="color|reference" />
 </resources>

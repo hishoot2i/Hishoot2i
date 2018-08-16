@@ -13,15 +13,15 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import common.ext.actionGetContentWith
+import common.ext.preventMultipleClick
+import common.ext.toFile
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.BadgeTabLayout
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.NoScrollViewPager
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
-import rbb.hishoot2i.common.ext.actionGetContentWith
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.toFile
-import rbb.hishoot2i.template.Template
+import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 

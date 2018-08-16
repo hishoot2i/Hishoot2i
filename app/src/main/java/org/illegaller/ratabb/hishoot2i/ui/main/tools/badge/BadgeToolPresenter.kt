@@ -4,13 +4,11 @@ import android.support.annotation.ColorInt
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import org.illegaller.ratabb.hishoot2i.data.CacheFileTypefaces
 import org.illegaller.ratabb.hishoot2i.data.FileFontStorageSource
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
-import java.io.File
 import javax.inject.Inject
 
 class BadgeToolPresenter @Inject constructor(
@@ -19,14 +17,14 @@ class BadgeToolPresenter @Inject constructor(
     private val appPref: AppPref
 ) : BasePresenter<BadgeView>() {
     private val disposables: CompositeDisposable = CompositeDisposable()
-    private val tempPath = mutableListOf<String>().apply { add(0, "DEFAULT") }
-
+    private val tempPath = mutableListOf("DEFAULT")
     override fun attachView(view: BadgeView) {
         super.attachView(view)
         view.onEmit(appPref)
         fileFontStorageSource.fileFonts()
+            .map { it.absolutePath }
             .ioUI(schedulerProvider)
-            .subscribeBy(view::onError, ::setUpDataAdapter, ::addToTemp)
+            .subscribeBy(view::onError, ::setUpDataAdapter, tempPath::plusAssign)
             .addTo(disposables)
     }
 
@@ -42,31 +40,12 @@ class BadgeToolPresenter @Inject constructor(
     fun setBadgeFont(position: Int): Boolean { //
         val absolutePath = tempPath[position]
         appPref.badgeTypefacePath = absolutePath
-        return CacheFileTypefaces.put(absolutePath)
+        return true
     }
 
     private fun setUpDataAdapter() {
         val current = appPref.badgeTypefacePath
         val currentIndex = tempPath.indexOf(current).coerceAtLeast(minimumValue = 0)
-        val listName: List<String> = tempPath.map {
-            File(it).nameWithoutExtension
-                .replace("[_-]".toRegex(), replacement = SPACE)
-                .capitalizeEachWord()
-        }
-        view?.submitListAdapter(listName, currentIndex)
-    }
-
-    private fun addToTemp(file: File) {
-        tempPath.add(file.absolutePath)
-    }
-
-    private fun String.capitalizeEachWord(): String {
-        val ret = StringBuilder()
-        split(SPACE).forEach { ret.append("${it.capitalize()} ") }
-        return ret.toString().trim()
-    }
-
-    companion object {
-        private const val SPACE = " "
+        view?.submitListAdapter(tempPath, currentIndex)
     }
 }

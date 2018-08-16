@@ -6,16 +6,13 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import common.FileConstants
+import common.ext.isVisible
+import common.ext.preventMultipleClick
+import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.CropImageView
-import rbb.hishoot2i.common.FileConstants
-import rbb.hishoot2i.common.entity.Sizes
-import rbb.hishoot2i.common.ext.deviceHeight
-import rbb.hishoot2i.common.ext.deviceWidth
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.imageloader.ImageLoader
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -67,11 +64,10 @@ class CropActivity : BaseActivity(), CropActivityView {
 
     private fun handleDataExtras() {
         intent.getParcelableExtra<Point>(KEY_CROP_RATIO)?.let {
-            // TODO: Info about it!
             cropImageView.setCustomRatio(it.x, it.y)
         }
         intent.getStringExtra(KEY_IMAGE_PATH)?.let {
-            imageLoader.display(cropImageView, it, Sizes(deviceWidth, deviceHeight))
+            imageLoader.display(cropImageView, it)
         }
     }
 
@@ -82,10 +78,7 @@ class CropActivity : BaseActivity(), CropActivityView {
         cropDone.setOnClickListener { v: View? ->
             v?.preventMultipleClick {
                 showProgress()
-                presenter.saveCrop(
-                    /*FileConst.getBackgroundCropFile(this)*/ fileConstants.bgCrop(),
-                    cropImageView.croppedBitmap
-                )
+                presenter.saveCrop(fileConstants.bgCrop(), cropImageView.croppedBitmap)
             }
         }
     }

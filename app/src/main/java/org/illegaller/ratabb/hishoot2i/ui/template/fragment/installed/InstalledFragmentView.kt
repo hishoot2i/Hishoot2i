@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment.installed
 
 import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
-import rbb.hishoot2i.template.Template
+import template.Template
 
 interface InstalledFragmentView : Mvp.View {
     fun setData(data: List<Template>)

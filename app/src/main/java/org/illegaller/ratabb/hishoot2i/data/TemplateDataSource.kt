@@ -2,7 +2,7 @@ package org.illegaller.ratabb.hishoot2i.data
 
 import io.reactivex.Flowable
 import io.reactivex.Single
-import rbb.hishoot2i.template.Template
+import template.Template
 
 interface TemplateDataSource {
     fun allTemplate(): Flowable<Template>

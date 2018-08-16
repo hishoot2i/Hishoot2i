@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Bundle
+import common.ext.graphics.color
+import common.ext.taskDescription
 import dagger.android.support.DaggerAppCompatActivity
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
-import rbb.hishoot2i.common.ext.graphics.color
-import rbb.hishoot2i.common.ext.taskDescription
 import javax.inject.Inject
 
 @SuppressLint("Registered")

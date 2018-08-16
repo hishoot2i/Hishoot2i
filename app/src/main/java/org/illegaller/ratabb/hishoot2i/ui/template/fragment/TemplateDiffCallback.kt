@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment
 
 import android.support.v7.util.DiffUtil
-import rbb.hishoot2i.template.Template
+import template.Template
 import javax.inject.Inject
 
 /*TODO: Payload? */

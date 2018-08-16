@@ -12,18 +12,17 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.RadioGroup
 import android.widget.Spinner
+import common.ext.chooserGetContentWith
+import common.ext.compoundVectorDrawables
+import common.ext.isVisible
+import common.ext.onSeekBarChange
+import common.ext.preventMultipleClick
+import common.ext.setOnItemSelected
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.crop.CropActivity
 import org.illegaller.ratabb.hishoot2i.ui.main.ColorMixDialog
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
-import rbb.hishoot2i.common.entity.BackgroundMode
-import rbb.hishoot2i.common.ext.chooserGetContentWith
-import rbb.hishoot2i.common.ext.compoundVectorDrawables
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.onSeekBarChange
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.setOnItemSelected
 import javax.inject.Inject
 
 /*TODO: ?*/
@@ -61,12 +60,18 @@ class BackgroundTool : AbsTools(), ColorMixDialog.OnColorChangeListener {
             toolBackgroundImageOptionGroup = findViewById(R.id.toolBackgroundImageOptionGroup)
         }
 
-        toolBackgroundImagePick.compoundVectorDrawables(top = R.drawable.ic_image_black_24dp,
-            tint = R.color.accent)
-        toolBackgroundColorMix.compoundVectorDrawables(top = R.drawable.ic_color_lens_black_24dp,
-            tint = R.color.accent)
-        toolBackgroundColorPipette.compoundVectorDrawables(top = R.drawable.ic_colorize_black_24dp,
-            tint = R.color.accent)
+        toolBackgroundImagePick.compoundVectorDrawables(
+            top = R.drawable.ic_image_black_24dp,
+            tint = R.color.accent
+        )
+        toolBackgroundColorMix.compoundVectorDrawables(
+            top = R.drawable.ic_color_lens_black_24dp,
+            tint = R.color.accent
+        )
+        toolBackgroundColorPipette.compoundVectorDrawables(
+            top = R.drawable.ic_colorize_black_24dp,
+            tint = R.color.accent
+        )
         handleVisibleLayoutMode()
 
         with(toolBackgroundModes) {
@@ -168,14 +173,10 @@ class BackgroundTool : AbsTools(), ColorMixDialog.OnColorChangeListener {
     }
 
     private fun handleVisibleLayoutMode() {
-        with(appPref) {
-            toolBackgroundLayoutColor.isVisible =
-                    backgroundModeId == BackgroundMode.ID_COLOR
-            toolBackgroundLayoutImage.isVisible =
-                    backgroundModeId == BackgroundMode.ID_IMAGE
-            toolBackgroundLayoutTrans.isVisible =
-                    backgroundModeId == BackgroundMode.ID_TRANSPARENT
-        }
+        val mode = entity.BackgroundMode.fromId(appPref.backgroundModeId)
+        toolBackgroundLayoutColor.isVisible = mode.isColor
+        toolBackgroundLayoutImage.isVisible = mode.isImage
+        toolBackgroundLayoutTrans.isVisible = mode.isTransparent
     }
 
     private val ratioCrop: Point?

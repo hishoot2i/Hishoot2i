@@ -3,32 +3,34 @@ package org.illegaller.ratabb.hishoot2i.data.core
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import common.custombitmap.AlphaPatternBitmap
+import common.ext.deviceHeight
+import common.ext.deviceWidth
+import common.ext.exhaustive
+import common.ext.graphics.applyCanvas
+import common.ext.graphics.createBitmap
+import common.ext.graphics.drawBitmapPerspective
+import common.ext.graphics.drawBitmapSafely
+import common.ext.graphics.drawable
+import common.ext.graphics.recycleSafely
+import common.ext.graphics.resizeIfNotEqual
+import common.ext.graphics.sizes
+import common.ext.graphics.toBitmap
+import entity.Sizes
+import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
-import rbb.hishoot2i.common.entity.Sizes
-import rbb.hishoot2i.common.ext.deviceHeight
-import rbb.hishoot2i.common.ext.deviceWidth
-import rbb.hishoot2i.common.ext.exhaustive
-import rbb.hishoot2i.common.ext.graphics.alphaPatternBitmap
-import rbb.hishoot2i.common.ext.graphics.applyCanvas
-import rbb.hishoot2i.common.ext.graphics.createBitmap
-import rbb.hishoot2i.common.ext.graphics.drawBitmapPerspective
-import rbb.hishoot2i.common.ext.graphics.drawBitmapSafely
-import rbb.hishoot2i.common.ext.graphics.drawable
-import rbb.hishoot2i.common.ext.graphics.recycleSafely
-import rbb.hishoot2i.common.ext.graphics.resizeIfNotEqual
-import rbb.hishoot2i.common.ext.graphics.sizes
-import rbb.hishoot2i.common.ext.graphics.toBitmap
-import rbb.hishoot2i.common.imageloader.ImageLoader
-import rbb.hishoot2i.template.Template
+import template.Template
 import kotlin.LazyThreadSafetyMode.NONE
 
 internal class MixTemplate(
-    val context: Context,
     val appPref: AppPref,
+    context: Context,
     imageLoader: ImageLoader
 ) : ImageLoader by imageLoader {
+    private val alphaPatternBitmap by lazy(NONE) { AlphaPatternBitmap(context) }
     private val deviceSizes by lazy(NONE) { with(context) { Sizes(deviceWidth, deviceHeight) } }
+    private val frameDefault by lazy { context.drawable(R.drawable.frame1) }
     private val isFrameEnable get() = appPref.templateFrameEnable
     private val isGlareEnable get() = appPref.templateGlareEnable
     private val isShadowEnable get() = appPref.templateShadowEnable
@@ -42,20 +44,19 @@ internal class MixTemplate(
                 is Template.Version2 -> it.drawVersion2(ss, coordinate, isSave, this)
                 is Template.Version3 -> it.drawVersion3(ss, coordinate, isSave, this)
                 is Template.VersionHtz -> it.drawVersionHtz(ss, coordinate, isSave, this)
-                is Template.Empty -> throw IllegalArgumentException("Unknown ${template.id}")
+                is Template.Empty -> throw IllegalStateException("Unknown $id")
             }.exhaustive
         }
     }
 
     private fun String?.screenShootImage(isSave: Boolean): Bitmap =
-        this?.let { loadSync(it, isSave, deviceSizes) } ?: context.alphaPatternBitmap(deviceSizes)
+        this?.let { loadSync(it, isSave, deviceSizes) } ?: alphaPatternBitmap.create(deviceSizes)
 
     private fun Bitmap.drawDefault(ss: String?, coordinate: FloatArray, isSave: Boolean): Bitmap =
         applyCanvas {
             drawBitmapPerspective(ss.screenShootImage(isSave), coordinate)
-            context.drawable(R.drawable.frame1)
-                ?.toBitmap(width, height)
-                ?.let { drawBitmapSafely(it); it.recycleSafely() }
+            val (width, height) = sizes
+            frameDefault?.toBitmap(width, height)?.let { drawBitmapSafely(it); it.recycleSafely() }
         }
 
     private fun Bitmap.drawVersion1(

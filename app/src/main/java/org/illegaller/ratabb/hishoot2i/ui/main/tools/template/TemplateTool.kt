@@ -6,15 +6,14 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
+import common.ext.preventMultipleClick
+import common.ext.toDateTimeFormat
+import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import org.illegaller.ratabb.hishoot2i.ui.template.TemplateManagerActivity
-import rbb.hishoot2i.common.entity.Sizes
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.toDateTimeFormat
-import rbb.hishoot2i.common.imageloader.ImageLoader
-import rbb.hishoot2i.template.Template
+import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -62,7 +61,7 @@ class TemplateTool : AbsTools(), TemplateToolView {
 
     override fun currentTemplate(template: Template, appPref: AppPref) {
         val imSize = with(toolTemplatePreview) {
-            return@with if (width != 0 || height != 0) Sizes(width, height)
+            return@with if (width != 0 || height != 0) entity.Sizes(width, height)
             else null
         }
         with(template) {

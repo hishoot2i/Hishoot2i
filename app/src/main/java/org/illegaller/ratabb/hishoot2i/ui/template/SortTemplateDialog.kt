@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatDialog
 import android.view.View
+import common.ext.exhaustive
+import common.ext.preventMultipleClick
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.template.TemplateComparator
+import template.TemplateComparator
 import javax.inject.Inject
 
 class SortTemplateDialog : BaseDialogFragment() {
@@ -81,16 +82,14 @@ class SortTemplateDialog : BaseDialogFragment() {
 
     private fun emitSelectedSortItem() {
         disSelectedAll()
-        when (appPref.templateSortId) {
-            TemplateComparator.NAME_ASC_ID -> nameAsc
-            TemplateComparator.NAME_DESC_ID -> nameDesc
-            TemplateComparator.TYPE_ASC_ID -> typeAsc
-            TemplateComparator.TYPE_DESC_ID -> typeDesc
-            TemplateComparator.DATE_ASC_ID -> dateAsc
-            TemplateComparator.DATE_DESC_ID -> dateDesc
-            else -> nameAsc //
-        }.also { view: View ->
-            view.setBackgroundResource(R.drawable.sort_selected)
-        }
+        val templateComparator = TemplateComparator.fromId(appPref.templateSortId)
+        when (templateComparator) {
+            is TemplateComparator.NameAsc -> nameAsc
+            is TemplateComparator.NameDesc -> nameDesc
+            is TemplateComparator.TypeAsc -> typeAsc
+            is TemplateComparator.TypeDesc -> typeDesc
+            is TemplateComparator.DateAsc -> dateAsc
+            is TemplateComparator.DateDesc -> dateDesc
+        }.exhaustive.also { it.setBackgroundResource(R.drawable.sort_selected) }
     }
 }

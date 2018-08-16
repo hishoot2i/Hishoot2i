@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import common.ext.actionUninstallApk
+import common.ext.exhaustive
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseFragment
 import org.illegaller.ratabb.hishoot2i.ui.template.TemplateManagerActivity
-import rbb.hishoot2i.common.ext.actionUninstallApk
-import rbb.hishoot2i.common.ext.exhaustive
-import rbb.hishoot2i.template.Template
+import template.Template
 import javax.inject.Inject
 
 abstract class AbsTemplateFragment : BaseFragment(), SwipeHelper.Listener {
@@ -48,9 +48,7 @@ abstract class AbsTemplateFragment : BaseFragment(), SwipeHelper.Listener {
                 is Template.Version2,
                 is Template.Version3
                 -> {
-                    actionUninstallApk(template.id).let {
-                        startActivityForResult(it, REQ_UNINSTALL_APP)
-                    }
+                    startActivityForResult(actionUninstallApk(template.id), REQ_UNINSTALL_APP)
                     positionUninstallTemplate = position
                     true
                 }

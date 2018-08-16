@@ -1,4 +1,4 @@
-apply from: '../library_module.gradle'
+apply from: '../buildsystem/library_module.gradle'
 
 dependencies {
     //
@@ -6,4 +6,5 @@ dependencies {
     compileOnly deps.supportLibrary.annotations
     compileOnly deps.inject
     compileOnly project(':common')
+    compileOnly project(':entity')
 }

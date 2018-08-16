@@ -7,13 +7,13 @@ import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.CompoundButton
+import common.ext.chooserGetContentWith
+import common.ext.compoundVectorDrawables
+import common.ext.isVisible
+import common.ext.preventMultipleClick
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
-import rbb.hishoot2i.common.ext.chooserGetContentWith
-import rbb.hishoot2i.common.ext.compoundVectorDrawables
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.preventMultipleClick
 import javax.inject.Inject
 
 class ScreenTool : AbsTools() {

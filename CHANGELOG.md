@@ -1,5 +1,10 @@
 # Changelog
 -----
+### **v1.2.4 (20180817)**
+- Handle device without external storage
+- [Badge] preview font at choice
+- Bug fixes and some improvements
+
 ### **v1.2.3 (20180806)**
 - Bug fixes
 

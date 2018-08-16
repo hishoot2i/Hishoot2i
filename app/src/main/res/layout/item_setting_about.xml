@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/dp8"
         android:gravity="center"
         android:orientation="horizontal">
-        <!--TODO: -->
+
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="@dimen/dp24"
             android:layout_height="@dimen/dp24"

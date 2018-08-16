@@ -7,37 +7,34 @@ import android.support.v7.widget.AppCompatSpinner
 import android.support.v7.widget.SwitchCompat
 import android.text.InputFilter.AllCaps
 import android.text.InputFilter.LengthFilter
-import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.TextView
+import common.ext.addInputFilter
+import common.ext.forEach
+import common.ext.hideSoftKey
+import common.ext.onEditorAction
+import common.ext.onKey
+import common.ext.onSeekBarChange
+import common.ext.preventMultipleClick
+import common.ext.setOnItemSelected
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.ColorMixDialog
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
-import rbb.hishoot2i.common.ext.addInputFilter
-import rbb.hishoot2i.common.ext.forEach
-import rbb.hishoot2i.common.ext.hideSoftKey
-import rbb.hishoot2i.common.ext.onEditorAction
-import rbb.hishoot2i.common.ext.onKey
-import rbb.hishoot2i.common.ext.onSeekBarChange
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.setOnItemSelected
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class BadgeTool : AbsTools(),
-    BadgeView,
-    ColorMixDialog.OnColorChangeListener {
+class BadgeTool : AbsTools(), BadgeView, ColorMixDialog.OnColorChangeListener {
     @Inject
     lateinit var presenter: BadgeToolPresenter
+    private val fontAdapter: FontAdapter by lazy(NONE) { FontAdapter(requireContext()) }
     private lateinit var toolBadgeLayout: ViewGroup
     private lateinit var toolBadgeHide: SwitchCompat
     private lateinit var toolBadgeColorPick: View
@@ -45,11 +42,6 @@ class BadgeTool : AbsTools(),
     private lateinit var toolBadgeSize: AppCompatSeekBar
     private lateinit var toolBadgePosition: AppCompatSpinner
     private lateinit var toolBadgeFont: AppCompatSpinner
-    private val fontAdapter: ArrayAdapter<String> by lazy(NONE) {
-        ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
-            .apply { setNotifyOnChange(true) }
-    }
-
     override fun tagName(): String = "BadgeTool"
     override fun layoutRes(): Int = R.layout.fragment_tool_badge
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,18 +94,12 @@ class BadgeTool : AbsTools(),
         with(toolBadgeInput) {
             setText(appPref.badgeText)
             addInputFilter(AllCaps(), LengthFilter(16)) //
-            onEditorAction { actionID: Int ->
-                when (actionID) {
-                    IME_ACTION_DONE -> badgeInput(toolBadgeInput, appPref)
-                    else -> false
-                }
+            onEditorAction { actionId ->
+                handleBadgeInput(appPref) { actionId == IME_ACTION_DONE }
             }
-            onKey { k: Int, e: KeyEvent ->
-                when {
-                    e.action == ACTION_DOWN && k == KEYCODE_ENTER -> {
-                        badgeInput(toolBadgeInput, appPref)
-                    }
-                    else -> false
+            onKey { keyCode, keyEvent ->
+                handleBadgeInput(appPref) {
+                    keyEvent.action == ACTION_DOWN && keyCode == KEYCODE_ENTER
                 }
             }
         }
@@ -137,57 +123,40 @@ class BadgeTool : AbsTools(),
             }
         }
         toolBadgeFont.adapter = fontAdapter
+        toolBadgeFont.setOnItemSelected { _: AdapterView<*>?, v: View?, position: Int, _: Long ->
+            v?.preventMultipleClick {
+                fontAdapter.setSelection(position)
+                presenter.setBadgeFont(position)
+            }
+        }
     }
 
-    // FIXME: ?
     override fun submitListAdapter(list: List<String>, current: Int) {
-        fontAdapter.clear()
-        fontAdapter.addAll(list)
+        fontAdapter.submitList(list, current)
         toolBadgeFont.setSelection(current, false)
-        toolBadgeFont.setOnItemSelected { _: AdapterView<*>?, v: View?, position: Int, _: Long ->
-            v?.preventMultipleClick { presenter.setBadgeFont(position) }
-        }
     }
 
     override fun onError(e: Throwable) {
         Timber.e(e)
-        // context?.toast(e.localizedMessage)
     }
 
     private fun handleBadgeHide(isChecked: Boolean) { //
         toolBadgeLayout.forEach { view: View ->
             view.isEnabled = isChecked
-            if (view is ViewGroup) {
-                view.forEach {
-                    it.isEnabled = isChecked
-                }
-            }
+            (view as? ViewGroup)?.forEach { it.isEnabled = isChecked }
         }
     }
 
-    private fun badgeInput(textView: TextView, appPref: AppPref): Boolean {
-        with(textView) {
-            val normalizeText = tryNormalizeText(text)
-            text = normalizeText
+    private inline fun TextView.handleBadgeInput(
+        appPref: AppPref,
+        crossinline condition: () -> Boolean
+    ): Boolean = condition().also {
+        if (it) {
+            val upperCaseText = text?.toString()?.toUpperCase() ?: AppPref.DEF_BADGE_TEXT
+            text = upperCaseText
             clearFocus()
             hideSoftKey()
-            if (appPref.badgeText != normalizeText) {
-                appPref.badgeText = normalizeText
-            }
+            if (appPref.badgeText != upperCaseText) appPref.badgeText = upperCaseText
         }
-        return true
-    }
-
-    private fun tryNormalizeText(text: CharSequence?): String = try {
-        when {
-            text.isNullOrBlank() -> DEFAULT_TEXT
-            else -> text.toString().toUpperCase()
-        }
-    } catch (ignored: Exception) {
-        DEFAULT_TEXT
-    }
-
-    companion object {
-        private const val DEFAULT_TEXT = "HISHOOT"
     }
 }
