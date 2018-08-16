@@ -151,7 +151,7 @@ class BadgeTool : AbsTools(), BadgeView, ColorMixDialog.OnColorChangeListener {
         appPref: AppPref,
         crossinline condition: () -> Boolean
     ): Boolean = condition().also {
-        if (it){
+        if (it) {
             val upperCaseText = text?.toString()?.toUpperCase() ?: AppPref.DEF_BADGE_TEXT
             text = upperCaseText
             clearFocus()

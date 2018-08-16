@@ -35,7 +35,9 @@ class FavoriteFragmentPresenter @Inject constructor(
 
     fun setUpMenu(menu: Menu) {
         val searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
-        searchView.context.getString(R.string.search_template_hint)?.let { searchView.queryHint = it }
+        searchView.context.getString(R.string.search_template_hint)?.let {
+            searchView.queryHint = it
+        }
         RxSearchView.queryTextChange(searchView)
             .delayed()
             .observeOn(schedulerProvider.ui())
