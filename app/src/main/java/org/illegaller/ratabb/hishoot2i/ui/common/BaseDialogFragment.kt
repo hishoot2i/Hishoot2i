@@ -22,8 +22,7 @@ abstract class BaseDialogFragment : DaggerAppCompatDialogFragment() {
     protected abstract fun createDialog(context: Context): Dialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        context?.let { createDialog(it) }
-                ?: throw IllegalStateException("Null context on create dialog!")
+        createDialog(requireContext())
 
     override fun onCreateView(
         inflater: LayoutInflater,

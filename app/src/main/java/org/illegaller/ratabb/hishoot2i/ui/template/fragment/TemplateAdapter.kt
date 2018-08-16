@@ -5,15 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import common.ext.asyncListDiffer
+import common.ext.graphics.color
+import common.ext.inflateNotAttach
+import common.ext.isVisible
+import common.ext.preventMultipleClick
+import common.ext.toDateTimeFormat
+import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
-import rbb.hishoot2i.common.ext.asyncListDiffer
-import rbb.hishoot2i.common.ext.graphics.color
-import rbb.hishoot2i.common.ext.inflateNotAttach
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.preventMultipleClick
-import rbb.hishoot2i.common.ext.toDateTimeFormat
-import rbb.hishoot2i.common.imageloader.ImageLoader
-import rbb.hishoot2i.template.Template
+import template.Template
 import javax.inject.Inject
 
 class TemplateAdapter @Inject constructor(
@@ -27,7 +27,7 @@ class TemplateAdapter @Inject constructor(
 
     private val differ = asyncListDiffer(templateDiffCallback)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemplateHolder =
-        with(parent) { inflateNotAttach(R.layout.row_item_template).let { TemplateHolder(it) } }
+        with(parent) { TemplateHolder(inflateNotAttach(R.layout.row_item_template)) }
 
     override fun getItemId(position: Int): Long =
         differ.currentList[position].id.hashCode().toLong()
@@ -78,7 +78,7 @@ class TemplateAdapter @Inject constructor(
         }
 
         /* SwipeHelper: Template Default can not deleted. */
-        fun isItemDeletable(): Boolean = !differ.currentList[adapterPosition].isDefault
+        fun isItemDeletable(): Boolean = differ.currentList[adapterPosition].isDefault.not()
 
         fun handleIndicatorVisible(dX: Float, isActive: Boolean) {
             itemTemplateBack.isVisible = isActive

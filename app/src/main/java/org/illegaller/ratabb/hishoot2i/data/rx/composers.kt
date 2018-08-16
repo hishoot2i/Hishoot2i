@@ -2,10 +2,10 @@
 
 package org.illegaller.ratabb.hishoot2i.data.rx
 
+import common.ext.DEFAULT_DELAY_MS
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import rbb.hishoot2i.common.ext.DEFAULT_DELAY_MS
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 // Schedule

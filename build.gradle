@@ -1,6 +1,6 @@
 buildscript {
-    apply from: "versions.gradle"
-    apply from: "buildVersion.gradle"
+    apply from: "buildsystem/versions.gradle"
+    apply from: "buildsystem/buildVersion.gradle"
     addRepos(repositories)
     dependencies {
         classpath(classPathNotation.agp) { exclude module: 'proguard-gradle' }
@@ -28,5 +28,13 @@ task clean(type: Delete) {
 }
 
 subprojects {
-    apply from: '../ktlint.gradle'
+    apply from: '../buildsystem/ktlint.gradle'
+    afterEvaluate {
+        project.tasks.findByName("check").dependsOn(ktlint)
+        // NOTE: Not have 'test', [yet].
+        project.tasks.matching {
+            it.name.contains("test") || it.name.contains("Test")
+        }.all { it.enabled = false }
+
+    }
 }

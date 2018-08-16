@@ -3,6 +3,7 @@ package org.illegaller.ratabb.hishoot2i.ui.template.fragment.installed
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
+import common.ext.exhaustive
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -14,8 +15,8 @@ import org.illegaller.ratabb.hishoot2i.data.rx.delayed
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
 import org.illegaller.ratabb.hishoot2i.ui.common.rx.RxSearchView
-import rbb.hishoot2i.template.Template
-import rbb.hishoot2i.template.TemplateComparator
+import template.Template
+import template.TemplateComparator
 import javax.inject.Inject
 
 class InstalledFragmentPresenter @Inject constructor(
@@ -56,18 +57,15 @@ class InstalledFragmentPresenter @Inject constructor(
     }
 
     private fun setIconMenuSort() {
-        when (appPref.templateSortId) {
-            TemplateComparator.NAME_ASC_ID -> R.drawable.ic_sort_az_up_black_24dp
-            TemplateComparator.NAME_DESC_ID -> R.drawable.ic_sort_az_down_black_24dp
-            TemplateComparator.TYPE_ASC_ID -> R.drawable.ic_sort_type_up_black_24dp
-            TemplateComparator.TYPE_DESC_ID -> R.drawable.ic_sort_type_down_black_24dp
-            TemplateComparator.DATE_ASC_ID -> R.drawable.ic_sort_clock_up_black_24dp
-            TemplateComparator.DATE_DESC_ID -> R.drawable.ic_sort_clock_down_black_24dp
-            else -> R.drawable.ic_sort_az_up_black_24dp
-        }.also {
-            // TODO:
-            menuSort?.setIcon(it)
-        }
+        val templateComparator = TemplateComparator.fromId(appPref.templateSortId)
+        when (templateComparator) {
+            is TemplateComparator.NameAsc -> R.drawable.ic_sort_az_up_black_24dp
+            is TemplateComparator.NameDesc -> R.drawable.ic_sort_az_down_black_24dp
+            is TemplateComparator.TypeAsc -> R.drawable.ic_sort_type_up_black_24dp
+            is TemplateComparator.TypeDesc -> R.drawable.ic_sort_type_down_black_24dp
+            is TemplateComparator.DateAsc -> R.drawable.ic_sort_clock_up_black_24dp
+            is TemplateComparator.DateDesc -> R.drawable.ic_sort_clock_down_black_24dp
+        }.exhaustive.also { menuSort?.setIcon(it) }
     }
 
     fun render() {
@@ -80,7 +78,8 @@ class InstalledFragmentPresenter @Inject constructor(
             .subscribeBy(
                 onError = ::viewOnError,
                 onComplete = { viewSetData(tempData) },
-                onNext = tempData::plusAssign)
+                onNext = tempData::plusAssign
+            )
             .addTo(disposables)
     }
 

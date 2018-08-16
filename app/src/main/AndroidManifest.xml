@@ -6,11 +6,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- TODO: -->
-    <!--
-     <uses-permission android:name="android.permission.INTERNET" />
-     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-     -->
 
     <application
         android:name=".App"
@@ -23,7 +18,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-        <!-- android:largeHeap="true" Ouch! -->
+        <!-- NOTE: -->
         <!-- GoogleAppIndexingWarning: IDK -->
         <!-- UnusedAttribute:  android:appCategory="image" Api26+ -->
         <activity
@@ -36,6 +31,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
+                <!-- NOTE: Explicit here, cause category launcher using ALIAS  -->
                 <action android:name="cat.ereza.customactivityoncrash.RESTART" />
             </intent-filter>
         </activity>

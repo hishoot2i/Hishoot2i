@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/background_mode_values"
+            android:popupBackground="?attr/backgroundPopup"
             android:prompt="@string/background_mode_prompt" />
     </LinearLayout>
 

@@ -1,0 +1,29 @@
+// KtLint
+def ktlintMain = 'com.github.shyiko.ktlint.Main'
+def ktlintVersion = '0.26.0'
+
+def outputDir = "${project.buildDir}/reports/ktlint/"
+def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")
+
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.github.shyiko:ktlint:${ktlintVersion}"
+}
+project.task("ktlint", type: JavaExec, group: LifecycleBasePlugin.VERIFICATION_GROUP) {
+    inputs.files(inputFiles)
+    outputs.dir(outputDir)
+    description = "Run KtLint"
+    main = ktlintMain
+    classpath = configurations.ktlint
+    args = ["--android", "--reporter=plain", "src/**/*.kt"]
+}
+
+project.task("ktFormat", type: JavaExec, group: "formatting") {
+    description = "Run formatting KtLint "
+    main = ktlintMain
+    classpath = configurations.ktlint
+    args = ["--android", "-F", "--reporter=plain", "src/**/*.kt"]
+}

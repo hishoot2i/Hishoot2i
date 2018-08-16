@@ -12,28 +12,27 @@ import android.support.v7.app.AppCompatDialog
 import android.support.v7.widget.AppCompatSeekBar
 import android.text.InputFilter.AllCaps
 import android.text.InputFilter.LengthFilter
-import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import android.widget.SeekBar
 import android.widget.TextView
+import common.ext.addInputFilter
+import common.ext.graphics.alpha
+import common.ext.graphics.blue
+import common.ext.graphics.green
+import common.ext.graphics.red
+import common.ext.graphics.toPairWithHex
+import common.ext.hideSoftKey
+import common.ext.isVisible
+import common.ext.onEditorAction
+import common.ext.onKey
+import common.ext.onSeekBarChange
+import common.ext.preventMultipleClick
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
-import rbb.hishoot2i.common.ext.addInputFilter
-import rbb.hishoot2i.common.ext.graphics.alpha
-import rbb.hishoot2i.common.ext.graphics.blue
-import rbb.hishoot2i.common.ext.graphics.green
-import rbb.hishoot2i.common.ext.graphics.red
-import rbb.hishoot2i.common.ext.graphics.toPairWithHex
-import rbb.hishoot2i.common.ext.hideSoftKey
-import rbb.hishoot2i.common.ext.isVisible
-import rbb.hishoot2i.common.ext.onEditorAction
-import rbb.hishoot2i.common.ext.onKey
-import rbb.hishoot2i.common.ext.onSeekBarChange
-import rbb.hishoot2i.common.ext.preventMultipleClick
 
 class ColorMixDialog : BaseDialogFragment() {
     /**/
@@ -42,8 +41,7 @@ class ColorMixDialog : BaseDialogFragment() {
     }
 
     @ColorInt
-    private var color: Int =
-        DEF_COLOR
+    private var color: Int = DEF_COLOR
     private var withAlpha: Boolean = true
     private var withHex: Boolean = true
     var listener: OnColorChangeListener? = null
@@ -65,9 +63,7 @@ class ColorMixDialog : BaseDialogFragment() {
     //
     override fun tagName(): String = "ColorMixDialog"
 
-    //
     override fun layoutRes(): Int = R.layout.dialog_color_mix
-
     override fun createDialog(context: Context): Dialog = AppCompatDialog(context).apply {
         setStyle(DialogFragment.STYLE_NO_FRAME, theme)
         setCancelable(false)
@@ -142,19 +138,9 @@ class ColorMixDialog : BaseDialogFragment() {
 
         with(colorHexEditText) {
             addInputFilter(AllCaps(), LengthFilter(9))
-            onEditorAction { actionId: Int ->
-                when (actionId) {
-                    IME_ACTION_DONE -> handleColorHex(this)
-                    else -> false
-                }
-            }
-            onKey { k: Int, e: KeyEvent ->
-                when {
-                    e.action == ACTION_DOWN && k == KEYCODE_ENTER -> {
-                        handleColorHex(this)
-                    }
-                    else -> false
-                }
+            onEditorAction { actionId -> handleColorHex { actionId == IME_ACTION_DONE } }
+            onKey { keyCode, keyEvent ->
+                handleColorHex { keyEvent.action == ACTION_DOWN && keyCode == KEYCODE_ENTER }
             }
         }
     }
@@ -190,45 +176,36 @@ class ColorMixDialog : BaseDialogFragment() {
         }
     }
 
-    private fun handleColorHex(textView: TextView): Boolean = with(textView) {
-        internalColorChange(colorFromHex(text))
-        clearFocus()
-        hideSoftKey()
-        true
-    }
-
-    @ColorInt
-    private fun colorFromHex(colorText: CharSequence?): Int {
-        if (colorText == null || colorText.isNullOrBlank()) {
-            return color
+    private inline fun TextView.handleColorHex(crossinline condition: () -> Boolean): Boolean =
+        condition().also {
+            if (it) {
+                internalColorChange(text.colorFromHex())
+                clearFocus()
+                hideSoftKey()
+            }
         }
+
+    @ColorInt private fun CharSequence?.colorFromHex(): Int = this?.let {
         try {
-            return Color.parseColor(colorText.toString())
-        } catch (ignore: IndexOutOfBoundsException) {
-            return color //
-        } catch (ignore: IllegalArgumentException) {
-            if (colorText[0] != '#') {
-                when (colorText.length) {
-                    3 -> {
-                        val colorTexts = buildString {
-                            append("#")
-                            append("${colorText[0]}${colorText[0]}") // RR
-                            append("${colorText[1]}${colorText[1]}") // GG
-                            append("${colorText[2]}${colorText[2]}") // BB
-                        }
-                        return colorFromHex(colorTexts) // RGB -> #RRGGBB
-                    }
-                    6 -> return colorFromHex("#$colorText") // RRGGBB ->#RRGGBB
-                    8 -> {
-                        if (withAlpha) {
-                            return colorFromHex("#$colorText") // AARRGGBB -> #AARRGGBB
-                        }
-                    }
+            return@let Color.parseColor(toString())
+        } catch (e: IndexOutOfBoundsException) {
+            return@let color
+        } catch (e: IllegalArgumentException) {
+            if (it[0] != '#') {
+                when (it.length) {
+                    3 -> return@let buildString {
+                        append("#")
+                        append("${it[0]}${it[0]}")
+                        append("${it[1]}${it[1]}")
+                        append("${it[2]}${it[2]}")
+                    }.colorFromHex()
+                    6 -> return@let "#$it".colorFromHex()
+                    8 -> if (withAlpha) return@let "#$it".colorFromHex()
                 }
             }
-            return color
+            return@let color
         }
-    }
+    } ?: color
 
     companion object {
         private const val ARG_COLOR = "arg_color"

@@ -8,10 +8,8 @@ import android.support.annotation.ColorInt
 import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.view.MotionEvent
-import rbb.hishoot2i.common.entity.Sizes
-import rbb.hishoot2i.common.entity.SizesF
-import rbb.hishoot2i.common.ext.dp2px
-import rbb.hishoot2i.common.ext.graphics.darker
+import common.ext.dp2px
+import common.ext.graphics.darker
 import kotlin.LazyThreadSafetyMode.NONE
 
 class CoreImagePreview : AppCompatImageView {
@@ -48,7 +46,7 @@ class CoreImagePreview : AppCompatImageView {
         strokeWidth = context.dp2px(STROKE_DP)
         color = colorPipette.darker
     }
-    private var center: SizesF = SizesF.ZERO
+    private var center = entity.SizesF.ZERO
     private val radius: Float by lazy(NONE) { context.dp2px(RADIUS_DP) }
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -62,7 +60,7 @@ class CoreImagePreview : AppCompatImageView {
     fun startPipette(@ColorInt color: Int) {
         isPipetteActive = true
         colorPipette = color
-        center = (Sizes(width, height) / 2).toSizeF() // initialize center
+        center = (entity.Sizes(width, height) / 2).toSizeF() // initialize center
         invalidatePipette()
     }
 
@@ -73,9 +71,9 @@ class CoreImagePreview : AppCompatImageView {
         invalidatePipette()
     }
 
-    // TODO: limit position ?
+    // TODO: limit position or avoid color transparent ?
     private fun handleEventTouch(event: MotionEvent): Boolean {
-        center = SizesF(event.x, event.y)
+        center = entity.SizesF(event.x, event.y)
         val (x, y) = center.toSize()
         colorPipette = getDrawingCache(true).getPixel(x, y)
         invalidatePipette()

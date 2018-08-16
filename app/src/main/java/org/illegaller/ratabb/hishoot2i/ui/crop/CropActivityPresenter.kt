@@ -2,6 +2,7 @@ package org.illegaller.ratabb.hishoot2i.ui.crop
 
 import android.graphics.Bitmap
 import android.net.Uri
+import common.ext.graphics.saveTo
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -9,7 +10,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
-import rbb.hishoot2i.common.ext.graphics.saveTo
 import java.io.File
 import javax.inject.Inject
 

@@ -25,7 +25,6 @@ class DebugApp : App() {
         StrictMode.setThreadPolicy(
             StrictMode.ThreadPolicy.Builder()
                 .detectAll()
-                // .permitDiskReads() // FIXME: SharedPreference [Editor] get/set Value?
                 .penaltyLog()
                 .build()
         )

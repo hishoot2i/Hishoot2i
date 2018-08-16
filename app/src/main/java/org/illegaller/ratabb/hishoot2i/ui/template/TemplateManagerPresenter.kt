@@ -1,6 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
 import com.commonsware.cwac.security.ZipUtils
+import common.FileConstants
+import common.ext.entryInputStream
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -8,13 +10,11 @@ import io.reactivex.rxkotlin.subscribeBy
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
-import rbb.hishoot2i.common.FileConstants
-import rbb.hishoot2i.common.ext.entryInputStream
-import rbb.hishoot2i.template.Template
-import rbb.hishoot2i.template.TemplateConstants.TEMPLATE_CFG
-import rbb.hishoot2i.template.TemplateFactoryManager
-import rbb.hishoot2i.template.model.ModelHtz
-import rbb.hishoot2i.template.reader.ModelHtzReader
+import template.Template
+import template.TemplateConstants.TEMPLATE_CFG
+import template.TemplateFactoryManager
+import template.model.ModelHtz
+import template.reader.ModelHtzReader
 import java.io.File
 import java.util.zip.ZipFile
 import javax.inject.Inject
@@ -35,11 +35,9 @@ class TemplateManagerPresenter @Inject constructor(
             if (!htz?.extension.equals("htz", ignoreCase = true)) {
                 throw IllegalStateException("Not Htz")
             }
-            ZipFile(htz).use {
-                it.entryInputStream(TEMPLATE_CFG).use {
-                    ModelHtzReader(it).use {
-                        it.model()
-                    }
+            ZipFile(htz).use { zipFile ->
+                zipFile.entryInputStream(TEMPLATE_CFG).use { inputStream ->
+                    ModelHtzReader(inputStream).use { it.model() }
                 }
             }
         }

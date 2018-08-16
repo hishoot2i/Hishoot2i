@@ -10,16 +10,15 @@ import android.graphics.Paint
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import common.ext.graphics.applyCanvas
+import common.ext.graphics.createBitmap
+import common.ext.graphics.drawBitmapSafely
+import common.ext.graphics.halfAlpha
+import common.ext.graphics.roundedLargeIcon
+import common.ext.graphics.scaleCenterCrop
+import common.ext.graphics.sizes
+import common.ext.prepareNotificationChannel
 import org.illegaller.ratabb.hishoot2i.R
-import rbb.hishoot2i.common.entity.Sizes
-import rbb.hishoot2i.common.ext.graphics.applyCanvas
-import rbb.hishoot2i.common.ext.graphics.createBitmap
-import rbb.hishoot2i.common.ext.graphics.drawBitmapSafely
-import rbb.hishoot2i.common.ext.graphics.halfAlpha
-import rbb.hishoot2i.common.ext.graphics.roundedLargeIcon
-import rbb.hishoot2i.common.ext.graphics.scaleCenterCrop
-import rbb.hishoot2i.common.ext.graphics.sizes
-import rbb.hishoot2i.common.ext.prepareNotificationChannel
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
@@ -115,10 +114,10 @@ class SaveNotification @Inject constructor(context: Context) {
     private fun Bitmap.bigPicture(): Bitmap {
         val (imageWidth, imageHeight) = sizes
         val shortSide = imageWidth.coerceAtMost(imageHeight)
-        val shortSideSizes = Sizes(shortSide, shortSide)
-        return shortSideSizes.createBitmap(CONFIG_BIG_PICTURE).applyCanvas {
+        val shortSideSizes = entity.Sizes(shortSide, shortSide)
+        return shortSideSizes.createBitmap(Bitmap.Config.RGB_565).applyCanvas {
             drawBitmapSafely(
-                this@bigPicture.scaleCenterCrop(shortSideSizes, CONFIG_BIG_PICTURE),
+                this@bigPicture.scaleCenterCrop(shortSideSizes, Bitmap.Config.RGB_565),
                 paint = paintBigPicture
             )
             drawColor(DARK_GRAY_HALF_ALPHA)
@@ -128,8 +127,7 @@ class SaveNotification @Inject constructor(context: Context) {
     private val paintBigPicture = ColorMatrixColorFilter(ColorMatrix().apply {
         setSaturation(POINT_OF_TWENTY_FIVE)
     }).let { filter: ColorMatrixColorFilter ->
-        Paint(Paint.FILTER_BITMAP_FLAG)
-            .apply { colorFilter = filter }
+        Paint(Paint.FILTER_BITMAP_FLAG).apply { colorFilter = filter }
     }
 
     companion object {
@@ -138,6 +136,5 @@ class SaveNotification @Inject constructor(context: Context) {
         private const val CHANNEL_NAME = "HiShoot2i"
         private const val POINT_OF_TWENTY_FIVE = .25F
         private val DARK_GRAY_HALF_ALPHA = Color.DKGRAY.halfAlpha
-        private val CONFIG_BIG_PICTURE = Bitmap.Config.RGB_565
     }
 }

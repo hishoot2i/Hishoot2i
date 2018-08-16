@@ -83,7 +83,11 @@ kapt { useBuildCache = true }
 
 dependencies {
     implementation project(':common')
+    implementation project(':entity')
+    implementation project(':imageloader')
     implementation project(':template')
+
+    implementation deps.universalImageLoader
 
     implementation deps.kotlin.stdlib
 

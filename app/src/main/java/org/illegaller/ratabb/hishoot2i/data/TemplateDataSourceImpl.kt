@@ -1,16 +1,13 @@
 package org.illegaller.ratabb.hishoot2i.data
 
-import android.os.Bundle
 import android.support.annotation.IntRange
+import common.FileConstants
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.mergeDelayError
 import io.reactivex.rxkotlin.toFlowable
-import rbb.hishoot2i.common.FileConstants
-import rbb.hishoot2i.template.Template
-import rbb.hishoot2i.template.TemplateConstants.CATEGORY_TEMPLATE_APK
-import rbb.hishoot2i.template.TemplateConstants.META_DATA_TEMPLATE
-import rbb.hishoot2i.template.TemplateFactoryManager
+import template.Template
+import template.TemplateFactoryManager
 import javax.inject.Inject
 
 class TemplateDataSourceImpl @Inject constructor(
@@ -31,32 +28,22 @@ class TemplateDataSourceImpl @Inject constructor(
     )
         .asIterable()
         .mergeDelayError()
-        .filter { it.isNotEmpty }
+        .filter { it.isNotEmpty } //
 
     override fun findById(id: String): Single<Template> = allTemplate()
         .filter { it.id == id }
         .first(default())
 
     private fun provideTemplateLegacy(factory: (String, Long) -> Template): Flowable<Template> =
-        queryIntentActivities(CATEGORY_TEMPLATE_APK)
-            .map {
-                getPackageInfo(it.activityInfo.packageName).let {
-                    factory(it.packageName, it.firstInstallTime)
-                }
-            }
+        installedTemplateLegacy().map { factory(it.packageName, it.firstInstallTime) }
             .onErrorReturnItem(Template.Empty) //
 
     private fun provideTemplateVersion(
         @IntRange(from = 2, to = 3) version: Int,
         factory: (String, Long) -> Template
-    ): Flowable<Template> = installedApplications()
-        .filter { it.metaData.machVersion(version) }
-        .map {
-            getPackageInfo(it.packageName).let {
-                factory(it.packageName, it.firstInstallTime)
-            }
-        }
-        .onErrorReturnItem(Template.Empty) //
+    ): Flowable<Template> =
+        installedTemplate(version).map { factory(it.packageName, it.firstInstallTime) }
+            .onErrorReturnItem(Template.Empty) //
 
     private fun provideTemplateHtz(factory: (String, Long) -> Template): Flowable<Template> =
         Flowable.fromCallable { htzDir() }
@@ -64,8 +51,4 @@ class TemplateDataSourceImpl @Inject constructor(
             .filter { it.canRead() && it.isDirectory }
             .map { factory(it.name, it.lastModified()) }
             .onErrorReturnItem(Template.Empty) //
-
-    private fun Bundle?.machVersion(version: Int): Boolean = this?.let {
-        return@let containsKey(META_DATA_TEMPLATE) && getInt(META_DATA_TEMPLATE) == version
-    } ?: false
 }
