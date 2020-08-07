@@ -1,0 +1,83 @@
+// use only at [sub-]module app buildFile [app/app.gradle.kts]
+android {
+    applicationVariants.all { variants ->
+        if (variants.buildType.name == "release") {
+            def ver = Versioning.from(project)
+            variants.outputs.each { output ->
+                output.versionCodeOverride = ver.code
+                output.versionNameOverride = ver.name
+                output.outputFileName = ver.apk
+            }
+        }
+    }
+}
+
+final class Versioning {
+    //region consumable fields
+    public final String name
+    public final String apk
+    public final int code
+    //endregion
+
+    private final Project thisProject
+    private volatile String versionNameFromFile = null
+
+    static final Versioning from(Project p) { return new Versioning(p) }
+
+    private Versioning(Project p) {
+        def buildTime = getBuildTime()
+        this.thisProject = p
+        this.name = getVersionName(buildTime)
+        this.code = getVersionCode(buildTime)
+        this.apk = getApkName()
+    }
+
+    //region constants
+    private static final String FORMAT_APK_NAME = "%s-v%s-minApi%s.apk"
+    private static final String FORMAT_BUILD_TIME = "MMdd"
+    private static final String FILE_NAME_VERSION = "VERSION"
+    //endregion
+
+    //region private method
+    private static String getBuildTime() { return new Date().format(FORMAT_BUILD_TIME) }
+
+
+    private String getApkName() {
+        return String.format(
+                FORMAT_APK_NAME,
+                thisProject.rootProject.name,
+                getVersionFromFile(),
+                thisProject.rootProject.androidMinSdk)
+    }
+
+    private int getVersionCode(String buildTime) {
+        def n = getVersionFromFile()
+        try {
+            def s = n.tokenize('.')*.toInteger()
+            return (s[0] * 100000000 + s[1] * 1000000 + s[2] * 10000 + buildTime.toInteger())
+        } catch (Exception e) {
+            logError("Error on getVersionCode with: $n, $buildTime", e)
+            return 1
+        }
+    }
+
+    private String getVersionName(String buildTime) {
+        return String.format("%s-%s", getVersionFromFile(), buildTime)
+    }
+
+    private synchronized String getVersionFromFile() {
+        if (versionNameFromFile != null) return versionNameFromFile
+        try {
+            versionNameFromFile = thisProject.rootProject.file(FILE_NAME_VERSION).readLines()[0]
+            return versionNameFromFile
+        } catch (Exception e) {
+            logError("Can't read file $FILE_NAME_VERSION", e)
+            return "1.0.0"
+        }
+    }
+
+    private void logError(String message, Exception e) {
+        thisProject.getLogger().error(message, e)
+    }
+    //endregion
+}

@@ -1,5 +1,0 @@
-include ':app'
-include ':common'
-include ':template'
-include ':entity'
-include ':imageloader'

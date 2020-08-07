@@ -1,6 +1,0 @@
-apply plugin: "java-library"
-apply plugin: "kotlin"
-
-dependencies {
-    compileOnly deps.kotlin.stdlib
-}
