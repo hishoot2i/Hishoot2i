@@ -47,6 +47,7 @@
         <item name="android:background">?attr/colorPrimary</item>
         <item name="itemIconTint">@color/white</item>
         <item name="itemTextColor">@color/white</item>
+        <item name="labelVisibilityMode">labeled</item>
         <item name="menu">@menu/tool</item>
     </style>
     <!--activity_crop, dialog_color_mix-->

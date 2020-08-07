@@ -20,7 +20,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import common.ext.activityPendingIntent
 import common.ext.addToGallery
-import common.ext.disableShiftMode
 import common.ext.graphics.createVectorDrawableTint
 import common.ext.graphics.sizes
 import common.ext.isVisible
@@ -82,8 +81,6 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
         mainBottomNav = findViewById(R.id.mainBottomNav)
         mainImage = findViewById(R.id.mainImage)
         loading = findViewById(R.id.loading)
-        //
-        mainBottomNav.disableShiftMode()
         setSupportActionBar(toolbar)
         presenter.attachView(this)
         /* TODO: handle this! */
