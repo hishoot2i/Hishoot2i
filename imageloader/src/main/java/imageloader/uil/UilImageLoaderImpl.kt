@@ -16,6 +16,8 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware
 import com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory
 import common.FileConstants
 import common.PathBuilder
+import common.ext.graphics.rotate
+import common.ext.graphics.sizes
 import imageloader.ImageLoader
 import kotlin.LazyThreadSafetyMode.NONE
 import com.nostra13.universalimageloader.core.ImageLoader as UilImageLoader
@@ -65,10 +67,16 @@ class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
         }
     }
 
-    override fun loadSync(source: String, isSave: Boolean, reqSizes: entity.Sizes): Bitmap? =
-        source.displayImageOptions(isSave).let {
-            uilImageLoader.loadImageSync(source, reqSizes.toImageSize(), it)
-        }
+    override fun loadSync(
+        source: String,
+        isSave: Boolean,
+        reqSizes: entity.Sizes,
+        isOrientationAware: Boolean
+    ): Bitmap? = source.displayImageOptions(isSave).let {
+        val result = uilImageLoader.loadImageSync(source, reqSizes.toImageSize(), it)
+        if (isOrientationAware && result.sizes.isNeedRotate()) result.rotate()
+        else result
+    }
 
     override fun clearMemoryCache() {
         uilImageLoader.clearMemoryCache()
@@ -123,6 +131,7 @@ class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
 
     private fun entity.Sizes?.toImageSize(): ImageSize? = this?.let { ImageSize(x, y) }
     private fun ImageView.wrapAware(): ImageViewAware = ImageViewAware(this)
+    private fun entity.Sizes.isNeedRotate(): Boolean = this.x > this.y //
 
     companion object {
         private const val MEMORY_CACHE_PERCENT = 70

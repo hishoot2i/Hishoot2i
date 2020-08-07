@@ -34,6 +34,7 @@ internal class MixTemplate(
     private val isFrameEnable get() = appPref.templateFrameEnable
     private val isGlareEnable get() = appPref.templateGlareEnable
     private val isShadowEnable get() = appPref.templateShadowEnable
+
     /*  */
     fun mixed(template: Template, ss: String?, isSave: Boolean): Bitmap = with(template) {
         val coordinate = coordinate.toFloatArray()
@@ -49,8 +50,9 @@ internal class MixTemplate(
         }
     }
 
-    private fun String?.screenShootImage(isSave: Boolean): Bitmap =
-        this?.let { loadSync(it, isSave, deviceSizes) } ?: alphaPatternBitmap.create(deviceSizes)
+    private fun String?.screenShootImage(isSave: Boolean): Bitmap = this?.let {
+        loadSync(it, isSave, deviceSizes, /* isOrientationAware */true)
+    } ?: alphaPatternBitmap.create(deviceSizes)
 
     private fun Bitmap.drawDefault(ss: String?, coordinate: FloatArray, isSave: Boolean): Bitmap =
         applyCanvas {

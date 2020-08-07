@@ -13,7 +13,8 @@ interface ImageLoader {
     fun loadSync(
         source: String,
         isSave: Boolean,
-        reqSizes: entity.Sizes
+        reqSizes: entity.Sizes,
+        isOrientationAware: Boolean = false
     ): Bitmap?
 
     fun clearMemoryCache()

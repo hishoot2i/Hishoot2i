@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -16,6 +17,7 @@ import java.io.File
 import java.io.FileInputStream
 
 inline val Bitmap.sizes get() = entity.Sizes(width, height)
+
 @JvmOverloads
 inline fun Bitmap.resizeIfNotEqual(reqSizes: entity.Sizes, filter: Boolean = false): Bitmap =
     if (reqSizes != sizes) Bitmap.createScaledBitmap(this, reqSizes.x, reqSizes.y, filter)
@@ -94,4 +96,9 @@ inline fun Bitmap.recycleSafely() {
         } catch (ignore: Exception) {
         }
     }
+}
+
+inline fun Bitmap.rotate(degree: Float = 90F): Bitmap {
+    val matrix = Matrix().apply { postRotate(degree) }
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
 }
