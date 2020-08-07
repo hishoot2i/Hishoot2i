@@ -16,6 +16,7 @@ import template.TemplateFactoryManager
 import template.model.ModelHtz
 import template.reader.ModelHtzReader
 import java.io.File
+import java.util.Locale
 import java.util.zip.ZipFile
 import javax.inject.Inject
 
@@ -59,7 +60,7 @@ class TemplateManagerPresenter @Inject constructor(
 
     /* String for installed path and template Id. */
     private fun generateTemplateId(htzModel: ModelHtz): String = with(htzModel) {
-        var ret = "${author.hashCode()}_${name.toLowerCase()}"
+        var ret = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
             .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
             .trim()
         val maxLength = 32

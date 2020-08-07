@@ -19,6 +19,7 @@ import common.ext.graphics.scaleCenterCrop
 import common.ext.graphics.sizes
 import common.ext.isART
 import common.ext.toDateTimeFormat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import imageloader.ImageLoader
 import io.reactivex.Single
 import org.illegaller.ratabb.hishoot2i.BuildConfig.DEBUG
@@ -32,8 +33,8 @@ import kotlin.LazyThreadSafetyMode.NONE
 import java.lang.System.currentTimeMillis as now
 
 class CoreProcessImpl @Inject constructor(
+    @ApplicationContext context: Context,
     val appPref: AppPref,
-    context: Context,
     imageLoader: ImageLoader,
     fileConstants: FileConstants,
     maxTexture: MaxTexture

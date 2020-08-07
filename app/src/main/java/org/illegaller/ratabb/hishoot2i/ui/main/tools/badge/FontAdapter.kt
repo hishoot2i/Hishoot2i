@@ -1,15 +1,16 @@
 package org.illegaller.ratabb.hishoot2i.ui.main.tools.badge
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import common.ext.graphics.createFromFileOrDefault
 import common.ext.graphics.drawable
 import org.illegaller.ratabb.hishoot2i.R
@@ -73,6 +74,7 @@ class FontAdapter(context: Context) : BaseAdapter() {
 
     companion object {
         private const val SPACE = " "
+        @SuppressLint("DefaultLocale")
         @JvmStatic private fun String.capitalizeEachWord(): String {
             val ret = StringBuilder()
             split(SPACE).forEach { ret.append("${it.capitalize()} ") }

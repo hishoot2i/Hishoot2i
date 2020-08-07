@@ -47,7 +47,7 @@
 
         <TableRow android:layout_marginTop="@dimen/dp10">
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_name_asc"
                 style="?borderlessButtonStyle"
                 android:layout_width="@dimen/dialogSortIconSize"
@@ -56,7 +56,7 @@
                 app:tint="?android:attr/textColorPrimary"
                 tools:background="@drawable/sort_selected" />
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_type_asc"
                 style="?borderlessButtonStyle"
                 android:layout_width="@dimen/dialogSortIconSize"
@@ -64,7 +64,7 @@
                 app:srcCompat="@drawable/ic_sort_type_up_black_24dp"
                 app:tint="?android:attr/textColorPrimary" />
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_date_asc"
                 style="?borderlessButtonStyle"
                 android:layout_width="@dimen/dialogSortIconSize"
@@ -75,7 +75,7 @@
 
         <TableRow>
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_name_desc"
                 style="?borderlessButtonStyle"
                 android:layout_width="@dimen/dialogSortIconSize"
@@ -83,7 +83,7 @@
                 app:srcCompat="@drawable/ic_sort_az_down_black_24dp"
                 app:tint="?android:attr/textColorPrimary" />
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_type_desc"
                 style="?borderlessButtonStyle"
                 android:layout_width="@dimen/dialogSortIconSize"
@@ -91,7 +91,7 @@
                 app:srcCompat="@drawable/ic_sort_type_down_black_24dp"
                 app:tint="?android:attr/textColorPrimary" />
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_date_desc"
                 style="?borderlessButtonStyle"
                 android:layout_width="@dimen/dialogSortIconSize"

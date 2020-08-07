@@ -1,10 +1,10 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import common.ext.asyncListDiffer
 import common.ext.graphics.color
 import common.ext.inflateNotAttach
@@ -38,12 +38,13 @@ class TemplateAdapter @Inject constructor(
     }
 
     internal var clickItem: (Template) -> Unit = { _: Template -> }
+
     @Throws(IndexOutOfBoundsException::class)
     fun getItemAt(position: Int): Template = differ.currentList[position]
 
     @Throws(IndexOutOfBoundsException::class)
     fun removeItemAt(position: Int): Template {
-        var itemRemoved = getItemAt(position)
+        var itemRemoved: Template
         val list = differ.currentList.toMutableList().apply {
             itemRemoved = removeAt(position)
         }
@@ -66,6 +67,7 @@ class TemplateAdapter @Inject constructor(
         private val itemTemplateName: TextView = itemView.findViewById(R.id.itemTemplateName)
         private val itemTemplateId: TextView = itemView.findViewById(R.id.itemTemplateId)
         private val itemTemplateInfo: TextView = itemView.findViewById(R.id.itemTemplateInfo)
+
         /*SwipeHelper*/
         internal val foregroundView: View = itemView.findViewById(R.id.itemTemplateForeground)
 

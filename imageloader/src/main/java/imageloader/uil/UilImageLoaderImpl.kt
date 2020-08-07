@@ -17,11 +17,10 @@ import com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory
 import common.FileConstants
 import common.PathBuilder
 import imageloader.ImageLoader
-import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 import com.nostra13.universalimageloader.core.ImageLoader as UilImageLoader
 
-class UilImageLoaderImpl @Inject constructor(context: Context) : ImageLoader {
+class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
     private var isLogging: Boolean = false //
     private val diskCache by lazy(NONE) {
         try {

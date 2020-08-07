@@ -40,7 +40,7 @@
                 android:text="@string/manual_crop" />
         </RadioGroup>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toolBackgroundImagePick"
             style="@style/AppWidget.TextImage"
             android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
         android:layout_margin="@dimen/dp8"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.SwitchCompat
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/toolBackgroundImageSwitchBlur"
             style="@style/AppWidget.Switch"
             android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
             android:layout_gravity="center_vertical"
             android:text="@string/blur" />
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/toolBackgroundImageSeekBlur"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

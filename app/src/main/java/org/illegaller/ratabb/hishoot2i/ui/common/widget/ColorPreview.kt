@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.content.Context
@@ -5,9 +7,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorInt
 import common.custombitmap.AlphaPatternBitmap
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -37,6 +39,7 @@ class ColorPreview : View {
                 invalidate(dstRect)
             }
         }
+
     /*TODO: ?*/
     private val alphaTiledDrawable by lazy(NONE) {
         BitmapDrawable(

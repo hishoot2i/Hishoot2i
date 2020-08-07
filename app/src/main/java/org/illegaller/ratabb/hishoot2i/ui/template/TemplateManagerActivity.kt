@@ -5,17 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import common.ext.actionGetContentWith
 import common.ext.preventMultipleClick
 import common.ext.toFile
+import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.BadgeTabLayout
@@ -25,6 +26,7 @@ import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class TemplateManagerActivity : BaseActivity(), TemplateManagerView {
     @Inject
     lateinit var presenter: TemplateManagerPresenter
@@ -60,8 +62,8 @@ class TemplateManagerActivity : BaseActivity(), TemplateManagerView {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_setting) SettingActivity.start(this)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_setting) SettingActivity.start(this)
         return super.onOptionsItemSelected(item)
     }
 

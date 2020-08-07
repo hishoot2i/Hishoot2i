@@ -1,10 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.main.tools.badge
 
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.v7.widget.AppCompatSeekBar
-import android.support.v7.widget.AppCompatSpinner
-import android.support.v7.widget.SwitchCompat
 import android.text.InputFilter.AllCaps
 import android.text.InputFilter.LengthFilter
 import android.view.KeyEvent.ACTION_DOWN
@@ -15,6 +11,10 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.appcompat.widget.AppCompatSpinner
+import androidx.appcompat.widget.SwitchCompat
+import com.google.android.material.textfield.TextInputEditText
 import common.ext.addInputFilter
 import common.ext.forEach
 import common.ext.hideSoftKey
@@ -23,14 +23,17 @@ import common.ext.onKey
 import common.ext.onSeekBarChange
 import common.ext.preventMultipleClick
 import common.ext.setOnItemSelected
+import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.ColorMixDialog
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
+@AndroidEntryPoint
 class BadgeTool : AbsTools(), BadgeView, ColorMixDialog.OnColorChangeListener {
     @Inject
     lateinit var presenter: BadgeToolPresenter
@@ -152,7 +155,7 @@ class BadgeTool : AbsTools(), BadgeView, ColorMixDialog.OnColorChangeListener {
         crossinline condition: () -> Boolean
     ): Boolean = condition().also {
         if (it) {
-            val upperCaseText = text?.toString()?.toUpperCase() ?: AppPref.DEF_BADGE_TEXT
+            val upperCaseText = text?.toString()?.toUpperCase(Locale.ROOT) ?: AppPref.DEF_BADGE_TEXT
             text = upperCaseText
             clearFocus()
             hideSoftKey()

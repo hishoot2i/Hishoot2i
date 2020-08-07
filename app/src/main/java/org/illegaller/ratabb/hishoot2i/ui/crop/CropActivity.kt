@@ -9,6 +9,7 @@ import android.view.View
 import common.FileConstants
 import common.ext.isVisible
 import common.ext.preventMultipleClick
+import dagger.hilt.android.AndroidEntryPoint
 import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
@@ -16,6 +17,7 @@ import org.illegaller.ratabb.hishoot2i.ui.common.widget.CropImageView
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class CropActivity : BaseActivity(), CropActivityView {
     @Inject
     lateinit var imageLoader: ImageLoader

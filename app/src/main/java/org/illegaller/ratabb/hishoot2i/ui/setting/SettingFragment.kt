@@ -1,16 +1,18 @@
 package org.illegaller.ratabb.hishoot2i.ui.setting
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.CompoundButton
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseFragment
 import common.ext.preventMultipleClick
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingFragment : BaseFragment() {
     @Inject
     lateinit var appPref: AppPref

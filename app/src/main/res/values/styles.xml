@@ -15,7 +15,7 @@
 
     <style name="AppWidget.Light.CardView" parent="CardView.Light" />
 
-    <style name="AppWidget.CoordinatorLayout" parent="Widget.Design.CoordinatorLayout" />
+    <style name="AppWidget.CoordinatorLayout" parent="Widget.Support.CoordinatorLayout" />
 
     <style name="AppWidget.ProgressBar" parent="Widget.AppCompat.ProgressBar" />
 

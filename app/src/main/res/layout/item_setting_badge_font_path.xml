@@ -47,7 +47,7 @@
             android:text="System font"
             tools:ignore="HardcodedText" />
 
-        <android.support.v7.widget.SwitchCompat
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/setting_badge_system_font"
             style="@style/AppWidget.Switch"
             android:layout_width="wrap_content"

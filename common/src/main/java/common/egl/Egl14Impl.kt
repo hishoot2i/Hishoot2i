@@ -7,7 +7,7 @@ import android.opengl.EGLDisplay
 import android.opengl.EGLSurface
 import android.opengl.GLES20
 import android.os.Build.VERSION_CODES.JELLY_BEAN_MR1
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 
 @RequiresApi(JELLY_BEAN_MR1)
 internal class Egl14Impl : MaxTexture {

@@ -3,21 +3,24 @@ package org.illegaller.ratabb.hishoot2i.ui.template
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AppCompatDialog
 import android.view.View
+import androidx.appcompat.app.AppCompatDialog
+import androidx.fragment.app.DialogFragment
 import common.ext.exhaustive
 import common.ext.preventMultipleClick
+import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
 import template.TemplateComparator
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SortTemplateDialog : BaseDialogFragment() {
     @Inject
     lateinit var appPref: AppPref
     var callback: () -> Unit = {}
+
     //
     private lateinit var nameAsc: View
     private lateinit var nameDesc: View
@@ -25,6 +28,7 @@ class SortTemplateDialog : BaseDialogFragment() {
     private lateinit var typeDesc: View
     private lateinit var dateAsc: View
     private lateinit var dateDesc: View
+
     //
     override fun tagName(): String = "SortTemplateDialog"
 

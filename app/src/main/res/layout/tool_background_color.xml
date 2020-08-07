@@ -5,7 +5,7 @@
     android:baselineAligned="false"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/toolBackgroundColorMix"
         style="@style/AppWidget.TextImage"
         android:layout_width="0dp"
@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:text="@string/color_mixer" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/toolBackgroundColorPipette"
         style="@style/AppWidget.TextImage"
         android:layout_width="0dp"

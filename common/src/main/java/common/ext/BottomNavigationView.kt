@@ -1,12 +1,12 @@
 package common.ext
 
 import android.annotation.SuppressLint
-import android.support.design.internal.BottomNavigationItemView
-import android.support.design.internal.BottomNavigationMenuView
-import android.support.design.widget.BottomNavigationView
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 
 @SuppressLint("RestrictedApi")
@@ -34,7 +34,7 @@ fun BottomNavigationView.disableShiftMode() {
             topMargin.setInt(item, 0)
             topMargin.isAccessible = false
 
-            item.setShiftingMode(false)
+            item.setShifting(false)
             // set once again checked value, so view will be updated
             item.setChecked(item.itemData!!.isChecked)
         }

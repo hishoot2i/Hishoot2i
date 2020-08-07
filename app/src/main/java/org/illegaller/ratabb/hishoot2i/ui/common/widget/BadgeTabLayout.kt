@@ -1,13 +1,13 @@
 package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.content.Context
-import android.support.annotation.IntRange
-import android.support.design.widget.TabLayout
-import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.IntRange
+import androidx.appcompat.widget.AppCompatImageView
+import com.google.android.material.tabs.TabLayout
 import common.ext.inflateNotAttach
 import common.ext.isVisible
 import org.illegaller.ratabb.hishoot2i.R
@@ -40,6 +40,7 @@ class BadgeTabLayout : TabLayout {
         val iconView: AppCompatImageView = view.findViewById(R.id.tabIcon)
         private val badgeView: TextView = view.findViewById(R.id.tabBadge)
         private var hasBadge: Boolean = badgeView.isVisible
+
         @IntRange(from = 0L)
         var badgeCount: Int = 0
             set(value) {

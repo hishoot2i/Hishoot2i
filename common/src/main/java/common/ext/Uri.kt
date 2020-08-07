@@ -14,14 +14,14 @@ import android.os.Environment.getExternalStorageDirectory
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-import android.support.v4.content.ContentResolverCompat
-import android.support.v4.provider.DocumentFile
 import android.webkit.MimeTypeMap
+import androidx.core.content.ContentResolverCompat
+import androidx.documentfile.provider.DocumentFile
 import timber.log.Timber
 import java.io.File
 
 inline fun Uri.toFile(context: Context): File? = when (scheme) {
-    SCHEME_FILE -> File(path)
+    SCHEME_FILE -> path?.let { File(it) }
     SCHEME_CONTENT -> {
         val contentResolver: ContentResolver = context.contentResolver
         val path: String?
@@ -32,13 +32,15 @@ inline fun Uri.toFile(context: Context): File? = when (scheme) {
                     documentId = documentId.replace("raw:", "")
                 }
                 isExternalStorage -> {
+                    @Suppress("DEPRECATION")
                     documentId = File(
                         getExternalStorageDirectory(),
                         documentId.replace("primary:", "")
                     ).absolutePath
                 }
                 isImageMediaDocument -> {
-                    val column = arrayOf(MediaStore.Images.ImageColumns.DATA)
+                    @Suppress("DEPRECATION") val column =
+                        arrayOf(MediaStore.Images.ImageColumns.DATA)
                     val sel = "${MediaStore.Images.Media._ID}=?"
                     val selArg = arrayOf(documentId.split(":")[1])
                     documentId = EXTERNAL_CONTENT_URI.resolveFrom(
@@ -54,7 +56,7 @@ inline fun Uri.toFile(context: Context): File? = when (scheme) {
         } else {
             path = when {
                 isImageMedia -> {
-                    val column = MediaStore.Images.ImageColumns.DATA
+                    @Suppress("DEPRECATION") val column = MediaStore.Images.ImageColumns.DATA
                     resolveFrom(
                         contentResolver,
                         projection = arrayOf(column),

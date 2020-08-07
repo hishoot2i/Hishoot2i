@@ -2,11 +2,11 @@ package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.view.NestedScrollingChild
-import android.support.v4.view.NestedScrollingChildHelper
-import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
+import androidx.core.view.NestedScrollingChild
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.viewpager.widget.ViewPager
 
 class NoScrollViewPager : ViewPager, NestedScrollingChild {
     constructor(context: Context) : super(context)

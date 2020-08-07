@@ -1,13 +1,15 @@
+@file:Suppress("DEPRECATION")
+
 package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.support.annotation.ColorInt
-import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.view.MotionEvent
+import androidx.annotation.ColorInt
+import androidx.appcompat.widget.AppCompatImageView
 import common.ext.dp2px
 import common.ext.graphics.darker
 import kotlin.LazyThreadSafetyMode.NONE
@@ -21,6 +23,7 @@ class CoreImagePreview : AppCompatImageView {
         defStyle: Int
     ) : super(context, attributeSet, defStyle)
 
+    @Suppress("DEPRECATION")
     private var isPipetteActive: Boolean = isDrawingCacheEnabled // false
         set(value) {
             if (field != value) {

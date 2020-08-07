@@ -21,7 +21,7 @@
             android:text="@string/screen"
             android:textAppearance="@style/TextAppearance.App.Title" />
 
-        <android.support.v7.widget.SwitchCompat
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/toolScreenSwitchDoubleSS"
             style="@style/AppWidget.Switch"
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp8">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toolScreen1"
             style="@style/AppWidget.TextImage"
             android:layout_width="0dp"
@@ -46,7 +46,7 @@
             android:layout_weight="1"
             android:text="@string/screen_1" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toolScreen2"
             style="@style/AppWidget.TextImage"
             android:layout_width="0dp"

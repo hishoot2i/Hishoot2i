@@ -1,6 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.main.tools.badge
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy

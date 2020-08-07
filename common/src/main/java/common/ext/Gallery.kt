@@ -10,11 +10,12 @@ import android.os.Environment
 import timber.log.Timber
 import java.io.File
 
+@Suppress("DEPRECATION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 inline fun Context.addToGallery(uriToAdd: Uri) {
     Timber.d("Begin MediaScanner...\n ${uriToAdd.path}")
     try {
         val file = Environment.getExternalStorageDirectory().let {
-            File(it, uriToAdd.path.replace("/storage", ""))
+            File(it, uriToAdd.path?.replace("/storage", ""))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             MediaScannerConnection.scanFile(

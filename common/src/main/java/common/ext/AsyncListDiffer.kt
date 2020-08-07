@@ -1,8 +1,8 @@
 package common.ext
 
-import android.support.v7.recyclerview.extensions.AsyncListDiffer
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 
 fun <T> RecyclerView.Adapter<*>.asyncListDiffer(
     diffCallback: DiffUtil.ItemCallback<T>

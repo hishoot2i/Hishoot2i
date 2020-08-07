@@ -28,7 +28,7 @@ inline fun Bitmap.applyCanvas(block: Canvas.() -> Unit): Bitmap {
 }
 
 @JvmOverloads
-inline fun entity.Sizes.createBitmap(config: Bitmap.Config? = ARGB_8888): Bitmap =
+inline fun entity.Sizes.createBitmap(config: Bitmap.Config = ARGB_8888): Bitmap =
     Bitmap.createBitmap(x, y, config)
 
 inline fun File.bitmapSize(): entity.Sizes? {

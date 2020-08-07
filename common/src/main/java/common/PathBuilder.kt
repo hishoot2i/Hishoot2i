@@ -1,6 +1,6 @@
 package common
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import java.io.File
 
 object PathBuilder {

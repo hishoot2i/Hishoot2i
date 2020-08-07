@@ -2,9 +2,9 @@
 
 package common.ext
 
-import android.support.annotation.LayoutRes
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 
 inline fun ViewGroup.forEach(action: (view: View) -> Unit) {
     for (index in 0 until childCount) {

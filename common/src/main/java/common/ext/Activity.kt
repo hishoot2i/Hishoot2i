@@ -7,8 +7,8 @@ import android.app.ActivityManager.TaskDescription
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
-import android.support.annotation.ColorInt
-import android.support.annotation.RequiresApi
+import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 
 @JvmOverloads
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -17,6 +17,7 @@ inline fun Activity.taskDescription(
     icon: Bitmap? = null,
     @ColorInt colorPrimary: Int = Color.BLACK
 ) {
+    @Suppress("DEPRECATION")
     setTaskDescription(TaskDescription(label, icon, colorPrimary))
 }
 

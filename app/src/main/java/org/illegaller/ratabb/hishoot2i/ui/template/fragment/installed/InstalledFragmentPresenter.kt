@@ -1,8 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment.installed
 
-import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import common.ext.exhaustive
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -36,7 +36,7 @@ class InstalledFragmentPresenter @Inject constructor(
     fun setUpMenu(menu: Menu) {
         val searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.context.getString(R.string.search_template_hint)
-            ?.let { searchView.queryHint = it }
+            .let { searchView.queryHint = it }
         RxSearchView.queryTextChange(searchView)
             .delayed()
             .observeOn(schedulerProvider.ui())

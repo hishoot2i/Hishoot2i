@@ -1,13 +1,14 @@
 package org.illegaller.ratabb.hishoot2i.ui.main.tools.template
 
 import android.os.Bundle
-import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import common.ext.preventMultipleClick
 import common.ext.toDateTimeFormat
+import dagger.hilt.android.AndroidEntryPoint
 import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
@@ -17,6 +18,7 @@ import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class TemplateTool : AbsTools(), TemplateToolView {
     @Inject
     lateinit var presenter: TemplateToolPresenter

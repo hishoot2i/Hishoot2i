@@ -1,6 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import common.ext.exhaustive
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -27,10 +27,12 @@ class MainPresenter @Inject constructor(
     private val appPref: AppPref
 ) : BasePresenter<MainView>() {
     private val disposables: CompositeDisposable = CompositeDisposable()
+
     //
     internal val sourcePath = entity.ImageSourcePath()
     private var lastTemplateId: String? = null
     private var lastTemplate: Template? = null
+
     //
     private val isHaveLastTemplate: Boolean
         get() = lastTemplateId != null && lastTemplate != null &&

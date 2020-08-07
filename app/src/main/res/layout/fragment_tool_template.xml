@@ -22,7 +22,7 @@
             android:text="@string/template"
             android:textAppearance="@style/TextAppearance.App.Title" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/toolTemplateManager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,21 +107,21 @@
         android:text="@string/template_v2_and_v3"
         android:textAppearance="@style/TextAppearance.App.SubTitle" />
 
-    <android.support.v7.widget.SwitchCompat
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/toolTemplateSwitchFrame"
         style="@style/AppWidget.Switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/frame" />
 
-    <android.support.v7.widget.SwitchCompat
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/toolTemplateSwitchShadow"
         style="@style/AppWidget.Switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/shadow" />
 
-    <android.support.v7.widget.SwitchCompat
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/toolTemplateSwitchGlare"
         style="@style/AppWidget.Switch"
         android:layout_width="match_parent"

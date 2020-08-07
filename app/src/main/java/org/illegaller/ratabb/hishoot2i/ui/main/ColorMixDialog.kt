@@ -4,12 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.support.annotation.ColorInt
-import android.support.design.widget.TextInputEditText
-import android.support.v4.app.DialogFragment
-import android.support.v4.graphics.ColorUtils
-import android.support.v7.app.AppCompatDialog
-import android.support.v7.widget.AppCompatSeekBar
 import android.text.InputFilter.AllCaps
 import android.text.InputFilter.LengthFilter
 import android.view.KeyEvent.ACTION_DOWN
@@ -18,6 +12,12 @@ import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatDialog
+import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.core.graphics.ColorUtils
+import androidx.fragment.app.DialogFragment
+import com.google.android.material.textfield.TextInputEditText
 import common.ext.addInputFilter
 import common.ext.graphics.alpha
 import common.ext.graphics.blue
@@ -33,6 +33,7 @@ import common.ext.preventMultipleClick
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
+import java.util.Locale
 
 class ColorMixDialog : BaseDialogFragment() {
     /**/
@@ -165,7 +166,7 @@ class ColorMixDialog : BaseDialogFragment() {
             var colorHex: String = if (withAlpha) colorAlphaHex else ""
             colorHex += "$colorRedHex$colorGreenHex$colorBlueHex"
 
-            colorHexEditText.setText(colorHex.toUpperCase())
+            colorHexEditText.setText(colorHex.toUpperCase(Locale.ROOT))
             if (firstTime) {
                 colorPreview.srcColor = color
                 colorPreview.dstColor = color

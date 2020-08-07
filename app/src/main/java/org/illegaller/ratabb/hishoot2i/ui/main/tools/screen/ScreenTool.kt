@@ -3,19 +3,21 @@ package org.illegaller.ratabb.hishoot2i.ui.main.tools.screen
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.CompoundButton
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.SwitchCompat
 import common.ext.chooserGetContentWith
 import common.ext.compoundVectorDrawables
 import common.ext.isVisible
 import common.ext.preventMultipleClick
+import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class ScreenTool : AbsTools() {
     @Inject
     lateinit var appPref: AppPref

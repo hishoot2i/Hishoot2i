@@ -1,11 +1,11 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment
 
 import android.graphics.Canvas
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ViewHolder
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchHelper.LEFT
-import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 class SwipeHelper(private val callback: Listener) :
     ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
@@ -15,9 +15,9 @@ class SwipeHelper(private val callback: Listener) :
     }
 
     override fun onMove(
-        recyclerView: RecyclerView?,
-        viewHolder: ViewHolder?,
-        target: ViewHolder?
+        recyclerView: RecyclerView,
+        viewHolder: ViewHolder,
+        target: ViewHolder
     ): Boolean = false
 
     override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
@@ -28,7 +28,7 @@ class SwipeHelper(private val callback: Listener) :
         }
     }
 
-    override fun getSwipeDirs(recyclerView: RecyclerView?, holder: ViewHolder?): Int {
+    override fun getSwipeDirs(recyclerView: RecyclerView, holder: ViewHolder): Int {
         return if (holder is TemplateAdapter.TemplateHolder) {
             if (holder.isItemDeletable()) {
                 LEFT or RIGHT
@@ -36,7 +36,7 @@ class SwipeHelper(private val callback: Listener) :
         } else super.getSwipeDirs(recyclerView, holder)
     }
 
-    override fun clearView(rv: RecyclerView?, holder: ViewHolder?) {
+    override fun clearView(rv: RecyclerView, holder: ViewHolder) {
         if (holder is TemplateAdapter.TemplateHolder) {
             getDefaultUIUtil().clearView(holder.foregroundView)
         } else super.clearView(rv, holder)
@@ -49,9 +49,9 @@ class SwipeHelper(private val callback: Listener) :
     }
 
     override fun onChildDraw(
-        c: Canvas?,
-        rv: RecyclerView?,
-        holder: ViewHolder?,
+        c: Canvas,
+        rv: RecyclerView,
+        holder: ViewHolder,
         dX: Float,
         dY: Float,
         state: Int,
@@ -64,9 +64,9 @@ class SwipeHelper(private val callback: Listener) :
     }
 
     override fun onChildDrawOver(
-        c: Canvas?,
-        rv: RecyclerView?,
-        holder: ViewHolder?,
+        c: Canvas,
+        rv: RecyclerView,
+        holder: ViewHolder,
         dX: Float,
         dY: Float,
         state: Int,

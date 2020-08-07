@@ -1,6 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -10,20 +9,15 @@ import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.ColorInt
-import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ShareCompat
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.fondesa.kpermissions.extension.onAccepted
-import com.fondesa.kpermissions.extension.onDenied
-import com.fondesa.kpermissions.extension.onPermanentlyDenied
-import com.fondesa.kpermissions.extension.onShouldShowRationale
-import com.fondesa.kpermissions.extension.permissionsBuilder
+import androidx.annotation.ColorInt
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ShareCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import common.ext.activityPendingIntent
 import common.ext.addToGallery
 import common.ext.disableShiftMode
@@ -32,6 +26,8 @@ import common.ext.graphics.sizes
 import common.ext.isVisible
 import common.ext.preventMultipleClick
 import common.ext.toActionViewImage
+import common.ext.toFile
+import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.BuildConfig.IMAGE_RECEIVER
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
@@ -43,33 +39,38 @@ import org.illegaller.ratabb.hishoot2i.ui.main.tools.screen.ScreenTool
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.template.TemplateTool
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
 import timber.log.Timber
-import java.io.File
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     @Inject
     lateinit var presenter: MainPresenter
+
     @Inject
     lateinit var saveNotification: SaveNotification
+
     //
-    private val permissionReq by lazy(NONE) { permissionsBuilder(WRITE_EXTERNAL_STORAGE).build() }
+    //private val permissionReq by lazy(NONE) { permissionsBuilder(WRITE_EXTERNAL_STORAGE).build() }
     private val saveDrawable by lazy(NONE) {
         createVectorDrawableTint(R.drawable.ic_save_black_24dp, R.color.white)
     }
     private val pipetteDrawable: Drawable? by lazy(NONE) {
         createVectorDrawableTint(R.drawable.ic_pipette_done_black_24dp, R.color.white)
     }
+
     //
     private lateinit var toolbar: Toolbar
     private lateinit var mainFab: FloatingActionButton
     private lateinit var mainBottomNav: BottomNavigationView
     private lateinit var mainImage: CoreImagePreview
     private lateinit var loading: View
+
     //
     private var ratioCrop: Point? = null
     private var isOnPipette: Boolean = false
     private var isOnProgress: Boolean = false
+
     /**/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,13 +87,13 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
         setSupportActionBar(toolbar)
         presenter.attachView(this)
         /* TODO: handle this! */
-        permissionReq
-            .onAccepted { Timber.d("Permission accepted") }
-            .onDenied { Timber.d("Permission denied") }
-            .onPermanentlyDenied { Timber.d("Permission permanently denied") }
-            .onShouldShowRationale { _, _ ->
-                Timber.d("Permission should show rationale")
-            }
+//        permissionReq
+//            .onAccepted { Timber.d("Permission accepted") }
+//            .onDenied { Timber.d("Permission denied") }
+//            .onPermanentlyDenied { Timber.d("Permission permanently denied") }
+//            .onShouldShowRationale { _, _ ->
+//                Timber.d("Permission should show rationale")
+//            }
 
         setViewListener()
         // NOTE: Not use changePath...
@@ -111,21 +112,23 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
         if (!handleImageReceiver()) presenter.onPreview()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putString(KEY_BACKGROUND_PATH, presenter.sourcePath.background)
-        outState?.putString(KEY_SCREEN1_PATH, presenter.sourcePath.screen1)
-        outState?.putString(KEY_SCREEN2_PATH, presenter.sourcePath.screen2)
+        with(outState) {
+            putString(KEY_BACKGROUND_PATH, presenter.sourcePath.background)
+            putString(KEY_SCREEN1_PATH, presenter.sourcePath.screen1)
+            putString(KEY_SCREEN2_PATH, presenter.sourcePath.screen2)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        permissionReq.send() //
+        //permissionReq.send() //
         presenter.resume()
     }
 
     override fun onDestroy() {
-        permissionReq.detachAllListeners()
+        //permissionReq.detachAllListeners()
         presenter.detachView()
         super.onDestroy()
     }
@@ -148,7 +151,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     override fun save(bitmap: Bitmap, uri: Uri) {
         saveNotification.complete(
             bitmap,
-            File(uri.path).nameWithoutExtension,
+            uri.toFile(this)?.nameWithoutExtension ?: "unknown",
             activityPendingIntent {
                 ShareCompat.IntentBuilder.from(this)
                     .setStream(uri)
@@ -192,7 +195,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
 
     override fun onError(e: Throwable) {
         Timber.e(e)
-        Snackbar.make(mainImage, e.localizedMessage, Snackbar.LENGTH_SHORT)
+        Snackbar.make(mainImage, e.localizedMessage ?: "", Snackbar.LENGTH_SHORT)
     }
 
     override fun changePathScreen1(path: String) {
@@ -266,12 +269,11 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
         val uri: Uri = intent.getParcelableExtra(Intent.EXTRA_STREAM) ?: return false
         Timber.d("uri:$uri author:${uri.authority}")
         val path = uri.toString() // FIXME: `uri.toString()` -> Let ImageLoader handle it?
-        val info = packageManager.getActivityInfo(intent.component, GET_META_DATA)
+        val info = intent.component?.let { packageManager.getActivityInfo(it, GET_META_DATA) }
         // NOTE: @see AndroidManifest.xml
         // NOTE: <meta-data ...  android:resource />
         // returned Resources ID (Int), *not* a Resources value (String)
-        val imageReceiverKey: Int? = info?.metaData?.getInt(IMAGE_RECEIVER)
-        return when (imageReceiverKey) {
+        return when (info?.metaData?.getInt(IMAGE_RECEIVER)) {
             R.string.screen -> true.also { changePathScreen1(path) }
             R.string.background -> true.also { changePathBackground(path) }
             else -> false
@@ -282,6 +284,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
         private const val KEY_BACKGROUND_PATH = "_background_path"
         private const val KEY_SCREEN1_PATH = "_screen1_path"
         private const val KEY_SCREEN2_PATH = "_screen2_path"
+
         @JvmStatic
         fun contentIntent(context: Context): PendingIntent =
             context.activityPendingIntent { Intent(context, MainActivity::class.java) }

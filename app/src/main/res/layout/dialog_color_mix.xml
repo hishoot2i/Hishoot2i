@@ -21,14 +21,14 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp4">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp24"
             android:layout_height="@dimen/dp24"
             android:layout_gravity="center_vertical"
             app:elevation="@dimen/dp4"
             app:srcCompat="@drawable/ic_dot_alpha_24dp" />
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/colorAlphaSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -52,14 +52,14 @@
         android:orientation="horizontal"
         android:paddingTop="4dp">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp24"
             android:layout_height="@dimen/dp24"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_dot_black_24dp"
             app:tint="@color/red" />
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/colorRedSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -83,14 +83,14 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp8">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp24"
             android:layout_height="@dimen/dp24"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_dot_black_24dp"
             app:tint="@color/green" />
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/colorGreenSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -114,14 +114,14 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp8">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp24"
             android:layout_height="@dimen/dp24"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_dot_black_24dp"
             app:tint="@color/blue" />
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/colorBlueSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -157,14 +157,14 @@
             android:textAppearance="@style/TextAppearance.App"
             tools:ignore="RtlSymmetry" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:errorEnabled="false"
             app:hintEnabled="false">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/colorHex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,7 +172,7 @@
                 android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 tools:text="350000FF" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
@@ -192,7 +192,7 @@
             android:orientation="horizontal"
             tools:visibility="visible">
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/colorCancel"
                 style="@style/AppWidget.Button.Borderless"
                 android:layout_width="0dp"
@@ -200,7 +200,7 @@
                 android:layout_weight="1"
                 android:text="@string/cancel" />
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/colorDone"
                 style="@style/AppWidget.Button.Borderless"
                 android:layout_width="0dp"

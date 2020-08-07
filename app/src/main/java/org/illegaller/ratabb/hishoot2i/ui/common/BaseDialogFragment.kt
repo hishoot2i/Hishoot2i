@@ -4,20 +4,22 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.annotation.CheckResult
-import android.support.annotation.LayoutRes
-import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.DaggerAppCompatDialogFragment
+import androidx.annotation.CheckResult
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.fragment.app.FragmentManager
 
-abstract class BaseDialogFragment : DaggerAppCompatDialogFragment() {
+abstract class BaseDialogFragment : AppCompatDialogFragment() {
     private var isShow: Boolean = false
+
     @LayoutRes
     protected abstract fun layoutRes(): Int
 
     protected abstract fun tagName(): String
+
     @CheckResult
     protected abstract fun createDialog(context: Context): Dialog
 
@@ -36,7 +38,7 @@ abstract class BaseDialogFragment : DaggerAppCompatDialogFragment() {
         show(fragmentManager, tagName())
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         isShow = false
         super.onDismiss(dialog)
     }

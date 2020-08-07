@@ -1,13 +1,13 @@
 package org.illegaller.ratabb.hishoot2i.ui.common
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.DaggerFragment
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 
-abstract class BaseFragment : DaggerFragment() {
+abstract class BaseFragment : Fragment() {
     @LayoutRes
     protected abstract fun layoutRes(): Int
 

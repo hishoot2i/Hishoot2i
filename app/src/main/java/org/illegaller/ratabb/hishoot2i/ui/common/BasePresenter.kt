@@ -1,6 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.common
 
-import android.support.annotation.CallSuper
+import androidx.annotation.CallSuper
 
 abstract class BasePresenter<VIEW : Mvp.View> : Mvp.Presenter<VIEW> {
     protected var view: VIEW? = null

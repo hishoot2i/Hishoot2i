@@ -1,6 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.data
 
-import android.support.annotation.IntRange
+import androidx.annotation.IntRange
 import common.FileConstants
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -47,7 +47,7 @@ class TemplateDataSourceImpl @Inject constructor(
 
     private fun provideTemplateHtz(factory: (String, Long) -> Template): Flowable<Template> =
         Flowable.fromCallable { htzDir() }
-            .flatMap { it.listFiles().toFlowable() }
+            .flatMap { it.listFiles()?.toFlowable() }
             .filter { it.canRead() && it.isDirectory }
             .map { factory(it.name, it.lastModified()) }
             .onErrorReturnItem(Template.Empty) //

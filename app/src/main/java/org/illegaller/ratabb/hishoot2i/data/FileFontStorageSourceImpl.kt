@@ -7,7 +7,7 @@ import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import java.io.File
 import java.text.Collator
 import javax.inject.Inject
-import android.os.Environment.getExternalStorageDirectory as ExternalStorageDir
+import android.os.Environment.getExternalStorageDirectory
 
 class FileFontStorageSourceImpl @Inject constructor(val appPref: AppPref) : FileFontStorageSource {
     override fun fileFonts(): Flowable<File> = arrayOf(
@@ -20,13 +20,18 @@ class FileFontStorageSourceImpl @Inject constructor(val appPref: AppPref) : File
         .filter { it.canRead() && it.isDirectory }
         .flatMap {
             it.listFiles { file: File? -> SUPPORT_FONT_EXT.contains(file?.extension) }
-                .toFlowable()
+                ?.toFlowable()
         }
         .distinct { it.nameWithoutExtension } //
         .sorted(::sortFileByNames)
 
+    @Suppress("DEPRECATION")
     private fun defaultFontDir(): Flowable<File> = DEFAULT_FONT_PATH.toFlowable()
-        .flatMap { path: String -> Flowable.fromCallable { File(ExternalStorageDir(), path) } }
+        .flatMap { path: String ->
+            Flowable.fromCallable {
+                File(getExternalStorageDirectory(), path)
+            }
+        }
 
     private fun customFontDir(): Flowable<File> = appPref.customFontPath?.let { path: String ->
         Flowable.fromCallable { File(path) }

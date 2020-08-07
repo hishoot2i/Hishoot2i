@@ -7,69 +7,67 @@ import common.egl.MaxTexture
 import common.egl.MaxTextureCompat
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.internal.modules.ApplicationContextModule
+import dagger.hilt.android.qualifiers.ApplicationContext
+import imageloader.uil.UilImageLoaderImpl
 import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
 import org.illegaller.ratabb.hishoot2i.data.core.CoreProcessImpl
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.data.rx.AppScheduler
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
+import template.TemplateFactoryManagerImpl
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [ApplicationContextModule::class])
+@InstallIn(ApplicationComponent::class)
 object DataModule {
     @Provides
     @Singleton
-    @JvmStatic
-    fun provideAppPref(context: Context): AppPref {
+    fun provideAppPref(@ApplicationContext context: Context): AppPref {
         Kotpref.init(context)
         return AppPref()
     }
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideScheduler(): SchedulerProvider = AppScheduler
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideMaxTexture(): MaxTexture = MaxTextureCompat
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideFileConstants(impl: FileConstantsImpl): FileConstants = impl
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideImageLoader(
-        impl: imageloader.uil.UilImageLoaderImpl
-    ): imageloader.ImageLoader = impl
+        @ApplicationContext context: Context
+    ): imageloader.ImageLoader = UilImageLoaderImpl(context)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideFactoryManager(
-        impl: template.TemplateFactoryManagerImpl
-    ): template.TemplateFactoryManager = impl
+        @ApplicationContext context: Context,
+        fileConstants: FileConstants
+    ): template.TemplateFactoryManager = TemplateFactoryManagerImpl(context, fileConstants)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideFileFontStorageSource(impl: FileFontStorageSourceImpl): FileFontStorageSource = impl
 
     @Provides
     @Singleton
-    @JvmStatic
     fun providePackageResolver(impl: PackageResolverImpl): PackageResolver = impl
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideTemplateDataSource(impl: TemplateDataSourceImpl): TemplateDataSource = impl
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideCoreProcess(impl: CoreProcessImpl): CoreProcess = impl
 }

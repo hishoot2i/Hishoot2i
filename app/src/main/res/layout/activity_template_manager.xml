@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,12 +15,12 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         style="@style/AppWidget.ActionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/templateManagerToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -38,19 +38,19 @@
             app:tabIndicatorColor="@color/white"
             app:tabIndicatorHeight="2dp"
             app:tabMode="fixed" />
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/templateManagerAddHtz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp20"
         android:layout_marginRight="@dimen/dp20"
-        app:layout_behavior=".ui.common.behavior.FabQuickHideBehavior"
-        app:layout_dodgeInsetEdges="bottom"
         app:layout_anchor="@id/templateManagerViewPager"
         app:layout_anchorGravity="end|bottom"
+        app:layout_behavior=".ui.common.behavior.FabQuickHideBehavior"
+        app:layout_dodgeInsetEdges="bottom"
         app:srcCompat="@drawable/ic_htz_plus_black_24dp"
         app:tint="@color/white"
         app:useCompatPadding="true" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

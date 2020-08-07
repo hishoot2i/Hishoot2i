@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import common.ext.actionMainWith
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.toFlowable
 import template.TemplateConstants.CATEGORY_TEMPLATE_APK
@@ -11,7 +12,9 @@ import template.TemplateConstants.META_DATA_TEMPLATE
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class PackageResolverImpl @Inject constructor(context: Context) : PackageResolver {
+class PackageResolverImpl @Inject constructor(
+    @ApplicationContext context: Context
+) : PackageResolver {
     private val packageManager by lazy(NONE) { context.applicationContext.packageManager }
     override fun installedTemplateLegacy(): Flowable<entity.AppInfo> =
         packageManager.queryIntentActivities(actionMainWith(CATEGORY_TEMPLATE_APK), 0)
@@ -31,7 +34,8 @@ class PackageResolverImpl @Inject constructor(context: Context) : PackageResolve
             .map { entity.AppInfo(packageName, it.firstInstallTime) }
 
     companion object {
-        @JvmStatic private fun Bundle?.machVersion(version: Int): Boolean = this?.let {
+        @JvmStatic
+        private fun Bundle?.machVersion(version: Int): Boolean = this?.let {
             containsKey(META_DATA_TEMPLATE) && getInt(META_DATA_TEMPLATE) == version
         } == true
     }

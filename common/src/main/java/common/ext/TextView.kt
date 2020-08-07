@@ -2,12 +2,12 @@
 
 package common.ext
 
-import android.support.annotation.ColorRes
-import android.support.annotation.DrawableRes
-import android.support.v4.widget.TextViewCompat
 import android.text.InputFilter
 import android.view.KeyEvent
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.core.widget.TextViewCompat
 import common.ext.graphics.createVectorDrawableTint
 
 inline fun TextView.onEditorAction(crossinline consume: (actionId: Int) -> Boolean) {

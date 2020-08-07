@@ -9,14 +9,16 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
-import android.support.annotation.ColorInt
 import android.text.TextPaint
+import androidx.annotation.ColorInt
 import common.ext.POINT_OF_FIVE
 import common.ext.density
 import common.ext.graphics.applyCanvas
 import common.ext.graphics.createFromFileOrDefault
 import common.ext.graphics.halfAlpha
 import common.ext.scaledDensity
+import entity.Sizes
+import java.util.Locale
 import kotlin.LazyThreadSafetyMode.NONE
 
 class BadgeBitmapBuilder(context: Context) {
@@ -35,14 +37,14 @@ class BadgeBitmapBuilder(context: Context) {
     }
 
     fun build(config: Config): Bitmap {
-        val textUpperCase = config.text.toUpperCase()
+        val textUpperCase = config.text.toUpperCase(Locale.ROOT)
         val localBound = Rect()
         textPaint.apply {
             typeface = config.typeFacePath.createFromFileOrDefault()
             textSize = config.size * scaledDensity + POINT_OF_FIVE
             getTextBounds(textUpperCase, 0, textUpperCase.length, localBound)
         }
-        val (width, height) = entity.Sizes(
+        val (width, height) = Sizes(
             textPaint.measureText(textUpperCase).toInt(),
             localBound.height()
         ) + (padding * 2 + POINT_OF_FIVE).toInt()

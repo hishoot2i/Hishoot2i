@@ -2,7 +2,7 @@ package org.illegaller.ratabb.hishoot2i.ui.main
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
 
 interface MainView : Mvp.View {

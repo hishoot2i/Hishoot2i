@@ -1,6 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.common.rx
 
-import android.support.v7.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.MainThreadDisposable

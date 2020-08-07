@@ -8,8 +8,8 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.os.Build
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import common.ext.graphics.applyCanvas
 import common.ext.graphics.createBitmap
 import common.ext.graphics.drawBitmapSafely
@@ -18,12 +18,14 @@ import common.ext.graphics.roundedLargeIcon
 import common.ext.graphics.scaleCenterCrop
 import common.ext.graphics.sizes
 import common.ext.prepareNotificationChannel
+import dagger.hilt.android.qualifiers.ActivityContext
 import org.illegaller.ratabb.hishoot2i.R
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class SaveNotification @Inject constructor(context: Context) {
+class SaveNotification @Inject constructor(
+   @ActivityContext context: Context) {
     private val savingString by lazy(NONE) { context.getString(R.string.ticker_saving) }
     private val shareString by lazy(NONE) { context.getString(R.string.share) }
     private val subTextErrString by lazy(NONE) { context.getString(R.string.sub_text_error) }

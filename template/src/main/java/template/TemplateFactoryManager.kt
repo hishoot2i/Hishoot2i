@@ -1,9 +1,10 @@
 package template
 
-import android.support.annotation.CheckResult
+import androidx.annotation.CheckResult
 
 interface TemplateFactoryManager {
-    @CheckResult @Throws(Exception::class)
+    @CheckResult
+    @Throws(Exception::class)
     fun default(): Template.Default
 
     @CheckResult @Throws(Exception::class)

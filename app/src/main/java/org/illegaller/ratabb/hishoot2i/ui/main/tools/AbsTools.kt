@@ -2,8 +2,8 @@ package org.illegaller.ratabb.hishoot2i.ui.main.tools
 
 import android.app.Dialog
 import android.content.Context
-import android.support.annotation.ColorInt
-import android.support.design.widget.BottomSheetDialog
+import androidx.annotation.ColorInt
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
 
 abstract class AbsTools : BaseDialogFragment() {

@@ -1,6 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment
 
-import android.support.v7.util.DiffUtil
+import androidx.core.util.ObjectsCompat
+import androidx.recyclerview.widget.DiffUtil
 import template.Template
 import javax.inject.Inject
 
@@ -13,5 +14,5 @@ class TemplateDiffCallback @Inject constructor() : DiffUtil.ItemCallback<Templat
         oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: Template, newItem: Template): Boolean =
-        oldItem == newItem
+        /*oldItem == newItem*/ ObjectsCompat.equals(oldItem, newItem)
 }

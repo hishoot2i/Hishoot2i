@@ -1,14 +1,15 @@
 package org.illegaller.ratabb.hishoot2i.ui.template.fragment.installed
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import common.ext.isVisible
 import common.ext.preventMultipleClick
+import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.template.SortTemplateDialog
 import org.illegaller.ratabb.hishoot2i.ui.template.fragment.AbsTemplateFragment
@@ -17,6 +18,7 @@ import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class InstalledFragment : AbsTemplateFragment(), InstalledFragmentView {
     @Inject
     lateinit var presenter: InstalledFragmentPresenter
@@ -72,10 +74,10 @@ class InstalledFragment : AbsTemplateFragment(), InstalledFragmentView {
 
     override fun setData(data: List<Template>) {
         if (data.isNotEmpty()) {
-            val state = templateRecyclerView.layoutManager.onSaveInstanceState()
+            val state = templateRecyclerView.layoutManager?.onSaveInstanceState()
             adapter.submitList(data, isForceUpdateUI)
             isForceUpdateUI = false
-            templateRecyclerView.layoutManager.onRestoreInstanceState(state)
+            templateRecyclerView.layoutManager?.onRestoreInstanceState(state)
             templateRecyclerView.isVisible = true
             noContent.isVisible = false
             //
