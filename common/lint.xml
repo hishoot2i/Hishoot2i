@@ -3,6 +3,4 @@
     <issue id="ObsoleteLintCustomCheck">
         <ignore regexp="timber.lint" />
     </issue>
-    <!--TODO @release: remove this, to clean-up res-->
-    <issue id="UnusedResources" severity="ignore"/>
 </lint>

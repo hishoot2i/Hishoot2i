@@ -3,7 +3,6 @@ package org.illegaller.ratabb.hishoot2i.ui.setting
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 

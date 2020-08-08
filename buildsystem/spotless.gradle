@@ -1,15 +1,16 @@
 apply plugin: "com.diffplug.gradle.spotless"
+def ktlintVersion = rootProject.ktlintVersion
 spotless {
     kotlin {
         target("**/*.kt")
-        ktlint("0.36.0").userData(['disabled_rules': 'import-ordering'])
+        ktlint(ktlintVersion).userData(['disabled_rules': 'import-ordering'])
         // import-ordering: https://github.com/pinterest/ktlint/issues/527
         trimTrailingWhitespace()
         endWithNewline()
     }
     kotlinGradle {
         target("**/*.gradle.kts")
-        ktlint("0.36.0")
+        ktlint(ktlintVersion)
         trimTrailingWhitespace()
         endWithNewline()
     }

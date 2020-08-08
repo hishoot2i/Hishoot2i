@@ -1,13 +1,3 @@
-// apply from: '../buildsystem/library_module.gradle'
-//
-// dependencies {
-//    //
-//    compileOnly deps.kotlin.stdlib
-//    compileOnly deps.supportLibrary.annotations
-//    compileOnly deps.inject
-//    compileOnly project(':common')
-//    compileOnly project(':entity')
-// }
 plugins {
     id("com.android.library")
     kotlin("android")

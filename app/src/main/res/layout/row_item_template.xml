@@ -44,8 +44,8 @@
         android:id="@+id/itemTemplateForeground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/cardview_default_radius"
-        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         tools:visibility="visible">

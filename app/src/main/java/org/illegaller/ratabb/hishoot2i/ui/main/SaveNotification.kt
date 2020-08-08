@@ -25,7 +25,8 @@ import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
 class SaveNotification @Inject constructor(
-   @ActivityContext context: Context) {
+    @ActivityContext context: Context
+) {
     private val savingString by lazy(NONE) { context.getString(R.string.ticker_saving) }
     private val shareString by lazy(NONE) { context.getString(R.string.share) }
     private val subTextErrString by lazy(NONE) { context.getString(R.string.sub_text_error) }

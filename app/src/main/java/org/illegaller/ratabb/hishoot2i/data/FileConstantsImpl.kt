@@ -5,14 +5,14 @@ import android.net.Uri
 import android.os.Environment
 import androidx.core.content.FileProvider.getUriForFile
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.illegaller.ratabb.hishoot2i.BuildConfig.FILE_AUTHORITY
 import org.illegaller.ratabb.hishoot2i.provider.SavedStorageProvider
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
 class FileConstantsImpl @Inject constructor(
-   @ApplicationContext val context: Context) : common.FileConstants {
+    @ApplicationContext val context: Context
+) : common.FileConstants {
     override fun savedDir(): File {
         @Suppress("DEPRECATION") val parent = Environment.getExternalStorageState().let { state ->
             when (state) {

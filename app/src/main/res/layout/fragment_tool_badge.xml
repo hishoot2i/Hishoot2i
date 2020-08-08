@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp16"
         android:layout_marginTop="@dimen/dp8"
+        android:layout_marginBottom="@dimen/dp16"
         android:orientation="horizontal">
 
         <TextView
@@ -56,15 +56,16 @@
                 android:layout_height="wrap_content"
                 android:foreground="?selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_color_lens_black_24dp"
-                app:tint="?attr/colorAccent" />
+                app:tint="?attr/colorAccent"
+                tools:ignore="UnusedAttribute" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp10"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
                 android:layout_marginStart="@dimen/dp10"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginEnd="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp10"
                 android:layout_weight="1"
                 app:errorEnabled="false"
                 app:hintEnabled="false">

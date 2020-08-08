@@ -50,7 +50,7 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
     lateinit var saveNotification: SaveNotification
 
     //
-    //private val permissionReq by lazy(NONE) { permissionsBuilder(WRITE_EXTERNAL_STORAGE).build() }
+    // private val permissionReq by lazy(NONE) { permissionsBuilder(WRITE_EXTERNAL_STORAGE).build() }
     private val saveDrawable by lazy(NONE) {
         createVectorDrawableTint(R.drawable.ic_save_black_24dp, R.color.white)
     }
@@ -120,12 +120,12 @@ class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
 
     override fun onResume() {
         super.onResume()
-        //permissionReq.send() //
+        // permissionReq.send() //
         presenter.resume()
     }
 
     override fun onDestroy() {
-        //permissionReq.detachAllListeners()
+        // permissionReq.detachAllListeners()
         presenter.detachView()
         super.onDestroy()
     }

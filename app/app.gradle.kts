@@ -16,7 +16,7 @@ android {
         multiDexEnabled = true // TODO: Desugar
         //
         val fileAuthority = "$applicationId.fileAuthority"
-        val imageReceiverKey = "${applicationId}.IMAGE_RECEIVER"
+        val imageReceiverKey = "$applicationId.IMAGE_RECEIVER"
         buildConfigField("String", "FILE_AUTHORITY", "\"${fileAuthority}\"")
         buildConfigField("String", "IMAGE_RECEIVER", "\"${imageReceiverKey}\"")
         manifestPlaceholders = mapOf(
@@ -108,9 +108,6 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
 
     val xHiltVersion: String by rootProject
-    //implementation("androidx.hilt:hilt-common:$xHiltVersion")
-    //implementation("androidx.hilt:hilt-lifecycle-viewmodel:$xHiltVersion")
-    //implementation("androidx.hilt:hilt-work:$xHiltVersion")
     kapt("androidx.hilt:hilt-compiler:$xHiltVersion")
 
     val timberVersion: String by rootProject
@@ -125,12 +122,6 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxjava:2.2.0")
     implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")
     implementation("org.reactivestreams:reactive-streams:1.0.2")
-
-//    val coroutinesVersion: String by rootProject
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-
 }
 
 apply("$rootDir/buildsystem/appVersioning.gradle")
-

@@ -29,7 +29,8 @@
             android:layout_gravity="center_vertical"
             android:foreground="?selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_template_black_24dp"
-            app:tint="?attr/colorAccent" />
+            app:tint="?attr/colorAccent"
+            tools:ignore="UnusedAttribute" />
 
     </LinearLayout>
 
@@ -52,10 +53,10 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp8"
-            android:layout_marginLeft="@dimen/dp8"
-            android:layout_marginRight="@dimen/dp8"
             android:layout_marginStart="@dimen/dp8"
+            android:layout_marginLeft="@dimen/dp8"
+            android:layout_marginEnd="@dimen/dp8"
+            android:layout_marginRight="@dimen/dp8"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -85,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:maxHeight="@dimen/dp100"
                 android:maxLines="4"
-                android:paddingBottom="@dimen/dp4"
                 android:paddingTop="@dimen/dp4"
+                android:paddingBottom="@dimen/dp4"
                 android:textAppearance="@style/TextAppearance.App"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
         </LinearLayout>
