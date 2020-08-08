@@ -5,15 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import androidx.fragment.app.Fragment
 import common.ext.actionUninstallApk
 import common.ext.exhaustive
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.ui.common.BaseFragment
 import org.illegaller.ratabb.hishoot2i.ui.template.TemplateManagerActivity
 import template.Template
 import javax.inject.Inject
 
-abstract class AbsTemplateFragment : BaseFragment(), SwipeHelper.Listener {
+abstract class AbsTemplateFragment : Fragment(R.layout.fragment_template), SwipeHelper.Listener {
     @Inject
     lateinit var adapter: TemplateAdapter
     private var positionUninstallTemplate: Int = -1

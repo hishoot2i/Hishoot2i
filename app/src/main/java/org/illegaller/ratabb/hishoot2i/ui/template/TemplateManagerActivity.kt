@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
@@ -18,7 +19,6 @@ import common.ext.preventMultipleClick
 import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.BadgeTabLayout
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.NoScrollViewPager
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingActivity
@@ -27,7 +27,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TemplateManagerActivity : BaseActivity(), TemplateManagerView {
+class TemplateManagerActivity : AppCompatActivity(), TemplateManagerView {
     @Inject
     lateinit var presenter: TemplateManagerPresenter
     //

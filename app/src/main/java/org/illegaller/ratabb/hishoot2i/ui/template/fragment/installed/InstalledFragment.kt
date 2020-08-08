@@ -25,7 +25,6 @@ class InstalledFragment : AbsTemplateFragment(), InstalledFragmentView {
     private lateinit var templateRecyclerView: RecyclerView
     private lateinit var noContent: View
     private lateinit var loading: View
-    override fun layoutRes(): Int = R.layout.fragment_template
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.clickItem = ::onClickItemAdapter

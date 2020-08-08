@@ -5,19 +5,18 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.fragment.app.Fragment
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
-import org.illegaller.ratabb.hishoot2i.ui.common.BaseFragment
 import common.ext.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SettingFragment : BaseFragment() {
+class SettingFragment : Fragment(R.layout.fragment_setting) {
     @Inject
     lateinit var appPref: AppPref
 
-    override fun layoutRes(): Int = R.layout.fragment_setting
     private lateinit var appThemeDarkSwitch: SwitchCompat
     private lateinit var badgeSystemFontSwitch: SwitchCompat
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

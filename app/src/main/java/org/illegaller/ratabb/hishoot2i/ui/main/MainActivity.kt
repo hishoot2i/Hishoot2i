@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -29,7 +30,6 @@ import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.BuildConfig.IMAGE_RECEIVER
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.ui.common.BaseActivity
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.CoreImagePreview
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.AbsTools
 import org.illegaller.ratabb.hishoot2i.ui.main.tools.background.BackgroundTool
@@ -42,7 +42,7 @@ import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity(), MainView, AbsTools.ChangeImageSourcePath {
+class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePath {
     @Inject
     lateinit var presenter: MainPresenter
 
