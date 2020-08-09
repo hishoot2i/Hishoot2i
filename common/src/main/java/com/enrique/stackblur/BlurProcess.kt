@@ -21,11 +21,11 @@
  * @copyright: Enrique López Mañas
  * @license: Apache License 2.0
  */
-package com.enrique.stackblur;
+package com.enrique.stackblur
 
-import android.graphics.Bitmap;
+import android.graphics.Bitmap
 
-public interface BlurProcess {
+interface BlurProcess {
     /**
      * Process the given image, blurring by the supplied radius.
      * If radius is 0, this will return original
@@ -34,5 +34,5 @@ public interface BlurProcess {
      * @param radius the radius in pixels to blur the image
      * @return the blurred version of the image.
      */
-    Bitmap blur(Bitmap original, float radius);
+    fun blur(original: Bitmap, radius: Float): Bitmap?
 }

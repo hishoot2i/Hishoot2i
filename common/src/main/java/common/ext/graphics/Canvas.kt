@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
-import com.enrique.stackblur.StackBlurManager
+import com.enrique.stackblur.JavaBlurProcess
 
 inline fun Canvas.withConcatMatrix(matrix: Matrix, block: Canvas.() -> Unit) {
     val checkpoint = save()
@@ -63,16 +63,17 @@ inline fun Canvas.drawBitmapPerspective(
 const val MAX_BLUR_RADIUS = 100
 inline fun Canvas.drawBitmapBlur(bitmap: Bitmap?, radius: Int) {
     if (null != bitmap && !bitmap.isRecycled) {
-        val rad = radius.coerceAtMost(MAX_BLUR_RADIUS)
+        val rad = radius.coerceAtMost(MAX_BLUR_RADIUS).toFloat()
         val sizes = bitmap.sizes
         val scaledSize = sizes / 2
         val scaleDown = bitmap.resizeIfNotEqual(scaledSize)
-        val stackBlurManager = StackBlurManager(scaleDown)
-        val process = stackBlurManager.process(rad)
+        val process = JavaBlurProcess().blur(scaleDown, rad)
         scaleDown.recycleSafely()
-        val scaleUp = Bitmap.createScaledBitmap(process, sizes.x, sizes.y, false)
-        process.recycleSafely()
-        drawBitmapSafely(scaleUp)
-        scaleUp.recycleSafely()
+        process?.let {
+            val scaleUp = Bitmap.createScaledBitmap(it, sizes.x, sizes.y, false)
+            it.recycleSafely()
+            drawBitmapSafely(scaleUp)
+            scaleUp.recycleSafely()
+        }
     }
 }
