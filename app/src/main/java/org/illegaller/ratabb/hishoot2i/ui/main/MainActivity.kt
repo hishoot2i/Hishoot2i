@@ -16,7 +16,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import common.ext.activityPendingIntent
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
     //
     private lateinit var toolbar: Toolbar
     private lateinit var mainFab: FloatingActionButton
-    private lateinit var mainBottomNav: BottomNavigationView
+    private lateinit var mainBottomNav: BottomAppBar
     private lateinit var mainImage: CoreImagePreview
     private lateinit var loading: View
 
@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
 
     /**/
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -95,14 +96,14 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
         setViewListener()
         // NOTE: Not use changePath...
         savedInstanceState?.let {
-            if (it.containsKey(KEY_BACKGROUND_PATH)) it.getString(KEY_BACKGROUND_PATH)?.let {
-                presenter.sourcePath.background = it
+            if (it.containsKey(KEY_BACKGROUND_PATH)) it.getString(KEY_BACKGROUND_PATH)?.let { s ->
+                presenter.sourcePath.background = s
             }
-            if (it.containsKey(KEY_SCREEN1_PATH)) it.getString(KEY_SCREEN1_PATH)?.let {
-                presenter.sourcePath.screen1 = it
+            if (it.containsKey(KEY_SCREEN1_PATH)) it.getString(KEY_SCREEN1_PATH)?.let { s ->
+                presenter.sourcePath.screen1 = s
             }
-            if (it.containsKey(KEY_SCREEN2_PATH)) it.getString(KEY_SCREEN2_PATH)?.let {
-                presenter.sourcePath.screen2 = it
+            if (it.containsKey(KEY_SCREEN2_PATH)) it.getString(KEY_SCREEN2_PATH)?.let { s ->
+                presenter.sourcePath.screen2 = s
             }
         }
         //
@@ -215,7 +216,7 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
                 } else stopPipette()
             }
         }
-        mainBottomNav.setOnNavigationItemSelectedListener { navigationShowTool(it) }
+        mainBottomNav.setOnMenuItemClickListener { navigationShowTool(it) }
     }
 
     private fun stopPipette(isCancel: Boolean = false) {
@@ -247,6 +248,11 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
                     R.id.action_background -> BackgroundTool.newInstance(ratioCrop)
                     /* NOTE: [BadgeTool] permission READ_EXTERNAL_STORAGE Font file directory. */
                     R.id.action_badge -> BadgeTool()
+                    R.id.action_filter -> {
+                        Snackbar.make(mainBottomNav, "Coming soon 7o7", Snackbar.LENGTH_SHORT)
+                            .show()
+                        null
+                    }
                     else -> null
                 }?.let {
                     it.callback = this

@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppWidget.ActionBar" parent="Widget.AppCompat.ActionBar">
-        <!--  <item name="android:background">@drawable/app_bar_background</item>-->
+    <style name="AppWidget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Primary">
         <item name="android:background">?attr/colorPrimary</item>
-        <item name="android:theme">@style/AppThemeOverlay.ActionBar</item>
-        <item name="popupTheme">@style/AppThemeOverlay.ActionBar.Popup</item>
+        <!--<item name="android:theme">@style/AppThemeOverlay.ActionBar</item>-->
         <item name="elevation">@dimen/toolbarElevation</item>
     </style>
 
-    <style name="AppWidget.ActionBar.Bottom" />
-
-    <style name="AppWidget.CardView" parent="CardView.Dark" />
-
-    <style name="AppWidget.Light.CardView" parent="CardView.Light" />
+    <style name="AppWidget.CardView" parent="Widget.MaterialComponents.CardView" />
 
     <style name="AppWidget.CoordinatorLayout" parent="Widget.Support.CoordinatorLayout" />
 
-    <style name="AppWidget.ProgressBar" parent="Widget.AppCompat.ProgressBar" />
+    <style name="AppWidget.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal" />
 
     <!--FIXME: drawableTint... newApi ?-->
     <style name="AppWidget.TextImage" parent="">
@@ -29,13 +23,13 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="AppWidget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+    <style name="AppWidget.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">
         <item name="android:textAppearance">@style/TextAppearance.App</item>
         <item name="android:textSize">12sp</item>
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="AppWidget.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+    <style name="AppWidget.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
         <item name="thumbTint">?attr/colorAccent</item>
         <item name="thumbTintMode">src_in</item>
         <item name="switchPadding">@dimen/dp16</item>
@@ -43,15 +37,33 @@
         <item name="android:paddingBottom">@dimen/dp4</item>
     </style>
     <!--activity_main-->
-    <style name="AppWidget.BottomNavigation" parent="">
+<!--    <style name="AppWidget.BottomNavigation" parent="">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="itemIconTint">@color/white</item>
         <item name="itemTextColor">@color/white</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="menu">@menu/tool</item>
+    </style>-->
+
+    <style name="AppWidget.BottomAppBar" parent="Widget.MaterialComponents.BottomAppBar.Colored">
+        <item name="fabAlignmentMode">end</item>
+        <item name="buttonGravity">top|bottom</item>
+        <!--<item name="navigationIcon">@drawable/ic_template_black_24dp</item>-->
+        <item name="hideOnScroll">true</item>
+    </style>
+
+    <style name="AppWidget.NavigationIconTinted" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="AppWidget.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/accent</item>
+        <item name="fabSize">normal</item>
+        <item name="useCompatPadding">true</item>
+        <item name="tint">@color/white</item>
     </style>
     <!--activity_crop, dialog_color_mix-->
-    <style name="AppWidget.Button.Borderless" parent="Widget.AppCompat.Button.Borderless">
+    <style name="AppWidget.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
     </style>
     <!--dialog_color_mix-->
@@ -63,23 +75,25 @@
         <item name="android:textAppearance">@style/TextAppearance.App</item>
     </style>
     <!--themes-->
-    <style name="Base.AppWidget.BottomSheetModal" parent="Widget.Design.BottomSheet.Modal">
+    <style name="Base.AppWidget.BottomSheetModal" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="behavior_peekHeight">auto</item>
     </style>
 
-    <style name="AppWidget.BottomSheetModal" parent="Base.AppWidget.BottomSheetModal">
-        <item name="android:background">@drawable/top_10_rounded</item>
+    <style name="AppWidget.BottomSheetModal" parent="Base.AppWidget.BottomSheetModal" >
+        <item name="background">@drawable/top_10_rounded</item>
     </style>
 
-    <style name="AppWidget.Light.BottomSheetModal" parent="Base.AppWidget.BottomSheetModal">
-        <item name="android:background">@drawable/top_10_rounded_light</item>
+    <style name="AppWidget.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:background">?attr/colorPrimary</item>
     </style>
+
     <!--TextAppearance-->
     <style name="TextAppearance.App" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:typeface">normal</item>
     </style>
 
-    <style name="TextAppearance.App.Button" parent="TextAppearance.AppCompat.Widget.Button">
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:shadowColor">@color/shadowTextButton</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">1.0</item>

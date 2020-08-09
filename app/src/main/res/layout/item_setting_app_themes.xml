@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setting_day_night"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp10"
-    android:orientation="vertical">
+    android:foreground="?selectableItemBackgroundBorderless"
+    android:orientation="vertical"
+    tools:ignore="UnusedAttribute">
 
     <TextView
         android:layout_width="match_parent"
@@ -12,62 +15,11 @@
         android:text="@string/app_themes"
         android:textAppearance="@style/TextAppearance.App.Title" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/setting_day_night_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:text="@string/system_default" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="DARK"
-            tools:ignore="HardcodedText" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/setting_app_themes_dark"
-            style="@style/AppWidget.Switch"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp48"
-            tools:checked="true" />
-    </LinearLayout>
-
-    <!--    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="COLOR PRIMARY"
-                tools:ignore="HardcodedText" />
-
-            <View
-                android:layout_width="@dimen/dp48"
-                android:layout_height="@dimen/dp48"
-                android:background="@color/primary" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="COLOR ACCENT"
-                tools:ignore="HardcodedText" />
-
-            <View
-                android:layout_width="@dimen/dp48"
-                android:layout_height="@dimen/dp48"
-                android:background="@color/accent" />
-        </LinearLayout>-->
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

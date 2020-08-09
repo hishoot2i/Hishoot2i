@@ -82,6 +82,9 @@
     <string name="manual_crop">Manual Crop</string>
     <string name="app_themes">App Themes</string>
     <string name="badge_tab_layout_max_count_overflow">99+</string>
+    <string name="system_default">System default</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
     <!--About-->
     <string name="github_page">Github page</string>
     <string name="facebook_group">Facebook group</string>

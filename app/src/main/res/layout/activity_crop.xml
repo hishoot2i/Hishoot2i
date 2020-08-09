@@ -40,7 +40,7 @@
 
 
     <com.google.android.material.appbar.AppBarLayout
-        style="@style/AppWidget.ActionBar.Bottom"
+        style="?appBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_gravity="bottom">
@@ -52,7 +52,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/cropCancel"
-                style="@style/AppWidget.Button.Borderless"
+                style="@style/AppWidget.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -60,7 +60,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/cropDone"
-                style="@style/AppWidget.Button.Borderless"
+                style="@style/AppWidget.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

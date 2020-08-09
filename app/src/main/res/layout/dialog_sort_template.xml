@@ -21,35 +21,35 @@
 
         >
 
-        <TableRow >
+        <TableRow>
 
             <TextView
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/name"
-                android:textAppearance="@style/TextAppearance.App" />
+                android:textAppearance="@style/TextAppearance.App.SubTitle" />
 
             <TextView
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/version"
-                android:textAppearance="@style/TextAppearance.App" />
+                android:textAppearance="@style/TextAppearance.App.SubTitle" />
 
             <TextView
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/date"
-                android:textAppearance="@style/TextAppearance.App" />
+                android:textAppearance="@style/TextAppearance.App.SubTitle" />
         </TableRow>
 
         <TableRow android:layout_marginTop="@dimen/dp10">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_name_asc"
-                style="?borderlessButtonStyle"
+                style="?selectableItemBackgroundBorderless"
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_az_up_black_24dp"
@@ -58,7 +58,7 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_type_asc"
-                style="?borderlessButtonStyle"
+
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_type_up_black_24dp"
@@ -66,7 +66,7 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_date_asc"
-                style="?borderlessButtonStyle"
+                style="?selectableItemBackgroundBorderless"
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_clock_up_black_24dp"
@@ -77,7 +77,7 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_name_desc"
-                style="?borderlessButtonStyle"
+                style="?selectableItemBackgroundBorderless"
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_az_down_black_24dp"
@@ -85,7 +85,7 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_type_desc"
-                style="?borderlessButtonStyle"
+                style="?selectableItemBackgroundBorderless"
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_type_down_black_24dp"
@@ -93,11 +93,31 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_date_desc"
-                style="?borderlessButtonStyle"
+                style="?selectableItemBackgroundBorderless"
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_clock_down_black_24dp"
                 app:tint="?android:attr/textColorPrimary" />
         </TableRow>
     </TableLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/action_sort_cancel"
+            style="@style/AppWidget.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textColor="?colorAccent" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.DialogFragment
 import common.ext.exhaustive
@@ -51,6 +52,9 @@ class SortTemplateDialog : BaseDialogFragment() {
         }
         emitSelectedSortItem()
         setViewListener()
+        view.findViewById<Button>(R.id.action_sort_cancel).setOnClickListener {
+            it.preventMultipleClick { dismiss() }
+        }
     }
 
     private fun setViewListener() {

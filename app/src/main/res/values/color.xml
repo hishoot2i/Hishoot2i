@@ -17,10 +17,9 @@
     <color name="primaryDark">#FF034171</color>
     <color name="accent">#FF689F38</color>
     <!---->
-    <color name="dialogStroke">@color/grey300HalfAlpha</color>
-    <color name="dialogStrokeLight">@color/grey900HalfAlpha</color>
-    <color name="windowBackground">@color/grey900</color>
-    <color name="windowBackgroundLight">@color/grey300</color>
+    <color name="dialogStroke">@color/grey900HalfAlpha</color>
+    <color name="windowBackground">@color/grey300</color>
+    <color name="textRowBackground">@color/grey300HalfAlpha</color>
     <color name="iconShortcutTemplateBackground">@color/primary</color>
     <color name="shadowTextButton">#7f5a595b</color>
 </resources>

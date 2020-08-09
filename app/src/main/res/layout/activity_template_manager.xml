@@ -16,7 +16,7 @@
 
 
     <com.google.android.material.appbar.AppBarLayout
-        style="@style/AppWidget.ActionBar"
+        style="?appBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -29,6 +29,7 @@
             app:title="@string/app_name" />
 
         <org.illegaller.ratabb.hishoot2i.ui.common.widget.BadgeTabLayout
+            style="@style/AppWidget.TabLayout"
             android:id="@+id/templateManagerTabLayout"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"

@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Platform.AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="Platform.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
-    <style name="Platform.Light.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/transparent</item>
-        <item name="android:fitsSystemWindows">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
-
-    <style name="AppThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:elevation">@dimen/toolbarElevation</item>
-    </style>
 </resources>

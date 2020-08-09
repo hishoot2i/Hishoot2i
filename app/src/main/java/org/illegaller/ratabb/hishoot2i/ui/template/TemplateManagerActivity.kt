@@ -10,8 +10,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import common.ext.actionGetContentWith
@@ -30,11 +28,13 @@ import javax.inject.Inject
 class TemplateManagerActivity : AppCompatActivity(), TemplateManagerView {
     @Inject
     lateinit var presenter: TemplateManagerPresenter
+
     //
     private lateinit var toolbar: Toolbar
     private lateinit var tabLayout: BadgeTabLayout
     private lateinit var viewPager: NoScrollViewPager
     private lateinit var addHtz: FloatingActionButton
+
     //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +101,7 @@ class TemplateManagerActivity : AppCompatActivity(), TemplateManagerView {
                 startActivityForResult(actionGetContentWith(type = "*/*"), REQ_HTZ_PICK)
             }
         }
-        reTintIconFab(addHtz)
+        // reTintIconFab(addHtz)
     }
 
     fun updateTabBadge(position: Int, count: Int) {
@@ -120,18 +120,19 @@ class TemplateManagerActivity : AppCompatActivity(), TemplateManagerView {
         Timber.e(e)
     }
 
-    private fun reTintIconFab(fab: FloatingActionButton) {
+    /* private fun reTintIconFab(fab: FloatingActionButton) {
         with(fab) {
             val d = DrawableCompat.wrap(drawable)
             DrawableCompat.setTint(d, ContextCompat.getColor(context, R.color.white))
             setImageDrawable(d)
         }
-    }
+    }*/
 
     companion object {
         private const val REQ_HTZ_PICK = 0x123
         const val POSITION_INSTALLED = 0
         const val POSITION_FAVORITE = 1
+
         @JvmStatic
         fun start(context: Context) {
             ActivityOptionsCompat.makeCustomAnimation(

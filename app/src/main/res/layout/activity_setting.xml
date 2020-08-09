@@ -23,7 +23,7 @@
 
 
     <com.google.android.material.appbar.AppBarLayout
-        style="@style/AppWidget.ActionBar"
+        style="?appBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">

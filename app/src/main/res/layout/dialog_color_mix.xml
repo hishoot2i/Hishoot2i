@@ -194,7 +194,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/colorCancel"
-                style="@style/AppWidget.Button.Borderless"
+                style="@style/AppWidget.Button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -202,7 +202,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/colorDone"
-                style="@style/AppWidget.Button.Borderless"
+                style="@style/AppWidget.Button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

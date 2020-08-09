@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Platform.AppTheme" parent="Theme.AppCompat.NoActionBar" />
-
-    <style name="Platform.Light.AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Platform.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
     <style name="AppTheme" parent="Platform.AppTheme">
         <item name="colorPrimary">@color/primary</item>
@@ -14,50 +12,30 @@
         <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheetDialog</item>
         <item name="dialogTheme">@style/AppTheme.Dialog</item>
         <item name="android:windowBackground">@drawable/app_window_background</item>
-        <item name="backgroundTextRow">@color/grey900HalfAlpha</item>
+        <item name="backgroundTextRow">@color/textRowBackground</item>
         <item name="backgroundPopup">@color/windowBackground</item>
-    </style>
-
-    <style name="AppTheme.Light" parent="Platform.Light.AppTheme">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="cardViewStyle">@style/AppWidget.Light.CardView</item>
-        <item name="coordinatorLayoutStyle">@style/AppWidget.CoordinatorLayout</item>
-        <item name="bottomSheetDialogTheme">@style/AppTheme.Light.BottomSheetDialog</item>
-        <item name="dialogTheme">@style/AppTheme.Light.Dialog</item>
-        <item name="android:windowBackground">@drawable/app_window_background_light</item>
-        <item name="backgroundTextRow">@color/grey300HalfAlpha</item>
-        <item name="backgroundPopup">@color/windowBackgroundLight</item>
+        <item name="appBarLayoutStyle">@style/AppWidget.AppBarLayout</item>
+        <item name="bottomAppBarStyle">@style/AppWidget.BottomAppBar</item>
+        <item name="floatingActionButtonStyle">@style/AppWidget.FloatingActionButton</item>
+        <item name="toolbarNavigationButtonStyle">@style/AppWidget.NavigationIconTinted</item>
     </style>
 
     <style name="AppTheme.Branded">
         <item name="android:windowBackground">@drawable/branded_logo</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowBackground">@drawable/top_bottom_10_rounded</item>
     </style>
 
-    <style name="AppTheme.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/accent</item>
-        <item name="android:windowBackground">@drawable/top_bottom_10_rounded_light</item>
-    </style>
-
-    <style name="AppTheme.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+    <style name="AppTheme.BottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="colorAccent">@color/accent</item>
         <item name="bottomSheetStyle">@style/AppWidget.BottomSheetModal</item>
     </style>
 
-    <style name="AppTheme.Light.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="colorAccent">@color/accent</item>
-        <item name="bottomSheetStyle">@style/AppWidget.Light.BottomSheetModal</item>
-    </style>
-
-    <style name="AppThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <!--<style name="AppThemeOverlay.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="elevation">@dimen/toolbarElevation</item>
-    </style>
+    </style>-->
 
-    <style name="AppThemeOverlay.ActionBar.Popup" parent="ThemeOverlay.AppCompat" />
 </resources>

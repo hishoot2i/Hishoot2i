@@ -3,9 +3,9 @@ package org.illegaller.ratabb.hishoot2i.data
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import androidx.core.content.FileProvider.getUriForFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.illegaller.ratabb.hishoot2i.provider.SavedStorageProvider
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
@@ -30,7 +30,8 @@ class FileConstantsImpl @Inject constructor(
         if (!result.exists()) result.mkdirs()
         try {
             File(result, common.FileConstants.NO_MEDIA).createNewFile()
-        } catch (ignore: IOException) {
+        } catch (e: IOException) {
+            Timber.e(e)
         }
         return result
     }
@@ -42,6 +43,7 @@ class FileConstantsImpl @Inject constructor(
         try {
             result.createNewFile()
         } catch (e: IOException) {
+            Timber.e(e)
         }
         return result
     }
