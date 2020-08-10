@@ -58,7 +58,7 @@ class TemplateManagerActivity : AppCompatActivity(), TemplateManagerView {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.template_manager, menu) //
+        menuInflater.inflate(R.menu.main, menu) //
         return true
     }
 
@@ -113,7 +113,9 @@ class TemplateManagerActivity : AppCompatActivity(), TemplateManagerView {
             addHtz,
             "Success import ${htz.name}",
             Snackbar.LENGTH_SHORT
-        ).show() //
+        )
+            .setAnchorView(addHtz)
+            .show() //
     }
 
     override fun onError(e: Throwable) {

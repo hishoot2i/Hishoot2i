@@ -51,7 +51,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
-    buildFeatures.viewBinding = true
+    // buildFeatures.viewBinding = true
     compileOptions {
         coreLibraryDesugaringEnabled = true // TODO: Desugar
     }

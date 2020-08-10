@@ -67,7 +67,9 @@ class InstalledFragment : AbsTemplateFragment(), InstalledFragmentView {
                 templateRecyclerView,
                 "Template: ${template.name}", // TODO:
                 Snackbar.LENGTH_SHORT
-            ).show()
+            )
+                .setAnchorView(R.id.templateManagerAddHtz)
+                .show()
         }
     }
 

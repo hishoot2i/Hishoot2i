@@ -68,7 +68,9 @@ class FavoriteFragment : AbsTemplateFragment(), FavoriteFragmentView {
                 templateRecyclerView,
                 "Template: ${template.name}", // TODO:
                 Snackbar.LENGTH_SHORT
-            ).show()
+            )
+                .setAnchorView(R.id.templateManagerAddHtz)
+                .show()
         }
     }
 

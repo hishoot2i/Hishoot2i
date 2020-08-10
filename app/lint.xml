@@ -4,5 +4,6 @@
         <ignore regexp="timber.lint" />
         <ignore regexp="dagger.lint" />
         <ignore regexp="androidx.fragment.lint" />
+        <ignore regexp="androidx.annotation.experimental.lint" />
     </issue>
 </lint>

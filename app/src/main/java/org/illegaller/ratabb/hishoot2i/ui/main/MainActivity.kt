@@ -232,12 +232,9 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
 
     private fun navigationShowTool(item: MenuItem): Boolean = item.preventMultipleClick {
         return when {
-            isOnProgress -> false.also {
-                Snackbar.make(mainBottomNav, "PROGRESS", /*TODO:text!*/ Snackbar.LENGTH_SHORT)
-                    .show()
-            }
-            isOnPipette -> false.also { _ ->
-                Snackbar.make(mainBottomNav, "PIPETTE", /*TODO: text!*/ Snackbar.LENGTH_SHORT)
+            isOnProgress -> false.also { makeSnackBar("Progress").show() }
+            isOnPipette -> false.also {
+                makeSnackBar("Pipette")
                     .setAction(R.string.cancel) { stopPipette(isCancel = true) }
                     .show()
             }
@@ -248,11 +245,7 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
                     R.id.action_background -> BackgroundTool.newInstance(ratioCrop)
                     /* NOTE: [BadgeTool] permission READ_EXTERNAL_STORAGE Font file directory. */
                     R.id.action_badge -> BadgeTool()
-                    R.id.action_filter -> {
-                        Snackbar.make(mainBottomNav, "Coming soon 7o7", Snackbar.LENGTH_SHORT)
-                            .show()
-                        null
-                    }
+                    R.id.action_filter -> null.also { makeSnackBar("Coming soon 7o7").show() }
                     else -> null
                 }?.let {
                     it.callback = this
@@ -262,6 +255,10 @@ class MainActivity : AppCompatActivity(), MainView, AbsTools.ChangeImageSourcePa
             }
         }
     }
+
+    private fun makeSnackBar(message: String) =
+        Snackbar.make(mainBottomNav, message, Snackbar.LENGTH_SHORT)
+            .setAnchorView(mainFab)
 
     /**
      * @return "true" when we have image path (screen1 | background) from intent receiver,
