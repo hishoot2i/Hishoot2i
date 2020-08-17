@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
     <item
         android:bottom="2dp"
         android:drawable="@drawable/ic_app_shortcut_template_background"
         android:left="2dp"
         android:right="2dp"
         android:top="2dp" />
-
     <item android:drawable="@drawable/ic_shortcut_template_foreground" />
-
 </layer-list>

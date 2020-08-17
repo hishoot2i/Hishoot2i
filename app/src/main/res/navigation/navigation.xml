@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    android:label="@string/app_name"
+    app:startDestination="@id/main"
+    tools:ignore="UnusedNavigation">
+    <!-- NOTE UnusedNavigation: manual set graph & arg at SingleActivity -->
+    <fragment
+        android:id="@+id/main"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.main.MainFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_main">
+        <argument
+            android:name="path"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="kind"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+        <!--<action
+            android:id="@+id/action_main_to_crop"
+            app:destination="@id/cropScreen" />
+        <action
+            android:id="@+id/action_main_to_template"
+            app:destination="@id/templateScreen" />-->
+    </fragment>
+    <fragment
+        android:id="@+id/template"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.template.TemplateFragment"
+        android:label="@string/template"
+        tools:layout="@layout/fragment_template" />
+    <fragment
+        android:id="@+id/crop"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.crop.CropFragment"
+        android:label="@string/manual_crop"
+        tools:layout="@layout/fragment_crop">
+        <argument
+            android:name="path"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="ratioX"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="ratioY"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/setting"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.setting.SettingFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_setting" />
+
+    <action
+        android:id="@+id/action_global_setting"
+        app:destination="@id/setting" />
+    <action
+        android:id="@+id/action_global_template"
+        app:destination="@id/template" />
+    <action
+        android:id="@+id/action_global_crop"
+        app:destination="@id/crop" />
+</navigation>

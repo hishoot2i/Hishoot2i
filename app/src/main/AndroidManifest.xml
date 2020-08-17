@@ -14,15 +14,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-        <!-- NOTE: -->
-        <!-- GoogleAppIndexingWarning: IDK -->
-        <!-- UnusedAttribute:  android:appCategory="image" Api26+ -->
+        <!-- NOTE:
+        GoogleAppIndexingWarning: IDK
+        UnusedAttribute:  android:appCategory="image" Api26+
+        TODO: requestLegacyExternalStorage
+        https://developer.android.com/preview/privacy/storage#scoped-storage
+        https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
+        -->
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".SingleActivity"
             android:configChanges="orientation|keyboard|keyboardHidden"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Branded">
@@ -31,55 +36,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <!-- NOTE: Explicit here, cause category launcher using ALIAS  -->
+                <!--TODO: Caoc ? Explicit here, cause category launcher using ALIAS  -->
                 <action android:name="cat.ereza.customactivityoncrash.RESTART" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.template.TemplateManagerActivity"
-            android:configChanges="orientation|keyboard|keyboardHidden"
-            android:excludeFromRecents="true"
-            android:parentActivityName=".ui.main.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.crop.CropActivity"
-            android:configChanges="orientation|keyboard|keyboardHidden"
-            android:excludeFromRecents="true"
-            android:parentActivityName=".ui.main.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.setting.SettingActivity"
-            android:configChanges="orientation|keyboard|keyboardHidden"
-            android:excludeFromRecents="true"
-            android:label="@string/settings"
-            android:parentActivityName=".ui.main.MainActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.PREFERENCE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
         </activity>
         <!--|| ALIAS ||-->
         <!-- Launcher -->
         <activity-alias
             android:name=".ui.activity.MainActivity"
-            android:targetActivity=".ui.main.MainActivity">
+            android:targetActivity=".SingleActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -87,16 +52,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
+            -->
         </activity-alias>
         <!-- Image Receiver -->
         <activity-alias
             android:name=".ScreenReceiver"
             android:excludeFromRecents="true"
             android:label="@string/screen"
-            android:targetActivity=".ui.main.MainActivity">
+            android:targetActivity=".SingleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -110,7 +77,7 @@
             android:name=".BackgroundReceiver"
             android:excludeFromRecents="true"
             android:label="@string/background"
-            android:targetActivity=".ui.main.MainActivity">
+            android:targetActivity=".SingleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -121,11 +88,11 @@
                 android:resource="@string/background" />
         </activity-alias>
         <!--Import Htz-->
-        <activity-alias
+        <!--<activity-alias
             android:name=".ImportHtzReceiver"
             android:excludeFromRecents="true"
             android:label="@string/import_htz"
-            android:targetActivity=".ui.template.TemplateManagerActivity">
+            android:targetActivity=".SingleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -144,7 +111,7 @@
                     android:pathPattern="/.*\\.htz"
                     android:scheme="file" />
             </intent-filter>
-        </activity-alias>
+        </activity-alias>-->
         <!-- FileProvider -->
         <provider
             android:name=".provider.SavedStorageProvider"

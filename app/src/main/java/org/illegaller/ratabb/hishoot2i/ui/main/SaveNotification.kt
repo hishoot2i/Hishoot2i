@@ -20,6 +20,7 @@ import common.ext.graphics.sizes
 import common.ext.prepareNotificationChannel
 import dagger.hilt.android.qualifiers.ActivityContext
 import org.illegaller.ratabb.hishoot2i.R
+import org.illegaller.ratabb.hishoot2i.SingleActivity
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
@@ -44,7 +45,7 @@ class SaveNotification @Inject constructor(
             setContentTitle(context.getString(R.string.app_name))
             setSmallIcon(R.drawable.ic_app_notification)
             setDefaults(NotificationCompat.DEFAULT_ALL)
-            setContentIntent(MainActivity.contentIntent(context))
+            setContentIntent(SingleActivity.contentIntent(context))
             setOnlyAlertOnce(true)
         }
     }
@@ -127,9 +128,11 @@ class SaveNotification @Inject constructor(
         }
     }
 
-    private val paintBigPicture = ColorMatrixColorFilter(ColorMatrix().apply {
-        setSaturation(POINT_OF_TWENTY_FIVE)
-    }).let { filter: ColorMatrixColorFilter ->
+    private val paintBigPicture = ColorMatrixColorFilter(
+        ColorMatrix().apply {
+            setSaturation(POINT_OF_TWENTY_FIVE)
+        }
+    ).let { filter: ColorMatrixColorFilter ->
         Paint(Paint.FILTER_BITMAP_FLAG).apply { colorFilter = filter }
     }
 

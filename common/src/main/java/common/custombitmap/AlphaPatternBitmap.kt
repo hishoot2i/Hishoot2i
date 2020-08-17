@@ -10,22 +10,23 @@ import common.ext.density
 import common.ext.graphics.applyCanvas
 import common.ext.graphics.createBitmap
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlin.math.roundToInt
 
 class AlphaPatternBitmap(context: Context) {
     private val density by lazy(NONE) { context.density }
     fun create(sizes: entity.Sizes): Bitmap {
-        val rectangleSizePx = Math.round(density * DEFAULT_RECTANGLE_SIZE_DP + POINT_OF_FIVE)
-        val (numRectanglesHorizontal, numRectanglesVertical) = sizes / rectangleSizePx
+        val rectSizePx = (density * DEFAULT_RECTANGLE_SIZE_DP + POINT_OF_FIVE).roundToInt()
+        val (nRectH, nRectV) = sizes / rectSizePx
         return sizes.createBitmap(config = RGB_565).applyCanvas {
-            var verticalStartWhite = true
-            for (vertical in 0..numRectanglesVertical) {
-                var isWhite = verticalStartWhite
-                for (horizontal in 0..numRectanglesHorizontal) {
+            var vStartWhite = true
+            for (vertical in 0..nRectV) {
+                var isWhite = vStartWhite
+                for (horizontal in 0..nRectH) {
                     paint.apply { color = if (isWhite) WHITE else GRAY }
-                    drawRect(rect.calculateRect(vertical, horizontal, rectangleSizePx), paint)
+                    drawRect(rect.calculateRect(vertical, horizontal, rectSizePx), paint)
                     isWhite = !isWhite
                 }
-                verticalStartWhite = !verticalStartWhite
+                vStartWhite = !vStartWhite
             }
         }
     }

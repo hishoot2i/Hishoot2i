@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-<integer name="windowAnimDuration">@android:integer/config_mediumAnimTime</integer>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <integer name="windowAnimDuration" tools:ignore="UnusedResources">
+        @android:integer/config_mediumAnimTime
+    </integer>
 </resources>

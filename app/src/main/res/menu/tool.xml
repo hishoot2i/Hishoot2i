@@ -27,10 +27,10 @@
         android:title="@string/badge"
         app:iconTint="@color/white"
         app:showAsAction="always" />
-    <item
+    <!--<item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_photo_filter_black_24dp"
         android:title="@string/badge"
         app:iconTint="@color/white"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
 </menu>

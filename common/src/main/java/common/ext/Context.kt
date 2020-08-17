@@ -10,6 +10,7 @@ import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.WindowManager
 import java.io.IOException
 import java.io.InputStream
@@ -31,7 +32,12 @@ inline val Context.deviceWidth
 inline val Context.deviceHeight
     get() = displayMetrics.heightPixels
 
-inline fun Context.dp2px(dp: Int): Float = dp * density + POINT_OF_FIVE
+inline fun Context.dp2px(dp: Float): Float = /*dp * density + POINT_OF_FIVE*/
+    TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp,
+        this.resources.displayMetrics
+    )
 inline fun Context.textSize(size: Int): Float = size * scaledDensity + POINT_OF_FIVE
 @Throws(PackageManager.NameNotFoundException::class)
 inline fun Context.resourcesFrom(packageName: String): Resources =

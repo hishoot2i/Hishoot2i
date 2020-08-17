@@ -5,6 +5,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 apply("$rootDir/buildsystem/signingRelease.gradle")
@@ -47,7 +48,7 @@ android {
             isShrinkResources = true
             isMinifyEnabled = true
             isZipAlignEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles("proguard-android.pro", "proguard-app.pro")
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -82,33 +83,55 @@ dependencies {
 
     val xCoreVersion: String by rootProject
     implementation("androidx.core:core:$xCoreVersion")
+    implementation("androidx.core:core-ktx:$xCoreVersion") //
 
     implementation("androidx.viewpager:viewpager:1.0.0")
-    implementation("androidx.vectordrawable:vectordrawable:1.1.0")
+    // implementation("androidx.vectordrawable:vectordrawable:1.1.0")
     implementation("androidx.appcompat:appcompat-resources:1.2.0")
-    implementation("androidx.documentfile:documentfile:1.0.1")
-    implementation("androidx.activity:activity:1.1.0")
+    // implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.cardview:cardview:1.0.0")
+    // implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.1.0")
-    implementation("androidx.fragment:fragment:1.2.5")
     implementation("androidx.recyclerview:recyclerview:1.1.0")
+    implementation("androidx.customview:customview:1.1.0")
+
+    val xActivityVersion: String by rootProject
+    implementation("androidx.activity:activity:$xActivityVersion")
+    // implementation("androidx.activity:activity-ktx:$xActivityVersion")
+
+    val xFragmentVersion: String by rootProject
+    implementation("androidx.fragment:fragment:$xFragmentVersion")
+    implementation("androidx.fragment:fragment-ktx:$xFragmentVersion")
+
+    implementation("androidx.drawerlayout:drawerlayout:1.1.0")
+
+    val xNavigationVersion: String by rootProject
+    // implementation("androidx.navigation:navigation-fragment:$xNavigationVersion")
+    implementation("androidx.navigation:navigation-fragment-ktx:$xNavigationVersion")
+    // implementation("androidx.navigation:navigation-ui:$xNavigationVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$xNavigationVersion")
+    implementation("androidx.navigation:navigation-common:$xNavigationVersion")
+    implementation("androidx.navigation:navigation-common-ktx:$xNavigationVersion")
+    implementation("androidx.navigation:navigation-runtime:$xNavigationVersion")
+    implementation("androidx.navigation:navigation-runtime-ktx:$xNavigationVersion")
 
     implementation("com.google.android.material:material:1.2.0")
 
     val xLifeCycleVersion: String by rootProject
+    implementation("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel:$xLifeCycleVersion")
 
     // DI
     implementation("javax.inject:javax.inject:1")
-    implementation("com.google.dagger:dagger:2.28.1") //
+    val daggerVersion: String by rootProject
+    implementation("com.google.dagger:dagger:$daggerVersion") //
 
     val daggerHiltVersion: String by rootProject
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
 
-    val xHiltVersion: String by rootProject
-    kapt("androidx.hilt:hilt-compiler:$xHiltVersion")
+    // val xHiltVersion: String by rootProject
+    // kapt("androidx.hilt:hilt-compiler:$xHiltVersion")
 
     val timberVersion: String by rootProject
     implementation("com.jakewharton.timber:timber:$timberVersion")
@@ -118,10 +141,12 @@ dependencies {
     implementation("com.squareup.leakcanary:plumber-android:2.4") //
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.4")
 
-    implementation("io.reactivex.rxjava2:rxandroid:2.1.0")
-    implementation("io.reactivex.rxjava2:rxjava:2.2.0")
-    implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")
-    implementation("org.reactivestreams:reactive-streams:1.0.2")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation("io.reactivex.rxjava2:rxjava:2.2.19")
+    implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
+    implementation("org.reactivestreams:reactive-streams:1.0.3")
+
+    // implementation("com.gu.android:toolargetool:0.2.1@aar") // TODO: TooLargeTool
 }
 
 apply("$rootDir/buildsystem/appVersioning.gradle")

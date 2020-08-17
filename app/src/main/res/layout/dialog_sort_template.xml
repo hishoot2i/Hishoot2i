@@ -5,7 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp16">
+    android:padding="@dimen/dp8"
+    android:minWidth="@dimen/dp240"
+    tools:background="@drawable/dialog_background">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,38 +16,36 @@
         android:text="@string/sort_by"
         android:textAppearance="@style/TextAppearance.App.Title" />
 
-    <TableLayout
+    <TableLayout android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp8"
-
-        >
+        android:layout_margin="@dimen/dp8">
 
         <TableRow>
 
             <TextView
-                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/name"
-                android:textAppearance="@style/TextAppearance.App.SubTitle" />
+                android:textAppearance="@style/TextAppearance.App" />
 
             <TextView
-                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/version"
-                android:textAppearance="@style/TextAppearance.App.SubTitle" />
+                android:textAppearance="@style/TextAppearance.App" />
 
             <TextView
-                android:layout_width="@dimen/dialogSortIconSize"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/date"
-                android:textAppearance="@style/TextAppearance.App.SubTitle" />
+                android:textAppearance="@style/TextAppearance.App" />
         </TableRow>
 
-        <TableRow android:layout_marginTop="@dimen/dp10">
+        <TableRow android:layout_marginTop="@dimen/dp20">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_name_asc"
@@ -58,7 +58,6 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_type_asc"
-
                 android:layout_width="@dimen/dialogSortIconSize"
                 android:layout_height="@dimen/dialogSortIconSize"
                 app:srcCompat="@drawable/ic_sort_type_up_black_24dp"
@@ -73,7 +72,7 @@
                 app:tint="?android:attr/textColorPrimary" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="@dimen/dp20">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/action_sort_name_desc"

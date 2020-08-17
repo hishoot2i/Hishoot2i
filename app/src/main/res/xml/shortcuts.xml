@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources"
     tools:targetApi="25">
 
     <shortcut
@@ -11,13 +12,10 @@
         android:shortcutLongLabel="@string/shortcut_template_long_label"
         android:shortcutShortLabel="@string/shortcut_template_short_label">
 
+        <!-- FIXME: ??? -->
         <intent
-            android:action="android.intent.action.MAIN"
-            android:targetClass="org.illegaller.ratabb.hishoot2i.ui.main.MainActivity"
-            android:targetPackage="org.illegaller.ratabb.hishoot2i" />
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="org.illegaller.ratabb.hishoot2i.ui.template.TemplateManagerActivity"
+            android:action="org.illegaller.ratabb.hishoot2i.ACTION_SHORTCUT_TEMPLATE"
+            android:targetClass="org.illegaller.ratabb.hishoot2i.SingleActivity"
             android:targetPackage="org.illegaller.ratabb.hishoot2i" />
 
     </shortcut>

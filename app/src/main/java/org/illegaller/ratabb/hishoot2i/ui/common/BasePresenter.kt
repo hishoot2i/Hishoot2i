@@ -3,11 +3,10 @@ package org.illegaller.ratabb.hishoot2i.ui.common
 import androidx.annotation.CallSuper
 
 abstract class BasePresenter<VIEW : Mvp.View> : Mvp.Presenter<VIEW> {
-    protected var view: VIEW? = null
-        get() {
-            if (field == null) throw MvpNotAttachedViewException()
-            return field
-        }
+    private var view: VIEW? = null
+
+    protected fun requiredView(): VIEW =
+        requireNotNull(view) { "Do call attachView(View) before requesting this." }
 
     @CallSuper
     override fun attachView(view: VIEW) {

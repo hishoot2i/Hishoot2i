@@ -30,6 +30,7 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlin.math.roundToInt
 import java.lang.System.currentTimeMillis as now
 
 class CoreProcessImpl @Inject constructor(
@@ -48,9 +49,10 @@ class CoreProcessImpl @Inject constructor(
         get() = with(appPref) {
             BadgeBitmapBuilder.Config(badgeText, badgeTypefacePath, badgeSize, badgeColor)
         }
-    private val badgeBitmapPadding by lazy(NONE) { Math.round(context.dp2px(10)) }
+    private val badgeBitmapPadding by lazy(NONE) { context.dp2px(10F).roundToInt() }
     private val badgePosition get() = entity.BadgePosition.fromId(appPref.badgePositionId)
     private val isDoubleScreen get() = appPref.doubleScreenEnable
+
     /**
      * Device maximum texture.
      * @see [singleResizePreview]
@@ -67,8 +69,8 @@ class CoreProcessImpl @Inject constructor(
                 val timeStamp = now().toDateTimeFormat("yyyyMMdd_HHmmss")
                 val file = File(savedDir(), "HiShoot_$timeStamp.png")
                 bitmap.saveTo(file) //
-                file.toUri()
-            }.map { Result.Save(bitmap, it) }
+                Result.Save(bitmap, file.toUri(), file.nameWithoutExtension)
+            }/*.map { Result.Save(bitmap, it) }*/
         }
 
     private fun Template.core(path: entity.ImageSourcePath, isSave: Boolean): Single<Bitmap> =

@@ -7,7 +7,7 @@ import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
 
 interface MainView : Mvp.View {
     fun preview(bitmap: Bitmap)
-    fun save(bitmap: Bitmap, uri: Uri)
+    fun save(bitmap: Bitmap, uri: Uri, name: String)
     fun startSave()
     fun errorSave(e: Throwable)
     fun showProgress()

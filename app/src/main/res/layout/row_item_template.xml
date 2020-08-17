@@ -1,103 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?selectableItemBackgroundBorderless">
+    android:layout_margin="@dimen/dp4"
+    android:foreground="?selectableItemBackgroundBorderless"
+    app:cardBackgroundColor="@color/transparent"
+    app:cardCornerRadius="2dp"
+    app:cardUseCompatPadding="true">
 
+    <ImageView
+        android:id="@+id/itemTemplatePreview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp140"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        tools:src="@tools:sample/backgrounds/scenic"
+         />
 
     <LinearLayout
-        android:id="@+id/itemTemplateBack"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp10"
-        android:gravity="center_vertical"
-        tools:background="@color/red">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/itemIndicatorFav"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="@dimen/dp48"
-            android:layout_height="@dimen/dp48"
-            android:padding="@dimen/dp10"
-            app:srcCompat="@drawable/ic_favorite_black_24dp"
-            app:tint="@color/white" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/itemIndicatorDelete"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="@dimen/dp48"
-            android:layout_height="@dimen/dp48"
-            android:padding="@dimen/dp10"
-            app:srcCompat="@drawable/ic_delete_black_24dp"
-            app:tint="@color/white" />
-    </LinearLayout>
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/itemTemplateForeground"
+        android:id="@+id/itemTemplateLayoutInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true"
-        tools:visibility="visible">
+        android:layout_gravity="bottom"
+        android:background="?attr/backgroundTextRow"
+        android:orientation="vertical"
+        android:padding="@dimen/dp4">
 
-        <ImageView
-            android:id="@+id/itemTemplatePreview"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp140"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/default_preview" />
-
-        <LinearLayout
-            android:id="@+id/itemTemplateLayoutInfo"
+        <TextView
+            android:id="@+id/itemTemplateName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="?attr/backgroundTextRow"
-            android:orientation="vertical"
-            android:padding="@dimen/dp4">
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.App"
+            android:textStyle="bold"
+            tools:text="@tools:sample/full_names" />
 
-            <TextView
-                android:id="@+id/itemTemplateName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.App"
-                android:textStyle="bold"
-                tools:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit" />
+        <TextView
+            android:id="@+id/itemTemplateId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.App.SubTitle"
+            android:textStyle="bold"
+            tools:text="@tools:sample/cities" />
 
-            <TextView
-                android:id="@+id/itemTemplateId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.App.SubTitle"
-                android:textStyle="bold"
-                tools:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit" />
-
-            <TextView
-                android:id="@+id/itemTemplateInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="@dimen/dp80"
-                android:maxLines="3"
-                android:paddingBottom="@dimen/dp4"
-                android:paddingTop="@dimen/dp4"
-                android:textAppearance="@style/TextAppearance.App.SubTitle"
-                tools:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod." />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</FrameLayout>
+        <TextView
+            android:id="@+id/itemTemplateInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/dp80"
+            android:maxLines="3"
+            android:paddingTop="@dimen/dp4"
+            android:paddingBottom="@dimen/dp4"
+            android:textAppearance="@style/TextAppearance.App.SubTitle"
+            tools:text="@tools:sample/lorem/random" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

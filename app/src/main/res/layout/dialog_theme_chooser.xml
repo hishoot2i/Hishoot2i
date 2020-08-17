@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+    android:padding="@dimen/dp8"
+    tools:background="@drawable/dialog_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/themes"
+        android:textAppearance="@style/TextAppearance.App.Title" />
+
+    <RadioGroup
+        android:id="@+id/themeRadioGroup"
+        android:layout_width="wrap_content"
+        android:minWidth="@dimen/dp240"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp8">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/themeLightRb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/light" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/themeDarkRb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dark" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/themeSysDefRb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/follow_system"
+            tools:checked="true" />
+    </RadioGroup>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/action_theme_cancel"
+            style="@style/AppWidget.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textColor="?colorAccent" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</LinearLayout>

@@ -5,7 +5,6 @@
     <dimen name="dp120">120dp</dimen>
     <dimen name="dp140">140dp</dimen>
     <dimen name="dp16">16dp</dimen>
-    <dimen name="dp160">160dp</dimen>
     <dimen name="dp20">20dp</dimen>
     <dimen name="dp24">24dp</dimen>
     <dimen name="dp240">240dp</dimen>
@@ -13,11 +12,13 @@
     <dimen name="dp4">4dp</dimen>
     <dimen name="dp48">48dp</dimen>
     <dimen name="dp54">54dp</dimen>
+    <dimen name="dp56">56dp</dimen>
     <dimen name="dp8">8dp</dimen>
     <dimen name="dp80">80dp</dimen>
 
-    <dimen name="imageParallaxHeight">@dimen/dp160</dimen>
-    <dimen name="bottomNavHeight">@dimen/dp54</dimen>
+    <dimen name="nav_header_height">140dp</dimen>
+    <!-- <dimen name="imageParallaxHeight">@dimen/dp160</dimen> -->
+    <dimen name="bottomAppBarHeight">@dimen/dp56</dimen>
 
     <dimen name="toolLayoutMargin">@dimen/dp16</dimen>
     <dimen name="toolLayoutMinHeight">@dimen/dp240</dimen>
@@ -25,7 +26,7 @@
     <dimen name="dialogRoundCorner">@dimen/dp10</dimen>
     <dimen name="dialogStrokeWidth">1dp</dimen>
 
-    <dimen name="dialogSortIconSize">@dimen/dp48</dimen>
+    <dimen name="dialogSortIconSize">@dimen/dp56</dimen>
     <dimen name="toolbarElevation">@dimen/dp8</dimen>
 
 </resources>

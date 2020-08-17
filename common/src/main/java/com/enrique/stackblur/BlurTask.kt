@@ -109,10 +109,12 @@ internal class BlurTask(
                 dstI = y * width // img.pix_ptr(0, y);
                 x = 0
                 while (x < width) {
-                    src[dstI] = (src[dstI] and -0x1000000 or
+                    src[dstI] = (
+                        src[dstI] and -0x1000000 or
                             (sumR * mulSum ushr shrSum.toInt() and 0xff shl 16).toInt() or
                             (sumG * mulSum ushr shrSum.toInt() and 0xff shl 8).toInt() or
-                            (sumB * mulSum ushr shrSum.toInt() and 0xff).toInt())
+                            (sumB * mulSum ushr shrSum.toInt() and 0xff).toInt()
+                        )
                     dstI += 1
                     sumR -= sumOutR
                     sumG -= sumOutG
@@ -194,10 +196,12 @@ internal class BlurTask(
                 dstI = x // img.pix_ptr(x, 0);
                 y = 0
                 while (y < hight) {
-                    src[dstI] = (src[dstI] and -0x1000000 or
+                    src[dstI] = (
+                        src[dstI] and -0x1000000 or
                             (sumR * mulSum ushr shrSum.toInt() and 0xff shl 16).toInt() or
                             (sumG * mulSum ushr shrSum.toInt() and 0xff shl 8).toInt() or
-                            (sumB * mulSum ushr shrSum.toInt() and 0xff).toInt())
+                            (sumB * mulSum ushr shrSum.toInt() and 0xff).toInt()
+                        )
                     dstI += width
                     sumR -= sumOutR
                     sumG -= sumOutG

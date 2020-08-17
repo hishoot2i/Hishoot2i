@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,35 +9,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp8"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <RadioGroup
             android:id="@+id/toolBackgroundImageOptionGroup"
             style="@style/AppWidget.RadioButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/toolBackgroundImageOptionScaleFill"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:checkedButton="@id/toolBackgroundImageOptionScaleFill"
+            android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/toolBackgroundImageOptionScaleFill"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/scale_fill" />
 
             <RadioButton
                 android:id="@+id/toolBackgroundImageOptionCenterCrop"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/center_crop" />
 
             <RadioButton
                 android:id="@+id/toolBackgroundImageOptionManualCrop"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/manual_crop" />
         </RadioGroup>
 
@@ -45,9 +44,11 @@
             style="@style/AppWidget.TextImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp16"
-            android:text="@string/pick_image" />
+            android:layout_gravity="center|center_vertical"
+            android:layout_margin="@dimen/dp24"
+            android:text="@string/pick_image"
+            app:drawableTint="?attr/colorAccent"
+            app:drawableTopCompat="@drawable/ic_image_black_24dp" />
 
     </LinearLayout>
 

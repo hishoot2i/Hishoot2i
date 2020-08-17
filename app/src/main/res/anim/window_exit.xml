@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:duration="@integer/windowAnimDuration"
-    android:interpolator="@android:anim/accelerate_interpolator">
+    android:interpolator="@android:anim/accelerate_interpolator"
+    tools:ignore="UnusedResources">
     <alpha
         android:fromAlpha="1.0"
         android:toAlpha="0.0" />

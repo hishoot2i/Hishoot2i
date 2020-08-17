@@ -20,7 +20,7 @@ sealed class Template(
 
     fun containsNameOrAuthor(query: String): Boolean =
         name.contains(query, ignoreCase = true) ||
-                author.contains(query, ignoreCase = true)
+            author.contains(query, ignoreCase = true)
 
     internal val indexTypeSort: Byte
         get() = when (this) {

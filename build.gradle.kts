@@ -4,6 +4,7 @@ buildscript {
     val agpVersion: String by project
     val daggerHiltVersion: String by project
     val kotlinVersion: String by project
+    val xNavigationVersion: String by project
 
     repositories {
         google()
@@ -12,9 +13,10 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:${agpVersion}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:${daggerHiltVersion}")
+        classpath("com.android.tools.build:gradle:$agpVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:$daggerHiltVersion")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$xNavigationVersion")
     }
 }
 
@@ -25,11 +27,18 @@ allprojects {
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
         gradlePluginPortal()
     }
+    /*
+    afterEvaluate {
+        tasks.withType(JavaCompile::class) {
+            options.compilerArgs.add("-Xlint:unchecked")
+            options.compilerArgs.add("-Xlint:deprecation")
+        }
+    }*/
 }
 plugins {
-    id("com.diffplug.gradle.spotless") version "4.3.0"
-    id("com.github.ben-manes.versions") version "0.28.0"
-    id("com.autonomousapps.dependency-analysis") version "0.47.0"
+    id("com.diffplug.spotless") version "5.1.1"
+    id("com.github.ben-manes.versions") version "0.29.0"
+    id("com.autonomousapps.dependency-analysis") version "0.56.0"
 }
 /** Plugin [com.autonomousapps.dependency-analysis] config. */
 dependencyAnalysis {
@@ -49,19 +58,16 @@ dependencyAnalysis {
 }
 /** Plugin [com.github.ben-manes.versions] config. */
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-    fun isNonStable(version: String, module: String): Boolean {
-        println("module: $module, version:$version")
-        if (module.toLowerCase().contains("hilt")) {
-            // TODO: Hilt is alpha stage, atm!
-            return false
+    fun isNonStable(version: String): Boolean {
+        val stableKeyword = listOf("RELEASE", "FINAL", "GA").any {
+            version.toUpperCase().contains(it)
         }
-        val stableKeyword =
-            listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
         val regex = "^[0-9,.v-]+(-r)?$".toRegex()
         val isStable = stableKeyword || regex.matches(version)
         return isStable.not()
     }
-    rejectVersionIf { isNonStable(candidate.version, candidate.module) }
+    rejectVersionIf { isNonStable(candidate.version) }
+    checkForGradleUpdate = false //
 }
 
 subprojects {

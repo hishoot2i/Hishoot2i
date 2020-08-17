@@ -98,8 +98,8 @@ class CoreImagePreview : AppCompatImageView {
     }
 
     companion object {
-        private const val RADIUS_DP = 16
-        private const val STROKE_DP = 2
+        private const val RADIUS_DP = 16F
+        private const val STROKE_DP = 2F
         private const val DEFAULT_COLOR_PIPETTE: Int = 0x7FFF0000 // Red half alpha | Fallback
     }
 }

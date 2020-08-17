@@ -39,4 +39,21 @@
         <attr name="guideStrokeWeight" format="dimension" />
         <attr name="cropEnabled" format="boolean" />
     </declare-styleable>
+    <!-- -->
+    <attr name="cropImageViewStyle" format="reference" />
+
+    <style name="AppWidget.CropImageView" parent="">
+        <item name="cropMode">ratio_fit_image</item>
+        <item name="frameColor">@color/frame</item>
+        <item name="frameStrokeWeight">1dp</item>
+        <item name="guideColor">@color/guide</item>
+        <item name="guideShowMode">show_on_touch</item>
+        <item name="guideStrokeWeight">1dp</item>
+        <item name="handleColor">@color/handle</item>
+        <item name="handleShowMode">show_always</item>
+        <item name="handleSize">@dimen/dp8</item>
+        <item name="minFrameSize">50dp</item>
+        <item name="overlayColor">@color/overlay</item>
+        <item name="touchPadding">@dimen/dp8</item>
+    </style>
 </resources>

@@ -79,7 +79,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="textNoSuggestions"
                     android:maxLines="1"
-                    android:text="Hello World!" />
+                    tools:text="@tools:sample/lorem" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -126,6 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:popupBackground="?attr/backgroundPopup"
+                android:prompt="@string/badge_font_prompt"
+                android:spinnerMode="dialog"
                 tools:entries="@array/badge_position_values" />
         </LinearLayout>
 
@@ -150,7 +152,8 @@
                 android:layout_weight="1"
                 android:entries="@array/badge_position_values"
                 android:popupBackground="?attr/backgroundPopup"
-                android:prompt="@string/bp_prompt" />
+                android:prompt="@string/bp_prompt"
+                android:spinnerMode="dialog" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

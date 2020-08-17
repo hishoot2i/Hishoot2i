@@ -14,7 +14,7 @@ class DefaultFactory(private val appContext: Context) : Factory<template.Templat
         val bottomTop = res.getDimensionPixelSize(template.R.dimen.def_bt)
         val bottomLeft = res.getDimensionPixelSize(template.R.dimen.def_bl)
         val sizes = deviceSizes +
-                entity.Sizes(topLeft + bottomLeft, topTop + bottomTop)
+            entity.Sizes(topLeft + bottomLeft, topTop + bottomTop)
         val coordinate = listOf(
             topLeft, topTop,
             sizes.x - bottomLeft, topTop,

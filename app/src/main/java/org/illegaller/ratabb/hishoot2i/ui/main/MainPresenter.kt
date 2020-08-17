@@ -71,7 +71,7 @@ class MainPresenter @Inject constructor(
 
     /**/
     fun onPreview() {
-        view?.showProgress()
+        requiredView().showProgress()
         currentTemplate.flatMap { coreProcess.preview(it, sourcePath) }
             .computationUI(schedulerProvider)
             .subscribeBy(::viewOnError, ::viewOnResult)
@@ -80,7 +80,10 @@ class MainPresenter @Inject constructor(
 
     /**/
     fun onSave() {
-        view?.apply { showProgress(); startSave() }
+        with(requiredView()) {
+            showProgress()
+            startSave()
+        }
         currentTemplate.flatMap { coreProcess.save(it, sourcePath) }
             .computationUI(schedulerProvider)
             .subscribeBy(::viewOnError, ::viewOnResult)
@@ -145,14 +148,17 @@ class MainPresenter @Inject constructor(
     }
 
     private fun viewOnError(throwable: Throwable) {
-        view?.apply { onError(throwable); hideProgress() }
+        with(requiredView()) {
+            onError(throwable)
+            hideProgress()
+        }
     }
 
     private fun viewOnResult(result: Result) {
-        view?.apply {
+        with(requiredView()) {
             when (result) {
                 is Result.Preview -> preview(result.bitmap)
-                is Result.Save -> save(result.bitmap, result.uri)
+                is Result.Save -> save(result.bitmap, result.uri, result.name)
             }.exhaustive
             hideProgress()
         }

@@ -49,12 +49,13 @@ class SortTemplateDialog : BaseDialogFragment() {
             typeDesc = findViewById(R.id.action_sort_type_desc)
             dateAsc = findViewById(R.id.action_sort_date_asc)
             dateDesc = findViewById(R.id.action_sort_date_desc)
+            findViewById<Button>(R.id.action_sort_cancel)
+                .setOnClickListener {
+                    it.preventMultipleClick { dismiss() }
+                }
         }
         emitSelectedSortItem()
         setViewListener()
-        view.findViewById<Button>(R.id.action_sort_cancel).setOnClickListener {
-            it.preventMultipleClick { dismiss() }
-        }
     }
 
     private fun setViewListener() {
@@ -73,8 +74,8 @@ class SortTemplateDialog : BaseDialogFragment() {
                     setBackgroundResource(R.drawable.sort_selected)
                     appPref.templateSortId = sortId
                     callback()
+                    dismiss()
                 }
-                dismiss()
             }
         }
     }

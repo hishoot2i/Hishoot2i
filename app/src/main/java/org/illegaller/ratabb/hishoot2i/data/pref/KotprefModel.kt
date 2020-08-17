@@ -12,14 +12,17 @@ import kotlin.reflect.KProperty0
 
 @JvmOverloads
 inline fun <T> KotprefModel.asFlowable(property: KProperty0<T>, key: String? = null): Flowable<T> =
-    Flowable.create<T>({ emitter: FlowableEmitter<T> ->
-        val listenKey = key ?: property.name
-        val listener =
-            OnSharedPreferenceChangeListener { _: SharedPreferences?, changeKey: String? ->
-                if (listenKey == changeKey && !emitter.isCancelled) {
-                    emitter.onNext(property.get())
+    Flowable.create<T>(
+        { emitter: FlowableEmitter<T> ->
+            val listenKey = key ?: property.name
+            val listener =
+                OnSharedPreferenceChangeListener { _: SharedPreferences?, changeKey: String? ->
+                    if (listenKey == changeKey && !emitter.isCancelled) {
+                        emitter.onNext(property.get())
+                    }
                 }
-            }
-        emitter.setCancellable { preferences.unregisterOnSharedPreferenceChangeListener(listener) }
-        preferences.registerOnSharedPreferenceChangeListener(listener)
-    }, LATEST)
+            emitter.setCancellable { preferences.unregisterOnSharedPreferenceChangeListener(listener) }
+            preferences.registerOnSharedPreferenceChangeListener(listener)
+        },
+        LATEST
+    )

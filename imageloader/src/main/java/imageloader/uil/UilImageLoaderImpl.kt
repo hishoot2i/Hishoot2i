@@ -73,8 +73,8 @@ class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
         reqSizes: entity.Sizes,
         isOrientationAware: Boolean
     ): Bitmap? = source.displayImageOptions(isSave).let {
-        val result = uilImageLoader.loadImageSync(source, reqSizes.toImageSize(), it)
-        if (isOrientationAware && result.sizes.isNeedRotate()) result.rotate()
+        val result: Bitmap? = uilImageLoader.loadImageSync(source, reqSizes.toImageSize(), it)
+        if (isOrientationAware && result?.sizes?.isNeedRotate() == true) result.rotate()
         else result
     }
 
@@ -131,7 +131,7 @@ class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
 
     private fun entity.Sizes?.toImageSize(): ImageSize? = this?.let { ImageSize(x, y) }
     private fun ImageView.wrapAware(): ImageViewAware = ImageViewAware(this)
-    private fun entity.Sizes.isNeedRotate(): Boolean = this.x > this.y //
+    private fun entity.Sizes?.isNeedRotate(): Boolean? = this?.let { x > y }
 
     companion object {
         private const val MEMORY_CACHE_PERCENT = 70

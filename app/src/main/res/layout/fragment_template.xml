@@ -1,16 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/templateRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager" />
+        android:layout_marginTop="?actionBarSize"
+        android:layout_marginBottom="@dimen/bottomAppBarHeight"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/row_item_template" />
 
     <include layout="@layout/no_content" />
 
     <include layout="@layout/loading" />
-</FrameLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/templateSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            app:iconifiedByDefault="false"
+            app:queryHint="@string/search_template_hint" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/templateBottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:menu="@menu/template" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/templateHtzFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp20"
+        android:layout_marginRight="@dimen/dp20"
+        app:layout_anchor="@id/templateBottomAppBar"
+        app:srcCompat="@drawable/ic_htz_plus_black_24dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

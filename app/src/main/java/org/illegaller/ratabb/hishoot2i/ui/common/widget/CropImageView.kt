@@ -22,11 +22,10 @@ import androidx.appcompat.widget.AppCompatImageView
 import org.illegaller.ratabb.hishoot2i.R
 import timber.log.Timber
 
-// TODO:?
 class CropImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0
+    defStyle: Int = R.style.AppWidget_CropImageView
 ) : AppCompatImageView(context, attrs, defStyle) {
     // Member variables ////////////////////////////////////////////////////////////////////////////
     private var mViewWidth = 0
@@ -77,8 +76,7 @@ class CropImageView @JvmOverloads constructor(
     // Lifecycle methods ///////////////////////////////////////////////////////////////////////////
     public override fun onSaveInstanceState(): Parcelable? {
         val superState = super.onSaveInstanceState()
-        val ss =
-            SavedState(superState)
+        val ss = SavedState(superState)
         ss.image = imageBitmap
         ss.mode = mCropMode
         ss.backgroundColor = mBackgroundColor
@@ -102,8 +100,7 @@ class CropImageView @JvmOverloads constructor(
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
-        val ss =
-            state as SavedState
+        val ss = state as SavedState
         super.onRestoreInstanceState(ss.superState)
         mCropMode = ss.mode
         mBackgroundColor = ss.backgroundColor
@@ -133,13 +130,7 @@ class CropImageView @JvmOverloads constructor(
         setMeasuredDimension(viewWidth, viewHeight)
     }
 
-    override fun onLayout(
-        changed: Boolean,
-        l: Int,
-        t: Int,
-        r: Int,
-        b: Int
-    ) {
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
         mViewWidth = r - l - paddingLeft - paddingRight
         mViewHeight = b - t - paddingTop - paddingBottom
@@ -150,8 +141,7 @@ class CropImageView @JvmOverloads constructor(
         super.onDraw(canvas)
         if (mIsInitialized) {
             setMatrix()
-            @SuppressLint("DrawAllocation") val localMatrix1 =
-                Matrix()
+            @SuppressLint("DrawAllocation") val localMatrix1 = Matrix()
             localMatrix1.postConcat(mMatrix)
             canvas.drawBitmap(imageBitmap!!, localMatrix1, mPaintBitmap)
 
@@ -230,8 +220,7 @@ class CropImageView @JvmOverloads constructor(
             ).toFloat()
             mIsCropEnabled = ta.getBoolean(R.styleable.CropImageView_cropEnabled, true)
         } catch (e: Exception) {
-            // Timber.e(e, "handleStyleable");
-            println(e.message)
+            e.printStackTrace() //
         } finally {
             ta.recycle()
         }
@@ -468,8 +457,10 @@ class CropImageView @JvmOverloads constructor(
         return true;
       }
     }*/
-        if (mFrameRect!!.left <= x && mFrameRect!!.right >= x && (mFrameRect!!.top <= y &&
-                    mFrameRect!!.bottom >= y)
+        if (mFrameRect!!.left <= x && mFrameRect!!.right >= x && (
+                    mFrameRect!!.top <= y &&
+                            mFrameRect!!.bottom >= y
+                    )
         ) {
             mTouchArea = TouchArea.CENTER
             return true
@@ -861,7 +852,6 @@ class CropImageView @JvmOverloads constructor(
      * @param bitmap src image bitmap
      */
     override fun setImageBitmap(bitmap: Bitmap) {
-        // if (bitmap == null) return
         mIsInitialized = false
         if (imageBitmap != null && imageBitmap != bitmap) {
             imageBitmap = null
@@ -1134,7 +1124,7 @@ class CropImageView @JvmOverloads constructor(
         var handleColor = 0
         var guideColor = 0
 
-        internal constructor(superState: Parcelable?) : super(superState) {}
+        internal constructor(superState: Parcelable?) : super(superState)
         private constructor(`in`: Parcel) : super(`in`) {
             image = `in`.readParcelable(Bitmap::class.java.classLoader)
             mode = `in`.readSerializable() as CropMode?

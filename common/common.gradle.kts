@@ -18,7 +18,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat-resources:1.2.0")
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.vectordrawable:vectordrawable:1.1.0")
-    api("androidx.recyclerview:recyclerview:1.1.0")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
 
     val timberVersion: String by rootProject
     implementation("com.jakewharton.timber:timber:$timberVersion")

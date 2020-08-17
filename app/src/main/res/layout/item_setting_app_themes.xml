@@ -12,14 +12,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_themes"
+        android:text="@string/themes"
         android:textAppearance="@style/TextAppearance.App.Title" />
 
     <TextView
+        android:paddingTop="@dimen/dp8"
         android:id="@+id/setting_day_night_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/system_default" />
+        android:text="@string/follow_system" />
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

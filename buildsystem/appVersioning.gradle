@@ -1,11 +1,15 @@
+import java.text.SimpleDateFormat
+
 // use only at [sub-]module app buildFile [app/app.gradle.kts]
 android {
     applicationVariants.all { variants ->
         if (variants.buildType.name == "release") {
             def ver = Versioning.from(project)
-            variants.outputs.each { output ->
+            // println("ver= $ver")
+            variants.outputs.all { output ->
                 output.versionCodeOverride = ver.code
                 output.versionNameOverride = ver.name
+                // NOTE: this will override all output file apk (breaking apk split!!)
                 output.outputFileName = ver.apk
             }
         }
@@ -32,15 +36,25 @@ final class Versioning {
         this.apk = getApkName()
     }
 
+    @Override
+    String toString() {
+        return "Versioning {\n  name:$name;\n  code:$code;\n  apk:$apk\n}"
+    }
     //region constants
     private static final String FORMAT_APK_NAME = "%s-v%s-minApi%s.apk"
-    private static final String FORMAT_BUILD_TIME = "MMdd"
     private static final String FILE_NAME_VERSION = "VERSION"
     //endregion
 
     //region private method
-    private static String getBuildTime() { return new Date().format(FORMAT_BUILD_TIME) }
-
+    private static String getBuildTime() {
+        def today = new Date()
+        // HiShoot2i 1st release = 2015
+        def year = String.valueOf((new SimpleDateFormat("yy").format(today) as int) - 15)
+        def dayInYear = String.format("%03d", (new SimpleDateFormat("D").format(today)) as int)
+        def buildTime = year + dayInYear
+        // println("buildTime: $buildTime")
+        return buildTime
+    }
 
     private String getApkName() {
         return String.format(
@@ -54,7 +68,7 @@ final class Versioning {
         def n = getVersionFromFile()
         try {
             def s = n.tokenize('.')*.toInteger()
-            return (s[0] * 100000000 + s[1] * 1000000 + s[2] * 10000 + buildTime.toInteger())
+            return (s[0] * 1000000 + s[1] * 100000 + s[2] * 10000 + buildTime.toInteger())
         } catch (Exception e) {
             logError("Error on getVersionCode with: $n, $buildTime", e)
             return 1

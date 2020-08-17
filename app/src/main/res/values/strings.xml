@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">HiShoot2i</string>
     <string name="app_version" translatable="false">0.0.1</string>
+    <string name="version_format">version %s</string>
     <!---->
     <string name="settings">Settings</string>
     <string name="background">Background</string>
@@ -22,16 +23,16 @@
     <string name="template">Template</string>
     <string name="options">Options</string>
     <string name="template_v2_and_v3">(Template v2 and v3)</string>
-    <string name="template_manager">Template Manager</string>
+    <string name="template_manager" tools:ignore="UnusedResources">Template Manager</string>
     <string name="no_content_here">No content here</string>
-    <string name="search">Search</string>
-
+    <string name="search" tools:ignore="UnusedResources">Search</string>
+    <string name="apply_template_format">Apply template: %s</string>
     <!--Search-->
     <string name="search_template_hint">Template name or author</string>
     <!--Shortcut Template-->
-    <string name="shortcut_template_short_label">@string/template_manager</string>
-    <string name="shortcut_template_long_label">@string/template_manager</string>
-    <string name="shortcut_template_disable">Template Manager not available</string>
+    <string name="shortcut_template_short_label" tools:ignore="UnusedResources">@string/template_manager</string>
+    <string name="shortcut_template_long_label" tools:ignore="UnusedResources">@string/template_manager</string>
+    <string name="shortcut_template_disable" tools:ignore="UnusedResources">Template Manager not available</string>
     <!--TemplateTool-->
     <string name="template_info_format">author: %1$s\ndesc: %2$s\ninstalled: %3$s</string>
     <!--BackgroundTool-->
@@ -45,7 +46,7 @@
     <string name="version">Version</string>
     <string name="date">Date</string>
     <string name="installed">Installed</string>
-    <string name="favorite">Favorite</string>
+    <string name="favorite" tools:ignore="UnusedResources">Favorite</string>
     <string name="position">Position</string>
     <string-array name="background_mode_values">
         <item>@string/color</item>
@@ -53,6 +54,7 @@
         <item>@string/transparent</item>
     </string-array>
     <!--Badge Position-->
+    <string name="badge_font_prompt">Badge Font</string>
     <string name="bp_prompt">Badge Position</string>
     <string name="bp_left_top">Left Top</string>
     <string name="bp_center_top">Center Top</string>
@@ -65,7 +67,7 @@
     <string name="bp_right_bottom">Right Bottom</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
-    <string name="import_htz">Import Htz</string>
+    <!--<string name="import_htz">Import Htz</string>-->
     <string-array name="badge_position_values">
         <item>@string/bp_left_top</item>
         <item>@string/bp_center_top</item>
@@ -80,11 +82,17 @@
     <string name="scale_fill">Scale Fill</string>
     <string name="center_crop">Center Crop</string>
     <string name="manual_crop">Manual Crop</string>
-    <string name="app_themes">App Themes</string>
     <string name="badge_tab_layout_max_count_overflow">99+</string>
-    <string name="system_default">System default</string>
+    <!-- -->
+    <string name="themes">Themes</string>
+    <string name="follow_system">Follow system</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <!-- <string-array name="themes_values">
+        <item>@string/light</item>
+        <item>@string/dark</item>
+        <item>@string/follow_system</item>
+    </string-array> -->
     <!--About-->
     <string name="github_page">Github page</string>
     <string name="facebook_group">Facebook group</string>

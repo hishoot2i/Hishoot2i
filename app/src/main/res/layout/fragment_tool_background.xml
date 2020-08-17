@@ -10,8 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp16"
         android:layout_marginTop="@dimen/dp8"
+        android:layout_marginBottom="@dimen/dp16"
         android:orientation="horizontal">
 
         <TextView
@@ -29,12 +29,13 @@
             android:layout_height="wrap_content"
             android:entries="@array/background_mode_values"
             android:popupBackground="?attr/backgroundPopup"
-            android:prompt="@string/background_mode_prompt" />
+            android:prompt="@string/background_mode_prompt"
+            android:spinnerMode="dialog" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp160">
+        android:layout_height="200dp">
 
         <include
             android:id="@+id/toolBackgroundLayoutColor"

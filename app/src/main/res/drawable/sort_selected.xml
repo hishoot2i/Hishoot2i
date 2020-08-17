@@ -3,7 +3,7 @@
     android:shape="oval"
     android:tint="?attr/colorAccent">
     <stroke
-        android:width="2dp"
+        android:width="4dp"
         android:color="@color/black" />
     <corners android:radius="@dimen/dp8" />
     <solid android:color="@color/blackHalfAlpha" />

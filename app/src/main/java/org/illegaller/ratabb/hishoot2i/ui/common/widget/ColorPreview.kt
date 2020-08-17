@@ -31,6 +31,8 @@ class ColorPreview : View {
                 invalidate(srcRect)
             }
         }
+
+    @ColorInt
     var dstColor: Int = DEFAULT_DST_COLOR
         set(value) {
             if (field != value) {
