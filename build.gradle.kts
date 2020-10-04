@@ -38,25 +38,13 @@ allprojects {
     }
 }
 plugins {
-    id("com.diffplug.spotless") version "5.1.1"
-    id("com.github.ben-manes.versions") version "0.29.0"
-    id("com.autonomousapps.dependency-analysis") version "0.56.0"
+    id("com.diffplug.spotless") version "5.6.1"
+    id("com.github.ben-manes.versions") version "0.33.0"
+    id("com.autonomousapps.dependency-analysis") version "0.60.0"
 }
 /** Plugin [com.autonomousapps.dependency-analysis] config. */
 dependencyAnalysis {
-    issues {
-        all {
-            onAny {
-                severity("fail") // <'fail'|'warn'|'ignore'> default is 'warn'
-                exclude("androidx.multidex:multidex") // TODO: Using Desugar?
-            }
-            // or configure per-type
-            /*onUnusedDependencies { ... }
-            onUsedTransitiveDependencies { ... }
-            onIncorrectConfiguration { ... }
-            onRedundantPlugins { ... } // no excludes in this case*/
-        }
-    }
+    issues { all { onAny { severity("fail") } } }
 }
 /** Plugin [com.github.ben-manes.versions] config. */
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
