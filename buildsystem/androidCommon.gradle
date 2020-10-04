@@ -22,5 +22,6 @@ android {
         xmlReport false
         textReport true
         textOutput 'stdout'
+		disable "ObsoleteLintCustomCheck"
     }
 }
