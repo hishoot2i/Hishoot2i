@@ -1,82 +1,63 @@
 package template
 
+import common.ext.exhaustive
+import template.Template.Default
+import template.Template.Version1
+import template.Template.Version2
+import template.Template.Version3
+import template.Template.VersionHtz
 import java.text.Collator
 
-sealed class TemplateComparator(
-    val id: Int,
-    protected val actualCompare: (Template, Template) -> Int
-) : Comparator<Template> {
-    override fun compare(lhs: Template, rhs: Template): Int =
-        if (lhs.isDefault || rhs.isDefault) 1 else actualCompare(lhs, rhs)
-
-    object NameAsc : TemplateComparator(
-        NAME_ASC_ID,
-        { lhs: Template, rhs: Template ->
+enum class TemplateComparator : Comparator<Template> {
+    NAME_ASC {
+        override val impl: (Template, Template) -> Int = { lhs, rhs ->
             collator.compare(lhs.name, rhs.name)
         }
-    )
-
-    object NameDesc : TemplateComparator(
-        NAME_DESC_ID,
-        { lhs: Template, rhs: Template ->
+    },
+    NAME_DESC {
+        override val impl: (Template, Template) -> Int = { lhs, rhs ->
             collator.compare(rhs.name, lhs.name)
         }
-    )
-
-    object TypeAsc : TemplateComparator(
-        TYPE_ASC_ID,
-        { lhs: Template, rhs: Template ->
-            lhs.indexTypeSort.compareTo(rhs.indexTypeSort).let {
-                if (it == 0) NameAsc.actualCompare(lhs, rhs) else it
-            }
+    },
+    TYPE_ASC {
+        override val impl: (Template, Template) -> Int = { lhs, rhs ->
+            lhs.typeSort().compareTo(rhs.typeSort()).takeIf { it != 0 }
+                ?: NAME_ASC.impl(lhs, rhs)
         }
-    )
-
-    object TypeDesc : TemplateComparator(
-        TYPE_DESC_ID,
-        { lhs: Template, rhs: Template ->
-            rhs.indexTypeSort.compareTo(lhs.indexTypeSort).let {
-                if (it == 0) NameAsc.actualCompare(lhs, rhs) else it
-            }
+    },
+    TYPE_DESC {
+        override val impl: (Template, Template) -> Int = { lhs, rhs ->
+            rhs.typeSort().compareTo(lhs.typeSort()).takeIf { it != 0 }
+                ?: NAME_ASC.impl(lhs, rhs)
         }
-    )
-
-    object DateAsc : TemplateComparator(
-        DATE_ASC_ID,
-        { lhs: Template, rhs: Template ->
-            lhs.installedDate.compareTo(rhs.installedDate).let {
-                if (it == 0) NameAsc.actualCompare(lhs, rhs) else it
-            }
+    },
+    DATE_ASC {
+        override val impl: (Template, Template) -> Int = { lhs, rhs ->
+            lhs.installedDate.compareTo(rhs.installedDate).takeIf { it != 0 }
+                ?: NAME_ASC.impl(lhs, rhs)
         }
-    )
-
-    object DateDesc : TemplateComparator(
-        DATE_DESC_ID,
-        { lhs: Template, rhs: Template ->
-            rhs.installedDate.compareTo(lhs.installedDate).let {
-                if (it == 0) NameAsc.actualCompare(lhs, rhs) else it
-            }
+    },
+    DATE_DESC {
+        override val impl: (Template, Template) -> Int = { lhs, rhs ->
+            rhs.installedDate.compareTo(lhs.installedDate).takeIf { it != 0 }
+                ?: NAME_ASC.impl(lhs, rhs)
         }
-    )
+    };
 
-    companion object {
-        @JvmStatic
-        private val collator: Collator = Collator.getInstance()
-        const val NAME_ASC_ID = 0
-        const val NAME_DESC_ID = 1
-        const val TYPE_ASC_ID = 2
-        const val TYPE_DESC_ID = 3
-        const val DATE_ASC_ID = 4
-        const val DATE_DESC_ID = 5
-        @JvmStatic
-        fun fromId(id: Int): TemplateComparator = when (id) {
-            NAME_ASC_ID -> NameAsc
-            NAME_DESC_ID -> NameDesc
-            TYPE_ASC_ID -> TypeAsc
-            TYPE_DESC_ID -> TypeDesc
-            DATE_ASC_ID -> DateAsc
-            DATE_DESC_ID -> DateDesc
-            else -> NameAsc // fallback
-        }
-    }
+    protected abstract val impl: (Template, Template) -> Int
+
+    protected val collator: Collator by lazy { Collator.getInstance() }
+
+    protected fun Template.typeSort() = when (this) {
+        is Default -> 0
+        is Version1 -> 1
+        is Version2 -> 2
+        is Version3 -> 3
+        is VersionHtz -> 4
+    }.exhaustive
+
+    protected fun Template.isDefault() = this is Default
+
+    override fun compare(lhs: Template, rhs: Template): Int =
+        if (lhs.isDefault() || rhs.isDefault()) 1 else impl(lhs, rhs)
 }

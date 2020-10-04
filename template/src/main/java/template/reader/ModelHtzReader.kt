@@ -2,20 +2,20 @@ package template.reader
 
 import common.ext.isNull
 import common.ext.readObject
+import template.model.ModelHtz
 import java.io.InputStream
 
 /** @see [template.model.ModelHtz] */
 class ModelHtzReader(
     inputStream: InputStream
-) : AbsJsonModelReader<template.model.ModelHtz>(inputStream) {
+) : AbsJsonModelReader<ModelHtz>(inputStream) {
     @Throws(Exception::class)
-    override fun model(): template.model.ModelHtz {
-        val ret = template.model.ModelHtz()
+    override fun model(): ModelHtz {
+        val ret = ModelHtz()
         jsonReader.readObject {
             loop@ while (hasNext()) {
                 if (isNull) continue@loop
-                val tag = nextName()
-                when (tag) {
+                when (nextName()) {
                     "name" -> ret.name = nextString()
                     "author" -> ret.author = nextString()
                     "template_file" -> ret.template_file = nextString()
@@ -33,6 +33,7 @@ class ModelHtzReader(
                 }
             }
         }
-        return if (ret.isNotValid()) throw IllegalStateException("NotValid ModelHtz") else ret
+        return ret.takeUnless { it.isNotValid() }
+            ?: throw IllegalStateException("NotValid Model $ret")
     }
 }

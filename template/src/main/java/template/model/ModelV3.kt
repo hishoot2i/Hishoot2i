@@ -1,5 +1,8 @@
 package template.model
 
+import entity.Glare
+import entity.Sizes
+
 /*
 // loc: assets/template.cfg
    {
@@ -72,15 +75,9 @@ data class ModelV3 @JvmOverloads constructor(
     var preview: String? = null,
     var shadow: String? = null,
     var coordinate: List<Float> = emptyList(),
-    var size: entity.Sizes = entity.Sizes.ZERO,
-    var glares: List<entity.Glare>? = null
+    var size: Sizes = Sizes.ZERO,
+    var glares: List<Glare>? = null
 ) {
-    fun isNotValid(): Boolean = when {
-        name == "" -> true
-        author == "" -> true
-        frame == "" -> true
-        coordinate.isEmpty() -> true
-        size == entity.Sizes.ZERO -> true
-        else -> false
-    }
+    fun isNotValid(): Boolean = name == "" || author == "" || frame == ""
+            || coordinate.isEmpty() || size == Sizes.ZERO
 }

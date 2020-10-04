@@ -1,5 +1,7 @@
 package template.model
 
+import java.util.Locale
+
 /*
 // loc: template.cfg
 {
@@ -33,20 +35,16 @@ data class ModelHtz(
     var template_width: Int = -1,
     var template_height: Int = -1
 ) {
-    fun isNotValid(): Boolean = when {
-        name == "" -> true
-        author == "" -> true
-        template_file == "" -> true
-        preview == "" -> true
-        overlay_file == "" -> true
-        overlay_x == -1 -> true
-        overlay_y == -1 -> true
-        screen_width == -1 -> true
-        screen_height == -1 -> true
-        screen_x == -1 -> true
-        screen_y == -1 -> true
-        template_width == -1 -> true
-        template_height == -1 -> true
-        else -> false
+    fun isNotValid(): Boolean = name == "" || author == "" || template_file == "" || preview == ""
+            || overlay_file == "" || overlay_x == -1 || overlay_y == -1 || screen_width == -1
+            || screen_height == -1 || screen_x == -1 || screen_y == -1
+            || template_width == -1 || template_height == -1
+
+    private val maxLengthID = 32 //
+    fun generateTemplateId(): String {
+        val ret = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
+            .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
+            .trim()
+        return ret.takeIf { it.length <= maxLengthID } ?: ret.substring(range = 0..maxLengthID) // limit
     }
 }

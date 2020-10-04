@@ -2,20 +2,20 @@ package template.reader
 
 import common.ext.isNull
 import common.ext.readObject
+import template.model.ModelV2
 import java.io.InputStream
 
 /** @see [template.model.ModelV2] */
 class ModelV2Reader(
     inputStream: InputStream
-) : AbsJsonModelReader<template.model.ModelV2>(inputStream) {
+) : AbsJsonModelReader<ModelV2>(inputStream) {
     @Throws(Exception::class)
-    override fun model(): template.model.ModelV2 {
-        val ret = template.model.ModelV2()
+    override fun model(): ModelV2 {
+        val ret = ModelV2()
         jsonReader.readObject {
             loop@ while (hasNext()) {
                 if (isNull) continue@loop
-                val tag = nextName()
-                when (tag) {
+                when (nextName()) {
                     "name" -> ret.name = nextString()
                     "author" -> ret.author = nextString()
                     "left_top_x" -> ret.left_top_x = nextInt()
@@ -32,6 +32,7 @@ class ModelV2Reader(
                 }
             }
         }
-        return if (ret.isNotValid()) throw IllegalStateException("NotValid ModelV2") else ret
+        return ret.takeUnless { it.isNotValid() }
+            ?: throw IllegalStateException("NotValid Model $ret")
     }
 }

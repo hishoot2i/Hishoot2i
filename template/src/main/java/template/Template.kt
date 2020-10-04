@@ -1,68 +1,34 @@
+@file:Suppress("SpellCheckingInspection")
+
 package template
 
-import common.ext.exhaustive
+import entity.Sizes
+import template.TemplateConstants.DEFAULT_TEMPLATE_ID
 
-sealed class Template(
-    open val id: String,
-    open val author: String,
-    open val name: String,
-    open val desc: String,
-    open val frame: String,
-    open val preview: String,
-    open val sizes: entity.Sizes,
-    open val coordinate: List<Float>,
-    open val installedDate: Long
-) {
-    val isDefault: Boolean
-        get() = this is Default
-    val isNotEmpty: Boolean
-        get() = this != Empty
-
-    fun containsNameOrAuthor(query: String): Boolean =
-        name.contains(query, ignoreCase = true) ||
-            author.contains(query, ignoreCase = true)
-
-    internal val indexTypeSort: Byte
-        get() = when (this) {
-            is Default -> 0
-            is Version1 -> 1
-            is Version2 -> 2
-            is Version3 -> 3
-            is VersionHtz -> 4
-            is Empty -> Byte.MAX_VALUE
-        }.exhaustive
-
-    /** Fallback */
-    object Empty : Template(
-        EMPTIES,
-        EMPTIES,
-        EMPTIES,
-        EMPTIES,
-        EMPTIES,
-        EMPTIES,
-        entity.Sizes.ZERO,
-        emptyList(),
-        -1L
-    )
+sealed class Template {
+    abstract val id: String
+    abstract val author: String
+    abstract val name: String
+    abstract val desc: String
+    abstract val frame: String
+    abstract val preview: String
+    abstract val sizes: Sizes
+    abstract val coordinate: List<Float>
+    abstract val installedDate: Long
 
     /** @since HiShoot */
     data class Default(
         override val frame: String,
         override val preview: String,
-        override val sizes: entity.Sizes,
+        override val sizes: Sizes,
         override val coordinate: List<Float>,
         override val installedDate: Long
-    ) : Template(
-        TemplateConstants.DEFAULT_TEMPLATE_ID,
-        DEFAULT_AUTHOR,
-        DEFAULT_NAME,
-        DEFAULT_DESC,
-        frame,
-        preview,
-        sizes,
-        coordinate,
-        installedDate
-    )
+    ) : Template() {
+        override val author: String = "DCSMS aka JMKL"
+        override val desc: String = "Template Default"
+        override val id: String = DEFAULT_TEMPLATE_ID
+        override val name: String = "Default"
+    }
 
     /** @since HiShoot */
     data class Version1(
@@ -71,10 +37,12 @@ sealed class Template(
         override val name: String,
         override val desc: String,
         override val frame: String,
-        override val sizes: entity.Sizes,
+        override val sizes: Sizes,
         override val coordinate: List<Float>,
         override val installedDate: Long
-    ) : Template(id, author, name, desc, frame, frame, sizes, coordinate, installedDate)
+    ) : Template() {
+        override val preview: String = frame
+    }
 
     /** @since 1.0.0 (20151223) */
     data class VersionHtz(
@@ -84,11 +52,11 @@ sealed class Template(
         override val desc: String,
         override val frame: String,
         override val preview: String,
-        override val sizes: entity.Sizes,
+        override val sizes: Sizes,
         override val coordinate: List<Float>,
         override val installedDate: Long,
         val glare: entity.Glare?
-    ) : Template(id, author, name, desc, frame, preview, sizes, coordinate, installedDate)
+    ) : Template()
 
     /** @since 1.0.0 (20151223) */
     data class Version2(
@@ -98,12 +66,12 @@ sealed class Template(
         override val desc: String,
         override val frame: String,
         override val preview: String,
-        override val sizes: entity.Sizes,
+        override val sizes: Sizes,
         override val coordinate: List<Float>,
         override val installedDate: Long,
         val shadow: String,
         val glare: entity.Glare?
-    ) : Template(id, author, name, desc, frame, preview, sizes, coordinate, installedDate)
+    ) : Template()
 
     /** @since 1.2.0 (20180730) */
     data class Version3(
@@ -113,17 +81,10 @@ sealed class Template(
         override val desc: String,
         override val frame: String,
         override val preview: String,
-        override val sizes: entity.Sizes,
+        override val sizes: Sizes,
         override val coordinate: List<Float>,
         override val installedDate: Long,
         val shadow: String?,
         val glares: List<entity.Glare>?
-    ) : Template(id, author, name, desc, frame, preview, sizes, coordinate, installedDate)
-
-    companion object {
-        private const val EMPTIES = ""
-        private const val DEFAULT_AUTHOR = "DCSMS aka JMKL"
-        private const val DEFAULT_NAME = "Default"
-        private const val DEFAULT_DESC = "Template Default"
-    }
+    ) : Template()
 }

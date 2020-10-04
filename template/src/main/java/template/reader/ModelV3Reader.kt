@@ -6,20 +6,23 @@ import common.ext.nextFloat
 import common.ext.nextStringSafe
 import common.ext.readArrayAsList
 import common.ext.readObject
+import entity.Glare
+import entity.Sizes
+import entity.SizesF
+import template.model.ModelV3
 import java.io.InputStream
 
 /** @see [template.model.ModelV3] */
 class ModelV3Reader(
     inputStream: InputStream
-) : AbsJsonModelReader<template.model.ModelV3>(inputStream) {
+) : AbsJsonModelReader<ModelV3>(inputStream) {
     @Throws(Exception::class)
-    override fun model(): template.model.ModelV3 {
-        val ret = template.model.ModelV3()
+    override fun model(): ModelV3 {
+        val ret = ModelV3()
         jsonReader.readObject {
             loop@ while (hasNext()) {
                 if (isNull) continue@loop
-                val tag = nextName()
-                when (tag) {
+                when (nextName()) {
                     "name" -> ret.name = nextString()
                     "author" -> ret.author = nextString()
                     "desc" -> ret.desc = nextStringSafe()
@@ -33,29 +36,30 @@ class ModelV3Reader(
                 }
             }
         }
-        return if (ret.isNotValid()) throw IllegalStateException("NotValid ModelV3") else ret
+        return ret.takeUnless { it.isNotValid() }
+            ?: throw IllegalStateException("NotValid Model $ret")
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////
-    private fun JsonReader.readGlare(): entity.Glare? {
+    private fun JsonReader.readGlare(): Glare? {
         var name: String? = null
-        var sizes: entity.Sizes = entity.Sizes.ZERO
-        var position: entity.Sizes = entity.Sizes.ZERO
+        var sizes: Sizes = Sizes.ZERO
+        var position: SizesF = SizesF.ZERO
         readObject {
             while (hasNext()) {
                 when (nextName()) {
                     "name" -> name = nextString()
                     "size" -> sizes = readSizes()
-                    "position" -> position = readSizes()
+                    "position" -> position = readSizes().toSizeF()
                     else -> skipValue()
                 }
             }
         }
-        return name?.let { entity.Glare(it, sizes, position) }
+        return name?.let { Glare(it, sizes, position) }
     }
 
-    private fun JsonReader.readSizes(): entity.Sizes {
-        var (x, y) = entity.Sizes.ZERO
+    private fun JsonReader.readSizes(): Sizes {
+        var (x, y) = Sizes.ZERO
         readObject {
             while (hasNext()) {
                 when (nextName()) {
@@ -65,6 +69,6 @@ class ModelV3Reader(
                 }
             }
         }
-        return entity.Sizes(x, y)
+        return Sizes(x, y)
     }
 }
