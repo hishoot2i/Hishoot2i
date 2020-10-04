@@ -1,42 +1,47 @@
 package org.illegaller.ratabb.hishoot2i.data
 
-import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_MAIN
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.os.Bundle
-import common.ext.actionMainWith
-import dagger.hilt.android.qualifiers.ApplicationContext
+import android.content.pm.PackageManager.GET_META_DATA
+import android.content.pm.ResolveInfo
+import entity.AppInfo
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.toFlowable
 import template.TemplateConstants.CATEGORY_TEMPLATE_APK
 import template.TemplateConstants.META_DATA_TEMPLATE
 import javax.inject.Inject
-import kotlin.LazyThreadSafetyMode.NONE
 
 class PackageResolverImpl @Inject constructor(
-    @ApplicationContext context: Context
+    packageManager: PackageManager
 ) : PackageResolver {
-    private val packageManager by lazy(NONE) { context.applicationContext.packageManager }
-    override fun installedTemplateLegacy(): Flowable<entity.AppInfo> =
-        packageManager.queryIntentActivities(actionMainWith(CATEGORY_TEMPLATE_APK), 0)
+    private val queryIntentActivities: (Intent, Int) -> List<ResolveInfo> =
+        (packageManager::queryIntentActivities)
+
+    private val getInstalledApplications: (Int) -> List<ApplicationInfo> =
+        (packageManager::getInstalledApplications)
+
+    private val getPackageInfo: (String) -> PackageInfo =
+        { packageName: String -> packageManager.getPackageInfo(packageName, 0) }
+
+    override fun installedTemplateLegacy(): Flowable<AppInfo> =
+        queryIntentActivities(Intent(ACTION_MAIN).addCategory(CATEGORY_TEMPLATE_APK), 0)
             .toFlowable()
             .map { it.activityInfo.packageName }
-            .flatMap(::mapTo)
+            .flatMap { Flowable.fromCallable { getPackageInfo(it) } }
+            .map { AppInfo(it.packageName, it.firstInstallTime) }
 
-    override fun installedTemplate(version: Int): Flowable<entity.AppInfo> =
-        packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+    override fun installedTemplate(version: Int): Flowable<AppInfo> =
+        getInstalledApplications(GET_META_DATA)
             .toFlowable()
-            .filter { it.metaData.machVersion(version) }
+            .filter { it.matchVersion(version) }
             .map { it.packageName }
-            .flatMap(::mapTo)
+            .flatMap { Flowable.fromCallable { getPackageInfo(it) } }
+            .map { AppInfo(it.packageName, it.firstInstallTime) }
 
-    private fun mapTo(packageName: String): Flowable<entity.AppInfo> =
-        Flowable.fromCallable { packageManager.getPackageInfo(packageName, 0) }
-            .map { entity.AppInfo(packageName, it.firstInstallTime) }
-
-    companion object {
-        @JvmStatic
-        private fun Bundle?.machVersion(version: Int): Boolean = this?.let {
-            containsKey(META_DATA_TEMPLATE) && getInt(META_DATA_TEMPLATE) == version
-        } == true
-    }
+    private fun ApplicationInfo.matchVersion(version: Int): Boolean = metaData?.run {
+        containsKey(META_DATA_TEMPLATE) && getInt(META_DATA_TEMPLATE) == version
+    } == true
 }

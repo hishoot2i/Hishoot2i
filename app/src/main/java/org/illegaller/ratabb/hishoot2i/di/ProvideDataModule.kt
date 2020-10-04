@@ -1,34 +1,27 @@
-package org.illegaller.ratabb.hishoot2i.data
+package org.illegaller.ratabb.hishoot2i.di
 
 import android.content.Context
-import com.chibatching.kotpref.Kotpref
+import android.content.pm.PackageManager
+import androidx.core.app.NotificationManagerCompat
 import common.FileConstants
+import common.custombitmap.AlphaPatternBitmap
+import common.custombitmap.BadgeBitmapBuilder
 import common.egl.MaxTexture
 import common.egl.MaxTextureCompat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.internal.modules.ApplicationContextModule
 import dagger.hilt.android.qualifiers.ApplicationContext
 import imageloader.uil.UilImageLoaderImpl
-import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
-import org.illegaller.ratabb.hishoot2i.data.core.CoreProcessImpl
-import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
 import org.illegaller.ratabb.hishoot2i.data.rx.AppScheduler
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import template.TemplateFactoryManagerImpl
 import javax.inject.Singleton
 
-@Module(includes = [ApplicationContextModule::class])
+@Module(includes = [BindDataModule::class])
 @InstallIn(ApplicationComponent::class)
-object DataModule {
-    @Provides
-    @Singleton
-    fun provideAppPref(@ApplicationContext context: Context): AppPref {
-        Kotpref.init(context)
-        return AppPref()
-    }
+object ProvideDataModule {
 
     @Provides
     @Singleton
@@ -37,10 +30,6 @@ object DataModule {
     @Provides
     @Singleton
     fun provideMaxTexture(): MaxTexture = MaxTextureCompat
-
-    @Provides
-    @Singleton
-    fun provideFileConstants(impl: FileConstantsImpl): FileConstants = impl
 
     @Provides
     @Singleton
@@ -57,17 +46,25 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideFileFontStorageSource(impl: FileFontStorageSourceImpl): FileFontStorageSource = impl
+    fun provideNotificationManagerCompat(
+        @ApplicationContext context: Context
+    ): NotificationManagerCompat = NotificationManagerCompat.from(context)
 
     @Provides
     @Singleton
-    fun providePackageResolver(impl: PackageResolverImpl): PackageResolver = impl
+    fun providePackageManager(
+        @ApplicationContext context: Context
+    ): PackageManager = context.packageManager
 
     @Provides
     @Singleton
-    fun provideTemplateDataSource(impl: TemplateDataSourceImpl): TemplateDataSource = impl
+    fun provideAlphaPattern(
+        @ApplicationContext context: Context
+    ): AlphaPatternBitmap = AlphaPatternBitmap(context)
 
     @Provides
     @Singleton
-    fun provideCoreProcess(impl: CoreProcessImpl): CoreProcess = impl
+    fun provideBadgeBuilder(
+        @ApplicationContext context: Context
+    ): BadgeBitmapBuilder = BadgeBitmapBuilder(context)
 }

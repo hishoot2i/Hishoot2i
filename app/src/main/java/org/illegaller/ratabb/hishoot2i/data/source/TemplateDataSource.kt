@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.data
+package org.illegaller.ratabb.hishoot2i.data.source
 
 import io.reactivex.Flowable
 import io.reactivex.Single
