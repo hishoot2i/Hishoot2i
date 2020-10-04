@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import common.ext.activityPendingIntent
 import common.ext.graphics.sizes
+import common.ext.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.HiShootActivity
 import org.illegaller.ratabb.hishoot2i.R
