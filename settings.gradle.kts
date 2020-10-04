@@ -6,8 +6,8 @@ fun includeProject(name: String, path: String) {
         buildFileName = "$name.gradle.kts"
     }
 }
-includeProject("entity", "entity")
 includeProject("common", "common")
 includeProject("imageloader", "imageloader")
 includeProject("template", "template")
+includeProject("pref", "pref")
 includeProject("app", "app")
