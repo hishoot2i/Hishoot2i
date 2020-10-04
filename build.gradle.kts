@@ -27,13 +27,15 @@ allprojects {
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
         gradlePluginPortal()
     }
-    /*
     afterEvaluate {
-        tasks.withType(JavaCompile::class) {
-            options.compilerArgs.add("-Xlint:unchecked")
-            options.compilerArgs.add("-Xlint:deprecation")
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class) {
+            kotlinOptions {
+                jvmTarget = "1.8"
+                allWarningsAsErrors = true
+                verbose = true
+            }
         }
-    }*/
+    }
 }
 plugins {
     id("com.diffplug.spotless") version "5.1.1"
