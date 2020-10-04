@@ -6,11 +6,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common"))
-    api(project(":entity"))
-
-    val kotlinVersion: String by rootProject
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-
+    api(project(":common"))
     api("com.nostra13.universalimageloader:universal-image-loader:1.9.5")
+    val kotlinVersion: String by rootProject
+    implementation(kotlin("stdlib", version = kotlinVersion))
 }

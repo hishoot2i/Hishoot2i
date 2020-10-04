@@ -7,14 +7,14 @@ interface ImageLoader {
     fun display(
         imageView: ImageView,
         source: String,
-        reqSizes: entity.Sizes? = null
+        reqSizes: entity.Sizes
     )
 
     fun loadSync(
         source: String,
         isSave: Boolean,
         reqSizes: entity.Sizes,
-        isOrientationAware: Boolean = false
+        isOrientationAware: Boolean
     ): Bitmap?
 
     fun clearMemoryCache()
