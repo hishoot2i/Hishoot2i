@@ -28,7 +28,7 @@ import android.graphics.Bitmap
 import java.util.concurrent.Executors
 
 class JavaBlurProcess : BlurProcess {
-    override fun blur(original: Bitmap, radius: Float): Bitmap? {
+    override fun blur(original: Bitmap, radius: Int): Bitmap? {
         val w = original.width
         val h = original.height
         val currentPixels = IntArray(w * h)
@@ -37,8 +37,8 @@ class JavaBlurProcess : BlurProcess {
         val horizontal = ArrayList<BlurTask>(cores)
         val vertical = ArrayList<BlurTask>(cores)
         for (i in 0 until cores) {
-            horizontal.add(BlurTask(currentPixels, w, h, radius.toInt(), cores, i, 1))
-            vertical.add(BlurTask(currentPixels, w, h, radius.toInt(), cores, i, 2))
+            horizontal.add(BlurTask(currentPixels, w, h, radius, cores, i, 1))
+            vertical.add(BlurTask(currentPixels, w, h, radius, cores, i, 2))
         }
         try {
             EXECUTOR.invokeAll(horizontal)

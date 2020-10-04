@@ -34,5 +34,5 @@ interface BlurProcess {
      * @param radius the radius in pixels to blur the image
      * @return the blurred version of the image.
      */
-    fun blur(original: Bitmap, radius: Float): Bitmap?
+    fun blur(original: Bitmap, radius: Int): Bitmap?
 }

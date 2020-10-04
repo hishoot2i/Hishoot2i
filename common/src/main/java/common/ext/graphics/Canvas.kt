@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
+import androidx.annotation.IntRange
 import com.enrique.stackblur.JavaBlurProcess
 
 inline fun Canvas.withConcatMatrix(matrix: Matrix, block: Canvas.() -> Unit) {
@@ -38,42 +39,24 @@ inline fun Canvas.drawBitmapPerspective(
 ) {
     if (null != bitmap && !bitmap.isRecycled) {
         val (width, height) = bitmap.sizes.toSizeF()
-        val src = floatArrayOf(
-            0F, 0F,
-            width, 0F,
-            0F, height,
-            width, height
-        )
-        val matrix = Matrix().apply {
-            setPolyToPoly(
-                src,
-                0,
-                coordinate,
-                0,
-                src.size / 2
-            )
-        }
-        withConcatMatrix(matrix) {
-            drawBitmapSafely(bitmap, paint = paint)
-            bitmap.recycleSafely()
-        }
+        val src = floatArrayOf(0F, 0F, width, 0F, 0F, height, width, height)
+        val matrix = Matrix().apply { setPolyToPoly(src, 0, coordinate, 0, 4) }
+        withConcatMatrix(matrix) { drawBitmapSafely(bitmap, paint = paint) }
     }
 }
 
 const val MAX_BLUR_RADIUS = 100
-inline fun Canvas.drawBitmapBlur(bitmap: Bitmap?, radius: Int) {
+inline fun Canvas.drawBitmapBlur(
+    bitmap: Bitmap?,
+    @IntRange(from = 0L, to = MAX_BLUR_RADIUS.toLong()) radius: Int
+) {
     if (null != bitmap && !bitmap.isRecycled) {
-        val rad = radius.coerceAtMost(MAX_BLUR_RADIUS).toFloat()
         val sizes = bitmap.sizes
-        val scaledSize = sizes / 2
-        val scaleDown = bitmap.resizeIfNotEqual(scaledSize)
-        val process = JavaBlurProcess().blur(scaleDown, rad)
-        scaleDown.recycleSafely()
-        process?.let {
-            val scaleUp = Bitmap.createScaledBitmap(it, sizes.x, sizes.y, false)
-            it.recycleSafely()
-            drawBitmapSafely(scaleUp)
-            scaleUp.recycleSafely()
+        JavaBlurProcess().blur(
+            bitmap.resizeIfNotEqual(sizes / 2, true),
+            radius.coerceAtMost(MAX_BLUR_RADIUS)
+        )?.let {
+            drawBitmapSafely(it.resizeIfNotEqual(sizes, true))
         }
     }
 }

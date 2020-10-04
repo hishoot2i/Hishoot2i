@@ -7,41 +7,40 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.text.TextPaint
 import androidx.annotation.ColorInt
 import common.ext.POINT_OF_FIVE
-import common.ext.density
+import common.ext.dp2px
 import common.ext.graphics.applyCanvas
-import common.ext.graphics.createFromFileOrDefault
 import common.ext.graphics.halfAlpha
-import common.ext.scaledDensity
+import common.ext.textSize
 import entity.Sizes
 import java.util.Locale
-import kotlin.LazyThreadSafetyMode.NONE
 
 class BadgeBitmapBuilder(context: Context) {
     private val rectF: RectF = RectF()
-    private val density by lazy(NONE) { context.density }
-    private val scaledDensity by lazy(NONE) { context.scaledDensity }
-    private val padding get() = DEF_PADDING * density + POINT_OF_FIVE
-    private val cornerRadius get() = DEF_CORNER_RADIUS * density + POINT_OF_FIVE
-    private val textPaint: TextPaint = TextPaint(TEXT_PAINT_FLAG).apply {
-        if (SDK_INT >= LOLLIPOP) isElegantTextHeight = true //
+
+    private val padding by lazy { context.dp2px(16F) }
+    private val cornerRadius by lazy { context.dp2px(8F) }
+    private val textPaint: TextPaint = TextPaint().apply {
+        flags = (Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG or Paint.LINEAR_TEXT_FLAG)
+        if (SDK_INT >= 21) isElegantTextHeight = true //
         isFakeBoldText = true
         xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
     }
-    private val backgroundPaint: Paint = Paint(DEF_PAINT_FLAG).apply {
+    private val backgroundPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
     }
+    private val textSizes = { value: Float -> context.textSize(value) }
 
     fun build(config: Config): Bitmap {
         val textUpperCase = config.text.toUpperCase(Locale.ROOT)
         val localBound = Rect()
         textPaint.apply {
-            typeface = config.typeFacePath.createFromFileOrDefault()
-            textSize = config.size * scaledDensity + POINT_OF_FIVE
+            typeface = config.typeFace
+            textSize = textSizes(config.size)
             getTextBounds(textUpperCase, 0, textUpperCase.length, localBound)
         }
         val (width, height) = Sizes(
@@ -62,16 +61,8 @@ class BadgeBitmapBuilder(context: Context) {
 
     data class Config(
         val text: String,
-        val typeFacePath: String,
-        val size: Int,
+        val typeFace: Typeface,
+        val size: Float,
         @ColorInt val color: Int
     )
-
-    companion object {
-        private const val DEF_PADDING = 16
-        private const val DEF_CORNER_RADIUS = 8
-        private const val DEF_PAINT_FLAG = Paint.ANTI_ALIAS_FLAG
-        private const val TEXT_PAINT_FLAG =
-            DEF_PAINT_FLAG.or(Paint.SUBPIXEL_TEXT_FLAG).or(Paint.LINEAR_TEXT_FLAG)
-    }
 }

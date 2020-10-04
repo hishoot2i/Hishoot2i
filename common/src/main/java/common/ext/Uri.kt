@@ -20,6 +20,10 @@ import androidx.documentfile.provider.DocumentFile
 import timber.log.Timber
 import java.io.File
 
+// FIXME : Do not use this, find other method!
+//  https://developer.android.com/preview/privacy/storage
+
+@Suppress("DEPRECATION")
 inline fun Uri.toFile(context: Context): File? = when (scheme) {
     SCHEME_FILE -> path?.let { File(it) }
     SCHEME_CONTENT -> {
@@ -32,14 +36,13 @@ inline fun Uri.toFile(context: Context): File? = when (scheme) {
                     documentId = documentId.replace("raw:", "")
                 }
                 isExternalStorage -> {
-                    @Suppress("DEPRECATION")
                     documentId = File(
                         getExternalStorageDirectory(),
                         documentId.replace("primary:", "")
                     ).absolutePath
                 }
                 isImageMediaDocument -> {
-                    @Suppress("DEPRECATION") val column =
+                    val column =
                         arrayOf(MediaStore.Images.ImageColumns.DATA)
                     val sel = "${MediaStore.Images.Media._ID}=?"
                     val selArg = arrayOf(documentId.split(":")[1])
@@ -56,7 +59,7 @@ inline fun Uri.toFile(context: Context): File? = when (scheme) {
         } else {
             path = when {
                 isImageMedia -> {
-                    @Suppress("DEPRECATION") val column = MediaStore.Images.ImageColumns.DATA
+                    val column = MediaStore.Images.ImageColumns.DATA
                     resolveFrom(
                         contentResolver,
                         projection = arrayOf(column),

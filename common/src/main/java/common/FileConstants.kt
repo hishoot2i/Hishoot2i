@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package common
 
 import android.net.Uri
@@ -15,7 +17,9 @@ interface FileConstants {
     /**
      * File directory Hishoot Htz
      *
-     * @return a [File] directory `/data/data/<packageName>/files/htz`
+     * parentFile = `/storage/Android/data/<packageName>/files`
+     * or `/data/data/<packageName>/files/`
+     * @return a [File] directory `<parentFile>/htz`
      **/
     fun htzDir(): File
 
@@ -27,7 +31,7 @@ interface FileConstants {
     fun bgCrop(): File
 
     /* */
-    fun File.toUri(): Uri
+    fun toUri(file: File): Uri
 
     companion object {
         const val NO_MEDIA = ".nomedia"

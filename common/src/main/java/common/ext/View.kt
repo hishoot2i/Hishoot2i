@@ -33,7 +33,7 @@ inline fun View.hideSoftKey() {
 }
 
 inline fun View.onKey(crossinline consume: (keyCode: Int, event: KeyEvent) -> Boolean) {
-    setOnKeyListener { _: View?, keyCode: Int, event: KeyEvent -> consume(keyCode, event) }
+    setOnKeyListener { _, keyCode, event -> consume(keyCode, event) }
 }
 
 inline val View.layoutInflater: LayoutInflater

@@ -6,4 +6,4 @@ import java.io.InputStream
 import java.util.zip.ZipFile
 
 inline fun ZipFile.entryInputStream(entryName: String): InputStream =
-    getEntry(entryName).let { getInputStream(it) }
+    getInputStream(getEntry(entryName))
