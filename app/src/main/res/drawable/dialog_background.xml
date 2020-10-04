@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/windowBackground" />
+    <solid android:color="?attr/colorSurface" />
     <corners android:radius="@dimen/dialogRoundCorner" />
     <stroke
         android:width="@dimen/dialogStrokeWidth"
-        android:color="@color/dialogStroke" />
+        android:color="?attr/colorOnSurface" />
 </shape>

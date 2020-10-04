@@ -5,9 +5,9 @@
     <stroke
         android:width="4dp"
         android:color="@color/black" />
-    <corners android:radius="@dimen/dp8" />
+    <corners android:radius="8dp" />
     <solid android:color="@color/blackHalfAlpha" />
     <size
-        android:width="@dimen/dp48"
-        android:height="@dimen/dp48" />
+        android:width="48dp"
+        android:height="48dp" />
 </shape>
