@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <!--<FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="?actionBarSize">
-
-        <include
-            layout="@layout/loading"
-            tools:visibility="visible" />
-    </FrameLayout>-->
 
     <org.illegaller.ratabb.hishoot2i.ui.common.widget.CropImageView
         android:id="@+id/cropImageView"
@@ -25,33 +16,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="@dimen/bottomAppBarHeight"
         android:layout_gravity="bottom"
-        android:background="?attr/colorPrimary"
-        android:gravity="center_vertical">
+        android:background="?attr/colorSurface">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/cropCancel"
-            style="@style/AppWidget.Button"
+            style="@style/AppWidget.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_weight="1"
             android:text="@string/cancel"
-            android:textColor="@color/white" />
+            app:icon="@drawable/ic_cancel"
+            app:iconGravity="textStart" />
 
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="?actionBarDivider" />
-
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/cropDone"
             style="@style/AppWidget.Button"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_margin="8dp"
             android:text="@string/done"
-            android:textColor="@color/white" />
+            app:icon="@drawable/ic_done"
+            app:iconGravity="textStart" />
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

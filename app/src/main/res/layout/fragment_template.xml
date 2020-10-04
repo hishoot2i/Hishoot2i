@@ -3,53 +3,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/templateRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        android:layout_marginBottom="@dimen/bottomAppBarHeight"
-        app:layoutManager="LinearLayoutManager"
+        android:clipToPadding="false"
+        app:fastScrollEnabled="false"
+        app:layoutManager="GridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:spanCount="3"
+        tools:itemCount="8"
         tools:listitem="@layout/row_item_template" />
 
-    <include layout="@layout/no_content" />
+    <include
+        android:id="@+id/noContent"
+        layout="@layout/no_content"
+        tools:visibility="gone" />
 
-    <include layout="@layout/loading" />
 
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:cardCornerRadius="4dp"
-        app:cardUseCompatPadding="true">
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/templateSearchView"
+        <com.google.android.material.progressindicator.ProgressIndicator
+            android:id="@+id/templateProgress"
+            style="@style/AppWidget.ProgressBar.Linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:inputType="text"
-            android:imeOptions="actionDone"
-            app:iconifiedByDefault="false"
-            app:queryHint="@string/search_template_hint" />
-    </com.google.android.material.card.MaterialCardView>
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/templateSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search" />
+        </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/templateBottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottomAppBarHeight"
         android:layout_gravity="bottom"
-        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-        app:menu="@menu/template" />
+        app:hideOnScroll="true"
+        app:menu="@menu/template"
+        app:navigationIcon="@drawable/ic_arrow" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/templateHtzFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp20"
-        android:layout_marginRight="@dimen/dp20"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         app:layout_anchor="@id/templateBottomAppBar"
-        app:srcCompat="@drawable/ic_htz_plus_black_24dp" />
+        app:layout_behavior=".ui.common.behavior.FabQuickHideBehavior"
+        app:srcCompat="@drawable/ic_htz_plus" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

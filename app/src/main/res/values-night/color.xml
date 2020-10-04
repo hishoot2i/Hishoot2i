@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="dialogStroke">@color/grey300HalfAlpha</color>
-    <color name="windowBackground">@color/grey900</color>
-    <color name="textRowBackground">@color/grey900HalfAlpha</color>
-</resources>

@@ -1,43 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    tools:background="@color/primary">
+    android:layout_height="@dimen/navHeaderHeight">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:background="@drawable/nav_header_background"
+        android:background="@drawable/header_nav_background"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:src="@drawable/app_banner" />
+        app:srcCompat="@drawable/ic_launcher_foreground" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp4"
-        android:maxLines="1"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.App.Title"
-        android:textColor="@color/white" />
-
-    <TextView
-        android:id="@+id/navAppVersion"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="@dimen/dp4"
-        android:gravity="end"
-        android:maxLines="1"
-        android:textAppearance="@style/TextAppearance.App.SubTitle"
-        android:textColor="@color/white"
-        tools:text="@tools:sample/us_zipcodes" />
+        android:layout_margin="8dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.App.Title"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/navAppVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.App.SubTitle"
+                android:textColor="@color/white"
+                tools:text="@tools:sample/us_zipcodes" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/navWeb"
+            style="@style/AppWidget.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:icon="@drawable/ic_public"
+            app:iconTint="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/navSources"
+            style="@style/AppWidget.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:icon="@drawable/ic_github"
+            app:iconTint="@color/white" />
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1dp"
         android:layout_gravity="bottom"
-        android:background="@color/grey300HalfAlpha" />
+        android:background="?attr/colorPrimaryDark" />
 </FrameLayout>

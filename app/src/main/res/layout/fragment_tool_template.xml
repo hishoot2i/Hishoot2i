@@ -8,54 +8,34 @@
     android:orientation="vertical"
     android:padding="@dimen/toolLayoutMargin">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp16"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="@string/template"
-            android:textAppearance="@style/TextAppearance.App.Title" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/toolTemplateManager"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:foreground="?selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_template_black_24dp"
-            app:tint="?attr/colorAccent"
-            tools:ignore="UnusedAttribute" />
-
-    </LinearLayout>
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="16dp"
+        android:text="@string/template"
+        android:textAppearance="@style/TextAppearance.App.Title" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
 
         <ImageView
             android:id="@+id/toolTemplatePreview"
-            android:layout_width="@dimen/dp80"
-            android:layout_height="@dimen/dp120"
-            android:adjustViewBounds="true"
+            android:layout_width="@dimen/toolPreviewWidth"
+            android:layout_height="@dimen/toolPreviewHeight"
             android:contentDescription="@null"
-            android:scaleType="fitStart"
+            android:scaleType="centerInside"
             tools:src="@tools:sample/avatars" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp8"
-            android:layout_marginLeft="@dimen/dp8"
-            android:layout_marginEnd="@dimen/dp8"
-            android:layout_marginRight="@dimen/dp8"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -67,30 +47,41 @@
                 android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.App"
                 android:textStyle="bold"
-                tools:text="@tools:sample/full_names"  />
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/toolTemplateId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.App.SubTitle"
                 android:textStyle="bold"
-                tools:text="@tools:sample/cities"  />
+                tools:text="@tools:sample/lorem/random" />
 
             <TextView
                 android:id="@+id/toolTemplateInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="@dimen/dp100"
-                android:maxLines="4"
-                android:paddingTop="@dimen/dp4"
-                android:paddingBottom="@dimen/dp4"
-                android:textAppearance="@style/TextAppearance.App"
-                tools:text="@tools:sample/lorem"  />
+                android:maxHeight="100dp"
+                android:maxLines="3"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textAppearance="@style/TextAppearance.App.SubTitle"
+                tools:text="@tools:sample/lorem/random" />
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/toolTemplateManager"
+        style="@style/AppWidget.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/template_manager"
+        app:icon="@drawable/ic_template"
+        app:iconGravity="textEnd"
+        app:textAllCaps="false" />
 
     <LinearLayout
         android:id="@+id/toolTemplateOption"
@@ -103,36 +94,53 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp8"
+            android:paddingTop="8dp"
             android:text="@string/options"
             android:textAppearance="@style/TextAppearance.App.Title" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp8"
+            android:paddingBottom="8dp"
             android:text="@string/template_v2_and_v3"
             android:textAppearance="@style/TextAppearance.App.SubTitle" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/toolTemplateSwitchFrame"
-            style="@style/AppWidget.Switch"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toolTemplateToggleGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/frame" />
+            android:orientation="horizontal"
+            app:selectionRequired="false"
+            app:singleSelection="false"
+            tools:checkedButton="@id/toolTemplateSwitchShadow">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/toolTemplateSwitchShadow"
-            style="@style/AppWidget.Switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/shadow" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/toolTemplateSwitchFrame"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/frame" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/toolTemplateSwitchGlare"
-            style="@style/AppWidget.Switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/glare" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/toolTemplateSwitchShadow"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/shadow" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/toolTemplateSwitchGlare"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/glare" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
     </LinearLayout>
 </LinearLayout>

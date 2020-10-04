@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,69 +9,81 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp8"
         android:orientation="horizontal">
 
-        <RadioGroup
-            android:id="@+id/toolBackgroundImageOptionGroup"
-            style="@style/AppWidget.RadioButton"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/backgroundImageOption_Group"
+            style="?attr/materialButtonToggleGroupStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checkedButton="@id/toolBackgroundImageOptionScaleFill"
-            android:orientation="vertical">
+            android:orientation="vertical"
 
-            <RadioButton
-                android:id="@+id/toolBackgroundImageOptionScaleFill"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            tools:checkedButton="@id/imageOption_CenterCrop"
+            tools:ignore="RtlSymmetry">
+
+            <Button
+                android:id="@+id/imageOption_ScaleFill"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/scale_fill" />
+                android:text="@string/scale_fill"
+                app:icon="@drawable/ic_zoom" />
 
-            <RadioButton
-                android:id="@+id/toolBackgroundImageOptionCenterCrop"
+            <Button
+                android:id="@+id/imageOption_CenterCrop"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/center_crop" />
+                android:text="@string/center_crop"
+                app:icon="@drawable/ic_crop_free" />
 
-            <RadioButton
-                android:id="@+id/toolBackgroundImageOptionManualCrop"
+            <Button
+                android:id="@+id/imageOption_ManualCrop"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/manual_crop" />
-        </RadioGroup>
+                android:text="@string/manual_crop"
+                app:icon="@drawable/ic_crop" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/toolBackgroundImagePick"
-            style="@style/AppWidget.TextImage"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/backgroundImagePick"
+            style="@style/AppWidget.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|center_vertical"
-            android:layout_margin="@dimen/dp24"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:text="@string/pick_image"
-            app:drawableTint="?attr/colorAccent"
-            app:drawableTopCompat="@drawable/ic_image_black_24dp" />
-
+            app:icon="@drawable/ic_image"
+            app:textAllCaps="false" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp8"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/toolBackgroundImageSwitchBlur"
-            style="@style/AppWidget.Switch"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/backgroundImageBlur"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/blur" />
+            android:text="@string/blur"
+            android:textAppearance="@style/TextAppearance.App"
+            tools:checked="true" />
 
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/toolBackgroundImageSeekBlur"
+        <com.google.android.material.slider.Slider
+            android:id="@+id/backgroundImage_Blur_Slider"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            tools:value="25.0" />
     </LinearLayout>
 </LinearLayout>

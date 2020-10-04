@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!---->
+    <!-- -->
     <color name="black">#FF000000</color>
     <color name="blackHalfAlpha">#7F000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="grey900">#FF212121</color>
-    <color name="grey900HalfAlpha">#7F212121</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="green">#FF00FF00</color>
     <color name="grey300">#FFE0E0E0</color>
     <color name="grey300HalfAlpha">#7FE0E0E0</color>
+    <color name="grey900">#FF212121</color>
+    <color name="grey900HalfAlpha">#7F212121</color>
     <color name="red">#FFFF0000</color>
-    <color name="green">#FF00FF00</color>
-    <color name="blue">#FF0000FF</color>
-    <color name="transparent">#00000000</color>
-    <!---->
+    <color name="transparent" tools:ignore="UnusedResources">#00000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <!-- -->
     <color name="primary">#FF0281BB</color>
     <color name="primaryDark">#FF034171</color>
     <color name="accent">#FF689F38</color>
-    <!---->
-    <color name="dialogStroke">@color/grey900HalfAlpha</color>
-    <color name="windowBackground">@color/grey300</color>
-    <color name="textRowBackground">@color/grey300HalfAlpha</color>
-    <color name="iconShortcutTemplateBackground" tools:ignore="UnusedResources">@color/primary
-    </color>
+    <!-- -->
     <color name="shadowTextButton">#7f5a595b</color>
+    <integer-array name="progressColors">
+        <item>@color/accent</item>
+        <item>@color/primary</item>
+        <item>@color/primaryDark</item>
+    </integer-array>
 </resources>

@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Platform.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Platform.AppTheme" parent="Base.Platform.AppTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/transparent</item>
-        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/primary</item>
     </style>
 
-    <!--<style name="AppThemeOverlay.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:elevation">@dimen/toolbarElevation</item>
-    </style>-->
+    <style name="Platform.AppTheme.Splash" parent="AppTheme">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Platform.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="android:navigationBarColor">?colorSurface</item>
+
+    </style>
 </resources>

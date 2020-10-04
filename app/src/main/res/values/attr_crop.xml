@@ -51,9 +51,9 @@
         <item name="guideStrokeWeight">1dp</item>
         <item name="handleColor">@color/handle</item>
         <item name="handleShowMode">show_always</item>
-        <item name="handleSize">@dimen/dp8</item>
+        <item name="handleSize">8dp</item>
         <item name="minFrameSize">50dp</item>
         <item name="overlayColor">@color/overlay</item>
-        <item name="touchPadding">@dimen/dp8</item>
+        <item name="touchPadding">8dp</item>
     </style>
 </resources>

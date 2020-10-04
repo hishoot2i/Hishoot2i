@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     android:label="@string/app_name"
+    app:defaultNavHost="true"
     app:startDestination="@id/main"
     tools:ignore="UnusedNavigation">
-    <!-- NOTE UnusedNavigation: manual set graph & arg at SingleActivity -->
+    <!-- NOTE UnusedNavigation: manual set graph & arg at Activity -->
     <fragment
         android:id="@+id/main"
         android:name="org.illegaller.ratabb.hishoot2i.ui.main.MainFragment"
@@ -22,18 +23,28 @@
             android:defaultValue="0"
             app:argType="integer"
             app:nullable="false" />
-        <!--<action
-            android:id="@+id/action_main_to_crop"
-            app:destination="@id/cropScreen" />
         <action
-            android:id="@+id/action_main_to_template"
-            app:destination="@id/templateScreen" />-->
+            android:id="@+id/action_main_to_toolsBackground"
+            app:destination="@id/toolsBackground" />
+        <action
+            android:id="@+id/action_main_to_toolsBadge"
+            app:destination="@id/toolsBadge" />
+        <action
+            android:id="@+id/action_main_to_toolsScreen"
+            app:destination="@id/toolsScreen" />
+        <action
+            android:id="@+id/action_main_to_toolsTemplate"
+            app:destination="@id/toolsTemplate" />
     </fragment>
     <fragment
         android:id="@+id/template"
         android:name="org.illegaller.ratabb.hishoot2i.ui.template.TemplateFragment"
         android:label="@string/template"
-        tools:layout="@layout/fragment_template" />
+        tools:layout="@layout/fragment_template">
+        <action
+            android:id="@+id/action_template_to_sortTemplate"
+            app:destination="@id/sortTemplate" />
+    </fragment>
     <fragment
         android:id="@+id/crop"
         android:name="org.illegaller.ratabb.hishoot2i.ui.crop.CropFragment"
@@ -41,31 +52,117 @@
         tools:layout="@layout/fragment_crop">
         <argument
             android:name="path"
-            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true" />
+            app:nullable="false" />
         <argument
-            android:name="ratioX"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="ratioY"
-            android:defaultValue="0"
-            app:argType="integer" />
+            android:name="ratio"
+            app:argType="android.graphics.Point"
+            app:nullable="false" />
     </fragment>
     <fragment
         android:id="@+id/setting"
         android:name="org.illegaller.ratabb.hishoot2i.ui.setting.SettingFragment"
         android:label="@string/settings"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_setting_to_themeChooser"
+            app:destination="@id/themeChooser" />
+    </fragment>
+    <fragment
+        android:id="@+id/about"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.about.AboutFragment"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about" />
 
-    <action
-        android:id="@+id/action_global_setting"
-        app:destination="@id/setting" />
+    <!-- region BottomSheet Dialog (Tools)-->
+    <dialog
+        android:id="@+id/toolsBackground"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.tools.background.BackgroundTool"
+        android:label="@string/background"
+        tools:layout="@layout/fragment_tool_background">
+        <argument
+            android:name="ratio"
+            app:argType="android.graphics.Point"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_toolsBackground_to_crop"
+            app:destination="@id/crop" />
+        <action
+            android:id="@+id/action_toolsBackground_to_colorMix"
+            app:destination="@id/colorMix" />
+    </dialog>
+    <dialog
+        android:id="@+id/toolsBadge"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.tools.badge.BadgeTool"
+        android:label="@string/badge"
+        tools:layout="@layout/fragment_tool_badge">
+        <action
+            android:id="@+id/action_toolsBadge_to_colorMix"
+            app:destination="@id/colorMix" />
+    </dialog>
+    <dialog
+        android:id="@+id/toolsScreen"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.tools.screen.ScreenTool"
+        android:label="@string/screen"
+        tools:layout="@layout/fragment_tool_screen" />
+    <dialog
+        android:id="@+id/toolsTemplate"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.tools.template.TemplateTool"
+        android:label="@string/template"
+        tools:layout="@layout/fragment_tool_template" />
+    <!-- endregion -->
+
+    <!-- region Dialog -->
+    <dialog
+        android:id="@+id/colorMix"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.tools.ColorMixDialog"
+        android:label="@string/color_mixer"
+        tools:layout="@layout/dialog_color_mix">
+        <argument
+            android:name="color"
+            android:defaultValue="-16711681"
+            app:argType="integer" />
+        <!-- -16711681 = 0xFF00FFFF.toInt() -->
+        <argument
+            android:name="withAlpha"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="withHex"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </dialog>
+    <dialog
+        android:id="@+id/sortTemplate"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.template.SortTemplateDialog"
+        android:label="@string/sort_by"
+        tools:layout="@layout/dialog_sort_template">
+        <argument
+            android:name="templateComparator"
+            android:defaultValue="NAME_ASC"
+            app:argType="template.TemplateComparator" />
+    </dialog>
+    <dialog
+        android:id="@+id/themeChooser"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.setting.ThemeChooserDialog"
+        android:label="@string/themes"
+        tools:layout="@layout/dialog_theme_chooser">
+        <argument
+            android:name="dayNightMode"
+            android:defaultValue="SYSTEM"
+            app:argType="entity.DayNightMode" />
+    </dialog>
+    <!-- endregion -->
+
+    <!-- region Action Global ? -->
     <action
         android:id="@+id/action_global_template"
         app:destination="@id/template" />
     <action
-        android:id="@+id/action_global_crop"
-        app:destination="@id/crop" />
+        android:id="@+id/action_global_setting"
+        app:destination="@id/setting" />
+    <action
+        android:id="@+id/action_global_about"
+        app:destination="@id/about" />
+    <!-- endregion -->
 </navigation>

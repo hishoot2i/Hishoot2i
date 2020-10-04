@@ -10,8 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp8"
-        android:layout_marginBottom="@dimen/dp16"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <TextView
@@ -22,20 +22,20 @@
             android:text="@string/background"
             android:textAppearance="@style/TextAppearance.App.Title" />
 
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/toolBackgroundModes"
+        <Spinner
+            android:id="@+id/backgroundModes_Spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/background_mode_values"
-            android:popupBackground="?attr/backgroundPopup"
             android:prompt="@string/background_mode_prompt"
             android:spinnerMode="dialog" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
 
         <include
             android:id="@+id/toolBackgroundLayoutColor"

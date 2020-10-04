@@ -1,51 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-
-    android:padding="@dimen/dp8"
-    tools:background="@drawable/dialog_background">
+    android:padding="8dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="@string/themes"
         android:textAppearance="@style/TextAppearance.App.Title" />
 
-    <RadioGroup
+    <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/themeRadioGroup"
         android:layout_width="wrap_content"
-        android:minWidth="@dimen/dp240"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp8">
+        android:gravity="center"
+        android:minWidth="240dp"
+        android:orientation="vertical"
+        app:selectionRequired="true"
+        app:singleSelection="true"
+        tools:checkedButton="@id/themeDarkRb">
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/themeLightRb"
+            style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/light" />
+            android:text="@string/light"
+            app:icon="@drawable/ic_brightness_day" />
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/themeDarkRb"
+            style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dark" />
+            android:text="@string/dark"
+            app:icon="@drawable/ic_brightness_night" />
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/themeSysDefRb"
+            style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/follow_system"
-            tools:checked="true" />
-    </RadioGroup>
+            app:icon="@drawable/ic_brightness_auto" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:maxWidth="240dp"
         android:orientation="horizontal">
 
         <View
@@ -53,12 +63,12 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/action_theme_cancel"
-            style="@style/AppWidget.Button"
+            style="@style/AppWidget.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
-            android:textColor="?colorAccent" />
+            />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </LinearLayout>

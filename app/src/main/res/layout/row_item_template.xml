@@ -1,63 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp4"
-    android:foreground="?selectableItemBackgroundBorderless"
-    app:cardBackgroundColor="@color/transparent"
-    app:cardCornerRadius="2dp"
-    app:cardUseCompatPadding="true">
+    android:foreground="?selectableItemBackgroundBorderless">
 
     <ImageView
         android:id="@+id/itemTemplatePreview"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp140"
+        android:layout_height="@dimen/itemPreviewHeight"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        tools:src="@tools:sample/backgrounds/scenic"
-         />
+        tools:src="@tools:sample/backgrounds/scenic" />
 
-    <LinearLayout
-        android:id="@+id/itemTemplateLayoutInfo"
+    <TextView
+        android:id="@+id/itemTemplateName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?attr/backgroundTextRow"
-        android:orientation="vertical"
-        android:padding="@dimen/dp4">
+        android:background="?attr/colorSurfaceHalfAlpha"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="8dp"
+        android:textAppearance="@style/TextAppearance.App"
+        android:textStyle="bold"
+        tools:text="@tools:sample/full_names" />
 
-        <TextView
-            android:id="@+id/itemTemplateName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.App"
-            android:textStyle="bold"
-            tools:text="@tools:sample/full_names" />
-
-        <TextView
-            android:id="@+id/itemTemplateId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textAppearance="@style/TextAppearance.App.SubTitle"
-            android:textStyle="bold"
-            tools:text="@tools:sample/cities" />
-
-        <TextView
-            android:id="@+id/itemTemplateInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="@dimen/dp80"
-            android:maxLines="3"
-            android:paddingTop="@dimen/dp4"
-            android:paddingBottom="@dimen/dp4"
-            android:textAppearance="@style/TextAppearance.App.SubTitle"
-            tools:text="@tools:sample/lorem/random" />
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>

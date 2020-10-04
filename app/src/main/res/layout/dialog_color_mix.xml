@@ -4,210 +4,197 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="@dimen/dp10">
+    android:padding="20dp">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:text="@string/color_mixer"
         android:textAppearance="@style/TextAppearance.App.Title" />
 
-    <LinearLayout
-        android:id="@+id/colorAlphaLayout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp4">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp24"
-            android:layout_height="@dimen/dp24"
-            android:layout_gravity="center_vertical"
-            app:elevation="@dimen/dp4"
-            app:srcCompat="@drawable/ic_dot_alpha_24dp" />
-
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/colorAlphaSeekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp16"
-            android:layout_weight="1"
-            android:max="255"
-            app:tickMark="?colorAccent" />
-
-        <TextView
-            android:id="@+id/colorAlphaText"
-            style="@style/AppWidget.InfoHexColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="35" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="4dp">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp24"
-            android:layout_height="@dimen/dp24"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_dot_black_24dp"
-            app:tint="@color/red" />
-
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/colorRedSeekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp16"
-            android:layout_weight="1"
-            android:max="255"
-            app:tickMark="?colorAccent" />
-
-        <TextView
-            android:id="@+id/colorRedText"
-            style="@style/AppWidget.InfoHexColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="00" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp8">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp24"
-            android:layout_height="@dimen/dp24"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_dot_black_24dp"
-            app:tint="@color/green" />
-
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/colorGreenSeekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp16"
-            android:layout_weight="1"
-            android:max="255"
-            app:tickMark="?colorAccent" />
-
-        <TextView
-            android:id="@+id/colorGreenText"
-            style="@style/AppWidget.InfoHexColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="00" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp8">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp24"
-            android:layout_height="@dimen/dp24"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_dot_black_24dp"
-            app:tint="@color/blue" />
-
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/colorBlueSeekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp16"
-            android:layout_weight="1"
-            android:max="255"
-            app:tickMark="?colorAccent" />
-
-        <TextView
-            android:id="@+id/colorBlueText"
-            style="@style/AppWidget.InfoHexColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="FF" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/colorHexLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingEnd="@dimen/dp10"
-            android:paddingRight="@dimen/dp10"
-            android:text="@string/hex_color"
-            android:textAppearance="@style/TextAppearance.App"
-            tools:ignore="RtlSymmetry" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:errorEnabled="false"
-            app:hintEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/colorHex"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:inputType="textNoSuggestions"
-                android:singleLine="true"
-                tools:text="350000FF" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp54">
-
-        <org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
-            android:id="@+id/colorPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:visibility="visible">
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/colorCancel"
-                style="@style/AppWidget.Button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/cancel" />
+            <LinearLayout
+                android:id="@+id/colorAlphaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/colorDone"
-                style="@style/AppWidget.Button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/done" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    app:elevation="4dp"
+                    app:srcCompat="@drawable/ic_dot_alpha" />
+
+                <com.google.android.material.slider.Slider
+                    style="@style/AppWidget.Slider.ColorMix"
+                    android:id="@+id/colorAlphaSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:value="53.0" />
+
+                <TextView
+                    android:id="@+id/colorAlphaText"
+                    style="@style/AppWidget.InfoHexColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    tools:text="35" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_dot"
+                    app:tint="@color/red" />
+
+                <com.google.android.material.slider.Slider
+                    style="@style/AppWidget.Slider.ColorMix"
+                    android:id="@+id/colorRedSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:value="128.0" />
+
+                <TextView
+                    android:id="@+id/colorRedText"
+                    style="@style/AppWidget.InfoHexColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    tools:text="0F" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_dot"
+                    app:tint="@color/green" />
+
+                <com.google.android.material.slider.Slider
+                    style="@style/AppWidget.Slider.ColorMix"
+                    android:id="@+id/colorGreenSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:value="128.0" />
+
+                <TextView
+                    android:id="@+id/colorGreenText"
+                    style="@style/AppWidget.InfoHexColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    tools:text="7F" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_dot"
+                    app:tint="@color/blue" />
+
+                <com.google.android.material.slider.Slider
+                    style="@style/AppWidget.Slider.ColorMix"
+                    android:id="@+id/colorBlueSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:value="255.0" />
+
+                <TextView
+                    android:id="@+id/colorBlueText"
+                    style="@style/AppWidget.InfoHexColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    tools:text="FF" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/colorHexLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:baselineAligned="true"
+                android:hint="@string/hex_color_prefix"
+                app:errorEnabled="false"
+                app:hintAnimationEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/colorHex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textNoSuggestions|textCapWords"
+                    android:lines="1"
+                    android:selectAllOnFocus="true"
+                    tools:text="357F7FFF" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:paddingTop="8dp">
+
+                <org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
+                    android:id="@+id/colorPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/colorCancel"
+                        style="@style/AppWidget.Button.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/cancel" />
+
+                    <Button
+                        android:id="@+id/colorDone"
+                        style="@style/AppWidget.Button.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/done" />
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
-    </FrameLayout>
-
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">HiShoot2i</string>
-    <string name="app_version" translatable="false">0.0.1</string>
     <string name="version_format">version %s</string>
-    <!---->
-    <string name="settings">Settings</string>
+    <string name="apply_template_format">Apply template: %s</string>
     <string name="background">Background</string>
     <string name="badge">Badge</string>
     <string name="blur">Blur</string>
@@ -14,25 +12,22 @@
     <string name="font">Font</string>
     <string name="frame">Frame</string>
     <string name="glare">Glare</string>
-    <string name="hide">Hide</string>
+    <string name="no_content_here">No content here</string>
+    <string name="options">Options</string>
     <string name="screen">Screen</string>
-    <string name="screen_1">Screen 1</string>
-    <string name="screen_2">Screen 2</string>
+    <string name="screen_shoot_1">Screen Shoot 1</string>
+    <string name="screen_shoot_2">Screen Shoot 2</string>
+    <string name="search">Search…</string>
+    <string name="settings">Settings</string>
     <string name="shadow">Shadow</string>
+    <string name="show">Show</string>
     <string name="size">Size</string>
     <string name="template">Template</string>
-    <string name="options">Options</string>
+    <string name="template_htz_add_format" formatted="true">Template Htz %s add</string>
+    <string name="template_manager">Template Manager</string>
     <string name="template_v2_and_v3">(Template v2 and v3)</string>
-    <string name="template_manager" tools:ignore="UnusedResources">Template Manager</string>
-    <string name="no_content_here">No content here</string>
-    <string name="search" tools:ignore="UnusedResources">Search</string>
-    <string name="apply_template_format">Apply template: %s</string>
     <!--Search-->
-    <string name="search_template_hint">Template name or author</string>
-    <!--Shortcut Template-->
-    <string name="shortcut_template_short_label" tools:ignore="UnusedResources">@string/template_manager</string>
-    <string name="shortcut_template_long_label" tools:ignore="UnusedResources">@string/template_manager</string>
-    <string name="shortcut_template_disable" tools:ignore="UnusedResources">Template Manager not available</string>
+    <string name="search_template_hint" tools:ignore="UnusedResources">Search by name or author</string>
     <!--TemplateTool-->
     <string name="template_info_format">author: %1$s\ndesc: %2$s\ninstalled: %3$s</string>
     <!--BackgroundTool-->
@@ -40,14 +35,13 @@
     <string name="color">Color</string>
     <string name="image">Image</string>
     <string name="transparent">Transparent</string>
-    <string name="hex_color">Hex Color</string>
+    <string name="hex_color_prefix">Hex Color </string>
     <string name="sort_by">Sort by</string>
     <string name="name">Name</string>
     <string name="version">Version</string>
     <string name="date">Date</string>
-    <string name="installed">Installed</string>
-    <string name="favorite" tools:ignore="UnusedResources">Favorite</string>
     <string name="position">Position</string>
+    <!-- NOTE: background_mode_values order must sync with [entity.BackgroundMode] -->
     <string-array name="background_mode_values">
         <item>@string/color</item>
         <item>@string/image</item>
@@ -67,7 +61,7 @@
     <string name="bp_right_bottom">Right Bottom</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
-    <!--<string name="import_htz">Import Htz</string>-->
+    <!-- NOTE: badge_position_values order must sync with [entity.BadgePosition] -->
     <string-array name="badge_position_values">
         <item>@string/bp_left_top</item>
         <item>@string/bp_center_top</item>
@@ -82,26 +76,35 @@
     <string name="scale_fill">Scale Fill</string>
     <string name="center_crop">Center Crop</string>
     <string name="manual_crop">Manual Crop</string>
-    <string name="badge_tab_layout_max_count_overflow">99+</string>
-    <!-- -->
     <string name="themes">Themes</string>
     <string name="follow_system">Follow system</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
-    <!-- <string-array name="themes_values">
-        <item>@string/light</item>
-        <item>@string/dark</item>
-        <item>@string/follow_system</item>
-    </string-array> -->
-    <!--About-->
-    <string name="github_page">Github page</string>
-    <string name="facebook_group">Facebook group</string>
-    <string name="google_plus_community">Google+ community</string>
     <string name="about">About</string>
     <string name="pick_image">Pick image</string>
-    <!--Save Notification-->
     <string name="share">Share</string>
     <string name="tap_to_view">Tap to view</string>
     <string name="ticker_saving">Saving…</string>
     <string name="sub_text_error">Ups, sorry :(</string>
+    <string name="badge_font">Badge Font</string>
+    <string name="include_system_font">Include System font</string>
+    <string name="jpeg">Jpeg</string>
+    <string name="png">Png</string>
+    <string name="webp">Webp</string>
+    <string name="save_option">Save option</string>
+    <string name="format">Format</string>
+    <string name="save_format">Save format</string>
+    <string name="quality">Quality</string>
+    <string name="cache">Cache</string>
+    <string name="image_cache">Image cache</string>
+    <!-- NOTE: save_option_values order must sync with [BitmapFactory.CompressFormat] -->
+    <string-array name="save_option_values">
+        <item>@string/jpeg</item>
+        <item>@string/png</item>
+        <item>@string/webp</item>
+    </string-array>
+    <string name="on_progress">Please wait, on progress …</string>
+    <string name="on_pipette">On pipette</string>
+    <string name="notification">Notification</string>
+    <string name="custom_directory">Set Custom Directory</string>
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.DayNight" parent="AppTheme.Dark" />
+
+    <style name="AppTheme.Dark" parent="AppTheme">
+        <item name="colorSurfaceHalfAlpha">@color/grey900HalfAlpha</item>
+        <item name="colorSurface">@color/grey900</item>
+        <item name="colorOnSurface">@color/grey300</item>
+    </style>
+
+</resources>

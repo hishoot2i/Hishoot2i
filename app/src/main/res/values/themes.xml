@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.Platform.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+
+    <style name="Platform.AppTheme" parent="Base.Platform.AppTheme" />
+
+    <style name="AppTheme.DayNight" parent="AppTheme" />
+
+    <style name="AppTheme" parent="Platform.AppTheme">
+
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorSurface">@color/grey300</item>
+        <item name="colorOnSurface">@color/grey900</item>
+        <!-- -->
+        <item name="android:windowBackground">@drawable/app_window_background</item>
+        <item name="colorSurfaceHalfAlpha">@color/grey300HalfAlpha</item>
+        <!-- ThemeOverlay -->
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+        <item name="dialogTheme">@style/ThemeOverlay.App.Dialog</item>
+        <!-- Styles -->
+        <item name="appBarLayoutStyle">@style/AppWidget.AppBarLayout</item>
+        <item name="bottomAppBarStyle">@style/AppWidget.BottomAppBar</item>
+        <item name="cardViewStyle">@style/AppWidget.CardView</item>
+        <item name="coordinatorLayoutStyle">@style/AppWidget.CoordinatorLayout</item>
+        <item name="cropImageViewStyle">@style/AppWidget.CropImageView</item>
+        <item name="floatingActionButtonStyle">@style/AppWidget.FloatingActionButton</item>
+        <item name="navigationViewStyle">@style/AppWidget.NavigationView</item>
+        <item name="searchViewStyle">@style/AppWidget.SearchView</item>
+        <item name="sliderStyle">@style/AppWidget.Slider</item>
+        <item name="toolbarNavigationButtonStyle">@style/AppWidget.NavigationIconTinted</item>
+        <item name="textInputStyle">@style/AppWidget.TextInputLayout</item>
+        <item name="imageButtonStyle">@style/AppWidget.ImageButton</item>
+        <item name="drawerLayoutStyle">@style/AppWidget.DrawerLayoutStyle</item>
+        <item name="snackbarStyle">@style/AppWidget.SnackBar</item>
+        <item name="snackbarButtonStyle">@style/AppWidget.SnackBar.Button</item>
+        <item name="snackbarTextViewStyle">@style/AppWidget.SnackBar.TextView</item>
+    </style>
+
+    <style name="Platform.AppTheme.Splash" parent="AppTheme" />
+
+    <style name="AppTheme.Splash" parent="Platform.AppTheme.Splash">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+</resources>

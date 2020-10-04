@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeOverlay" />
+
+    <style name="ThemeOverlay.App" />
+
+    <style name="ThemeOverlay.App.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <style name="ThemeOverlay.App.BottomAppBar">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+    </style>
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="Platform.ThemeOverlay.App.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppWidget.BottomSheetModal</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+    <style name="Platform.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog"/>
+
+    <style name="ThemeOverlay.App.Button">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="android:windowMinWidthMajor">75%</item>
+        <item name="android:windowMinWidthMinor">75%</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Slider">
+        <item name="colorPrimary">@color/accent</item>
+    </style>
+
+    <style name="ThemeOverlay.App.NavigationView">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="editTextStyle">@style/AppWidget.TextInputEditText</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.BottomSheetModal">
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+    </style>
+
+</resources>

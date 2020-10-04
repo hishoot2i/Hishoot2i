@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
@@ -10,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp8"
-        android:layout_marginBottom="@dimen/dp16"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <TextView
@@ -22,40 +23,41 @@
             android:text="@string/screen"
             android:textAppearance="@style/TextAppearance.App.Title" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/toolScreenSwitchDoubleSS"
-            style="@style/AppWidget.Switch"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/toolScreenDouble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/double_" />
+            android:text="@string/double_"
+            tools:checked="true" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="@dimen/dp100"
-        android:orientation="horizontal"
-        android:padding="@dimen/dp8">
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <Button
             android:id="@+id/toolScreen1"
-            style="@style/AppWidget.TextImage"
-            android:layout_width="0dp"
+            style="@style/AppWidget.Button.OutlinedButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/screen_1"
-            app:drawableTopCompat="@drawable/ic_image_black_24dp" />
+            android:text="@string/screen_shoot_1"
+            app:icon="@drawable/ic_image"
+            app:iconGravity="textStart"
+            app:textAllCaps="false" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <Button
             android:id="@+id/toolScreen2"
-            style="@style/AppWidget.TextImage"
-            android:layout_width="0dp"
+            style="@style/AppWidget.Button.OutlinedButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/screen_2"
-            app:drawableTopCompat="@drawable/ic_image_black_24dp" />
+            android:text="@string/screen_shoot_2"
+            app:icon="@drawable/ic_image"
+            app:iconGravity="textStart"
+            app:textAllCaps="false"
+            tools:enabled="false" />
 
     </LinearLayout>
 

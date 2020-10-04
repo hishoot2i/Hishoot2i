@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp8"
-        android:layout_marginBottom="@dimen/dp16"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <TextView
@@ -23,15 +23,14 @@
             android:text="@string/badge"
             android:textAppearance="@style/TextAppearance.App.Title" />
 
-        <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/toolBadgeHide"
-            style="@style/AppWidget.Switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dp8"
-            android:layout_marginRight="@dimen/dp8"
-            android:text="@string/hide"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/show"
             tools:checked="true" />
     </LinearLayout>
 
@@ -44,28 +43,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp10"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <Button
                 android:id="@+id/toolBadgeColorPick"
+                style="@style/AppWidget.Button.OutlinedButton.IconOnly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="?selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_color_lens_black_24dp"
-                app:tint="?attr/colorAccent"
-                tools:ignore="UnusedAttribute" />
+                android:layout_margin="8dp"
+                app:icon="@drawable/ic_color_lens" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp10"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginEnd="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
                 android:layout_weight="1"
                 app:errorEnabled="false"
                 app:hintEnabled="false">
@@ -74,12 +67,11 @@
                     android:id="@+id/toolBadgeInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp8"
-                    android:layout_marginRight="@dimen/dp8"
                     android:imeOptions="actionDone"
-                    android:inputType="textNoSuggestions"
-                    android:maxLines="1"
-                    tools:text="@tools:sample/lorem" />
+                    android:inputType="textNoSuggestions|textCapCharacters"
+                    android:lines="1"
+                    android:selectAllOnFocus="true"
+                    tools:text="@tools:sample/lorem/random" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -89,21 +81,21 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:padding="@dimen/dp8">
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp80"
+                android:layout_gravity="center"
+                android:minWidth="80dp"
                 android:text="@string/size"
                 android:textAppearance="@style/TextAppearance.App" />
 
-            <androidx.appcompat.widget.AppCompatSeekBar
+            <com.google.android.material.slider.Slider
                 android:id="@+id/toolBadgeSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="100"
-                app:tickMark="?colorAccent" />
+                tools:value="25.0" />
         </LinearLayout>
 
         <LinearLayout
@@ -111,21 +103,21 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="@dimen/dp8">
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp80"
+                android:minWidth="80dp"
                 android:text="@string/font"
                 android:textAppearance="@style/TextAppearance.App" />
 
-            <androidx.appcompat.widget.AppCompatSpinner
+            <Spinner
                 android:id="@+id/toolBadgeFont"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:popupBackground="?attr/backgroundPopup"
+                android:popupBackground="?attr/colorSurface"
                 android:prompt="@string/badge_font_prompt"
                 android:spinnerMode="dialog"
                 tools:entries="@array/badge_position_values" />
@@ -136,22 +128,22 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="@dimen/dp8">
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp80"
+                android:minWidth="80dp"
                 android:text="@string/position"
                 android:textAppearance="@style/TextAppearance.App" />
 
-            <androidx.appcompat.widget.AppCompatSpinner
+            <Spinner
                 android:id="@+id/toolBadgePosition"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:entries="@array/badge_position_values"
-                android:popupBackground="?attr/backgroundPopup"
+                android:popupBackground="?attr/colorSurface"
                 android:prompt="@string/bp_prompt"
                 android:spinnerMode="dialog" />
         </LinearLayout>

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:layout_height="match_parent">
 
     <org.illegaller.ratabb.hishoot2i.ui.common.widget.CoreImagePreview
         android:id="@+id/mainImage"
@@ -14,22 +13,31 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         tools:src="@drawable/default_preview" />
-    <!---->
+
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/mainProgress"
+        style="@style/AppWidget.ProgressBar.Linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/mainBottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottomAppBarHeight"
         android:layout_gravity="bottom"
         app:menu="@menu/tool"
-        app:navigationIcon="@drawable/ic_baseline_menu_24" />
+        app:navigationIcon="@drawable/ic_menu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/mainFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp20"
-        android:layout_marginRight="@dimen/dp20"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_behavior=".ui.common.behavior.FabSnackBarAwareBehavior"
         app:layout_anchor="@id/mainBottomAppBar"
-        app:srcCompat="@drawable/ic_save_black_24dp" />
+        app:srcCompat="@drawable/ic_save" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

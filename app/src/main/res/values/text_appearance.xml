@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.App" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:typeface">normal</item>
+    </style>
+
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:shadowColor">@color/shadowTextButton</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="TextAppearance.App.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.App.SubTitle">
+        <item name="android:textSize">10sp</item>
+    </style>
+</resources>

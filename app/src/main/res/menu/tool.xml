@@ -5,32 +5,28 @@
     tools:ignore="AlwaysShowAction">
     <item
         android:id="@+id/action_template"
-        android:icon="@drawable/ic_template_black_24dp"
+        android:icon="@drawable/ic_template"
         android:title="@string/template"
-        app:iconTint="@color/white"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_screen"
-        android:icon="@drawable/ic_phone_android_black_24dp"
+        android:icon="@drawable/ic_phone"
         android:title="@string/screen"
-        app:iconTint="@color/white"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_background"
-        android:icon="@drawable/ic_image_black_24dp"
+        android:icon="@drawable/ic_image"
         android:title="@string/background"
-        app:iconTint="@color/white"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_badge"
-        android:icon="@drawable/ic_style_black_24dp"
+        android:icon="@drawable/ic_style"
         android:title="@string/badge"
-        app:iconTint="@color/white"
         app:showAsAction="always" />
     <!--<item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_photo_filter_black_24dp"
-        android:title="@string/badge"
-        app:iconTint="@color/white"
+        android:title="Filter"
+        app:iconTint="?attr/colorOnSurface"
         app:showAsAction="always" />-->
 </menu>
