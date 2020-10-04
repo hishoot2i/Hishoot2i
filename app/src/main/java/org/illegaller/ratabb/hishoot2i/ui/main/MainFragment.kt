@@ -1,69 +1,102 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import common.ext.activityPendingIntent
-import common.ext.addToGallery
-import common.ext.preventMultipleClick
-import common.ext.toActionViewImage
+import common.ext.graphics.sizes
 import dagger.hilt.android.AndroidEntryPoint
+import org.illegaller.ratabb.hishoot2i.HiShootActivity
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.SingleActivity
-import org.illegaller.ratabb.hishoot2i.ui.common.widget.CoreImagePreview
-import org.illegaller.ratabb.hishoot2i.ui.tools.BaseTools
-import org.illegaller.ratabb.hishoot2i.ui.tools.background.BackgroundTool
-import org.illegaller.ratabb.hishoot2i.ui.tools.badge.BadgeTool
-import org.illegaller.ratabb.hishoot2i.ui.tools.screen.ScreenTool
-import org.illegaller.ratabb.hishoot2i.ui.tools.template.TemplateTool
+import org.illegaller.ratabb.hishoot2i.databinding.FragmentMainBinding
+import org.illegaller.ratabb.hishoot2i.ui.ARG_BACKGROUND_PATH
+import org.illegaller.ratabb.hishoot2i.ui.ARG_CROP_PATH
+import org.illegaller.ratabb.hishoot2i.ui.ARG_PIPETTE_COLOR
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN1_PATH
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN2_PATH
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_BACKGROUND
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_CROP
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_PIPETTE
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_1
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_2
+import org.illegaller.ratabb.hishoot2i.ui.common.clearFragmentResultListeners
+import org.illegaller.ratabb.hishoot2i.ui.common.setFragmentResultListeners
+import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main), MainView, BaseTools.ChangeImageSourcePath {
-
+class MainFragment : Fragment(R.layout.fragment_main), MainView {
     @Inject
     lateinit var presenter: MainPresenter
 
     @Inject
     lateinit var saveNotification: SaveNotification
 
-    //
-    private lateinit var mainFab: FloatingActionButton
-    private lateinit var mainBottomAppBar: BottomAppBar
-    private lateinit var mainImage: CoreImagePreview
+    private var mainBinding: FragmentMainBinding? = null
 
-    //
-    private var ratioCropX: Int = 0
-    private var ratioCropY: Int = 0
+    private val requestKeys = arrayOf(
+        KEY_REQ_CROP, KEY_REQ_BACKGROUND,
+        KEY_REQ_SCREEN_1, KEY_REQ_SCREEN_2,
+        KEY_REQ_PIPETTE
+    )
+    private val args: MainFragmentArgs by navArgs()
+    private var ratioCrop = Point()
     private var isOnPipette: Boolean = false
     private var isOnProgress: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(view) {
-            mainFab = findViewById(R.id.mainFab)
-            mainBottomAppBar = findViewById(R.id.mainBottomAppBar)
-            mainImage = findViewById(R.id.mainImage)
+        val binding = FragmentMainBinding.bind(view)
+        mainBinding = binding
+        binding.apply {
+            mainFab.setOnClickListener {
+                it.preventMultipleClick { if (!isOnPipette) presenter.save() else stopPipette() }
+            }
+            mainBottomAppBar.apply {
+                setOnMenuItemClickListener {
+                    it.preventMultipleClick {
+                        bottomMenuClick(it)
+                    }
+                }
+                setNavigationOnClickListener {
+                    it.preventMultipleClick {
+                        if (isOnPipette) stopPipette(true)
+                        (activity as? HiShootActivity)?.openDrawer()
+                    }
+                }
+            }
         }
         presenter.attachView(this)
-        setViewListener()
-
         handleSaveState(savedInstanceState)
-        if (!handleReceiver()) presenter.onPreview()
-        setUpResultListener()
+        if (!handleReceiver()) presenter.render()
+        setFragmentResultListeners(*requestKeys) { requestKey, result ->
+            when (requestKey) {
+                KEY_REQ_CROP -> result.getString(ARG_CROP_PATH)
+                    ?.let { presenter.changeBackground(it) }
+                KEY_REQ_BACKGROUND -> result.getString(ARG_BACKGROUND_PATH)
+                    ?.let { presenter.changeBackground(it) }
+                KEY_REQ_SCREEN_1 -> result.getString(ARG_SCREEN1_PATH)
+                    ?.let { presenter.changeScreen1(it) }
+                KEY_REQ_SCREEN_2 -> result.getString(ARG_SCREEN2_PATH)
+                    ?.let { presenter.changeScreen2(it) }
+                KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
+            }
+        }
     }
 
     override fun onDestroyView() {
+        mainBinding = null
+        clearFragmentResultListeners(*requestKeys)
         presenter.detachView()
         super.onDestroyView()
     }
@@ -74,47 +107,44 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView, BaseTools.Chang
     }
 
     private fun handleSaveState(state: Bundle?) {
-        // NOTE: Do not using changePath... here!
-        // set path if not null
         presenter.sourcePath.apply {
-            state?.getString(KEY_BACKGROUND_PATH)?.let { background = it }
-            state?.getString(KEY_SCREEN1_PATH)?.let { screen1 = it }
-            state?.getString(KEY_SCREEN2_PATH)?.let { screen2 = it }
+            state?.getString(ARG_BACKGROUND_PATH)?.let { background = it }
+            state?.getString(ARG_SCREEN1_PATH)?.let { screen1 = it }
+            state?.getString(ARG_SCREEN2_PATH)?.let { screen2 = it }
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         with(outState) {
-            // save path if not null
-            presenter.sourcePath.background?.let { putString(KEY_BACKGROUND_PATH, it) }
-            presenter.sourcePath.screen1?.let { putString(KEY_SCREEN1_PATH, it) }
-            presenter.sourcePath.screen2?.let { putString(KEY_SCREEN2_PATH, it) }
+            presenter.sourcePath.background?.let { putString(ARG_BACKGROUND_PATH, it) }
+            presenter.sourcePath.screen1?.let { putString(ARG_SCREEN1_PATH, it) }
+            presenter.sourcePath.screen2?.let { putString(ARG_SCREEN2_PATH, it) }
         }
     }
 
     override fun preview(bitmap: Bitmap) {
-        ratioCropX = bitmap.width
-        ratioCropY = bitmap.height
-        mainImage.setImageBitmap(bitmap)
+        ratioCrop = bitmap.sizes.run { Point(x, y) }
+        mainBinding?.mainImage?.setImageBitmap(bitmap)
     }
 
     override fun save(bitmap: Bitmap, uri: Uri, name: String) {
-        with(requireActivity()) {
-            saveNotification.complete(
-                bitmap,
-                name,
-                activityPendingIntent {
-                    ShareCompat.IntentBuilder.from(this)
-                        .setStream(uri)
-                        .setType("image/*")
-                        .setChooserTitle(R.string.share)
-                        .createChooserIntent()
-                },
-                activityPendingIntent { uri.toActionViewImage() }
-            )
-            addToGallery(uri)
-        }
+        saveNotification.complete(
+            bitmap,
+            name,
+            requireContext().activityPendingIntent {
+                ShareCompat.IntentBuilder.from(requireActivity())
+                    .setStream(uri)
+                    .setType("image/*")
+                    .setChooserTitle(R.string.share)
+                    .createChooserIntent()
+            },
+            requireContext().activityPendingIntent {
+                Intent(Intent.ACTION_VIEW)
+                    .setDataAndTypeAndNormalize(uri, "image/*")
+                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        )
     }
 
     override fun startSave() {
@@ -126,130 +156,84 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView, BaseTools.Chang
     }
 
     override fun showProgress() {
-        // TODO: UI progress
         isOnProgress = true
-        mainFab.setImageResource(R.drawable.ic_dot_white_24dp)
-        mainFab.isEnabled = false
+        mainBinding?.apply {
+            mainFab.setImageResource(R.drawable.ic_dot)
+            mainFab.isEnabled = false
+            mainProgress.show()
+        }
     }
 
     override fun hideProgress() {
-        // TODO: UI progress
         isOnProgress = false
-        mainFab.setImageResource(R.drawable.ic_save_black_24dp)
-        mainFab.isEnabled = true
-    }
-
-    override fun startingPipette(srcColor: Int) {
-        isOnPipette = true
-        mainImage.startPipette(srcColor)
-        mainFab.setImageResource(R.drawable.ic_pipette_done_black_24dp)
-    }
-
-    override fun changePathScreen1(path: String) {
-        presenter.changeScreen1(path)
-    }
-
-    override fun changePathScreen2(path: String) {
-        presenter.changeScreen2(path)
-    }
-
-    override fun changePathBackground(path: String) {
-        presenter.changeBackground(path)
+        mainBinding?.apply {
+            mainFab.setImageResource(R.drawable.ic_save)
+            mainFab.isEnabled = true
+            mainProgress.hide()
+        }
     }
 
     override fun onError(e: Throwable) {
+        Toast.makeText(requireContext(), e.localizedMessage ?: "Oops", Toast.LENGTH_SHORT).show()
         Timber.e(e)
-        // TODO: ??
     }
 
-    //////
-    private fun setUpResultListener() {
-        setFragmentResultListener(KEY_REQ_CROP) { requestKey, result ->
-            val path = result.getString(KEY_CROP_PATH)
-            if (requestKey == KEY_REQ_CROP && path != null) changePathBackground(path)
-        }
-    }
-
-    private fun setViewListener() {
-        mainFab.setOnClickListener {
-            it.preventMultipleClick {
-                if (!isOnPipette) presenter.onSave() else stopPipette()
-            }
-        }
-        mainBottomAppBar.apply {
-            setOnMenuItemClickListener(::mainBottomAppBarMenuClick)
-            setNavigationOnClickListener {
-                it.preventMultipleClick {
-                    (activity as? SingleActivity)?.openDrawer()
-                }
-            }
+    private fun startingPipette(srcColor: Int) {
+        isOnPipette = true
+        mainBinding?.apply {
+            mainImage.startPipette(srcColor)
+            mainFab.setImageResource(R.drawable.ic_pipette_done)
         }
     }
 
     private fun stopPipette(isCancel: Boolean = false) {
-        if (isCancel) {
-            mainImage.stopPipette()
-            mainFab.setImageResource(R.drawable.ic_save_black_24dp)
-        } else {
-            // NOTE: presenter#setBackgroundColorFromPipette -> hide/show progress
-            mainImage.stopPipette(presenter::setBackgroundColorFromPipette)
-        }
-        isOnPipette = false
-    }
-
-    private fun mainBottomAppBarMenuClick(item: MenuItem): Boolean = item.preventMultipleClick {
-        return when {
-            isOnProgress -> false.also { makeSnackBar("Progress").show() }
-            isOnPipette -> false.also {
-                makeSnackBar("Pipette")
-                    .setAction(R.string.cancel) { stopPipette(isCancel = true) }
-                    .show()
+        mainBinding?.apply {
+            if (isCancel) {
+                mainImage.stopPipette()
+                mainFab.setImageResource(R.drawable.ic_save)
+            } else {
+                // NOTE: presenter#setBackgroundColorFromPipette -> hide/show progress
+                mainImage.stopPipette(presenter::backgroundColorPipette)
             }
-            else -> {
-                when (item.itemId) {
-                    R.id.action_template -> TemplateTool()
-                    R.id.action_screen -> ScreenTool()
-                    R.id.action_background -> BackgroundTool.newInstance(ratioCropX, ratioCropY)
-                    /* NOTE: [BadgeTool] permission READ_EXTERNAL_STORAGE Font file directory. */
-                    R.id.action_badge -> BadgeTool()
-                    /* R.id.action_filter -> null.also { makeSnackBar("Coming soon 7o7").show() }*/
-                    else -> null
-                }?.let {
-                    it.callback = this
-                    it.show(childFragmentManager)
-                    true
-                } ?: false
-            }
+            isOnPipette = false
         }
     }
 
-    private fun makeSnackBar(message: String) =
-        Snackbar.make(mainBottomAppBar, message, Snackbar.LENGTH_SHORT)
-            .setAnchorView(mainFab)
+    private fun bottomMenuClick(item: MenuItem): Boolean = when {
+        isOnProgress -> false.also {
+            showSnackBar(
+                view = requireView(),
+                resId = R.string.on_progress,
+                anchorViewId = R.id.mainFab
+            )
+        }
+        isOnPipette -> false.also {
+            showSnackBar(
+                view = requireView(),
+                resId = R.string.on_pipette,
+                anchorViewId = R.id.mainFab,
+                action = { setAction(R.string.cancel) { stopPipette(isCancel = true) } }
+            )
+        }
+        else -> {
+            val direction = when (item.itemId) {
+                R.id.action_background ->
+                    MainFragmentDirections.actionMainToToolsBackground(ratioCrop)
+                R.id.action_badge -> MainFragmentDirections.actionMainToToolsBadge()
+                R.id.action_screen -> MainFragmentDirections.actionMainToToolsScreen()
+                R.id.action_template -> MainFragmentDirections.actionMainToToolsTemplate()
+                else -> null
+            }?.let { findNavController().navigate(it) }
+            direction != null
+        }
+    }
 
-    private val args: MainFragmentArgs by navArgs()
-    private fun handleReceiver(): Boolean {
-        // Timber.d("args= $args")
-        val (path, kind) = args
+    private fun handleReceiver(): Boolean = with(args) {
+        val rawUri = path ?: return false
         return when (kind) {
-            R.string.background -> path?.let {
-                changePathBackground(it)
-                true
-            }
-            R.string.screen -> path?.let {
-                changePathScreen1(it)
-                true
-            }
+            R.string.background -> true.also { presenter.changeBackground(rawUri) }
+            R.string.screen -> true.also { presenter.changeScreen1(rawUri) }
             else -> false
-        } ?: false
-    }
-
-    companion object {
-        private const val KEY_BACKGROUND_PATH = "_background_path"
-        private const val KEY_SCREEN1_PATH = "_screen1_path"
-        private const val KEY_SCREEN2_PATH = "_screen2_path"
-
-        const val KEY_REQ_CROP = "_crop_request"
-        const val KEY_CROP_PATH = "_crop_path"
+        }
     }
 }

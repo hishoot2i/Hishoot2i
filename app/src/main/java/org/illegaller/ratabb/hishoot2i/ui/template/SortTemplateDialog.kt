@@ -1,104 +1,76 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialog
+import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import common.ext.exhaustive
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.navArgs
 import common.ext.preventMultipleClick
-import dagger.hilt.android.AndroidEntryPoint
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
-import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
+import org.illegaller.ratabb.hishoot2i.databinding.DialogSortTemplateBinding
 import template.TemplateComparator
-import javax.inject.Inject
+import template.TemplateComparator.DATE_ASC
+import template.TemplateComparator.DATE_DESC
+import template.TemplateComparator.NAME_ASC
+import template.TemplateComparator.NAME_DESC
+import template.TemplateComparator.TYPE_ASC
+import template.TemplateComparator.TYPE_DESC
 
-@AndroidEntryPoint
-class SortTemplateDialog : BaseDialogFragment() {
-    @Inject
-    lateinit var appPref: AppPref
-    var callback: () -> Unit = {}
+class SortTemplateDialog : AppCompatDialogFragment() {
+    private val args: SortTemplateDialogArgs by navArgs()
 
-    //
-    private lateinit var nameAsc: View
-    private lateinit var nameDesc: View
-    private lateinit var typeAsc: View
-    private lateinit var typeDesc: View
-    private lateinit var dateAsc: View
-    private lateinit var dateDesc: View
-
-    //
-    override fun tagName(): String = "SortTemplateDialog"
-
-    override fun layoutRes(): Int = R.layout.dialog_sort_template
-    override fun createDialog(context: Context): Dialog = AppCompatDialog(context).apply {
-        setStyle(DialogFragment.STYLE_NO_FRAME, theme)
-        setCanceledOnTouchOutside(false)
-        setCancelable(false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        with(view) {
-            nameAsc = findViewById(R.id.action_sort_name_asc)
-            nameDesc = findViewById(R.id.action_sort_name_desc)
-            typeAsc = findViewById(R.id.action_sort_type_asc)
-            typeDesc = findViewById(R.id.action_sort_type_desc)
-            dateAsc = findViewById(R.id.action_sort_date_asc)
-            dateDesc = findViewById(R.id.action_sort_date_desc)
-            findViewById<Button>(R.id.action_sort_cancel)
-                .setOnClickListener {
-                    it.preventMultipleClick { dismiss() }
-                }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        AppCompatDialog(context).apply {
+            setStyle(DialogFragment.STYLE_NO_FRAME, theme)
+            setCancelable(false)
+            setCanceledOnTouchOutside(false)
         }
-        emitSelectedSortItem()
-        setViewListener()
-    }
 
-    private fun setViewListener() {
-        nameAsc.setOnClickListener { onClick(it, TemplateComparator.NAME_ASC_ID) }
-        nameDesc.setOnClickListener { onClick(it, TemplateComparator.NAME_DESC_ID) }
-        typeAsc.setOnClickListener { onClick(it, TemplateComparator.TYPE_ASC_ID) }
-        typeDesc.setOnClickListener { onClick(it, TemplateComparator.TYPE_DESC_ID) }
-        dateAsc.setOnClickListener { onClick(it, TemplateComparator.DATE_ASC_ID) }
-        dateDesc.setOnClickListener { onClick(it, TemplateComparator.DATE_DESC_ID) }
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = DialogSortTemplateBinding.inflate(inflater, container, false)
+        .also(::onBind)
+        .run { root }
 
-    private fun onClick(view: View, sortId: Int) {
-        with(view) {
-            preventMultipleClick {
-                if (appPref.templateSortId != sortId) {
-                    setBackgroundResource(R.drawable.sort_selected)
-                    appPref.templateSortId = sortId
-                    callback()
-                    dismiss()
+    private fun onBind(binding: DialogSortTemplateBinding) = with(binding) {
+        // views order must sync with TemplateComparator#ordinal
+        val views = arrayOf(
+            actionSortNameAsc, actionSortNameDesc, actionSortTypeAsc,
+            actionSortTypeDesc, actionSortDateAsc, actionSortDateDesc
+        )
+        // NOTE: are we need setBackground view to null ?
+        for (v in views) v.background = null
+        // NOTE: emit
+        views[args.templateComparator.ordinal].setBackgroundResource(R.drawable.sort_selected)
+        //
+        val click: (View, TemplateComparator) -> Unit = { view, comparator ->
+            view.preventMultipleClick {
+                // NOTE: no need set background view, this dialog dismissed.
+                if (args.templateComparator != comparator) {
+                    setFragmentResult(
+                        KEY_REQ_SORT, bundleOf(
+                            ARG_SORT to comparator.ordinal))
                 }
+                dismiss()
             }
         }
-    }
-
-    private fun disSelectedAll() {
-        nameAsc.background = null
-        nameDesc.background = null
-        typeAsc.background = null
-        typeDesc.background = null
-        dateAsc.background = null
-        dateDesc.background = null
-    }
-
-    private fun emitSelectedSortItem() {
-        disSelectedAll()
-        val templateComparator = TemplateComparator.fromId(appPref.templateSortId)
-        when (templateComparator) {
-            is TemplateComparator.NameAsc -> nameAsc
-            is TemplateComparator.NameDesc -> nameDesc
-            is TemplateComparator.TypeAsc -> typeAsc
-            is TemplateComparator.TypeDesc -> typeDesc
-            is TemplateComparator.DateAsc -> dateAsc
-            is TemplateComparator.DateDesc -> dateDesc
-        }.exhaustive.also { it.setBackgroundResource(R.drawable.sort_selected) }
+        actionSortNameAsc.setOnClickListener { click(it, NAME_ASC) }
+        actionSortNameDesc.setOnClickListener { click(it, NAME_DESC) }
+        actionSortTypeAsc.setOnClickListener { click(it, TYPE_ASC) }
+        actionSortTypeDesc.setOnClickListener { click(it, TYPE_DESC) }
+        actionSortDateAsc.setOnClickListener { click(it, DATE_ASC) }
+        actionSortDateDesc.setOnClickListener { click(it, DATE_DESC) }
+        //
+        actionSortCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
     }
 }

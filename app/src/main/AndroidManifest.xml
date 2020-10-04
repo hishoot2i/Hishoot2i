@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".App"
+        android:name=".HiShootApp"
         android:allowBackup="false"
         android:appCategory="image"
         android:icon="@mipmap/ic_launcher"
@@ -17,26 +17,25 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.DayNight"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <!-- NOTE:
         GoogleAppIndexingWarning: IDK
-        UnusedAttribute:  android:appCategory="image" Api26+
-        TODO: requestLegacyExternalStorage
-        https://developer.android.com/preview/privacy/storage#scoped-storage
-        https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
+        UnusedAttribute:
+         * appCategory -> Api20
+         * requestLegacyExternalStorage -> Api29
+            - https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
         -->
         <activity
-            android:name=".SingleActivity"
+            android:name=".HiShootActivity"
             android:configChanges="orientation|keyboard|keyboardHidden"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.Branded">
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <!--TODO: Caoc ? Explicit here, cause category launcher using ALIAS  -->
                 <action android:name="cat.ereza.customactivityoncrash.RESTART" />
             </intent-filter>
         </activity>
@@ -44,7 +43,7 @@
         <!-- Launcher -->
         <activity-alias
             android:name=".ui.activity.MainActivity"
-            android:targetActivity=".SingleActivity">
+            android:targetActivity=".HiShootActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,18 +51,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-            -->
         </activity-alias>
         <!-- Image Receiver -->
         <activity-alias
             android:name=".ScreenReceiver"
             android:excludeFromRecents="true"
             android:label="@string/screen"
-            android:targetActivity=".SingleActivity">
+            android:targetActivity=".HiShootActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -77,7 +71,7 @@
             android:name=".BackgroundReceiver"
             android:excludeFromRecents="true"
             android:label="@string/background"
-            android:targetActivity=".SingleActivity">
+            android:targetActivity=".HiShootActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -87,31 +81,7 @@
                 android:name="${image_receiver_key}"
                 android:resource="@string/background" />
         </activity-alias>
-        <!--Import Htz-->
-        <!--<activity-alias
-            android:name=".ImportHtzReceiver"
-            android:excludeFromRecents="true"
-            android:label="@string/import_htz"
-            android:targetActivity=".SingleActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:host="*"
-                    android:pathPattern="/.*\\.htz"
-                    android:scheme="file" />
-            </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:host="*"
-                    android:mimeType="*/*"
-                    android:pathPattern="/.*\\.htz"
-                    android:scheme="file" />
-            </intent-filter>
-        </activity-alias>-->
         <!-- FileProvider -->
         <provider
             android:name=".provider.SavedStorageProvider"

@@ -1,239 +1,181 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputFilter.AllCaps
 import android.text.InputFilter.LengthFilter
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.KEYCODE_ENTER
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AppCompatDialog
-import androidx.appcompat.widget.AppCompatSeekBar
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.ColorUtils.setAlphaComponent
+import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.textfield.TextInputEditText
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.slider.LabelFormatter
+import com.google.android.material.slider.Slider
 import common.ext.addInputFilter
 import common.ext.graphics.alpha
 import common.ext.graphics.blue
+import common.ext.graphics.colorFromHex
 import common.ext.graphics.green
+import common.ext.graphics.lightOrDarkContrast
 import common.ext.graphics.red
+import common.ext.graphics.toHexString
 import common.ext.graphics.toPairWithHex
 import common.ext.hideSoftKey
 import common.ext.isVisible
 import common.ext.onEditorAction
 import common.ext.onKey
-import common.ext.onSeekBarChange
 import common.ext.preventMultipleClick
-import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.ui.common.BaseDialogFragment
-import org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
+import org.illegaller.ratabb.hishoot2i.databinding.DialogColorMixBinding
+import org.illegaller.ratabb.hishoot2i.ui.ARG_COLOR
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_MIX_COLOR
 import java.util.Locale
+import kotlin.properties.Delegates
 
-class ColorMixDialog : BaseDialogFragment() {
-    /**/
-    interface OnColorChangeListener {
-        fun onColorChanged(@ColorInt color: Int)
-    }
+class ColorMixDialog : AppCompatDialogFragment() {
+    private val args: ColorMixDialogArgs by navArgs()
 
-    @ColorInt
-    private var color: Int = DEF_COLOR
-    private var withAlpha: Boolean = true
-    private var withHex: Boolean = true
-    var listener: OnColorChangeListener? = null
+    @get:ColorInt
+    private var color: Int by Delegates.notNull()
 
-    //
-    private lateinit var colorAlphaLayout: View
-    private lateinit var colorHexLayout: View
-    private lateinit var colorCancel: View
-    private lateinit var colorDone: View
-    private lateinit var colorAlphaSeekBar: AppCompatSeekBar
-    private lateinit var colorRedSeekBar: AppCompatSeekBar
-    private lateinit var colorGreenSeekBar: AppCompatSeekBar
-    private lateinit var colorBlueSeekBar: AppCompatSeekBar
-    private lateinit var colorAlphaText: TextView
-    private lateinit var colorRedText: TextView
-    private lateinit var colorGreenText: TextView
-    private lateinit var colorBlueText: TextView
-    private lateinit var colorHexEditText: TextInputEditText
-    private lateinit var colorPreview: ColorPreview
-
-    //
-    override fun tagName(): String = "ColorMixDialog"
-
-    override fun layoutRes(): Int = R.layout.dialog_color_mix
-    override fun createDialog(context: Context): Dialog = AppCompatDialog(context).apply {
-        setStyle(DialogFragment.STYLE_NO_FRAME, theme)
-        setCancelable(false)
-        setCanceledOnTouchOutside(false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        with(view) {
-            colorAlphaLayout = findViewById(R.id.colorAlphaLayout)
-            colorHexLayout = findViewById(R.id.colorHexLayout)
-            colorCancel = findViewById(R.id.colorCancel)
-            colorDone = findViewById(R.id.colorDone)
-
-            colorAlphaSeekBar = findViewById(R.id.colorAlphaSeekBar)
-            colorRedSeekBar = findViewById(R.id.colorRedSeekBar)
-            colorGreenSeekBar = findViewById(R.id.colorGreenSeekBar)
-            colorBlueSeekBar = findViewById(R.id.colorBlueSeekBar)
-
-            colorAlphaText = findViewById(R.id.colorAlphaText)
-            colorRedText = findViewById(R.id.colorRedText)
-            colorGreenText = findViewById(R.id.colorGreenText)
-            colorBlueText = findViewById(R.id.colorBlueText)
-
-            colorHexEditText = findViewById(R.id.colorHex)
-            colorPreview = findViewById(R.id.colorPreview)
+    private var colorMixBinding: DialogColorMixBinding? = null
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        super.onCreateDialog(savedInstanceState).apply {
+            setStyle(DialogFragment.STYLE_NO_FRAME, theme)
+            setCancelable(false)
+            setCanceledOnTouchOutside(false)
         }
 
-        handleDataArguments() //
-        internalColorChange(color, firstTime = true)
-
-        colorAlphaLayout.isVisible = withAlpha
-        colorHexLayout.isVisible = withHex
-
-        setViewListener()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        DialogColorMixBinding.inflate(inflater, container, false).apply {
+            color = args.color
+            internalColorChange(color, this, emit = true)
+            colorAlphaLayout.isVisible = args.withAlpha
+            colorHexLayout.isVisible = args.withHex
+            setViewListener(this)
+            colorMixBinding = this
+        }.run { return@onCreateView root }
     }
 
-    //
-    private fun handleDataArguments() {
-        arguments?.let { arg: Bundle ->
-            color = arg.getInt(ARG_COLOR)
-            withAlpha = arg.getBoolean(ARG_WITH_ALPHA)
-            withHex = arg.getBoolean(ARG_WITH_HEX)
+    override fun onDestroyView() {
+        colorMixBinding?.apply {
+            colorAlphaSeekBar.clearOnChangeListeners()
+            colorRedSeekBar.clearOnChangeListeners()
+            colorGreenSeekBar.clearOnChangeListeners()
+            colorBlueSeekBar.clearOnChangeListeners()
         }
+        colorMixBinding = null
+        super.onDestroyView()
     }
 
-    private fun setViewListener() {
+    private fun setViewListener(binding: DialogColorMixBinding) = with(binding) {
         colorCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
         colorDone.setOnClickListener {
             it.preventMultipleClick {
-                listener?.onColorChanged(color)
-                dismissAllowingStateLoss()
-            }
-        }
-        val seekBarChangeListener = onSeekBarChange(
-            onProgress = { _: SeekBar, _: Int, _: Boolean ->
-                internalColorChange(
-                    Color.argb(
-                        colorAlphaSeekBar.progress,
-                        colorRedSeekBar.progress,
-                        colorGreenSeekBar.progress,
-                        colorBlueSeekBar.progress
+                setFragmentResult(
+                    KEY_REQ_MIX_COLOR, bundleOf(
+                        ARG_COLOR to color
                     )
                 )
+                dismiss()
             }
-        )
+        }
+        val hexFormatter = LabelFormatter { it.toInt().toHexString().toUpperCase(Locale.ROOT) }
+        colorAlphaSeekBar.setLabelFormatter(hexFormatter)
+        colorRedSeekBar.setLabelFormatter(hexFormatter)
+        colorGreenSeekBar.setLabelFormatter(hexFormatter)
+        colorBlueSeekBar.setLabelFormatter(hexFormatter)
 
-        colorAlphaSeekBar.setOnSeekBarChangeListener(seekBarChangeListener)
-        colorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener)
-        colorGreenSeekBar.setOnSeekBarChangeListener(seekBarChangeListener)
-        colorBlueSeekBar.setOnSeekBarChangeListener(seekBarChangeListener)
+        val sliderOnChangeListener: (Slider, Float, Boolean) -> Unit = { _, _, _ ->
+            internalColorChange(
+                Color.argb(
+                    colorAlphaSeekBar.value.toInt(),
+                    colorRedSeekBar.value.toInt(),
+                    colorGreenSeekBar.value.toInt(),
+                    colorBlueSeekBar.value.toInt()
+                ),
+                this
+            )
+        }
+        colorAlphaSeekBar.addOnChangeListener(sliderOnChangeListener)
+        colorRedSeekBar.addOnChangeListener(sliderOnChangeListener)
+        colorGreenSeekBar.addOnChangeListener(sliderOnChangeListener)
+        colorBlueSeekBar.addOnChangeListener(sliderOnChangeListener)
 
-        with(colorHexEditText) {
+        colorHex.apply {
             addInputFilter(AllCaps(), LengthFilter(9))
-            onEditorAction { actionId -> handleColorHex { actionId == IME_ACTION_DONE } }
+            onEditorAction { actionId ->
+                handleColorFromText(this@with) { actionId == IME_ACTION_DONE }
+            }
             onKey { keyCode, keyEvent ->
-                handleColorHex { keyEvent.action == ACTION_DOWN && keyCode == KEYCODE_ENTER }
+                handleColorFromText(this@with) {
+                    keyEvent.action == ACTION_DOWN && keyCode == KEYCODE_ENTER
+                }
             }
         }
     }
 
-    private fun internalColorChange(@ColorInt color: Int, firstTime: Boolean = false) {
-        if (this.color != color || firstTime) {
+    private fun internalColorChange(
+        @ColorInt color: Int,
+        binding: DialogColorMixBinding,
+        emit: Boolean = false
+    ) = with(binding) {
+        if (this@ColorMixDialog.color != color || emit) {
             val (colorAlpha, colorAlphaHex) = color.alpha.toPairWithHex()
             val (colorRed, colorRedHex) = color.red.toPairWithHex()
             val (colorGreen, colorGreenHex) = color.green.toPairWithHex()
             val (colorBlue, colorBlueHex) = color.blue.toPairWithHex()
-
-            colorAlphaSeekBar.progress = colorAlpha
-            colorRedSeekBar.progress = colorRed
-            colorGreenSeekBar.progress = colorGreen
-            colorBlueSeekBar.progress = colorBlue
-
+            //
+            colorAlphaSeekBar.value = colorAlpha.toFloat()
+            colorRedSeekBar.value = colorRed.toFloat()
+            colorGreenSeekBar.value = colorGreen.toFloat()
+            colorBlueSeekBar.value = colorBlue.toFloat()
+            //
             colorAlphaText.text = colorAlphaHex
             colorRedText.text = colorRedHex
             colorGreenText.text = colorGreenHex
             colorBlueText.text = colorBlueHex
             //
-            var colorHex: String = if (withAlpha) colorAlphaHex else ""
-            colorHex += "$colorRedHex$colorGreenHex$colorBlueHex"
+            var textColorHex: String = if (args.withAlpha) colorAlphaHex else ""
+            textColorHex += "$colorRedHex$colorGreenHex$colorBlueHex"
 
-            colorHexEditText.setText(colorHex.toUpperCase(Locale.ROOT))
-            if (firstTime) {
-                colorPreview.srcColor = color
-                colorPreview.dstColor = color
+            colorHex.setText(textColorHex.toUpperCase(Locale.ROOT))
+            val buttonTextColor = color.lightOrDarkContrast
+            if (emit) {
+                colorPreview.initColor(color)
+                colorCancel.setTextColor(buttonTextColor)
+                colorDone.setTextColor(buttonTextColor)
             } else {
-                colorPreview.dstColor = color
-                this.color = color
+                colorDone.setTextColor(buttonTextColor)
+                colorPreview.changeColor(color)
+                this@ColorMixDialog.color = color
             }
+        } else {
+            colorHex.setText(color.toHexString().toUpperCase(Locale.ROOT)) //
         }
     }
 
-    private inline fun TextView.handleColorHex(crossinline condition: () -> Boolean): Boolean =
-        condition().also {
-            if (it) {
-                internalColorChange(text.colorFromHex())
-                clearFocus()
-                hideSoftKey()
-            }
+    private inline fun TextView.handleColorFromText(
+        binding: DialogColorMixBinding,
+        crossinline condition: () -> Boolean
+    ): Boolean = condition().also {
+        val hex = text?.toString()
+        if (it && hex != null) {
+            internalColorChange(hex.colorFromHex(args.withAlpha, color), binding)
+            clearFocus()
+            hideSoftKey()
         }
-
-    @ColorInt
-    private fun CharSequence?.colorFromHex(): Int = this?.let {
-        try {
-            return@let Color.parseColor(toString())
-        } catch (e: IndexOutOfBoundsException) {
-            return@let color
-        } catch (e: IllegalArgumentException) {
-            if (it[0] != '#') {
-                when (it.length) {
-                    3 -> return@let buildString {
-                        append("#")
-                        append("${it[0]}${it[0]}")
-                        append("${it[1]}${it[1]}")
-                        append("${it[2]}${it[2]}")
-                    }.colorFromHex()
-                    6 -> return@let "#$it".colorFromHex()
-                    8 -> if (withAlpha) return@let "#$it".colorFromHex()
-                }
-            }
-            return@let color
-        }
-    } ?: color
-
-    companion object {
-        private const val ARG_COLOR = "arg_color"
-        private const val ARG_WITH_ALPHA = "arg_with_alpha"
-        private const val ARG_WITH_HEX = "arg_with_hex"
-        private const val DEF_COLOR = 0xFF00FFFF.toInt() // fallback.
-
-        @JvmStatic
-        fun newInstance(
-            @ColorInt color: Int,
-            withAlpha: Boolean,
-            withHex: Boolean
-        ): ColorMixDialog = ColorMixDialog()
-            .apply {
-                val colorAndAlpha =
-                    if (!withAlpha) setAlphaComponent(color, 0xFF) else color
-                arguments =
-                    bundleOf(
-                        ARG_COLOR to colorAndAlpha,
-                        ARG_WITH_ALPHA to withAlpha,
-                        ARG_WITH_HEX to withHex
-                    )
-            }
     }
 }

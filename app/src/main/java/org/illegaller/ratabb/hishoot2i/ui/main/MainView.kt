@@ -2,7 +2,6 @@ package org.illegaller.ratabb.hishoot2i.ui.main
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.annotation.ColorInt
 import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
 
 interface MainView : Mvp.View {
@@ -12,5 +11,4 @@ interface MainView : Mvp.View {
     fun errorSave(e: Throwable)
     fun showProgress()
     fun hideProgress()
-    fun startingPipette(@ColorInt srcColor: Int)
 }

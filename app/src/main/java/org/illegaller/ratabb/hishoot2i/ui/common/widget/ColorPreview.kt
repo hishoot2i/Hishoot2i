@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.content.Context
@@ -11,51 +9,48 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
 import common.custombitmap.AlphaPatternBitmap
-import kotlin.LazyThreadSafetyMode.NONE
 
-class ColorPreview : View {
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
-    constructor(
-        context: Context,
-        attributeSet: AttributeSet,
-        defStyle: Int
-    ) : super(context, attributeSet, defStyle)
+class ColorPreview @JvmOverloads constructor(
+    context: Context,
+    attr: AttributeSet? = null,
+    defStyle: Int = 0
+) : View(context, attr, defStyle) {
+
+    fun initColor(color: Int) {
+        srcColor = color
+        dstColor = color
+    }
+
+    fun changeColor(color: Int) {
+        dstColor = color
+    }
 
     @ColorInt
-    var srcColor: Int = DEFAULT_SRC_COLOR
+    private var srcColor: Int = 889192703 // 0x350000FF
         set(value) {
             if (field != value) {
                 field = value
-                srcPaint.color = field
-                invalidate(srcRect)
+                invalidate()
             }
         }
 
     @ColorInt
-    var dstColor: Int = DEFAULT_DST_COLOR
+    private var dstColor: Int = 905904383 // 0x35FF00FF
         set(value) {
             if (field != value) {
                 field = value
-                dstPaint.color = field
-                invalidate(dstRect)
+                invalidate()
             }
         }
 
-    /*TODO: ?*/
-    private val alphaTiledDrawable by lazy(NONE) {
+    private val alphaTiledDrawable by lazy {
         BitmapDrawable(
             context.resources,
             AlphaPatternBitmap(context).create(sizes = entity.Sizes(measuredWidth, measuredHeight))
         )
     }
-    private val srcPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = srcColor
-    }
-    private val dstPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
-        color = dstColor
     }
     private val srcRect: Rect
         get() = Rect(0, 0, measuredWidth shr 1, measuredHeight)
@@ -70,12 +65,9 @@ class ColorPreview : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         alphaTiledDrawable.draw(canvas)
-        canvas.drawRect(srcRect, srcPaint)
-        canvas.drawRect(dstRect, dstPaint)
-    }
-
-    companion object {
-        private const val DEFAULT_SRC_COLOR: Int = 0x350000FF
-        private const val DEFAULT_DST_COLOR: Int = 0x35FF00FF
+        paint.color = srcColor
+        canvas.drawRect(srcRect, paint)
+        paint.color = dstColor
+        canvas.drawRect(dstRect, paint)
     }
 }

@@ -1,133 +1,119 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools.template
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.SwitchCompat
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import common.ext.dpSize
 import common.ext.isVisible
 import common.ext.preventMultipleClick
 import common.ext.toDateTimeFormat
 import dagger.hilt.android.AndroidEntryPoint
+import entity.Sizes
 import imageloader.ImageLoader
-import org.illegaller.ratabb.hishoot2i.GlobalDirections
-import org.illegaller.ratabb.hishoot2i.NavigationDirections
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
-import org.illegaller.ratabb.hishoot2i.ui.tools.BaseTools
+import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
+import org.illegaller.ratabb.hishoot2i.databinding.FragmentToolTemplateBinding
 import template.Template
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TemplateTool : BaseTools(), TemplateToolView {
+class TemplateTool : BottomSheetDialogFragment(), TemplateToolView {
     @Inject
     lateinit var presenter: TemplateToolPresenter
 
     @Inject
     lateinit var imageLoader: ImageLoader
 
-    override fun tagName(): String = "TemplateTool"
-    override fun layoutRes(): Int = R.layout.fragment_tool_template
+    private var templateBinding: FragmentToolTemplateBinding? = null
 
-    /**/
-    private lateinit var toolTemplateManager: View
-    private lateinit var toolTemplatePreview: ImageView
-    private lateinit var toolTemplateName: TextView
-    private lateinit var toolTemplateId: TextView
-    private lateinit var toolTemplateInfo: TextView
-    private lateinit var toolTemplateSwitchFrame: SwitchCompat
-    private lateinit var toolTemplateSwitchGlare: SwitchCompat
-    private lateinit var toolTemplateSwitchShadow: SwitchCompat
-    private lateinit var toolTemplateOption: View
-
-    /**/
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        with(view) {
-            toolTemplateManager = findViewById(R.id.toolTemplateManager)
-            toolTemplatePreview = findViewById(R.id.toolTemplatePreview)
-            toolTemplateName = findViewById(R.id.toolTemplateName)
-            toolTemplateId = findViewById(R.id.toolTemplateId)
-            toolTemplateInfo = findViewById(R.id.toolTemplateInfo)
-            toolTemplateSwitchFrame = findViewById(R.id.toolTemplateSwitchFrame)
-            toolTemplateSwitchGlare = findViewById(R.id.toolTemplateSwitchGlare)
-            toolTemplateSwitchShadow = findViewById(R.id.toolTemplateSwitchShadow)
-            toolTemplateOption = findViewById(R.id.toolTemplateOption)
-        }
-        presenter.attachView(this)
-        toolTemplateManager.setOnClickListener {
-            it.preventMultipleClick {
-                findNavController().navigate(GlobalDirections.template())
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        FragmentToolTemplateBinding.inflate(inflater, container, false).apply {
+            templateBinding = this
+            presenter.attachView(this@TemplateTool)
+            toolTemplateManager.setOnClickListener {
+                it.preventMultipleClick {
+                    findNavController().navigate(TemplateToolDirections.actionGlobalTemplate())
+                }
+                dismiss()
             }
-            dismissAllowingStateLoss()
-        }
+        }.run { return@onCreateView root }
     }
 
     override fun onDestroyView() {
+        templateBinding?.toolTemplateToggleGroup?.clearOnButtonCheckedListeners()
+        templateBinding = null
         presenter.detachView()
         super.onDestroyView()
     }
 
-    override fun currentTemplate(template: Template, appPref: AppPref) {
-        val imSize = with(toolTemplatePreview) {
-            return@with if (width != 0 || height != 0) entity.Sizes(width, height)
-            else null
+    override fun currentTemplate(template: Template, templateToolPref: TemplateToolPref) {
+        when (template) {
+            is Template.Version2, is Template.Version3 -> enableOptions(templateToolPref)
+            else -> disableOptions()
         }
-        with(template) {
-            if (this is Template.Version2 || this is Template.Version3) enableOptions(appPref)
-            else disableOptions()
-
-            imageLoader.display(toolTemplatePreview, preview, imSize)
-            toolTemplateName.text = name
-            toolTemplateId.text = id
-            context?.getString(
-                R.string.template_info_format,
-                author,
-                desc,
-                installedDate.toDateTimeFormat()
-            )?.let {
-                toolTemplateInfo.text = it
+        templateBinding?.apply {
+            toolTemplatePreview.apply {
+                val (w, h) = context.run {
+                    dpSize(R.dimen.toolPreviewWidth) to dpSize(R.dimen.toolPreviewHeight)
+                }
+                imageLoader.display(this, template.preview, Sizes(w, h))
+            }
+            toolTemplateName.text = template.name
+            toolTemplateId.text = template.id
+            toolTemplateInfo.apply {
+                text = context.getString(
+                    R.string.template_info_format,
+                    template.author,
+                    template.desc,
+                    template.installedDate.toDateTimeFormat()
+                )
             }
         }
     }
 
     override fun onError(e: Throwable) {
+        Toast.makeText(requireContext(), e.localizedMessage ?: "Oops", Toast.LENGTH_SHORT).show()
         Timber.e(e)
-        // TODO ??
     }
 
-    private fun enableOptions(appPref: AppPref) {
-        toolTemplateOption.isVisible = true
-        with(toolTemplateSwitchFrame) {
-            isEnabled = true
-            isChecked = appPref.templateFrameEnable
-            setOnCheckedChangeListener { cb: CompoundButton, isChecked: Boolean ->
-                cb.preventMultipleClick { appPref.templateFrameEnable = isChecked }
-            }
-        }
-        with(toolTemplateSwitchShadow) {
-            isEnabled = true
-            isChecked = appPref.templateShadowEnable
-            setOnCheckedChangeListener { cb: CompoundButton, isChecked: Boolean ->
-                cb.preventMultipleClick { appPref.templateShadowEnable = isChecked }
-            }
-        }
-        with(toolTemplateSwitchGlare) {
-            isEnabled = true
-            isChecked = appPref.templateGlareEnable
-            setOnCheckedChangeListener { cb: CompoundButton, isChecked: Boolean ->
-                cb.preventMultipleClick { appPref.templateGlareEnable = isChecked }
+    private fun enableOptions(templateToolPref: TemplateToolPref) {
+        templateBinding?.apply {
+            toolTemplateOption.isVisible = true
+            val checkedIds = getCheckedIds(templateToolPref)
+            toolTemplateToggleGroup.apply {
+                checkedIds.takeIf { it.isNotEmpty() }?.onEach { check(it) }
+                addOnButtonCheckedListener { _, checkedId, isChecked ->
+                    when (checkedId) {
+                        R.id.toolTemplateSwitchFrame -> templateToolPref.templateFrameEnable =
+                            isChecked
+                        R.id.toolTemplateSwitchGlare -> templateToolPref.templateGlareEnable =
+                            isChecked
+                        R.id.toolTemplateSwitchShadow -> templateToolPref.templateShadowEnable =
+                            isChecked
+                    }
+                }
             }
         }
     }
 
     private fun disableOptions() {
-        toolTemplateOption.isVisible = false
-        toolTemplateSwitchFrame.isEnabled = false
-        toolTemplateSwitchShadow.isEnabled = false
-        toolTemplateSwitchGlare.isEnabled = false
+        templateBinding?.toolTemplateOption?.isVisible = false
+    }
+
+    private val getCheckedIds: (TemplateToolPref) -> List<Int> = { templateToolPref ->
+        val result = mutableListOf<Int>()
+        if (templateToolPref.templateFrameEnable) result += R.id.toolTemplateSwitchFrame
+        if (templateToolPref.templateGlareEnable) result += R.id.toolTemplateSwitchGlare
+        if (templateToolPref.templateShadowEnable) result += R.id.toolTemplateSwitchShadow
+        result
     }
 }

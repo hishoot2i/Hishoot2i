@@ -3,21 +3,27 @@ package org.illegaller.ratabb.hishoot2i.ui.template
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.SearchView
+import android.widget.Toast
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.clearFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import common.ext.hideSoftKey
 import common.ext.isKeyboardOpen
 import common.ext.isVisible
 import common.ext.preventMultipleClick
+import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
+import org.illegaller.ratabb.hishoot2i.databinding.FragmentTemplateBinding
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
+import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
 import org.illegaller.ratabb.hishoot2i.ui.common.rx.RxSearchView
+import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
 import template.Template
+import template.TemplateComparator
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,73 +34,91 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
 
     @Inject
     lateinit var presenter: TemplatePresenter
-    private lateinit var templateRecyclerView: RecyclerView
-    private lateinit var templateSearchView: SearchView
-    private lateinit var templateBottomAppBar: BottomAppBar
-    private lateinit var templateHtzFab: FloatingActionButton
-    private lateinit var noContent: View
-    private lateinit var loading: View
+
+    private var templateBinding: FragmentTemplateBinding? = null
+
+    private val requestHtz = registerGetContent { uri ->
+        DocumentFile.fromSingleUri(requireContext(), uri)?.uri?.toFile(requireContext())?.let {
+            presenter.importHtz(it)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(view) {
-            templateRecyclerView = findViewById(R.id.templateRecyclerView)
-            templateSearchView = findViewById(R.id.templateSearchView)
-            templateBottomAppBar = findViewById(R.id.templateBottomAppBar)
-            templateHtzFab = findViewById(R.id.templateHtzFab)
-            noContent = findViewById(R.id.noContent)
-            loading = findViewById(R.id.loading)
-        }
-        templateHtzFab.setOnClickListener(::htzFabClick)
-        templateBottomAppBar.apply {
-            setOnMenuItemClickListener(::menuItemClick)
-            setNavigationOnClickListener(::popBack)
-        }
+
+        val binding = FragmentTemplateBinding.bind(view)
+        templateBinding = binding
         adapter.clickItem = ::adapterItemClick
-        templateRecyclerView.adapter = adapter
+        binding.apply {
+            templateRecyclerView.apply {
+                adapter = this@TemplateFragment.adapter
+                addItemDecoration(TemplateListDivider(requireContext()))
+            }
+            templateHtzFab.setOnClickListener { requestHtz.launch("*/*") }
+            templateBottomAppBar.apply {
+                setOnMenuItemClickListener { menuItemClick(it) }
+                setNavigationOnClickListener { popBack(it) }
+            }
+        }
         presenter.attachView(this)
-        presenter.search(RxSearchView.queryTextChange(templateSearchView))
+        presenter.search(RxSearchView.queryTextChange(binding.templateSearchView))
         presenter.render()
+        setFragmentResultListener(KEY_REQ_SORT) { _, result ->
+            presenter.templateComparator = TemplateComparator.values()[result.getInt(ARG_SORT)]
+        }
     }
 
     override fun onDestroyView() {
+        templateBinding = null
+        clearFragmentResult(KEY_REQ_SORT)
         presenter.detachView()
         super.onDestroyView()
     }
 
-    override fun setData(data: List<Template>) {
-        if (data.isNotEmpty()) {
-            val state = templateRecyclerView.layoutManager?.onSaveInstanceState()
-            adapter.submitList(data) //
-            templateRecyclerView.layoutManager?.onRestoreInstanceState(state)
-            templateRecyclerView.isVisible = true
-            noContent.isVisible = false
-            //
-        } else {
-            templateRecyclerView.isVisible = false
-            noContent.isVisible = true
+    override fun setData(templates: List<Template>) {
+        templateBinding?.apply {
+            val haveData = templates.isNotEmpty()
+            if (haveData) {
+                val state = templateRecyclerView.layoutManager?.onSaveInstanceState()
+                adapter.submitList(templates) //
+                templateRecyclerView.layoutManager?.onRestoreInstanceState(state)
+            }
+            templateRecyclerView.isVisible = haveData
+            noContent.noContent.isVisible = !haveData
         }
     }
 
     override fun showProgress() {
-        loading.isVisible = true
-        templateRecyclerView.isVisible = false
+        templateBinding?.apply {
+            templateProgress.show()
+            templateRecyclerView.isVisible = false
+        }
     }
 
     override fun hideProgress() {
-        loading.isVisible = false
+        templateBinding?.templateProgress?.hide()
+    }
+
+    override fun htzImported(templateHtz: Template.VersionHtz) {
+        showSnackBar(
+            view = requireView(),
+            text = getString(R.string.template_htz_add_format, templateHtz.name),
+            anchorViewId = R.id.templateHtzFab
+        )
     }
 
     override fun onError(e: Throwable) {
+        Toast.makeText(requireContext(), e.localizedMessage ?: "Oops", Toast.LENGTH_SHORT).show()
         Timber.e(e) //
     }
 
-    ///
     private fun popBack(view: View) {
-        // check if is Keyboard Open
+        // FIXME: check if is Keyboard Open?
         val isKeyboardOpen = requireActivity().isKeyboardOpen()
-        Timber.d("onSoftKey= $isKeyboardOpen")
+        Timber.d("isKeyboardOpen= $isKeyboardOpen")
         if (isKeyboardOpen) {
             view.hideSoftKey()
+            findNavController().popBackStack()
         } else {
             findNavController().popBackStack()
         }
@@ -104,32 +128,23 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
         menuItem.preventMultipleClick {
             return when (menuItem.itemId) {
                 R.id.action_sort_template -> {
-                    SortTemplateDialog().apply {
-                        callback = { presenter.render() }
-                    }
-                        .show(childFragmentManager)
+                    findNavController().navigate(
+                        TemplateFragmentDirections
+                            .actionTemplateToSortTemplate(presenter.templateComparator)
+                    )
                     true
                 }
                 else -> false
             }
         }
 
-    private fun htzFabClick(view: View) {
-        Snackbar.make(view, "TODO: Import htz!!", Snackbar.LENGTH_SHORT)
-            .setAnchorView(view)
-            .show()
-    }
-
     private fun adapterItemClick(template: Template) {
         if (presenter.setCurrentTemplate(template)) {
-            Snackbar.make(
-                templateRecyclerView,
-                getString(R.string.apply_template_format, template.name),
-                Snackbar.LENGTH_SHORT
+            showSnackBar(
+                view = requireView(),
+                text = getString(R.string.apply_template_format, template.name),
+                anchorViewId = R.id.templateHtzFab
             )
-                .setAnchorView(templateHtzFab)
-                .show()
         }
     }
 }
-

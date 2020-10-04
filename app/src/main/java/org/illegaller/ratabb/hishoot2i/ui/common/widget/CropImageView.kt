@@ -14,14 +14,19 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
+import android.os.Parcelable.ClassLoaderCreator
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.customview.view.AbsSavedState
 import org.illegaller.ratabb.hishoot2i.R
+import org.illegaller.ratabb.hishoot2i.ui.common.readBooleanCompat
+import org.illegaller.ratabb.hishoot2i.ui.common.writeBooleanCompat
 import timber.log.Timber
 
+// TODO: clean this !
 class CropImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -36,8 +41,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @return src bitmap
      */
-    var imageBitmap: Bitmap? = null
-        private set
+    private var imageBitmap: Bitmap? = null
     private var mScale = 1.0f
     private val mAngle = 0.0f
     private var mImgWidth = 0.0f
@@ -76,51 +80,59 @@ class CropImageView @JvmOverloads constructor(
     // Lifecycle methods ///////////////////////////////////////////////////////////////////////////
     public override fun onSaveInstanceState(): Parcelable? {
         val superState = super.onSaveInstanceState()
-        val ss = SavedState(superState)
-        ss.image = imageBitmap
-        ss.mode = mCropMode
-        ss.backgroundColor = mBackgroundColor
-        ss.overlayColor = mOverlayColor
-        ss.frameColor = mFrameColor
-        ss.guideShowMode = mGuideShowMode
-        ss.handleShowMode = mHandleShowMode
-        ss.showGuide = mShowGuide
-        ss.showHandle = mShowHandle
-        ss.handleSize = mHandleSize
-        ss.touchPadding = mTouchPadding
-        ss.minFrameSize = mMinFrameSize
-        ss.customRatioX = mCustomRatio.x
-        ss.customRatioY = mCustomRatio.y
-        ss.frameStrokeWeight = mFrameStrokeWeight
-        ss.guideStrokeWeight = mGuideStrokeWeight
-        ss.isCropEnabled = mIsCropEnabled
-        ss.handleColor = mHandleColor
-        ss.guideColor = mGuideColor
-        return ss
+        superState?.let {
+            val savedState = SavedState(superState)
+            savedState.image = imageBitmap
+            savedState.mode = mCropMode
+            savedState.backgroundColor = mBackgroundColor
+            savedState.overlayColor = mOverlayColor
+            savedState.frameColor = mFrameColor
+            savedState.guideShowMode = mGuideShowMode
+            savedState.handleShowMode = mHandleShowMode
+            savedState.showGuide = mShowGuide
+            savedState.showHandle = mShowHandle
+            savedState.handleSize = mHandleSize
+            savedState.touchPadding = mTouchPadding
+            savedState.minFrameSize = mMinFrameSize
+            savedState.customRatioX = mCustomRatio.x
+            savedState.customRatioY = mCustomRatio.y
+            savedState.frameStrokeWeight = mFrameStrokeWeight
+            savedState.guideStrokeWeight = mGuideStrokeWeight
+            savedState.isCropEnabled = mIsCropEnabled
+            savedState.handleColor = mHandleColor
+            savedState.guideColor = mGuideColor
+            return savedState
+        } ?: run {
+            return superState
+        }
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
-        val ss = state as SavedState
-        super.onRestoreInstanceState(ss.superState)
-        mCropMode = ss.mode
-        mBackgroundColor = ss.backgroundColor
-        mOverlayColor = ss.overlayColor
-        mFrameColor = ss.frameColor
-        mGuideShowMode = ss.guideShowMode
-        mHandleShowMode = ss.handleShowMode
-        mShowGuide = ss.showGuide
-        mShowHandle = ss.showHandle
-        mHandleSize = ss.handleSize
-        mTouchPadding = ss.touchPadding
-        mMinFrameSize = ss.minFrameSize
-        mCustomRatio = PointF(ss.customRatioX, ss.customRatioY)
-        mFrameStrokeWeight = ss.frameStrokeWeight
-        mGuideStrokeWeight = ss.guideStrokeWeight
-        mIsCropEnabled = ss.isCropEnabled
-        mHandleColor = ss.handleColor
-        mGuideColor = ss.guideColor
-        setImageBitmap(ss.image!!)
-        requestLayout()
+        when (state) {
+            is SavedState -> {
+                super.onRestoreInstanceState(state.superState)
+                mCropMode = state.mode
+                mBackgroundColor = state.backgroundColor
+                mOverlayColor = state.overlayColor
+                mFrameColor = state.frameColor
+                mGuideShowMode = state.guideShowMode
+                mHandleShowMode = state.handleShowMode
+                mShowGuide = state.showGuide
+                mShowHandle = state.showHandle
+                mHandleSize = state.handleSize
+                mTouchPadding = state.touchPadding
+                mMinFrameSize = state.minFrameSize
+                mCustomRatio = PointF(state.customRatioX, state.customRatioY)
+                mFrameStrokeWeight = state.frameStrokeWeight
+                mGuideStrokeWeight = state.guideStrokeWeight
+                mIsCropEnabled = state.isCropEnabled
+                mHandleColor = state.handleColor
+                mGuideColor = state.guideColor
+                setImageBitmap(state.image!!)
+                requestLayout()
+            }
+            else -> super.onRestoreInstanceState(state)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -1103,7 +1115,7 @@ class CropImageView @JvmOverloads constructor(
     enum class ShowMode(val id: Int) { SHOW_ALWAYS(1), SHOW_ON_TOUCH(2), NOT_SHOW(3); }
 
     // Save/Restore support ////////////////////////////////////////////////////////////////////////
-    class SavedState : BaseSavedState {
+    internal class SavedState : AbsSavedState {
         var image: Bitmap? = null
         var mode: CropMode? = null
         var backgroundColor = 0
@@ -1124,27 +1136,27 @@ class CropImageView @JvmOverloads constructor(
         var handleColor = 0
         var guideColor = 0
 
-        internal constructor(superState: Parcelable?) : super(superState)
-        private constructor(`in`: Parcel) : super(`in`) {
-            image = `in`.readParcelable(Bitmap::class.java.classLoader)
-            mode = `in`.readSerializable() as CropMode?
-            backgroundColor = `in`.readInt()
-            overlayColor = `in`.readInt()
-            frameColor = `in`.readInt()
-            guideShowMode = `in`.readSerializable() as ShowMode?
-            handleShowMode = `in`.readSerializable() as ShowMode?
-            showGuide = `in`.readInt() != 0
-            showHandle = `in`.readInt() != 0
-            handleSize = `in`.readInt()
-            touchPadding = `in`.readInt()
-            minFrameSize = `in`.readFloat()
-            customRatioX = `in`.readFloat()
-            customRatioY = `in`.readFloat()
-            frameStrokeWeight = `in`.readFloat()
-            guideStrokeWeight = `in`.readFloat()
-            isCropEnabled = `in`.readInt() != 0
-            handleColor = `in`.readInt()
-            guideColor = `in`.readInt()
+        constructor(superState: Parcelable) : super(superState)
+        constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
+            image = source.readParcelable(Bitmap::class.java.classLoader)
+            mode = source.readSerializable() as CropMode?
+            backgroundColor = source.readInt()
+            overlayColor = source.readInt()
+            frameColor = source.readInt()
+            guideShowMode = source.readSerializable() as ShowMode?
+            handleShowMode = source.readSerializable() as ShowMode?
+            showGuide = source.readBooleanCompat()
+            showHandle = source.readBooleanCompat()
+            handleSize = source.readInt()
+            touchPadding = source.readInt()
+            minFrameSize = source.readFloat()
+            customRatioX = source.readFloat()
+            customRatioY = source.readFloat()
+            frameStrokeWeight = source.readFloat()
+            guideStrokeWeight = source.readFloat()
+            isCropEnabled = source.readBooleanCompat()
+            handleColor = source.readInt()
+            guideColor = source.readInt()
         }
 
         override fun writeToParcel(out: Parcel, flag: Int) {
@@ -1156,8 +1168,8 @@ class CropImageView @JvmOverloads constructor(
             out.writeInt(frameColor)
             out.writeSerializable(guideShowMode)
             out.writeSerializable(handleShowMode)
-            out.writeInt(if (showGuide) 1 else 0)
-            out.writeInt(if (showHandle) 1 else 0)
+            out.writeBooleanCompat(showGuide)
+            out.writeBooleanCompat(showHandle)
             out.writeInt(handleSize)
             out.writeInt(touchPadding)
             out.writeFloat(minFrameSize)
@@ -1165,23 +1177,20 @@ class CropImageView @JvmOverloads constructor(
             out.writeFloat(customRatioY)
             out.writeFloat(frameStrokeWeight)
             out.writeFloat(guideStrokeWeight)
-            out.writeInt(if (isCropEnabled) 1 else 0)
+            out.writeBooleanCompat(isCropEnabled)
             out.writeInt(handleColor)
             out.writeInt(guideColor)
         }
 
         companion object {
             @JvmField
-            val CREATOR: Parcelable.Creator<SavedState?> =
-                object : Parcelable.Creator<SavedState?> {
-                    override fun createFromParcel(parcel: Parcel): SavedState? {
-                        return SavedState(parcel)
-                    }
+            val CREATOR = object : ClassLoaderCreator<SavedState> {
+                override fun createFromParcel(source: Parcel, loader: ClassLoader?): SavedState =
+                    SavedState(source, loader)
 
-                    override fun newArray(size: Int): Array<SavedState?> {
-                        return arrayOfNulls(size)
-                    }
-                }
+                override fun createFromParcel(parcel: Parcel): SavedState = SavedState(parcel, null)
+                override fun newArray(size: Int): Array<SavedState> = newArray(size)
+            }
         }
     }
 

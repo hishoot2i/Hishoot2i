@@ -1,98 +1,65 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools.screen
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.CompoundButton
-import androidx.activity.result.contract.ActivityResultContracts.GetContent
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.SwitchCompat
-import common.ext.compoundVectorDrawables
-import common.ext.isVisible
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import common.ext.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
-import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
-import org.illegaller.ratabb.hishoot2i.ui.tools.BaseTools
+import org.illegaller.ratabb.hishoot2i.data.pref.ScreenToolPref
+import org.illegaller.ratabb.hishoot2i.databinding.FragmentToolScreenBinding
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN1_PATH
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN2_PATH
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_1
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_2
+import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ScreenTool : BaseTools() {
+class ScreenTool : BottomSheetDialogFragment() {
     @Inject
-    lateinit var appPref: AppPref
+    lateinit var screenToolPref: ScreenToolPref
 
-    override fun tagName(): String = "ScreenTool"
-    override fun layoutRes(): Int = R.layout.fragment_tool_screen
-    private lateinit var toolScreenSwitchDoubleSS: SwitchCompat
-    private lateinit var toolScreen1: AppCompatTextView
-    private lateinit var toolScreen2: AppCompatTextView
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        with(view) {
-            toolScreenSwitchDoubleSS = findViewById(R.id.toolScreenSwitchDoubleSS)
-            toolScreen1 = findViewById(R.id.toolScreen1)
-            toolScreen2 = findViewById(R.id.toolScreen2)
-        }
-
-        /*toolScreen1.compoundVectorDrawables(
-            top = R.drawable.ic_image_black_24dp,
-            tint = R.color.accent
+    private val screenShoot1 = registerGetContent { uri ->
+        setFragmentResult(
+            KEY_REQ_SCREEN_1,
+            bundleOf(ARG_SCREEN1_PATH to uri.toString())
         )
-        toolScreen2.compoundVectorDrawables(
-            top = R.drawable.ic_image_black_24dp,
-            tint = R.color.accent
-        )*/
+    }
+    private val screenShoot2 = registerGetContent { uri ->
+        setFragmentResult(
+            KEY_REQ_SCREEN_2,
+            bundleOf(ARG_SCREEN2_PATH to uri.toString())
+        )
+    }
 
-        toolScreen2.isVisible = appPref.doubleScreenEnable
-        with(toolScreenSwitchDoubleSS) {
-            isChecked = appPref.doubleScreenEnable
-            setOnCheckedChangeListener { cb: CompoundButton, isChecked: Boolean ->
-                cb.preventMultipleClick {
-                    if (appPref.doubleScreenEnable != isChecked) {
-                        appPref.doubleScreenEnable = isChecked
-                        toolScreen2.isVisible = isChecked
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        FragmentToolScreenBinding.inflate(inflater, container, false).apply {
+            toolScreen2.isEnabled = screenToolPref.doubleScreenEnable
+            with(toolScreenDouble) {
+                isChecked = screenToolPref.doubleScreenEnable
+                setOnCheckedChangeListener { cb, isChecked ->
+                    cb.preventMultipleClick {
+                        if (screenToolPref.doubleScreenEnable != isChecked) {
+                            screenToolPref.doubleScreenEnable = isChecked
+                            toolScreen2.isEnabled = isChecked
+                        }
                     }
                 }
             }
-        }
-        toolScreen1.setOnClickListener {
-            it.preventMultipleClick {
-//                startActivityForResult(
-//                    chooserGetContentWith(type = "image/*", title = getString(R.string.screen_1)),
-//                    REQ_IMAGE_PICK_1
-//                )
-                getContentImage1.launch("image/*")
+            toolScreen1.setOnClickListener {
+                it.preventMultipleClick { screenShoot1.launch("image/*") }
             }
-        }
-        toolScreen2.setOnClickListener {
-            it.preventMultipleClick {
-//                startActivityForResult(
-//                    chooserGetContentWith(type = "image/*", title = getString(R.string.screen_2)),
-//                    REQ_IMAGE_PICK_2
-//                )
-                getContentImage2.launch("image/*")
+            toolScreen2.setOnClickListener {
+                it.preventMultipleClick { screenShoot2.launch("image/*") }
             }
-        }
-    }
-
-    private val getContentImage1 = registerForActivityResult(GetContent()) { uri ->
-        callback?.changePathScreen1(uri.toString())
-    }
-    private val getContentImage2 = registerForActivityResult(GetContent()) { uri ->
-        callback?.changePathScreen2(uri.toString())
-    }
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-       // super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_OK) return
-        val dataString = data?.dataString ?: return
-        when (requestCode) {
-            REQ_IMAGE_PICK_1 -> callback?.changePathScreen1(dataString)
-            REQ_IMAGE_PICK_2 -> callback?.changePathScreen2(dataString)
-        }
-    }*/
-
-    companion object {
-//        private const val REQ_IMAGE_PICK_1 = 0x01
-//        private const val REQ_IMAGE_PICK_2 = 0x02
+        }.run { return@onCreateView root }
     }
 }

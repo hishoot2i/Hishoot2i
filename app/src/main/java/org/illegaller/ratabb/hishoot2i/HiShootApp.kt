@@ -1,19 +1,21 @@
 package org.illegaller.ratabb.hishoot2i
 
-import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDexApplication
 import dagger.hilt.android.HiltAndroidApp
-import org.illegaller.ratabb.hishoot2i.data.pref.AppPref
+import entity.mode
+import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-open class App : Application() {
+class HiShootApp : MultiDexApplication() {
     @Inject
-    lateinit var appPref: AppPref
+    lateinit var settingPref: SettingPref
+
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(appPref.dayNightMode)
+        AppCompatDelegate.setDefaultNightMode(settingPref.dayNightMode.mode)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
     }
 }

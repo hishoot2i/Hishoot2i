@@ -9,25 +9,27 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.ThemedSpinnerAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import common.ext.graphics.createFromFileOrDefault
-import common.ext.graphics.drawable
+import dagger.hilt.android.qualifiers.ActivityContext
 import org.illegaller.ratabb.hishoot2i.R
 import java.io.File
-import kotlin.LazyThreadSafetyMode.NONE
+import javax.inject.Inject
 
-class FontAdapter(context: Context) : BaseAdapter(), ThemedSpinnerAdapter {
-    private val checkMark by lazy(NONE) {
-        context.drawable(R.drawable.ic_done_black_24dp)?.also {
+class FontAdapter @Inject constructor(
+    @ActivityContext context: Context
+) : BaseAdapter(), ThemedSpinnerAdapter {
+    private val checkMark by lazy {
+        AppCompatResources.getDrawable(context, R.drawable.ic_done)?.also {
             DrawableCompat.setTint(it, ContextCompat.getColor(context, R.color.accent))
         }
     }
 
-    //private val inflater by lazy(NONE) { LayoutInflater.from(context) }
-    private val helper by lazy { ThemedSpinnerAdapter.Helper(context) }
-    private val data = mutableListOf<String>() // absolute path font file.
+    private val helper = ThemedSpinnerAdapter.Helper(context)
+    private var data: List<String> = emptyList() // absolute path font file.
     private var selectedPosition: Int = 0
     override fun getItem(position: Int): Any = data[position]
     override fun getItemId(position: Int): Long = position.toLong()
@@ -65,8 +67,7 @@ class FontAdapter(context: Context) : BaseAdapter(), ThemedSpinnerAdapter {
     }
 
     internal fun submitList(list: List<String>, position: Int) {
-        data.clear()
-        data.addAll(list)
+        data = list
         selectedPosition = position
         notifyDataSetChanged()
     }
@@ -75,22 +76,17 @@ class FontAdapter(context: Context) : BaseAdapter(), ThemedSpinnerAdapter {
     private fun getLabel(position: Int): String =
         getItemAsString(position).let {
             File(it).nameWithoutExtension
-                .replace("[_-]".toRegex(), replacement = SPACE)
-                .capitalizeEachWord()
+                .replace("[_-]".toRegex(), replacement = " ") //
+                .capitalizeWord(" ")
         }
 
-    private fun getTypeface(position: Int): Typeface =
-        getItemAsString(position).createFromFileOrDefault()
-
-    companion object {
-        private const val SPACE = " "
-
-        @SuppressLint("DefaultLocale")
-        @JvmStatic
-        private fun String.capitalizeEachWord(): String {
-            val ret = StringBuilder()
-            split(SPACE).forEach { ret.append("${it.capitalize()} ") }
-            return ret.toString().trim()
-        }
+    private fun getTypeface(position: Int): Typeface = when (val path = getItemAsString(position)) {
+        "DEFAULT" -> Typeface.DEFAULT
+        else -> path.createFromFileOrDefault()
     }
+
+    @SuppressLint("DefaultLocale")
+    private fun String.capitalizeWord(delimiter: String): String = buildString {
+        this@capitalizeWord.split(delimiter).forEach { word -> append("${word.capitalize()} ") }
+    }.trim()
 }
