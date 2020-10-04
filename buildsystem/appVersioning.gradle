@@ -82,7 +82,7 @@ final class Versioning {
     private synchronized String getVersionFromFile() {
         if (versionNameFromFile != null) return versionNameFromFile
         try {
-            versionNameFromFile = thisProject.rootProject.file(FILE_NAME_VERSION).readLines()[0]
+            versionNameFromFile = thisProject.rootProject.file(FILE_NAME_VERSION).getText()
             return versionNameFromFile
         } catch (Exception e) {
             logError("Can't read file $FILE_NAME_VERSION", e)
