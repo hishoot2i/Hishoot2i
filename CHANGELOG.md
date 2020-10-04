@@ -1,24 +1,71 @@
 # Changelog
------
-### **v1.2.4 (20180817)**
+
+## **Unreleased**
+
+>_Release date: TBA_
+
+### Added
+
+- [ScreenShoot] orientation aware
+- [AppTheme] DayNight mode
+  - Day (Light Theme)
+  - Night (Dark Theme)  
+  - Follow System (Auto Battery Api27-)
+- [Badge] custom directory font (Api21+)
+- [Setting] save file format compress
+  - JPEG
+  - PNG
+  - WEBP
+- [Setting] compress quality, except PNG format
+- [Setting] on/off Notification
+
+### Removed
+
+- [TemplateManager] favorite tab
+- [TemplateManager] uninstall / remove Template
+- [AppShortcut]
+
+---
+
+## **Version 1.2.4**
+
+>_Release date: 2018-08-17_
+
 - Handle device without external storage
 - [Badge] preview font at choice
 - Bug fixes and some improvements
 
-### **v1.2.3 (20180806)**
+---
+
+## **Version 1.2.3**
+
+>_Release date: 2018-08-06_
+
 - Bug fixes
 
-### **v1.2.2 (20180804)**
+---
+
+## **Version 1.2.2**
+
+>_Release date: 2018-08-04_
 
 - Bug fixes incorrect size
 - Bug fixes out of memory :crossed_fingers:
 - Interfaces improvement
 
-### **v1.2.1 (20180731)**
+---
+
+## **Version v1.2.1**
+
+>_Release date: 2018-07-31_
 
 - Bug fixes and improvements
 
-###**v1.2.0 (20180730)**
+---
+
+## **Version 1.2.0**
+
+>_Release date: 2018-07-30_
 
 - remove CrashLytics
 - remove AppUpdater
@@ -35,17 +82,29 @@
   - position
   - optional system font (default = false)
 
-### **v1.1.3 (20160604)**
+---
 
-- bug's fix 
+## **Version 1.1.3**
 
-### **v1.1.2 (20160501)**
+>_Release date: 2018-06-04_
+
+- bug's fix
+
+---
+
+## **Version 1.1.2**
+
+>_Release date: 2016-05-01_
 
 - fix bug's FC send image to Hishoot
 - fix bug's FC crop image from Document (API 19+)
 - test AppUpdater :v
 
-### **v1.1.1 (20160429)**
+---
+
+## **Version 1.1.1**
+
+>_Release date: 2016-04-29_
 
 - switch (on/off) frame Template V2
 - template list slide/swipe to detail view
@@ -55,7 +114,11 @@
 - add clear preview cache
 - publish app with Github release (app update)
 
-### **v1.1.0 (20160411)**
+---
+
+## **Version 1.1.0**
+
+>_Release date: 2016-04-11_
 
 - re-design (BottomBar & SearchView)
 - preview before save
@@ -67,23 +130,39 @@
 - publish app with CrashLytics BETA chanel
 - fix minor bug
 
-### **v1.0.5 (20160128)**
+---
+
+## **Version 1.0.5**
+
+>_Release date: 2016-01-28_
 
 - drop SecurePreferences, use normal SharedPreferences
 - improve Template manager
 
-### **v1.0.4 (20160120)**
+---
+
+## **Version 1.0.4**
+
+>_Release date: 2016-01-20_
 
 - add Badge size
 - clean up dead code
 
-### **v1.0.3 (20160114)**
+---
+
+## **Version 1.0.3**
+
+>_Release date: 2016-01-14_
 
 - fix minor bug
 - add pick file Template Htz
 - Template V2 [**sample**](https://github.com/hishoot2i/TemplateHishoot/tree/master/templatev2)
 
-### **v1.0.2 (20151231)**
+---
+
+## **Version 1.0.2**
+
+>_Release date: 2015-12-31_
 
 - hide FAB after click
 - fix clear notification add Button "Force clear notification"
@@ -91,13 +170,21 @@
 - re-add notification (normal style) Gingerbread
 - Badge custom font (/SDCard/fonts/)
 
-### **v1.0.1 (20151223)**
+---
+
+## **Version 1.0.1**
+
+>_Release date: 2015-12-23_
 
 - remove notification Gingerbread
 - add ActivityLifecycleCallbacksCompat for pre-ICS
 - fixed Gingerbread
 
-### **v1.0.0 (20151223)**
+---
+
+## **Version 1.0.0**
+
+>_Release date: 2015-12-23_
 
 - Runtime Permission Marshmallow
 - Template Apk v2 (?)
@@ -107,3 +194,5 @@
 - Process with Service
 - Badge text as watermark
 - rebuild from scratch
+
+---
