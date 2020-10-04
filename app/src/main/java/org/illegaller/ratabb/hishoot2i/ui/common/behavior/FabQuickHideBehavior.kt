@@ -8,15 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Keep
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.res.use
 import androidx.core.view.ViewCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import common.ext.dp2px
 import org.illegaller.ratabb.hishoot2i.R
+import kotlin.math.roundToInt
 
 @Keep
 class FabQuickHideBehavior @JvmOverloads @Keep constructor(
     context: Context? = null,
     attrs: AttributeSet? = null
-) : CoordinatorLayout.Behavior<FloatingActionButton>(context, attrs) {
+) : FabSnackBarAwareBehavior(context, attrs) {
     private var scrollThreshold: Int = 0
     private var scrollDistance: Int = 0
     private var scrollingDirection: Int = 0
@@ -24,10 +27,8 @@ class FabQuickHideBehavior @JvmOverloads @Keep constructor(
     private var animator: Animator? = null
 
     init {
-        context?.let {
-            val a = it.theme.obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))
-            scrollThreshold = a.getDimensionPixelSize(0, 0) / 2
-            a.recycle()
+        context?.obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))?.use {
+            scrollThreshold = it.getDimensionPixelSize(0, context.dp2px(56F).roundToInt()) / 2
         }
     }
 
