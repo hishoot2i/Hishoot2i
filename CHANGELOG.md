@@ -4,6 +4,12 @@
 
 >_Release date: TBA_
 
+---
+
+## **Version 1.2.5**
+
+>_Release date: 2020-10-05_
+
 ### Added
 
 - [ScreenShoot] orientation aware
