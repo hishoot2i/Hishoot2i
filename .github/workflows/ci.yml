@@ -51,8 +51,8 @@ jobs:
       - name: Upload advice
         uses: actions/upload-artifact@v2
         if: failure()
-          with:
-            path: ./build/reports/dependency-analysis/advice-holistic-pretty.json
+        with:
+          path: ./build/reports/dependency-analysis/advice-holistic-pretty.json
 
       - name: Check with Gradle
         run: ./gradlew check

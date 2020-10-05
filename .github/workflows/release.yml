@@ -51,8 +51,8 @@ jobs:
 
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v2
-          with:
-            path: ./app/build/outputs/mapping/release/mapping.txt
+        with:
+          path: ./app/build/outputs/mapping/release/mapping.txt
 
       - name: Create Release
         id: create_release
