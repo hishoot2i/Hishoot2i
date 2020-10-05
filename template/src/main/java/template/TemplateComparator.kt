@@ -1,5 +1,6 @@
 package template
 
+import androidx.annotation.Keep
 import common.ext.exhaustive
 import template.Template.Default
 import template.Template.Version1
@@ -8,6 +9,7 @@ import template.Template.Version3
 import template.Template.VersionHtz
 import java.text.Collator
 
+@Keep
 enum class TemplateComparator : Comparator<Template> {
     NAME_ASC {
         override val impl: (Template, Template) -> Int = { lhs, rhs ->
