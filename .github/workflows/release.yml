@@ -54,12 +54,15 @@ jobs:
         with:
           path: ./app/build/outputs/mapping/release/mapping.txt
 
+      - name: Set env RELEASE_VERSION
+        run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1        
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
           draft: true
           prerelease: true
 
@@ -68,8 +71,8 @@ jobs:
         uses: actions/upload-release-asset@v1.0.1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/build/outputs/apk/release/Hishoot2i-${{ github.ref }}-minApi16.apk
-          asset_name: Hishoot2i-${{ github.ref }}-minApi16.apk
+          asset_path: ./app/build/outputs/apk/release/Hishoot2i-${{ env.RELEASE_VERSION }}-minApi16.apk
+          asset_name: Hishoot2i-${{ env.RELEASE_VERSION }}-minApi16.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Clean secrets
