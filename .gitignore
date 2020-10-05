@@ -52,3 +52,7 @@ freeline_project_description.json
 
 # 
 misc/
+#
+!release/
+release/*.jks
+release/*.properties

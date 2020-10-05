@@ -1,0 +1,63 @@
+name: "CI"
+
+on: [push, pull_request]
+
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+  JAVA_TOOL_OPTIONS: -Xmx5120m
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy=in-process
+
+jobs:
+
+  validation:
+    # Skip if head commit contains 'skip ci'
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    name: "Validation"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Gradle Wrapper validation
+        uses: gradle/wrapper-validation-action@v1
+
+  checkDebugBuild:
+    name: "checkDebugBuild"
+    runs-on: ubuntu-latest
+    env:
+    needs: validation
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Make gradlew & checksum.sh executable
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./checksum.sh
+
+      - name: Generate cache key
+        run: ./checksum.sh checksum.txt
+
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('checksum.txt') }}
+          restore-keys: |
+              ${{ runner.os }}-gradle-
+      
+      - name: Generates advice from Dependency-analysis Gradle task
+        run: ./gradlew buildHealth
+      
+      - name: Upload advice
+        uses: actions/upload-artifact@v2
+        if: failure()
+          with:
+            path: ./build/reports/dependency-analysis/advice-holistic-pretty.json
+
+      - name: Check with Gradle
+        run: ./gradlew check
+
+      # TODO: upload-artifact if check above failed
+      
+      - name: Build App Debug with Gradle
+        run: ./gradlew :app:assembleDebug
