@@ -23,7 +23,6 @@ jobs:
   checkDebugBuild:
     name: "checkDebugBuild"
     runs-on: ubuntu-latest
-    env:
     needs: validation
 
     steps:
