@@ -10,7 +10,7 @@ android {
                 output.versionCodeOverride = ver.code
                 output.versionNameOverride = ver.name
                 // NOTE: this will override all output file apk (breaking apk split!!)
-                output.outputFileName = ver.apk
+                // output.outputFileName = ver.apk
             }
         }
     }
@@ -19,7 +19,7 @@ android {
 final class Versioning {
     //region consumable fields
     public final String name
-    public final String apk
+    //public final String apk
     public final int code
     //endregion
 
@@ -33,7 +33,7 @@ final class Versioning {
         this.thisProject = p
         this.name = getVersionName(buildTime)
         this.code = getVersionCode(buildTime)
-        this.apk = getApkName()
+        //this.apk = getApkName()
     }
 
     @Override
@@ -56,13 +56,13 @@ final class Versioning {
         return buildTime
     }
 
-    private String getApkName() {
+    /*private String getApkName() {
         return String.format(
                 FORMAT_APK_NAME,
                 thisProject.rootProject.name,
                 getVersionFromFile(),
                 thisProject.rootProject.androidMinSdk)
-    }
+    }*/
 
     private int getVersionCode(String buildTime) {
         def n = getVersionFromFile()
