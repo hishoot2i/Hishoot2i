@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name" translatable="false">HiShoot2i</string>
     <string name="version_format">version %s</string>
     <string name="apply_template_format">Apply template: %s</string>
@@ -26,8 +26,6 @@
     <string name="template_htz_add_format" formatted="true">Template Htz %s add</string>
     <string name="template_manager">Template Manager</string>
     <string name="template_v2_and_v3">(Template v2 and v3)</string>
-    <!--Search-->
-    <string name="search_template_hint" tools:ignore="UnusedResources">Search by name or author</string>
     <!--TemplateTool-->
     <string name="template_info_format">author: %1$s\ndesc: %2$s\ninstalled: %3$s</string>
     <!--BackgroundTool-->
@@ -80,7 +78,6 @@
     <string name="follow_system">Follow system</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
-    <string name="about">About</string>
     <string name="pick_image">Pick image</string>
     <string name="share">Share</string>
     <string name="tap_to_view">Tap to view</string>

@@ -68,11 +68,6 @@
             android:id="@+id/action_setting_to_themeChooser"
             app:destination="@id/themeChooser" />
     </fragment>
-    <fragment
-        android:id="@+id/about"
-        android:name="org.illegaller.ratabb.hishoot2i.ui.about.AboutFragment"
-        android:label="@string/about"
-        tools:layout="@layout/fragment_about" />
 
     <!-- region BottomSheet Dialog (Tools)-->
     <dialog
@@ -161,8 +156,5 @@
     <action
         android:id="@+id/action_global_setting"
         app:destination="@id/setting" />
-    <action
-        android:id="@+id/action_global_about"
-        app:destination="@id/about" />
     <!-- endregion -->
 </navigation>
