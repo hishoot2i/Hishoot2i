@@ -11,9 +11,5 @@
             android:id="@+id/action_global_setting"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />
-        <!--<item
-            android:id="@+id/action_global_about"
-            android:icon="@drawable/ic_info"
-            android:title="@string/about" />-->
     </group>
 </menu>
