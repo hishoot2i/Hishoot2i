@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 
-inline fun Fragment.setFragmentResultListeners(
+fun Fragment.setFragmentResultListeners(
     vararg requestKeys: String,
-    crossinline listener: ((requestKey: String, bundle: Bundle) -> Unit)
+    listener: ((requestKey: String, bundle: Bundle) -> Unit)
 ) {
     for (requestKey in requestKeys) setFragmentResultListener(requestKey, listener)
 }
