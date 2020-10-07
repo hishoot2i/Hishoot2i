@@ -10,5 +10,4 @@ dependencies {
     api(kotlin("stdlib", version = kotlinVersion))
     val xAnnotationVersion: String by rootProject
     compileOnly("androidx.annotation:annotation:$xAnnotationVersion")
-    api("io.reactivex.rxjava2:rxjava:2.2.19")
 }
