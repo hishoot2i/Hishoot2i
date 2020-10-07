@@ -7,7 +7,6 @@ import pref.SimplePref
 import pref.ext.asFlowable
 import pref.ext.booleanPref
 import pref.ext.stringPref
-import template.TemplateConstants
 import template.TemplateConstants.DEFAULT_TEMPLATE_ID
 import javax.inject.Inject
 
