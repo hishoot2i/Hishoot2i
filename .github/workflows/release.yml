@@ -62,7 +62,7 @@ jobs:
         id: release_version
         run: |
           echo "##[set-output name=version;]${GITHUB_REF#refs/*/}"
-          echo "##[set-output name=min;]${grep -oP '(?<=androidMinSdk=)\w+' gradle.properties}"
+          echo "##[set-output name=min;]${grep -oP '(?<=androidMinSdk=)\d+' gradle.properties}"
 
       - name: Create Release
         id: create_release
