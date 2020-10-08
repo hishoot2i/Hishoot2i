@@ -5,7 +5,6 @@ buildscript {
     val daggerHiltVersion: String by project
     val kotlinVersion: String by project
     val xNavigationVersion: String by project
-
     repositories {
         google()
         mavenCentral()
@@ -35,12 +34,21 @@ allprojects {
                 verbose = true
             }
         }
+        tasks.whenObjectAdded {
+            // We not have Test, yet!
+            if (name.contains("AndroidTest") || name.contains("UnitTest")) {
+                enabled = false
+                if (logger.isEnabled(LogLevel.DEBUG)) {
+                    logger.log(LogLevel.DEBUG, "$name = $enabled")
+                }
+            }
+        }
     }
 }
 plugins {
     id("com.diffplug.spotless") version "5.6.1"
     id("com.github.ben-manes.versions") version "0.33.0"
-    id("com.autonomousapps.dependency-analysis") version "0.60.0"
+    id("com.autonomousapps.dependency-analysis") version "0.61.0"
 }
 /** Plugin [com.autonomousapps.dependency-analysis] config. */
 dependencyAnalysis {
@@ -59,7 +67,6 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     rejectVersionIf { isNonStable(candidate.version) }
     checkForGradleUpdate = false //
 }
-
 subprojects {
     apply("$rootDir/buildsystem/spotless.gradle")
     afterEvaluate {

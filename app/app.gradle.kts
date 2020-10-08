@@ -73,19 +73,26 @@ dependencies {
     val xCoreVersion: String by rootProject
     implementation("androidx.core:core:$xCoreVersion")
     implementation("androidx.core:core-ktx:$xCoreVersion") //
-    implementation("androidx.browser:browser:1.2.0")
-    implementation("androidx.appcompat:appcompat-resources:1.2.0")
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.1.0")
-    implementation("androidx.recyclerview:recyclerview:1.1.0")
-    implementation("androidx.customview:customview:1.1.0")
+    val xBrowserVersion: String by rootProject
+    implementation("androidx.browser:browser:$xBrowserVersion")
+    val xAppCompatVersion: String by rootProject
+    implementation("androidx.appcompat:appcompat-resources:$xAppCompatVersion")
+    implementation("androidx.appcompat:appcompat:$xAppCompatVersion")
+    val xCoordinatorLayoutVersion: String by rootProject
+    implementation("androidx.coordinatorlayout:coordinatorlayout:$xCoordinatorLayoutVersion")
+    val xRecyclerViewVersion: String by rootProject
+    implementation("androidx.recyclerview:recyclerview:$xRecyclerViewVersion")
+    val xCustomViewVersion: String by rootProject
+    implementation("androidx.customview:customview:$xCustomViewVersion")
     val xActivityVersion: String by rootProject
     implementation("androidx.activity:activity:$xActivityVersion")
-    implementation("androidx.documentfile:documentfile:1.0.1")
+    val xDocumentFileVersion: String by rootProject
+    implementation("androidx.documentfile:documentfile:$xDocumentFileVersion")
     val xFragmentVersion: String by rootProject
     implementation("androidx.fragment:fragment:$xFragmentVersion")
     implementation("androidx.fragment:fragment-ktx:$xFragmentVersion")
-    implementation("androidx.drawerlayout:drawerlayout:1.1.1")
+    val xDrawerLayoutVersion: String by rootProject
+    implementation("androidx.drawerlayout:drawerlayout:$xDrawerLayoutVersion")
     val xNavigationVersion: String by rootProject
     implementation("androidx.navigation:navigation-fragment-ktx:$xNavigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$xNavigationVersion")
@@ -94,7 +101,7 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime:$xNavigationVersion")
     implementation("androidx.navigation:navigation-runtime-ktx:$xNavigationVersion")
     val xLifeCycleVersion: String by rootProject
-    implementation("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
+    // implementation("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel:$xLifeCycleVersion")
 
     val googleMaterial: String by rootProject

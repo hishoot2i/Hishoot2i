@@ -11,7 +11,8 @@ dependencies {
     compileOnly("androidx.annotation:annotation:$xAnnotationVersion")
     val xCoreVersion: String by rootProject
     implementation("androidx.core:core:$xCoreVersion")
-    implementation("androidx.documentfile:documentfile:1.0.1")
+    val xDocumentFileVersion: String by rootProject
+    implementation("androidx.documentfile:documentfile:$xDocumentFileVersion")
     val timberVersion: String by rootProject
     implementation("com.jakewharton.timber:timber:$timberVersion")
 }
