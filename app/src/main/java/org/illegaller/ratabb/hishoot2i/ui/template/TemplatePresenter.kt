@@ -1,6 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
 import template.Template
 import template.TemplateComparator

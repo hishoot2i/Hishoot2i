@@ -1,9 +1,9 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools.badge
 
 import androidx.annotation.ColorInt
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI

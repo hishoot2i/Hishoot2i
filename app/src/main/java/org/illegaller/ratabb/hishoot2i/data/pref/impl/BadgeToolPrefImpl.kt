@@ -6,7 +6,6 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.BadgePosition
 import entity.BadgePosition.CENTER_BOTTOM
-import io.reactivex.Flowable
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
 import pref.SimplePref
 import pref.ext.asFlowable
@@ -35,7 +34,7 @@ class BadgeToolPrefImpl @Inject constructor(
                 badgeTypeface = valuePlusQuote
             }
         }
-    override val mainFlow: List<Flowable<*>> = listOf(
+    override val mainFlow = listOf(
         asFlowable(::badgeTypeface),
         asFlowable(::badgePosition),
         asFlowable(::badgeColor),

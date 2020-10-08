@@ -5,10 +5,10 @@ import common.FileConstants
 import common.ext.isDirAndCanRead
 import common.ext.listFilesOrEmpty
 import entity.AppInfo
-import io.reactivex.Flowable
-import io.reactivex.Single
-import io.reactivex.rxkotlin.mergeDelayError
-import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.kotlin.mergeDelayError
+import io.reactivex.rxjava3.kotlin.toFlowable
 import org.illegaller.ratabb.hishoot2i.data.PackageResolver
 import template.Template
 import template.TemplateFactoryManager

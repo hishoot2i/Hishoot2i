@@ -28,7 +28,7 @@ import entity.ImageOption.SCALE_FILL
 import entity.ImageSourcePath
 import entity.Sizes
 import imageloader.ImageLoader
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import org.illegaller.ratabb.hishoot2i.BuildConfig.DEBUG
 import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
 import org.illegaller.ratabb.hishoot2i.data.core.MixTemplate

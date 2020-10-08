@@ -5,11 +5,11 @@ import common.ext.exhaustive
 import entity.BackgroundMode
 import entity.ImageOption
 import entity.ImageSourcePath
-import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.mergeDelayError
-import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.kotlin.mergeDelayError
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
 import org.illegaller.ratabb.hishoot2i.data.core.Result
 import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref

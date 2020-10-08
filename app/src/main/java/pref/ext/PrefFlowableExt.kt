@@ -3,8 +3,8 @@
 package pref.ext
 
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.BackpressureStrategy
+import io.reactivex.rxjava3.core.Flowable
 import pref.Pref
 import kotlin.reflect.KProperty0
 

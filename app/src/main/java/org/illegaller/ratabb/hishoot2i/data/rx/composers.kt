@@ -3,9 +3,9 @@
 package org.illegaller.ratabb.hishoot2i.data.rx
 
 import common.ext.DEFAULT_DELAY_MS
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 // Schedule

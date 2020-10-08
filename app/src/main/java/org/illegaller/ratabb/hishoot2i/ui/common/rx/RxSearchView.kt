@@ -1,14 +1,14 @@
 package org.illegaller.ratabb.hishoot2i.ui.common.rx
 
 import androidx.appcompat.widget.SearchView
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.android.MainThreadDisposable
+import io.reactivex.rxjava3.android.MainThreadDisposable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableEmitter
 
 object RxSearchView {
     @JvmStatic
     fun queryTextChange(searchView: SearchView): Observable<String> =
-        Observable.create<String> { emitter: ObservableEmitter<String> ->
+        Observable.create { emitter: ObservableEmitter<String> ->
             MainThreadDisposable.verifyMainThread()
             val listener = object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean = false

@@ -1,8 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.data.pref
 
 import entity.BackgroundMode
-import io.reactivex.Flowable
 import entity.ImageOption
+import io.reactivex.rxjava3.core.Flowable
 
 interface BackgroundToolPref {
     var backgroundMode: BackgroundMode

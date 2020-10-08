@@ -17,7 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.Sizes
 import entity.ext
 import entity.mimeType
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import org.illegaller.ratabb.hishoot2i.data.core.Result
 import org.illegaller.ratabb.hishoot2i.data.core.SaveResult
 import java.io.File

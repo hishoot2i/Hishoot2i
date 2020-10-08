@@ -4,9 +4,9 @@ import android.os.Environment
 import common.ext.compareByName
 import common.ext.isDirAndCanRead
 import common.ext.listFilesByExt
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.mergeDelayError
-import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.kotlin.mergeDelayError
+import io.reactivex.rxjava3.kotlin.toFlowable
 import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import java.io.File
 import javax.inject.Inject

@@ -8,8 +8,8 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_META_DATA
 import android.content.pm.ResolveInfo
 import entity.AppInfo
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.kotlin.toFlowable
 import template.TemplateConstants.CATEGORY_TEMPLATE_APK
 import template.TemplateConstants.META_DATA_TEMPLATE
 import javax.inject.Inject

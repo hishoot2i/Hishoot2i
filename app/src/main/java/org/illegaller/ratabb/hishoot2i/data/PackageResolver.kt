@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.data
 
 import entity.AppInfo
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 interface PackageResolver {
     fun installedTemplateLegacy(): Flowable<AppInfo>
