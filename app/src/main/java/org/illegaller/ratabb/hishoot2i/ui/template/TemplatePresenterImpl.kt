@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
-import com.commonsware.cwac.security.ZipUtils
 import common.FileConstants
+import common.UnZipper
 import common.ext.entryInputStream
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
@@ -70,9 +70,7 @@ class TemplatePresenterImpl @Inject constructor(
     }
 
     override fun importHtz(htz: File) {
-        // fail fast
         require(htz.extension == "htz") { "expected is Htz, but it's a ${htz.extension}" }
-       // requiredView().showProgress()
         Single.fromCallable {
             ZipFile(htz)
                 .entryInputStream(TemplateConstants.TEMPLATE_CFG)
@@ -99,7 +97,6 @@ class TemplatePresenterImpl @Inject constructor(
         }
 
     override fun render() {
-        //requiredView().showProgress()
         tempData.clear()
         templateDataSource.allTemplate()
             .sorted(templatePref.templateComparator)
@@ -150,11 +147,8 @@ class TemplatePresenterImpl @Inject constructor(
 
     private fun unzipAndBuild(templateId: String, htz: File): Single<VersionHtz> =
         Single.fromCallable {
-            val maxHtzEntries = 10 // Sample_htz = 4 {config,preview,overlay,frame}
-            val maxHtzSize = 1024 * 1024 * 10 // 10Mb | Sample_htz = +-50Kb
-            val dst = File(htzDir(), templateId)
-            if (dst.exists()) ZipUtils.delete(dst) //
-            ZipUtils.unzip(htz, dst, maxHtzEntries, maxHtzSize) //
+            UnZipper.unzip(htz, File(htzDir(), templateId))
+        }.map {
             versionHtz(templateId, System.currentTimeMillis())
         }
 }
