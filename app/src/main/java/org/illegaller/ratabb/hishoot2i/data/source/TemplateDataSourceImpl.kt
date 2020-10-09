@@ -29,6 +29,8 @@ class TemplateDataSourceImpl @Inject constructor(
         provideTemplateHtz(::versionHtz)
     )
         .mergeDelayError()
+        // ignore error
+        .onErrorResumeNext { Flowable.empty() }
 
     override fun findById(id: String): Single<Template> = allTemplate()
         .filter { it.id == id }
