@@ -28,6 +28,6 @@ data class ModelV1 @JvmOverloads constructor(
     var botx: Int = -1,
     var boty: Int = -1
 ) {
-    fun isNotValid(): Boolean = device == "" || author == "" || topx == -1 || topy == -1
-            || botx == -1 || boty == -1
+    fun isNotValid(): Boolean = device == "" || author == "" || topx == -1 || topy == -1 ||
+        botx == -1 || boty == -1
 }

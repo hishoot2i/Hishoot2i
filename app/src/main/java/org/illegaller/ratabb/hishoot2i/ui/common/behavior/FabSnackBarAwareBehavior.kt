@@ -8,7 +8,6 @@ import androidx.annotation.Keep
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import timber.log.Timber
 /**
  * We use this, because [Snackbar.setAnchorView]  buggy
  **/

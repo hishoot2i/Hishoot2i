@@ -35,16 +35,13 @@ data class ModelHtz(
     var template_width: Int = -1,
     var template_height: Int = -1
 ) {
-    fun isNotValid(): Boolean = name == "" || author == "" || template_file == "" || preview == ""
-            || overlay_file == "" || overlay_x == -1 || overlay_y == -1 || screen_width == -1
-            || screen_height == -1 || screen_x == -1 || screen_y == -1
-            || template_width == -1 || template_height == -1
+    fun isNotValid(): Boolean = name == "" || author == "" || template_file == "" ||
+        preview == "" || overlay_file == "" || overlay_x == -1 || overlay_y == -1 ||
+        screen_width == -1 || screen_height == -1 || screen_x == -1 || screen_y == -1 ||
+        template_width == -1 || template_height == -1
 
-    private val maxLengthID = 32 //
-    fun generateTemplateId(): String {
-        val ret = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
-            .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
-            .trim()
-        return ret.takeIf { it.length <= maxLengthID } ?: ret.substring(range = 0..maxLengthID) // limit
-    }
+    fun generateTemplateId(): String = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
+        .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
+        .trim()
+        .substring(range = 0..32) // limit ID length
 }

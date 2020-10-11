@@ -5,5 +5,5 @@ import android.net.Uri
 
 sealed class Result {
     data class Preview(val bitmap: Bitmap) : Result()
-    data class Save(val bitmap: Bitmap, val uri: Uri, val name:String) : Result()
+    data class Save(val bitmap: Bitmap, val uri: Uri, val name: String) : Result()
 }

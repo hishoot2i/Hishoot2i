@@ -96,7 +96,8 @@ class TemplateListDivider : RecyclerView.ItemDecoration {
                         l, b, r, b,
                         /* right side */
                         r, t, r, b
-                    ), paintLine
+                    ),
+                    paintLine
                 )
             }
         }

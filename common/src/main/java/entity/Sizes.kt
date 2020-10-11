@@ -24,6 +24,7 @@ data class Sizes(val x: Int, val y: Int) {
         return (x + y).compareTo(x2 + y2)
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun max(maximumSizes: Sizes): Sizes {
         val (ratioWidth, ratioHeight) = maximumSizes.toSizeF() / this.toSizeF()
         val ratio = ratioWidth.coerceAtMost(ratioHeight)

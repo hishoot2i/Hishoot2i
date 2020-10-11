@@ -9,5 +9,5 @@ interface SettingPref {
     var dayNightMode: DayNightMode
     var compressFormat: CompressFormat
     var saveQuality: Int
-    var saveNotificationEnable:Boolean
+    var saveNotificationEnable: Boolean
 }

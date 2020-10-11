@@ -5,7 +5,6 @@ package common.ext
 import android.app.Activity
 import android.graphics.Rect
 import android.view.View
-import androidx.core.view.WindowInsetsCompat
 import timber.log.Timber
 import kotlin.math.roundToInt
 

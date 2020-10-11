@@ -31,8 +31,8 @@ data class ModelV2 @JvmOverloads constructor(
     var template_width: Int = -1,
     var template_height: Int = -1
 ) {
-    fun isNotValid(): Boolean = name == "" || author == "" || left_top_x == -1
-            || left_top_y == -1 || left_bottom_x == -1 || left_bottom_y == -1 || right_top_x == -1
-            || right_top_y == -1 || right_bottom_x == -1 || right_bottom_y == -1
-            || template_width == -1 || template_height == -1
+    fun isNotValid(): Boolean = name == "" || author == "" || left_top_x == -1 ||
+        left_top_y == -1 || left_bottom_x == -1 || left_bottom_y == -1 || right_top_x == -1 ||
+        right_top_y == -1 || right_bottom_x == -1 || right_bottom_y == -1 ||
+        template_width == -1 || template_height == -1
 }

@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package common
 
 import androidx.annotation.DrawableRes
@@ -8,6 +10,7 @@ object PathBuilder {
     const val TEMPLATE_APP = "template_app://"
     const val DRAWABLES = "drawable://"
     const val SEPARATOR = "/"
+
     /**
      * Image path from template app.
      *

@@ -93,12 +93,12 @@ class TemplateTool : BottomSheetDialogFragment(), TemplateToolView {
                 checkedIds.takeIf { it.isNotEmpty() }?.onEach { check(it) }
                 addOnButtonCheckedListener { _, checkedId, isChecked ->
                     when (checkedId) {
-                        R.id.toolTemplateSwitchFrame -> templateToolPref.templateFrameEnable =
-                            isChecked
-                        R.id.toolTemplateSwitchGlare -> templateToolPref.templateGlareEnable =
-                            isChecked
-                        R.id.toolTemplateSwitchShadow -> templateToolPref.templateShadowEnable =
-                            isChecked
+                        R.id.toolTemplateSwitchFrame ->
+                            templateToolPref.templateFrameEnable = isChecked
+                        R.id.toolTemplateSwitchGlare ->
+                            templateToolPref.templateGlareEnable = isChecked
+                        R.id.toolTemplateSwitchShadow ->
+                            templateToolPref.templateShadowEnable = isChecked
                     }
                 }
             }

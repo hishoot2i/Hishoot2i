@@ -12,12 +12,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
 import common.ext.preventMultipleClick
-import org.illegaller.ratabb.hishoot2i.ui.ARG_THEME
-import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_THEME
 import entity.DayNightMode
 import entity.fromIdRes
 import entity.resId
 import org.illegaller.ratabb.hishoot2i.databinding.DialogThemeChooserBinding
+import org.illegaller.ratabb.hishoot2i.ui.ARG_THEME
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_THEME
 
 class ThemeChooserDialog : AppCompatDialogFragment() {
     private val args: ThemeChooserDialogArgs by navArgs()

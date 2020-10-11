@@ -78,6 +78,6 @@ data class ModelV3 @JvmOverloads constructor(
     var size: Sizes = Sizes.ZERO,
     var glares: List<Glare>? = null
 ) {
-    fun isNotValid(): Boolean = name == "" || author == "" || frame == ""
-            || coordinate.isEmpty() || size == Sizes.ZERO
+    fun isNotValid(): Boolean = name == "" || author == "" || frame == "" ||
+        coordinate.isEmpty() || size == Sizes.ZERO
 }

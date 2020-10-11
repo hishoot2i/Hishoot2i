@@ -8,13 +8,12 @@ import org.xmlpull.v1.XmlPullParserFactory
 import template.model.ModelV1
 import java.io.InputStream
 import java.io.InputStreamReader
-import kotlin.LazyThreadSafetyMode.NONE
 
 /** @see [template.model.ModelV1] */
 class ModelV1Reader(
     inputStream: InputStream
 ) : InputStreamReader(inputStream, Charsets.UTF_8) {
-    private val xmlPullParser: XmlPullParser by lazy{
+    private val xmlPullParser: XmlPullParser by lazy {
         XmlPullParserFactory.newInstance().newPullParser().also { it.setInput(this) }
     }
 

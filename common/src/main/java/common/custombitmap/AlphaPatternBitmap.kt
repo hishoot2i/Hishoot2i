@@ -3,7 +3,6 @@ package common.custombitmap
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
-import android.graphics.Color
 import android.graphics.Color.GRAY
 import android.graphics.Color.WHITE
 import android.graphics.Paint
@@ -40,4 +39,3 @@ class AlphaPatternBitmap(context: Context) {
         }
     }
 }
-

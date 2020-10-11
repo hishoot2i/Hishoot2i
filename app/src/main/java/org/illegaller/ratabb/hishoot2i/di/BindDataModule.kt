@@ -6,18 +6,18 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.internal.modules.ApplicationContextModule
-import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSource
-import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSourceImpl
 import org.illegaller.ratabb.hishoot2i.data.PackageResolver
 import org.illegaller.ratabb.hishoot2i.data.PackageResolverImpl
+import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
+import org.illegaller.ratabb.hishoot2i.data.core.MixTemplate
+import org.illegaller.ratabb.hishoot2i.data.core.SaveResult
+import org.illegaller.ratabb.hishoot2i.data.core.impl.CoreProcessImpl
+import org.illegaller.ratabb.hishoot2i.data.core.impl.MixTemplateImpl
+import org.illegaller.ratabb.hishoot2i.data.core.impl.SaveResultImpl
+import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSource
+import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSourceImpl
 import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSource
 import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSourceImpl
-import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
-import org.illegaller.ratabb.hishoot2i.data.core.impl.CoreProcessImpl
-import org.illegaller.ratabb.hishoot2i.data.core.MixTemplate
-import org.illegaller.ratabb.hishoot2i.data.core.impl.MixTemplateImpl
-import org.illegaller.ratabb.hishoot2i.data.core.SaveResult
-import org.illegaller.ratabb.hishoot2i.data.core.impl.SaveResultImpl
 import org.illegaller.ratabb.hishoot2i.provider.FileConstantsImpl
 import javax.inject.Singleton
 

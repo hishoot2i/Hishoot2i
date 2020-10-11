@@ -64,12 +64,11 @@ class CoreImagePreview @JvmOverloads constructor(
 
     private fun handleEventTouch(event: MotionEvent): Boolean {
         center = SizesF(event.x, event.y) // set center from event
-        return colorFromBitmap(event.x, event.y, 0)
-            .takeIf { it != 0 }?.let {
-                colorPipette = it
-                invalidate()
-                true
-            } == true
+        return colorFromBitmap(event.x, event.y, 0).takeIf { it != 0 }?.let {
+            colorPipette = it
+            invalidate()
+            true
+        } == true
     }
 
     override fun onDraw(canvas: Canvas) {

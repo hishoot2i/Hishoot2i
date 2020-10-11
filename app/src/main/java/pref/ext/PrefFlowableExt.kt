@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty0
 inline fun <T> Pref.asFlowable(
     prop: KProperty0<T>,
     key: String? = null
-) = Flowable.create<T>(
+): Flowable<T> = Flowable.create(
     { emitter ->
         val listenKey = key ?: prop.name
         val listener = OnSharedPreferenceChangeListener { _, changeKey ->

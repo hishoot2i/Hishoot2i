@@ -12,10 +12,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
 import common.ext.preventMultipleClick
-import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
-import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.DialogSortTemplateBinding
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
 import template.TemplateComparator
 import template.TemplateComparator.DATE_ASC
 import template.TemplateComparator.DATE_DESC
@@ -58,8 +58,9 @@ class SortTemplateDialog : AppCompatDialogFragment() {
                 // NOTE: no need set background view, this dialog dismissed.
                 if (args.templateComparator != comparator) {
                     setFragmentResult(
-                        KEY_REQ_SORT, bundleOf(
-                            ARG_SORT to comparator.ordinal))
+                        KEY_REQ_SORT,
+                        bundleOf(ARG_SORT to comparator.ordinal)
+                    )
                 }
                 dismiss()
             }

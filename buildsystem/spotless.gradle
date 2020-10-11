@@ -1,19 +1,20 @@
 apply plugin: "com.diffplug.spotless"
-def ktlintVersion = rootProject.ktlintVersion
+def ktLintVersion = rootProject.ktLintVersion
 spotless {
     kotlin {
-        ktlint(ktlintVersion).userData(['disabled_rules': 'import-ordering'])
-        // import-ordering: https://github.com/pinterest/ktlint/issues/527
+        target("**/*.kt")
+        ktlint(ktLintVersion)
         trimTrailingWhitespace()
         endWithNewline()
     }
     kotlinGradle {
-        target '*.gradle.kts'
-        ktlint(ktlintVersion)
+        target("*.gradle.kts")
+        ktlint(ktLintVersion)
         trimTrailingWhitespace()
         endWithNewline()
     }
     groovyGradle {
+        target("*.gradle")
         trimTrailingWhitespace()
         endWithNewline()
     }

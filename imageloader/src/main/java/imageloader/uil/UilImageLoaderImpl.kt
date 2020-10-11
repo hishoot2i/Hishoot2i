@@ -94,7 +94,7 @@ class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
      *  [android.text.format.Formatter.formatShortFileSize]
      * */
     override fun totalDiskCacheSize(): Long {
-        var ret = /*diskCache?.directory?.length() ?:*/ 0L // uncollated dir length
+        var ret = 0L
         try {
             diskCache?.directory?.listFiles()
                 ?.forEach { ret += it.length() }
@@ -121,7 +121,7 @@ class UilImageLoaderImpl constructor(context: Context) : ImageLoader {
 
     /* cache to disk if isCacheOnMemory and template asset only */
     private fun String.isCacheOnDisk(isSave: Boolean): Boolean = diskCache != null &&
-            isCacheOnMemory(isSave) && startsWith(TEMPLATE_APP)
+        isCacheOnMemory(isSave) && startsWith(TEMPLATE_APP)
 
     private fun String.decodingOptions(
         isSave: Boolean,

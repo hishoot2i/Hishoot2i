@@ -82,14 +82,18 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView {
         if (!handleReceiver()) presenter.render()
         setFragmentResultListeners(*requestKeys) { requestKey, result ->
             when (requestKey) {
-                KEY_REQ_CROP -> result.getString(ARG_CROP_PATH)
-                    ?.let { presenter.changeBackground(it) }
-                KEY_REQ_BACKGROUND -> result.getString(ARG_BACKGROUND_PATH)
-                    ?.let { presenter.changeBackground(it) }
-                KEY_REQ_SCREEN_1 -> result.getString(ARG_SCREEN1_PATH)
-                    ?.let { presenter.changeScreen1(it) }
-                KEY_REQ_SCREEN_2 -> result.getString(ARG_SCREEN2_PATH)
-                    ?.let { presenter.changeScreen2(it) }
+                KEY_REQ_CROP ->
+                    result.getString(ARG_CROP_PATH)
+                        ?.let { presenter.changeBackground(it) }
+                KEY_REQ_BACKGROUND ->
+                    result.getString(ARG_BACKGROUND_PATH)
+                        ?.let { presenter.changeBackground(it) }
+                KEY_REQ_SCREEN_1 ->
+                    result.getString(ARG_SCREEN1_PATH)
+                        ?.let { presenter.changeScreen1(it) }
+                KEY_REQ_SCREEN_2 ->
+                    result.getString(ARG_SCREEN2_PATH)
+                        ?.let { presenter.changeScreen2(it) }
                 KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
             }
         }

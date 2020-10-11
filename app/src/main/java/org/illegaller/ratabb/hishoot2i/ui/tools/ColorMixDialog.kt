@@ -85,9 +85,8 @@ class ColorMixDialog : AppCompatDialogFragment() {
         colorDone.setOnClickListener {
             it.preventMultipleClick {
                 setFragmentResult(
-                    KEY_REQ_MIX_COLOR, bundleOf(
-                        ARG_COLOR to color
-                    )
+                    KEY_REQ_MIX_COLOR,
+                    bundleOf(ARG_COLOR to color)
                 )
                 dismiss()
             }

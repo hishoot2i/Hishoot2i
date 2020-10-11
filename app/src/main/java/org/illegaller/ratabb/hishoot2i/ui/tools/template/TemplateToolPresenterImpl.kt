@@ -3,10 +3,10 @@ package org.illegaller.ratabb.hishoot2i.ui.tools.template
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSource
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
+import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSource
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
 import javax.inject.Inject
 

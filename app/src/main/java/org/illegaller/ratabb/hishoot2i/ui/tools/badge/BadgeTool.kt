@@ -163,7 +163,8 @@ class BadgeTool : BottomSheetDialogFragment(), BadgeView {
     }
 
     private inline fun TextView.handleBadgeInput(
-        pref: BadgeToolPref, crossinline condition: () -> Boolean
+        pref: BadgeToolPref,
+        crossinline condition: () -> Boolean
     ): Boolean = condition().also {
         if (it) {
             clearFocus()

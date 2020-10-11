@@ -10,4 +10,3 @@ interface TemplateView : Mvp.View {
     fun hideProgress()
     fun htzImported(templateHtz: VersionHtz)
 }
-

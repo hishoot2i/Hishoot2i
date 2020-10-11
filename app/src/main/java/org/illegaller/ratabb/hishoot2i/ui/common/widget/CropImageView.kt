@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.annotation.SuppressLint
@@ -463,16 +465,8 @@ class CropImageView @JvmOverloads constructor(
     }
 
     private fun isInsideFrame(x: Float, y: Float): Boolean {
-        /*if (mFrameRect.left <= x && mFrameRect.right >= x) {
-      if (mFrameRect.top <= y && mFrameRect.bottom >= y) {
-        mTouchArea = TouchArea.CENTER;
-        return true;
-      }
-    }*/
-        if (mFrameRect!!.left <= x && mFrameRect!!.right >= x && (
-                    mFrameRect!!.top <= y &&
-                            mFrameRect!!.bottom >= y
-                    )
+        if (mFrameRect!!.left <= x && mFrameRect!!.right >= x &&
+            (mFrameRect!!.top <= y && mFrameRect!!.bottom >= y)
         ) {
             mTouchArea = TouchArea.CENTER
             return true

@@ -6,9 +6,9 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.BackgroundMode
 import entity.BackgroundMode.COLOR
-import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref
 import entity.ImageOption
 import entity.ImageOption.SCALE_FILL
+import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref
 import pref.SimplePref
 import pref.ext.asFlowable
 import pref.ext.booleanPref

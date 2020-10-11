@@ -72,13 +72,15 @@ fun String.colorFromHex(isWithAlpha: Boolean, @ColorInt fallback: Int): Int {
         if (value[0] != '#') {
             ret = when (value.length) {
                 // RGB -> #AARRGGBB {A=FF: full alpha }
-                3 -> "#FF${value[0]}${value[0]}${value[1]}${value[1]}${value[2]}${value[2]}"
-                    .colorFromHex(isWithAlpha, fallback)
+                3 ->
+                    "#FF${value[0]}${value[0]}${value[1]}${value[1]}${value[2]}${value[2]}"
+                        .colorFromHex(isWithAlpha, fallback)
                 // RRGGBB -> #AARRGGBB {A=FF: full alpha }
                 6 -> "#FF$value".colorFromHex(isWithAlpha, fallback)
                 // AARRGGBB -> #AARRGGBB {if not isWithAlpha A=FF: full alpha }
-                8 -> "#${if (isWithAlpha) value else "FF${value.substring(2)}"}"
-                    .colorFromHex(isWithAlpha, fallback)
+                8 ->
+                    "#${if (isWithAlpha) value else "FF${value.substring(2)}"}"
+                        .colorFromHex(isWithAlpha, fallback)
                 else -> fallback
             }
         }

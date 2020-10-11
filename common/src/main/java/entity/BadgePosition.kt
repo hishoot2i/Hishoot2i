@@ -54,7 +54,7 @@ enum class BadgePosition {
     fun getValue(total: Sizes, source: Sizes, padding: Int): SizesF {
         require(total > ZERO && source > ZERO && padding > 0) {
             "padding, total and source must be positive," +
-                    "\npadding:$padding total:$total source:$source"
+                "\npadding:$padding total:$total source:$source"
         }
         return impl(total, source, padding).toSizeF()
     }

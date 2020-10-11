@@ -38,7 +38,7 @@ class MainPresenterImpl @Inject constructor(
     private var lastTemplate: Template? = null
     private val isHaveLastTemplate: Boolean
         get() = lastTemplateId != null && lastTemplate != null &&
-                lastTemplateId == templateToolPref.templateCurrentId
+            lastTemplateId == templateToolPref.templateCurrentId
 
     private val currentTemplate: Single<Template>
         get() = if (isHaveLastTemplate) Single.just(lastTemplate)
@@ -118,8 +118,10 @@ class MainPresenterImpl @Inject constructor(
     }
 
     private fun preferenceChangesSubscriber() {
-        (screenToolPref.mainFlow + badgeToolPref.mainFlow +
-                templateToolPref.mainFlow + backgroundToolPref.mainFlow)
+        (
+            screenToolPref.mainFlow + badgeToolPref.mainFlow +
+                templateToolPref.mainFlow + backgroundToolPref.mainFlow
+            )
             .mergeDelayError()
             .ioUI(schedulerProvider)
             .subscribeBy(
