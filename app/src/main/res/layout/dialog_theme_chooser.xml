@@ -68,7 +68,6 @@
             style="@style/AppWidget.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            />
+            android:text="@string/cancel" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </LinearLayout>

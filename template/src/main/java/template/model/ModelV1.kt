@@ -6,16 +6,16 @@ package template.model
 <DCSMS-Hishoot xmlns:android="http://androidminang.com/armdevteam">
     <device>Galaxy Gio</device>
     <author>http://androidminang.com</author>
-	<topx>42</topx>
-	<topy>140</topy>
+    <topx>42</topx>
+    <topy>140</topy>
     <botx>39</botx>
      <boty>190</boty>
 <!-- DEVICE DPI
-		ldpi=-1
-		mdpi=1
-		hdpi=2
-		xhdpi=3
-		xxhdpi=4
+        ldpi=-1
+        mdpi=1
+        hdpi=2
+        xhdpi=3
+        xxhdpi=4
 -->
      <deviceDpi>1</deviceDpi>
 </DCSMS-Hishoot>

@@ -15,7 +15,7 @@
 - [ScreenShoot] orientation aware
 - [AppTheme] DayNight mode
   - Day (Light Theme)
-  - Night (Dark Theme)  
+  - Night (Dark Theme)
   - Follow System (Auto Battery Api27-)
 - [Badge] custom directory font (Api21+)
 - [Setting] save file format compress

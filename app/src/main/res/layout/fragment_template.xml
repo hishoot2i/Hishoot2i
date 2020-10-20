@@ -22,7 +22,6 @@
         layout="@layout/no_content"
         tools:visibility="gone" />
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
+        android:contentDescription="@null"
         app:layout_anchor="@id/templateBottomAppBar"
         app:layout_behavior=".ui.common.behavior.FabQuickHideBehavior"
         app:srcCompat="@drawable/ic_htz_plus" />

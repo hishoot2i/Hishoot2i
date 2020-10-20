@@ -8,7 +8,6 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
-    // avoid create buildConfig at android library.
     buildFeatures.buildConfig = !plugins.hasPlugin("com.android.library")
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -22,6 +21,6 @@ android {
         xmlReport false
         textReport true
         textOutput 'stdout'
-		disable "ObsoleteLintCustomCheck"
+        disable "ObsoleteLintCustomCheck"
     }
 }

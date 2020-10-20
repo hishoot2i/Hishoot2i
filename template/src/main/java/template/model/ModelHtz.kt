@@ -5,19 +5,19 @@ import java.util.Locale
 /*
 // loc: template.cfg
 {
-	"name":"Sample Htz",
-	"author":"fb.com/ratabb",
-	"template_file":"frame_sample.png",
-	"preview":"preview_sample.jpg",
-	"overlay_file":"overlay_sample.png",
-	"overlay_x":148,
-	"overlay_y":206,
-	"screen_width":720,
-	"screen_height":1280,
-	"screen_x":200,
-	"screen_y":300,
-	"template_width":1120,
-	"template_height":2080
+    "name":"Sample Htz",
+    "author":"fb.com/ratabb",
+    "template_file":"frame_sample.png",
+    "preview":"preview_sample.jpg",
+    "overlay_file":"overlay_sample.png",
+    "overlay_x":148,
+    "overlay_y":206,
+    "screen_width":720,
+    "screen_height":1280,
+    "screen_x":200,
+    "screen_y":300,
+    "template_width":1120,
+    "template_height":2080
 }
 */
 data class ModelHtz(
@@ -40,8 +40,12 @@ data class ModelHtz(
         screen_width == -1 || screen_height == -1 || screen_x == -1 || screen_y == -1 ||
         template_width == -1 || template_height == -1
 
-    fun generateTemplateId(): String = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
-        .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
-        .trim()
-        .substring(range = 0..32) // limit ID length
+    fun generateTemplateId(): String {
+        val ret = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
+            .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
+            .trim()
+        val maxLengthID = 32
+        return ret.takeIf { it.length <= maxLengthID }
+            ?: ret.substring(range = 0..maxLengthID) // limit
+    }
 }

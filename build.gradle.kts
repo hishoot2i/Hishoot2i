@@ -44,6 +44,7 @@ allprojects {
             }
         }
     }
+    apply("$rootDir/buildsystem/spotless.gradle")
 }
 plugins {
     id("com.diffplug.spotless") version "5.6.1"
@@ -68,7 +69,6 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     checkForGradleUpdate = false //
 }
 subprojects {
-    apply("$rootDir/buildsystem/spotless.gradle")
     afterEvaluate {
         val isAndroidLib = plugins.hasPlugin("com.android.library")
         val isAndroidApp = plugins.hasPlugin("com.android.application")

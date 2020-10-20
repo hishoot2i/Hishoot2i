@@ -36,8 +36,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        app:layout_behavior=".ui.common.behavior.FabSnackBarAwareBehavior"
+        android:contentDescription="@null"
         app:layout_anchor="@id/mainBottomAppBar"
+        app:layout_behavior=".ui.common.behavior.FabSnackBarAwareBehavior"
         app:srcCompat="@drawable/ic_save" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

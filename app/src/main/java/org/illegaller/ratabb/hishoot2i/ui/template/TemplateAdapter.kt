@@ -56,7 +56,7 @@ class TemplateAdapter @Inject constructor(
             this.binding = binding
             itemView.setOnClickListener {
                 it.preventMultipleClick {
-                    clickItem(getItem(adapterPosition))
+                    clickItem(getItem(absoluteAdapterPosition))
                 }
             }
         }

@@ -2,20 +2,37 @@ apply plugin: "com.diffplug.spotless"
 def ktLintVersion = rootProject.ktLintVersion
 spotless {
     kotlin {
-        target("**/*.kt")
+        target("src/**/*.kt")
         ktlint(ktLintVersion)
         trimTrailingWhitespace()
         endWithNewline()
+        indentWithSpaces()
     }
     kotlinGradle {
         target("*.gradle.kts")
         ktlint(ktLintVersion)
         trimTrailingWhitespace()
         endWithNewline()
+        indentWithSpaces()
     }
     groovyGradle {
-        target("*.gradle")
+        target("buildsystem/*.gradle")
         trimTrailingWhitespace()
         endWithNewline()
+        indentWithSpaces()
+    }
+    format("xml") {
+        target("src/**/*.xml")
+        targetExclude("**/build/**")
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
+    }
+    format("misc") {
+        target("**/*.md", "**/*.properties", "**/*.sh")
+        targetExclude("**/build/**", ".gradle/")
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
     }
 }

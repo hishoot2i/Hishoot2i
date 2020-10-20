@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearSnapHelper
 import common.ext.hideSoftKey
 import common.ext.isKeyboardOpen
 import common.ext.isVisible
@@ -17,6 +18,7 @@ import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentTemplateBinding
+import org.illegaller.ratabb.hishoot2i.databinding.NoContentBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
@@ -53,6 +55,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
             templateRecyclerView.apply {
                 adapter = this@TemplateFragment.adapter
                 addItemDecoration(TemplateListDivider(requireContext()))
+                LinearSnapHelper().attachToRecyclerView(this)
             }
             templateHtzFab.setOnClickListener { requestHtz.launch("*/*") }
             templateBottomAppBar.apply {
@@ -84,7 +87,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
                 templateRecyclerView.layoutManager?.onRestoreInstanceState(state)
             }
             templateRecyclerView.isVisible = haveData
-            noContent.noContent.isVisible = !haveData
+            NoContentBinding.bind(root).noContent.isVisible = !haveData
         }
     }
 
