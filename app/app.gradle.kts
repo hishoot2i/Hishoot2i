@@ -17,12 +17,12 @@ android {
         val imageReceiverKey = "$applicationId.IMAGE_RECEIVER"
         buildConfigField("String", "FILE_AUTHORITY", "\"${fileAuthority}\"")
         buildConfigField("String", "IMAGE_RECEIVER", "\"${imageReceiverKey}\"")
-        manifestPlaceholders = mapOf(
+        manifestPlaceholders += mapOf(
             "image_receiver_key" to imageReceiverKey,
             "file_authority" to fileAuthority
         )
         resConfigs("en", "xxhdpi") // TODO: ?
-        dependenciesInfo.includeInApk = false // Disables dependency metadata when building APKs.
+        dependenciesInfo.includeInApk = false
     }
     packagingOptions {
         exclude("kotlin/**")
@@ -47,14 +47,9 @@ android {
         }
     }
     buildFeatures.viewBinding = true
-    compileOptions.coreLibraryDesugaringEnabled = true //
+    compileOptions.isCoreLibraryDesugaringEnabled = true
 }
-kapt {
-    arguments {
-        arg("dagger.experimentalDaggerErrorMessages", "enabled") //
-        arg("dagger.formatGeneratedSource", "disabled")
-    }
-}
+
 dependencies {
     implementation(project(":common"))
     implementation(project(":imageloader"))
