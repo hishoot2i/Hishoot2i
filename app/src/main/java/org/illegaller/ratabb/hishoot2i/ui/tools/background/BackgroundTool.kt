@@ -161,6 +161,6 @@ class BackgroundTool : BottomSheetDialogFragment() {
     private fun handleVisibleLayoutMode(binding: FragmentToolBackgroundBinding) = with(binding) {
         toolBackgroundLayoutColor.root.isVisible = backgroundMode.isColor
         toolBackgroundLayoutImage.root.isVisible = backgroundMode.isImage
-        toolBackgroundLayoutTrans.root.isVisible = backgroundMode.isTransparent
+        toolBackgroundLayoutTrans.isVisible = backgroundMode.isTransparent
     }
 }

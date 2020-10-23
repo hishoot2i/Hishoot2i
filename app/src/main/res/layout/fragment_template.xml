@@ -17,10 +17,18 @@
         tools:itemCount="8"
         tools:listitem="@layout/row_item_template" />
 
-    <include
+    <TextView
         android:id="@+id/noContent"
-        layout="@layout/no_content"
-        tools:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:text="@string/no_content_here"
+        android:textColor="?android:textColorSecondary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

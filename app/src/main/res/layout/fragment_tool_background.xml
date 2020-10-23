@@ -53,12 +53,22 @@
             android:layout_gravity="center_vertical"
             tools:visibility="visible" />
 
-        <include
+        <FrameLayout
             android:id="@+id/toolBackgroundLayoutTrans"
-            layout="@layout/no_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            tools:visibility="gone" />
+            tools:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:text="@string/no_content_here"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>
