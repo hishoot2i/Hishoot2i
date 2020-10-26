@@ -1,5 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +23,7 @@ import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentTemplateBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
+import org.illegaller.ratabb.hishoot2i.ui.common.broadcastReceiver
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
 import org.illegaller.ratabb.hishoot2i.ui.common.rx.RxSearchView
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
@@ -42,6 +46,31 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
         DocumentFile.fromSingleUri(requireContext(), uri)?.uri?.toFile(requireContext())?.let {
             presenter.importHtz(it)
         }
+    }
+
+    companion object {
+        @JvmStatic
+        @Suppress("DEPRECATION")
+        private val PKG_UPDATE_INTENT = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_INSTALL)
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_CHANGED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addDataScheme("package")
+        }
+    }
+
+    private val receiver: BroadcastReceiver by broadcastReceiver { _, _ -> presenter.render() }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().registerReceiver(receiver, PKG_UPDATE_INTENT)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().unregisterReceiver(receiver)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
