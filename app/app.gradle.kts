@@ -8,6 +8,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
 }
 apply("$rootDir/buildsystem/signingRelease.gradle")
+apply("$rootDir/buildsystem/appCenter.gradle")
 android {
     defaultConfig {
         applicationId = "org.illegaller.ratabb.hishoot2i"
@@ -123,6 +124,11 @@ dependencies {
     implementation("io.reactivex.rxjava3:rxjava:3.0.7")
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
     implementation("org.reactivestreams:reactive-streams:1.0.3")
+
+    val appCenterSdkVersion: String by rootProject
+    implementation("com.microsoft.appcenter:appcenter:$appCenterSdkVersion")
+    implementation("com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion")
+    implementation("com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion")
 }
 
 apply("$rootDir/buildsystem/appVersioning.gradle")

@@ -2,6 +2,7 @@ package org.illegaller.ratabb.hishoot2i
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
+import com.microsoft.appcenter.AppCenter
 import dagger.hilt.android.HiltAndroidApp
 import entity.mode
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
@@ -22,5 +23,6 @@ class HiShootApp : MultiDexApplication() {
             enableStrictMode()
         }
         RxJavaPlugins.setErrorHandler { Timber.e(it) }
+        AppCenter.configure(this, BuildConfig.APP_CENTER_SECRET)
     }
 }

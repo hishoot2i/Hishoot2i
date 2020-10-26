@@ -15,6 +15,9 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
 import common.ext.activityPendingIntent
 import common.ext.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,6 +71,7 @@ class HiShootActivity : AppCompatActivity() {
             }
         }
         getPermission.launch(WRITE_EXTERNAL_STORAGE)
+        AppCenter.start(Analytics::class.java, Crashes::class.java)
     }
 
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp(binding.drawerLayout)
