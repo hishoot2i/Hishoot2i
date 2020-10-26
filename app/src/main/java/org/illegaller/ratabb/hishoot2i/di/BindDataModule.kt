@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.illegaller.ratabb.hishoot2i.di
 
 import common.FileConstants

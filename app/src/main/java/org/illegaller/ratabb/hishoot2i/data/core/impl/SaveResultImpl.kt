@@ -36,7 +36,7 @@ class SaveResultImpl @Inject constructor(
         saveQuality: Int
     ): Single<Result.Save> = Single.fromCallable {
         val nowMs = System.currentTimeMillis()
-        val fileName =
+        @Suppress("SpellCheckingInspection") val fileName =
             "HiShoot_${nowMs.toDateTimeFormat("yyyyMMdd_HHmmss")}.${compressFormat.ext}"
         val file = File(savedDir(), fileName).also { file ->
             // Save File
