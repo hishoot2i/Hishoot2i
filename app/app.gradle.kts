@@ -60,7 +60,9 @@ dependencies {
     val kotlinVersion: String by rootProject
     implementation(kotlin("stdlib", version = kotlinVersion))
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.0.10")
+    val desugarVersion: String by rootProject
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$desugarVersion")
+
     val xMultiDexVersion: String by rootProject
     implementation("androidx.multidex:multidex:$xMultiDexVersion")
 
@@ -115,7 +117,9 @@ dependencies {
 
     val timberVersion: String by rootProject
     implementation("com.jakewharton.timber:timber:$timberVersion")
+
     implementation("cat.ereza:customactivityoncrash:2.3.0")
+
     val leakcanaryVersion: String by rootProject
     implementation("com.squareup.leakcanary:plumber-android:$leakcanaryVersion")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion")
@@ -124,11 +128,6 @@ dependencies {
     implementation("io.reactivex.rxjava3:rxjava:3.0.7")
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
     implementation("org.reactivestreams:reactive-streams:1.0.3")
-
-    val appCenterSdkVersion: String by rootProject
-    implementation("com.microsoft.appcenter:appcenter:$appCenterSdkVersion")
-    implementation("com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion")
-    implementation("com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion")
 }
 
 apply("$rootDir/buildsystem/appVersioning.gradle")
