@@ -1,14 +1,11 @@
 package org.illegaller.ratabb.hishoot2i.data.source
 
 import androidx.annotation.IntRange
-import common.FileConstants
-import common.ext.isDirAndCanRead
-import common.ext.listFilesOrEmpty
 import entity.AppInfo
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.mergeDelayError
-import io.reactivex.rxjava3.kotlin.toFlowable
+import org.illegaller.ratabb.hishoot2i.data.HtzResolver
 import org.illegaller.ratabb.hishoot2i.data.PackageResolver
 import template.Template
 import template.TemplateFactoryManager
@@ -17,8 +14,8 @@ import javax.inject.Inject
 
 class TemplateDataSourceImpl @Inject constructor(
     packageResolver: PackageResolver,
-    templateFactoryManager: TemplateFactoryManager,
-    fileConstants: FileConstants
+    htzResolver: HtzResolver,
+    templateFactoryManager: TemplateFactoryManager
 ) : TemplateDataSource, TemplateFactoryManager by templateFactoryManager {
 
     override fun allTemplate(): Flowable<Template> = listOf(
@@ -42,7 +39,8 @@ class TemplateDataSourceImpl @Inject constructor(
     private val installedTemplate: (Int) -> Flowable<AppInfo> =
         (packageResolver::installedTemplate)
 
-    private val htzDir: () -> File = (fileConstants::htzDir)
+    private val installedHtz: () -> Flowable<File> =
+        (htzResolver::installedHtz)
 
     private inline fun provideTemplateLegacy(
         crossinline factory: (String, Long) -> Template
@@ -59,9 +57,7 @@ class TemplateDataSourceImpl @Inject constructor(
 
     private inline fun provideTemplateHtz(
         crossinline factory: (String, Long) -> Template
-    ): Flowable<Template> = Flowable.fromCallable { htzDir() }
-        .map { it.listFilesOrEmpty() }
-        .flatMap { it.toFlowable() }
-        .filter { it.isDirAndCanRead() }
-        .map { factory(it.name, it.lastModified()) }
+    ): Flowable<Template> = installedHtz().map {
+        factory(it.name, it.lastModified())
+    }
 }

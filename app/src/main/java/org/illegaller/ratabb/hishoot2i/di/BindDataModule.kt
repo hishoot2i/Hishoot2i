@@ -8,6 +8,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.internal.modules.ApplicationContextModule
+import org.illegaller.ratabb.hishoot2i.data.HtzResolver
+import org.illegaller.ratabb.hishoot2i.data.HtzResolverImpl
 import org.illegaller.ratabb.hishoot2i.data.PackageResolver
 import org.illegaller.ratabb.hishoot2i.data.PackageResolverImpl
 import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
@@ -33,6 +35,10 @@ interface BindDataModule {
     @Binds
     @Singleton
     fun bindPackageResolver(impl: PackageResolverImpl): PackageResolver
+
+    @Binds
+    @Singleton
+    fun bindHtzResolver(impl: HtzResolverImpl): HtzResolver
 
     @Binds
     @Singleton
