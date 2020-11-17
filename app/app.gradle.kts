@@ -8,7 +8,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
 }
 apply("$rootDir/buildsystem/signingRelease.gradle")
-apply("$rootDir/buildsystem/appCenter.gradle")
 android {
     defaultConfig {
         applicationId = "org.illegaller.ratabb.hishoot2i"

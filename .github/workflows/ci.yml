@@ -40,11 +40,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: AppCenterSecret
-        run: |
-          touch local.properties
-          echo "APP_CENTER_SECRET=${{ secrets.APP_CENTER_SECRET }}" >> local.properties
-
       - name: Generates advice from Dependency-analysis Gradle task
         run: ./gradlew -S buildHealth
       
