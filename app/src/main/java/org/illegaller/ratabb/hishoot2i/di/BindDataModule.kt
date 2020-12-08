@@ -6,8 +6,8 @@ import common.FileConstants
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.internal.modules.ApplicationContextModule
+import dagger.hilt.components.SingletonComponent
 import org.illegaller.ratabb.hishoot2i.data.HtzResolver
 import org.illegaller.ratabb.hishoot2i.data.HtzResolverImpl
 import org.illegaller.ratabb.hishoot2i.data.PackageResolver
@@ -26,7 +26,7 @@ import org.illegaller.ratabb.hishoot2i.provider.FileConstantsImpl
 import javax.inject.Singleton
 
 @Module(includes = [ApplicationContextModule::class])
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 interface BindDataModule {
     @Binds
     @Singleton

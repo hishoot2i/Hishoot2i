@@ -11,16 +11,18 @@ import common.egl.MaxTextureCompat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import imageloader.ImageLoader
 import imageloader.uil.UilImageLoaderImpl
 import org.illegaller.ratabb.hishoot2i.data.rx.AppScheduler
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
+import template.TemplateFactoryManager
 import template.TemplateFactoryManagerImpl
 import javax.inject.Singleton
 
 @Module(includes = [BindDataModule::class])
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object ProvideDataModule {
 
     @Provides
@@ -35,14 +37,14 @@ object ProvideDataModule {
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context
-    ): imageloader.ImageLoader = UilImageLoaderImpl(context)
+    ): ImageLoader = UilImageLoaderImpl(context)
 
     @Provides
     @Singleton
     fun provideFactoryManager(
         @ApplicationContext context: Context,
         fileConstants: FileConstants
-    ): template.TemplateFactoryManager = TemplateFactoryManagerImpl(context, fileConstants)
+    ): TemplateFactoryManager = TemplateFactoryManagerImpl(context, fileConstants)
 
     @Provides
     @Singleton

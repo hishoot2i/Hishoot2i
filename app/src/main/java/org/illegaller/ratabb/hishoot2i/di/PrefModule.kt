@@ -5,8 +5,8 @@ package org.illegaller.ratabb.hishoot2i.di
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.internal.modules.ApplicationContextModule
+import dagger.hilt.components.SingletonComponent
 import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.ScreenToolPref
@@ -22,7 +22,7 @@ import org.illegaller.ratabb.hishoot2i.data.pref.impl.TemplateToolPrefImpl
 import javax.inject.Singleton
 
 @Module(includes = [ApplicationContextModule::class])
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 interface PrefModule {
     @Binds
     @Singleton
