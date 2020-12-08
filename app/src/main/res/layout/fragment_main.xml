@@ -14,7 +14,7 @@
         android:contentDescription="@null"
         tools:src="@drawable/default_preview" />
 
-    <com.google.android.material.progressindicator.ProgressIndicator
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/mainProgress"
         style="@style/AppWidget.ProgressBar.Linear"
         android:layout_width="match_parent"

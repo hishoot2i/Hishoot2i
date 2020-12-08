@@ -19,10 +19,9 @@
     <style name="AppWidget.CoordinatorLayout" parent="Widget.Support.CoordinatorLayout">
         <item name="statusBarBackground">@android:color/transparent</item>
     </style>
-
-    <style name="AppWidget.ProgressBar.Linear" parent="Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate">
-        <item name="growMode">bidirectional</item>
-        <item name="indicatorColors">@array/progressColors</item>
+    <style name="AppWidget.ProgressBar.Linear" parent="Widget.MaterialComponents.LinearProgressIndicator">
+        <item name="indeterminateAnimationType">seamless</item>
+        <item name="indicatorColor">@array/progressColors</item>
     </style>
 
     <style name="AppWidget.Slider" parent="Widget.MaterialComponents.Slider">

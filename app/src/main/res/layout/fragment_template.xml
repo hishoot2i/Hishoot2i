@@ -36,7 +36,7 @@
         android:background="@null"
         android:orientation="vertical">
 
-        <com.google.android.material.progressindicator.ProgressIndicator
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/templateProgress"
             style="@style/AppWidget.ProgressBar.Linear"
             android:layout_width="match_parent"
