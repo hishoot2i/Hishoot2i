@@ -6,5 +6,5 @@ import template.Template
 
 interface TemplateDataSource {
     fun allTemplate(): Flowable<Template>
-    fun findById(id: String): Single<Template>
+    fun findByIdOrDefault(id: String): Single<Template>
 }

@@ -42,7 +42,7 @@ class MainPresenterImpl @Inject constructor(
 
     private val currentTemplate: Single<Template>
         get() = if (isHaveLastTemplate) Single.just(lastTemplate)
-        else templateSource.findById(templateToolPref.templateCurrentId)
+        else templateSource.findByIdOrDefault(templateToolPref.templateCurrentId)
             .subscribeOn(schedulerProvider.io())
             .doOnSuccess {
                 lastTemplate = it

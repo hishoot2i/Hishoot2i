@@ -18,7 +18,7 @@ class TemplateToolPresenterImpl @Inject constructor(
     private val disposables: CompositeDisposable = CompositeDisposable()
     override fun attachView(view: TemplateToolView) {
         super.attachView(view)
-        templateDataSource.findById(appPref.templateCurrentId)
+        templateDataSource.findByIdOrDefault(appPref.templateCurrentId)
             .ioUI(schedulerProvider)
             .subscribeBy(view::onError) { view.currentTemplate(it, appPref) }
             .addTo(disposables)
