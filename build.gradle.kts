@@ -47,9 +47,9 @@ allprojects {
     apply("$rootDir/buildsystem/spotless.gradle")
 }
 plugins {
-    id("com.diffplug.spotless") version "5.7.0"
+    id("com.diffplug.spotless") version "5.8.2"
     id("com.github.ben-manes.versions") version "0.36.0"
-    id("com.autonomousapps.dependency-analysis") version "0.65.0"
+    id("com.autonomousapps.dependency-analysis") version "0.68.0"
 }
 /** Plugin [com.autonomousapps.dependency-analysis] config. */
 dependencyAnalysis {
