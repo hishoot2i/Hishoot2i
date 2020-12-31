@@ -124,7 +124,7 @@ dependencies {
     debugImplementation("com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion")
 
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-    implementation("io.reactivex.rxjava3:rxjava:3.0.7")
+    implementation("io.reactivex.rxjava3:rxjava:3.0.9")
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
     implementation("org.reactivestreams:reactive-streams:1.0.3")
 }

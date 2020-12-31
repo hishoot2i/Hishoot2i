@@ -20,7 +20,7 @@
         <item name="statusBarBackground">@android:color/transparent</item>
     </style>
     <style name="AppWidget.ProgressBar.Linear" parent="Widget.MaterialComponents.LinearProgressIndicator">
-        <item name="indeterminateAnimationType">seamless</item>
+        <item name="indeterminateAnimationType">contiguous</item>
         <item name="indicatorColor">@array/progressColors</item>
     </style>
 
