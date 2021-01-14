@@ -2,8 +2,8 @@
 
 plugins {
     id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
+    id("kotlin-android")
+    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
 }
@@ -13,7 +13,7 @@ android {
         applicationId = "org.illegaller.ratabb.hishoot2i"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
-        val fileAuthority = "$applicationId.fileAuthority"
+        val fileAuthority = "$applicationId.FILE_AUTHORITY"
         val imageReceiverKey = "$applicationId.IMAGE_RECEIVER"
         buildConfigField("String", "FILE_AUTHORITY", "\"${fileAuthority}\"")
         buildConfigField("String", "IMAGE_RECEIVER", "\"${imageReceiverKey}\"")
