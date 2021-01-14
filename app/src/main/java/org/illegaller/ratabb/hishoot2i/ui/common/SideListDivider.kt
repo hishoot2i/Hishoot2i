@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.ui.template
+package org.illegaller.ratabb.hishoot2i.ui.common
 
 import android.content.Context
 import android.graphics.Canvas
@@ -21,7 +21,14 @@ import common.ext.graphics.themeColorOrDefault
 import org.illegaller.ratabb.hishoot2i.R
 import kotlin.math.roundToInt
 
-class TemplateListDivider : RecyclerView.ItemDecoration {
+/**
+ * ## Divider [RecyclerView.ItemDecoration]
+ * - [onDrawOver] line (bottom and right side) with color from [R.attr.colorOnSurface]
+ *     - stroke= 0.5dp
+ *     - space= 4.0dp
+ * - [onDraw] fill background with color from [R.attr.colorSurfaceHalfAlpha]
+ **/
+class SideListDivider : RecyclerView.ItemDecoration {
 
     private val sizeDivider: Float
 
@@ -30,6 +37,13 @@ class TemplateListDivider : RecyclerView.ItemDecoration {
     private val paintLine: Paint
 
     private val paintBack: Paint
+
+    companion object {
+        @JvmStatic
+        fun addItemDecorToRecyclerView(view: RecyclerView) {
+            view.addItemDecoration(SideListDivider(view.context))
+        }
+    }
 
     constructor(context: Context) : this(
         colorDivider = context.themeColorOrDefault(R.attr.colorOnSurface, Color.LTGRAY),

@@ -38,7 +38,7 @@ class SortTemplateDialog : AppCompatDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = DialogSortTemplateBinding.inflate(inflater, container, false)
+    ): View = DialogSortTemplateBinding.inflate(inflater, container, false)
         .also(::onBind)
         .run { root }
 
@@ -49,18 +49,14 @@ class SortTemplateDialog : AppCompatDialogFragment() {
             actionSortTypeDesc, actionSortDateAsc, actionSortDateDesc
         )
         // NOTE: are we need setBackground view to null ?
-        for (v in views) v.background = null
-        // NOTE: emit
+        views.forEach { it.background = null }
+        // NOTE: emit | setBackground selected indicator.
         views[args.templateComparator.ordinal].setBackgroundResource(R.drawable.sort_selected)
         //
         val click: (View, TemplateComparator) -> Unit = { view, comparator ->
             view.preventMultipleClick {
-                // NOTE: no need set background view, this dialog dismissed.
                 if (args.templateComparator != comparator) {
-                    setFragmentResult(
-                        KEY_REQ_SORT,
-                        bundleOf(ARG_SORT to comparator.ordinal)
-                    )
+                    setFragmentResult(KEY_REQ_SORT, bundleOf(ARG_SORT to comparator.ordinal))
                 }
                 dismiss()
             }
@@ -72,6 +68,6 @@ class SortTemplateDialog : AppCompatDialogFragment() {
         actionSortDateAsc.setOnClickListener { click(it, DATE_ASC) }
         actionSortDateDesc.setOnClickListener { click(it, DATE_DESC) }
         //
-        actionSortCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
+        actionSortCancel.setOnClickListener { click(it, args.templateComparator) }
     }
 }

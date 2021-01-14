@@ -138,7 +138,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView {
             bitmap,
             name,
             requireContext().activityPendingIntent {
-                ShareCompat.IntentBuilder.from(requireActivity())
+                ShareCompat.IntentBuilder(requireContext())
                     .setStream(uri)
                     .setType("image/*")
                     .setChooserTitle(R.string.share)

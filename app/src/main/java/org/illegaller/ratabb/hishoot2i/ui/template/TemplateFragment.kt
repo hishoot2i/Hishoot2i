@@ -23,6 +23,7 @@ import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentTemplateBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
+import org.illegaller.ratabb.hishoot2i.ui.common.SideListDivider
 import org.illegaller.ratabb.hishoot2i.ui.common.broadcastReceiver
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
 import org.illegaller.ratabb.hishoot2i.ui.common.rx.RxSearchView
@@ -82,7 +83,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
         binding.apply {
             templateRecyclerView.apply {
                 adapter = this@TemplateFragment.adapter
-                addItemDecoration(TemplateListDivider(requireContext()))
+                SideListDivider.addItemDecorToRecyclerView(this)
                 LinearSnapHelper().attachToRecyclerView(this)
                 setHasFixedSize(true)
             }
