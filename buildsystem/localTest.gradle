@@ -1,0 +1,7 @@
+android.defaultConfig.testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+dependencies {
+    testImplementation "junit:junit:${rootProject.jUnitVersion}"
+    testImplementation "org.hamcrest:hamcrest-all:${rootProject.hamcrestVersion}"
+    testImplementation "org.robolectric:robolectric:${rootProject.robolectricVersion}"
+}

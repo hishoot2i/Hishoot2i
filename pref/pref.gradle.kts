@@ -2,7 +2,7 @@
 
 plugins {
     id("com.android.library")
-    kotlin("android")
+    id("kotlin-android")
 }
 
 dependencies {
@@ -11,3 +11,4 @@ dependencies {
     val xAnnotationVersion: String by rootProject
     compileOnly("androidx.annotation:annotation:$xAnnotationVersion")
 }
+apply("$rootDir/buildsystem/localTest.gradle")

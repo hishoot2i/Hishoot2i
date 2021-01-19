@@ -34,15 +34,6 @@ allprojects {
                 verbose = true
             }
         }
-        tasks.whenObjectAdded {
-            // We not have Test, yet!
-            if (name.contains("AndroidTest") || name.contains("UnitTest")) {
-                enabled = false
-                if (logger.isEnabled(LogLevel.DEBUG)) {
-                    logger.log(LogLevel.DEBUG, "$name = $enabled")
-                }
-            }
-        }
     }
     apply("$rootDir/buildsystem/spotless.gradle")
 }
