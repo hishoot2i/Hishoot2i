@@ -1,12 +1,14 @@
 package template
 
 import androidx.annotation.CheckResult
+import androidx.annotation.WorkerThread
 import template.Template.Default
 import template.Template.Version1
 import template.Template.Version2
 import template.Template.Version3
 import template.Template.VersionHtz
 
+@WorkerThread
 interface TemplateFactoryManager {
     @CheckResult @Throws(Exception::class)
     fun default(): Default

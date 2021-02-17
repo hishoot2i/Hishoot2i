@@ -2,6 +2,7 @@
 
 package template
 
+import entity.Glare
 import entity.Sizes
 import template.TemplateConstants.DEFAULT_TEMPLATE_ID
 
@@ -55,7 +56,7 @@ sealed class Template {
         override val sizes: Sizes,
         override val coordinate: List<Float>,
         override val installedDate: Long,
-        val glare: entity.Glare?
+        val glare: Glare?
     ) : Template()
 
     /** @since 1.0.0 (20151223) */
@@ -70,7 +71,7 @@ sealed class Template {
         override val coordinate: List<Float>,
         override val installedDate: Long,
         val shadow: String,
-        val glare: entity.Glare?
+        val glare: Glare?
     ) : Template()
 
     /** @since 1.2.0 (20180730) */
@@ -85,6 +86,6 @@ sealed class Template {
         override val coordinate: List<Float>,
         override val installedDate: Long,
         val shadow: String?,
-        val glares: List<entity.Glare>?
+        val glares: List<Glare>?
     ) : Template()
 }

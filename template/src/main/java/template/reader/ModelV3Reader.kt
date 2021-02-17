@@ -1,6 +1,7 @@
 package template.reader
 
 import android.util.JsonReader
+import androidx.annotation.WorkerThread
 import common.ext.isNull
 import common.ext.nextFloat
 import common.ext.nextStringSafe
@@ -12,11 +13,11 @@ import entity.SizesF
 import template.model.ModelV3
 import java.io.InputStream
 
-/** @see [template.model.ModelV3] */
-class ModelV3Reader(
-    inputStream: InputStream
-) : AbsJsonModelReader<ModelV3>(inputStream) {
-    @Throws(Exception::class)
+/** @see [ModelV3] */
+@WorkerThread
+class ModelV3Reader(inputStream: InputStream) : BaseModelReader<ModelV3>(inputStream) {
+    private val jsonReader by lazy { JsonReader(this) }
+
     override fun model(): ModelV3 {
         val ret = ModelV3()
         jsonReader.readObject {
@@ -36,8 +37,8 @@ class ModelV3Reader(
                 }
             }
         }
-        return ret.takeUnless { it.isNotValid() }
-            ?: throw IllegalStateException("NotValid Model $ret")
+        check(!ret.isNotValid()) { "Not valid model: $ret" }
+        return ret
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////

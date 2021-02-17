@@ -1,25 +1,28 @@
+@file:Suppress("SpellCheckingInspection")
+
 package template.model
 
-/*
-// loc: assets/keterangan.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<DCSMS-Hishoot xmlns:android="http://androidminang.com/armdevteam">
-    <device>Galaxy Gio</device>
-    <author>http://androidminang.com</author>
-    <topx>42</topx>
-    <topy>140</topy>
-    <botx>39</botx>
-     <boty>190</boty>
-<!-- DEVICE DPI
-        ldpi=-1
-        mdpi=1
-        hdpi=2
-        xhdpi=3
-        xxhdpi=4
--->
-     <deviceDpi>1</deviceDpi>
-</DCSMS-Hishoot>
-*/
+/**
+ * // loc: assets/keterangan.xml
+ *```
+ *<?xml version="1.0" encoding="UTF-8"?>
+ *<DCSMS-Hishoot xmlns:android="http://androidminang.com/armdevteam">
+ *  <device>Galaxy Gio</device>
+ *  <author>http://androidminang.com</author>
+ *  <topx>42</topx>
+ *  <topy>140</topy>
+ *  <botx>39</botx>
+ *  <boty>190</boty>
+ *  <!-- DEVICE DPI
+ *    ldpi  =-1
+ *    mdpi  =1
+ *    hdpi  =2
+ *    xhdpi =3
+ *    xxhdpi=4 -->
+ *  <deviceDpi>1</deviceDpi>
+ *</DCSMS-Hishoot>
+ *```
+ **/
 data class ModelV1 @JvmOverloads constructor(
     var device: String = "",
     var author: String = "",

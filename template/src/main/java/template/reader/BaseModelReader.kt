@@ -1,14 +1,13 @@
 package template.reader
 
-import android.util.JsonReader
+import androidx.annotation.WorkerThread
 import java.io.InputStream
 import java.io.InputStreamReader
 
-abstract class AbsJsonModelReader<out T>(
+@WorkerThread
+abstract class BaseModelReader<out T>(
     inputStream: InputStream
 ) : InputStreamReader(inputStream, Charsets.UTF_8) {
-    protected val jsonReader by lazy { JsonReader(this) }
-
     @Throws(Exception::class)
     abstract fun model(): T
 }
