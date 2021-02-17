@@ -58,13 +58,10 @@ dependencies {
 
     val kotlinVersion: String by rootProject
     implementation(kotlin("stdlib", version = kotlinVersion))
-
     val desugarVersion: String by rootProject
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$desugarVersion")
-
     val xMultiDexVersion: String by rootProject
     implementation("androidx.multidex:multidex:$xMultiDexVersion")
-
     val xAnnotationVersion: String by rootProject
     compileOnly("androidx.annotation:annotation:$xAnnotationVersion")
     val xCoreVersion: String by rootProject
@@ -98,12 +95,10 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime:$xNavigationVersion")
     implementation("androidx.navigation:navigation-runtime-ktx:$xNavigationVersion")
     val xLifeCycleVersion: String by rootProject
-    // implementation("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel:$xLifeCycleVersion")
-
-    val googleMaterial: String by rootProject
-    implementation("com.google.android.material:material:$googleMaterial")
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$xLifeCycleVersion")
+    val googleMaterialVersion: String by rootProject
+    implementation("com.google.android.material:material:$googleMaterialVersion")
     implementation("javax.inject:javax.inject:1")
     val daggerVersion: String by rootProject
     implementation("com.google.dagger:dagger:$daggerVersion") //
@@ -113,18 +108,15 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
     // val xHiltVersion: String by rootProject
     // kapt("androidx.hilt:hilt-compiler:$xHiltVersion")
-
     val timberVersion: String by rootProject
     implementation("com.jakewharton.timber:timber:$timberVersion")
-
     implementation("cat.ereza:customactivityoncrash:2.3.0")
-
     val leakcanaryVersion: String by rootProject
     implementation("com.squareup.leakcanary:plumber-android:$leakcanaryVersion")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion")
 
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-    implementation("io.reactivex.rxjava3:rxjava:3.0.9")
+    implementation("io.reactivex.rxjava3:rxjava:3.0.10")
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
     implementation("org.reactivestreams:reactive-streams:1.0.3")
 }

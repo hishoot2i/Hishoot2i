@@ -2,7 +2,7 @@
 
 plugins {
     id("com.android.library")
-    kotlin("android")
+    id("kotlin-android")
 }
 dependencies {
     val kotlinVersion: String by rootProject

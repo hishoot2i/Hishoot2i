@@ -1,5 +1,8 @@
 @file:Suppress("SpellCheckingInspection")
 
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     val agpVersion: String by project
     val daggerHiltVersion: String by project
@@ -27,7 +30,7 @@ allprojects {
         gradlePluginPortal()
     }
     afterEvaluate {
-        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class) {
+        tasks.withType(KotlinCompile::class) {
             kotlinOptions {
                 jvmTarget = "1.8"
                 allWarningsAsErrors = true
@@ -38,16 +41,16 @@ allprojects {
     apply("$rootDir/buildsystem/spotless.gradle")
 }
 plugins {
-    id("com.diffplug.spotless") version "5.9.0"
+    id("com.diffplug.spotless") version "5.10.0"
     id("com.github.ben-manes.versions") version "0.36.0"
-    id("com.autonomousapps.dependency-analysis") version "0.70.0"
+    id("com.autonomousapps.dependency-analysis") version "0.71.0"
 }
 /** Plugin [com.autonomousapps.dependency-analysis] config. */
 dependencyAnalysis {
     issues { all { onAny { severity("fail") } } }
 }
-/** Plugin [com.github.ben-manes.versions] config. */
-tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+/** Plugin `dependencyUpdates` [com.github.ben-manes.versions] config. */
+tasks.named("dependencyUpdates", DependencyUpdatesTask::class.java) {
     fun isNonStable(version: String): Boolean {
         val stableKeyword = listOf("RELEASE", "FINAL", "GA").any {
             version.toUpperCase().contains(it)
