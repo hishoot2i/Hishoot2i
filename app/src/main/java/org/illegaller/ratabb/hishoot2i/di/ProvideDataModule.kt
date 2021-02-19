@@ -14,7 +14,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import imageloader.ImageLoader
-import imageloader.uil.UilImageLoaderImpl
+import imageloader.coil.CoilImageLoaderImpl
+import org.illegaller.ratabb.hishoot2i.BuildConfig
 import org.illegaller.ratabb.hishoot2i.data.rx.AppScheduler
 import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import template.TemplateFactoryManager
@@ -37,7 +38,7 @@ object ProvideDataModule {
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context
-    ): ImageLoader = UilImageLoaderImpl(context)
+    ): ImageLoader = CoilImageLoaderImpl(context, BuildConfig.DEBUG)
 
     @Provides
     @Singleton
