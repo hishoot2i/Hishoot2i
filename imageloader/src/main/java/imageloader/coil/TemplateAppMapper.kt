@@ -14,23 +14,17 @@ import common.PathBuilder.TEMPLATE_APP
  *
  * @see [PathBuilder.stringTemplateApp]
  **/
-internal class TemplateAppMapper(context: Context) : Mapper<String, Uri> {
-
-    private val getId: (String, String) -> Int = { templateId, drawableName ->
-        try {
-            context.packageManager.getResourcesForApplication(templateId)
-                .getIdentifier(drawableName, "drawable", templateId)
-        } catch (_: Exception) {
-            0
-        }
-    }
+internal class TemplateAppMapper(
+    private val context: Context
+) : Mapper<String, Uri> {
 
     override fun handles(data: String): Boolean = data.startsWith(TEMPLATE_APP)
 
     override fun map(data: String): Uri {
         val (templateId, drawableName) = data.removePrefix(TEMPLATE_APP)
             .split(SEPARATOR, limit = 2)
-        val id = getId(templateId, drawableName)
+        val id = context.packageManager.getResourcesForApplication(templateId)
+            .getIdentifier(drawableName, "drawable", templateId)
         check(id != 0) { "Invalid $TEMPLATE_APP: $data" }
         return "$SCHEME_ANDROID_RESOURCE://$templateId/$id".toUri()
     }

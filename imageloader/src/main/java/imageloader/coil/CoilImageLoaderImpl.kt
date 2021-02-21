@@ -20,18 +20,14 @@ import okhttp3.OkHttpClient
 import coil.ImageLoader as coilImageLoader
 
 class CoilImageLoaderImpl(
-    context: Context,
+    private val context: Context,
     isDebugLog: Boolean
 ) : ImageLoader {
-    private val diskCache: Cache? by lazy {
-        try {
-            // TODO: ?
-            CoilUtils.createDefaultCache(context)
-        } catch (_: Exception) {
-            null
-        }
+    private val diskCache: Cache? = try {
+        CoilUtils.createDefaultCache(context)
+    } catch (_: Exception) {
+        null
     }
-    private val requestBuilder by lazy { ImageRequest.Builder(context) }
     private val impl: coilImageLoader by lazy {
         val builder = coilImageLoader.Builder(context)
             .componentRegistry {
@@ -54,7 +50,7 @@ class CoilImageLoaderImpl(
         source: String,
         reqSizes: Sizes
     ) {
-        val request = requestBuilder
+        val request = ImageRequest.Builder(context)
             .data(source)
             .target(imageView)
             .build()
@@ -74,7 +70,7 @@ class CoilImageLoaderImpl(
             override suspend fun transform(pool: BitmapPool, input: Bitmap, size: Size): Bitmap =
                 if (isOrientationAware && input.isLandScape) input.rotate() else input
         }
-        val request = requestBuilder
+        val request = ImageRequest.Builder(context)
             .allowHardware(!isOrientationAware) // ?
             .data(source)
             .transformations(orientationTrans)
