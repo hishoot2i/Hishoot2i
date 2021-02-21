@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "unused")
-
 package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.annotation.SuppressLint
@@ -12,21 +10,22 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.ClassLoaderCreator
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.MotionEvent
-import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.res.use
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
+import androidx.core.graphics.component3
+import androidx.core.graphics.component4
+import androidx.core.graphics.drawable.toBitmap
 import androidx.customview.view.AbsSavedState
+import common.ext.displayMetrics
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.ui.common.readBooleanCompat
-import org.illegaller.ratabb.hishoot2i.ui.common.writeBooleanCompat
-import timber.log.Timber
 
 // TODO: clean this !
 class CropImageView @JvmOverloads constructor(
@@ -34,80 +33,113 @@ class CropImageView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = R.style.AppWidget_CropImageView
 ) : AppCompatImageView(context, attrs, defStyle) {
-    // Member variables ////////////////////////////////////////////////////////////////////////////
     private var mViewWidth = 0
     private var mViewHeight = 0
-
-    /**
-     * Get source image bitmap
-     *
-     * @return src bitmap
-     */
-    private var imageBitmap: Bitmap? = null
-    private var mScale = 1.0f
-    private val mAngle = 0.0f
-    private var mImgWidth = 0.0f
-    private var mImgHeight = 0.0f
+    private var mScale = 1.0F
+    private var mImgWidth = 0.0F
+    private var mImgHeight = 0.0F
     private var mIsInitialized = false
-    private var mMatrix: Matrix? = null
-    private val mPaintTransparent: Paint
-    private val mPaintFrame: Paint
-    private val mPaintBitmap: Paint
-    private var mFrameRect: RectF? = null
-    private var mImageRect: RectF? = null
+    private val mMatrix = Matrix()
+    private val density = context.displayMetrics.density
+    private val mPaintTransparent = Paint(Paint.FILTER_BITMAP_FLAG)
+    private val mPaintFrame = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
+    private val mPaintBitmap = Paint(Paint.FILTER_BITMAP_FLAG)
+    private var mFrameRect = RectF()
+    private var mImageRect = RectF()
     private var mCenter = PointF()
-    private var mLastX = 0f
-    private var mLastY = 0f
-
-    // Instance variables for customizable attributes //////////////////////////////////////////////
+    private var mLastX = 0F
+    private var mLastY = 0F
     private var mTouchArea = TouchArea.OUT_OF_BOUNDS
-    private var mCropMode: CropMode? = CropMode.RATIO_1_1
-    private var mGuideShowMode: ShowMode? = ShowMode.SHOW_ALWAYS
-    private var mHandleShowMode: ShowMode? = ShowMode.SHOW_ALWAYS
-    private var mMinFrameSize: Float
-    private var mHandleSize: Int
-    private var mTouchPadding = 0
+    private var mCropMode: CropMode = CropMode.RATIO_1_1
+    private var mGuideShowMode: ShowMode = ShowMode.SHOW_ALWAYS
+    private var mHandleShowMode: ShowMode = ShowMode.SHOW_ALWAYS
+    private var mMinFrameSize = density * MIN_FRAME_SIZE_IN_DP
+    private var mHandleSize = density * HANDLE_SIZE_IN_DP
+    private var mTouchPadding = 0F
     private var mShowGuide = true
     private var mShowHandle = true
     private var mIsCropEnabled = true
-    private var mCustomRatio = PointF(1.0f, 1.0f)
-    private var mFrameStrokeWeight = 3.0f
-    private var mGuideStrokeWeight = 3.0f
-    private var mBackgroundColor: Int
-    private var mOverlayColor: Int
-    private var mFrameColor: Int
-    private var mHandleColor: Int
-    private var mGuideColor: Int
+    private var mCustomRatio = PointF(1.0F, 1.0F)
+    private var mFrameStrokeWeight = density * FRAME_STROKE_WEIGHT_IN_DP
+    private var mGuideStrokeWeight = density * GUIDE_STROKE_WEIGHT_IN_DP
+    private var mBackgroundColor = TRANSPARENT
+    private var mOverlayColor = TRANSLUCENT_BLACK
+    private var mFrameColor = WHITE
+    private var mHandleColor = WHITE
+    private var mGuideColor = TRANSLUCENT_WHITE
 
-    // Lifecycle methods ///////////////////////////////////////////////////////////////////////////
-    public override fun onSaveInstanceState(): Parcelable? {
-        val superState = super.onSaveInstanceState()
-        superState?.let {
-            val savedState = SavedState(superState)
-            savedState.image = imageBitmap
-            savedState.mode = mCropMode
-            savedState.backgroundColor = mBackgroundColor
-            savedState.overlayColor = mOverlayColor
-            savedState.frameColor = mFrameColor
-            savedState.guideShowMode = mGuideShowMode
-            savedState.handleShowMode = mHandleShowMode
-            savedState.showGuide = mShowGuide
-            savedState.showHandle = mShowHandle
-            savedState.handleSize = mHandleSize
-            savedState.touchPadding = mTouchPadding
-            savedState.minFrameSize = mMinFrameSize
-            savedState.customRatioX = mCustomRatio.x
-            savedState.customRatioY = mCustomRatio.y
-            savedState.frameStrokeWeight = mFrameStrokeWeight
-            savedState.guideStrokeWeight = mGuideStrokeWeight
-            savedState.isCropEnabled = mIsCropEnabled
-            savedState.handleColor = mHandleColor
-            savedState.guideColor = mGuideColor
-            return savedState
-        } ?: run {
-            return superState
+    private var imageBitmap: Bitmap? = null
+
+    init {
+        // Handle styleable ////////////////////////////////////////////////////////////////////////
+        context.obtainStyledAttributes(attrs, R.styleable.CropImageView, 0, defStyle).use { ta ->
+            setImageDrawable(ta.getDrawable(R.styleable.CropImageView_imgSrc))
+            mCropMode = CropMode.values().getOrElse(
+                ta.getInt(R.styleable.CropImageView_cropMode, CropMode.RATIO_1_1.id)
+            ) { CropMode.RATIO_1_1 }
+            mBackgroundColor = ta.getColor(R.styleable.CropImageView_backgroundColor, TRANSPARENT)
+            super.setBackgroundColor(mBackgroundColor) //
+            mOverlayColor = ta.getColor(R.styleable.CropImageView_overlayColor, TRANSLUCENT_BLACK)
+            mFrameColor = ta.getColor(R.styleable.CropImageView_frameColor, WHITE)
+            mHandleColor = ta.getColor(R.styleable.CropImageView_handleColor, WHITE)
+            mGuideColor = ta.getColor(R.styleable.CropImageView_guideColor, TRANSLUCENT_WHITE)
+            mGuideShowMode = ShowMode.values().getOrElse(
+                ta.getInt(R.styleable.CropImageView_guideShowMode, ShowMode.SHOW_ALWAYS.id)
+            ) { ShowMode.SHOW_ALWAYS }
+            mHandleShowMode = ShowMode.values().getOrElse(
+                ta.getInt(R.styleable.CropImageView_handleShowMode, ShowMode.SHOW_ALWAYS.id)
+            ) { ShowMode.SHOW_ALWAYS }
+            setGuideShowMode(mGuideShowMode)
+            setHandleShowMode(mHandleShowMode)
+            mHandleSize = ta.getDimensionPixelSize(
+                R.styleable.CropImageView_handleSize,
+                (HANDLE_SIZE_IN_DP * this.density).toInt()
+            ).toFloat()
+            mTouchPadding = ta.getDimensionPixelSize(R.styleable.CropImageView_touchPadding, 0)
+                .toFloat()
+            mMinFrameSize = ta.getDimensionPixelSize(
+                R.styleable.CropImageView_minFrameSize,
+                (MIN_FRAME_SIZE_IN_DP * this.density).toInt()
+            ).toFloat()
+            mFrameStrokeWeight = ta.getDimensionPixelSize(
+                R.styleable.CropImageView_frameStrokeWeight,
+                (FRAME_STROKE_WEIGHT_IN_DP * this.density).toInt()
+            ).toFloat()
+            mGuideStrokeWeight = ta.getDimensionPixelSize(
+                R.styleable.CropImageView_guideStrokeWeight,
+                (GUIDE_STROKE_WEIGHT_IN_DP * this.density).toInt()
+            ).toFloat()
+            mIsCropEnabled = ta.getBoolean(R.styleable.CropImageView_cropEnabled, true)
         }
     }
+
+    public override fun onSaveInstanceState(): Parcelable? =
+        when (val superState = super.onSaveInstanceState()) {
+            null -> superState
+            else -> {
+                SavedState(superState).apply {
+                    image = imageBitmap
+                    mode = mCropMode
+                    backgroundColor = mBackgroundColor
+                    overlayColor = mOverlayColor
+                    frameColor = mFrameColor
+                    guideShowMode = mGuideShowMode
+                    handleShowMode = mHandleShowMode
+                    showGuide = mShowGuide
+                    showHandle = mShowHandle
+                    handleSize = mHandleSize
+                    touchPadding = mTouchPadding
+                    minFrameSize = mMinFrameSize
+                    customRatioX = mCustomRatio.x
+                    customRatioY = mCustomRatio.y
+                    frameStrokeWeight = mFrameStrokeWeight
+                    guideStrokeWeight = mGuideStrokeWeight
+                    isCropEnabled = mIsCropEnabled
+                    handleColor = mHandleColor
+                    guideColor = mGuideColor
+                }
+            }
+        }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
         when (state) {
@@ -155,169 +187,73 @@ class CropImageView @JvmOverloads constructor(
         super.onDraw(canvas)
         if (mIsInitialized) {
             setMatrix()
-            @SuppressLint("DrawAllocation") val localMatrix1 = Matrix()
-            localMatrix1.postConcat(mMatrix)
-            canvas.drawBitmap(imageBitmap!!, localMatrix1, mPaintBitmap)
-
-            // draw edit frame
+            imageBitmap?.let { canvas.drawBitmap(it, mMatrix, mPaintBitmap) }
             drawEditFrame(canvas)
-        }
-    }
-
-    // Handle styleable ////////////////////////////////////////////////////////////////////////////
-    private fun handleStyleable(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyle: Int,
-        mDensity: Float
-    ) {
-        val ta =
-            context.obtainStyledAttributes(attrs, R.styleable.CropImageView, defStyle, 0)
-        val drawable: Drawable?
-        mCropMode = CropMode.RATIO_1_1
-        try {
-            drawable = ta.getDrawable(R.styleable.CropImageView_imgSrc)
-            if (drawable != null) setImageBitmap((drawable as BitmapDrawable).bitmap)
-            for (mode in CropMode.values()) {
-                if (ta.getInt(R.styleable.CropImageView_cropMode, 3) == mode.id) {
-                    mCropMode = mode
-                    break
-                }
-            }
-            mBackgroundColor = ta.getColor(
-                R.styleable.CropImageView_backgroundColor,
-                TRANSPARENT
-            )
-            super.setBackgroundColor(mBackgroundColor)
-            mOverlayColor = ta.getColor(
-                R.styleable.CropImageView_overlayColor,
-                TRANSLUCENT_BLACK
-            )
-            mFrameColor =
-                ta.getColor(R.styleable.CropImageView_frameColor, WHITE)
-            mHandleColor =
-                ta.getColor(R.styleable.CropImageView_handleColor, WHITE)
-            mGuideColor = ta.getColor(
-                R.styleable.CropImageView_guideColor,
-                TRANSLUCENT_WHITE
-            )
-            for (mode in ShowMode.values()) {
-                if (ta.getInt(R.styleable.CropImageView_guideShowMode, 1) == mode.id) {
-                    mGuideShowMode = mode
-                    break
-                }
-            }
-            for (mode in ShowMode.values()) {
-                if (ta.getInt(R.styleable.CropImageView_handleShowMode, 1) == mode.id) {
-                    mHandleShowMode = mode
-                    break
-                }
-            }
-            setGuideShowMode(mGuideShowMode)
-            setHandleShowMode(mHandleShowMode)
-            mHandleSize = ta.getDimensionPixelSize(
-                R.styleable.CropImageView_handleSize,
-                (HANDLE_SIZE_IN_DP * mDensity).toInt()
-            )
-            mTouchPadding = ta.getDimensionPixelSize(R.styleable.CropImageView_touchPadding, 0)
-            mMinFrameSize = ta.getDimensionPixelSize(
-                R.styleable.CropImageView_minFrameSize,
-                (MIN_FRAME_SIZE_IN_DP * mDensity).toInt()
-            ).toFloat()
-            mFrameStrokeWeight = ta.getDimensionPixelSize(
-                R.styleable.CropImageView_frameStrokeWeight,
-                (FRAME_STROKE_WEIGHT_IN_DP * mDensity).toInt()
-            ).toFloat()
-            mGuideStrokeWeight = ta.getDimensionPixelSize(
-                R.styleable.CropImageView_guideStrokeWeight,
-                (GUIDE_STROKE_WEIGHT_IN_DP * mDensity).toInt()
-            ).toFloat()
-            mIsCropEnabled = ta.getBoolean(R.styleable.CropImageView_cropEnabled, true)
-        } catch (e: Exception) {
-            e.printStackTrace() //
-        } finally {
-            ta.recycle()
         }
     }
 
     // Drawing method //////////////////////////////////////////////////////////////////////////////
     private fun drawEditFrame(canvas: Canvas) {
         if (!mIsCropEnabled) return
-        mPaintTransparent.isFilterBitmap = true
-        mPaintTransparent.color = mOverlayColor
-        mPaintTransparent.style = Paint.Style.FILL
+        mPaintTransparent.apply {
+            color = mOverlayColor
+            style = Paint.Style.FILL
+        }
         canvas.drawRect(
-            mImageRect!!.left, mImageRect!!.top, mImageRect!!.right, mFrameRect!!.top,
+            mImageRect.left, mImageRect.top, mImageRect.right, mFrameRect.top,
             mPaintTransparent
         )
         canvas.drawRect(
-            mImageRect!!.left, mFrameRect!!.bottom, mImageRect!!.right, mImageRect!!.bottom,
+            mImageRect.left, mFrameRect.bottom, mImageRect.right, mImageRect.bottom,
             mPaintTransparent
         )
         canvas.drawRect(
-            mImageRect!!.left, mFrameRect!!.top, mFrameRect!!.left, mFrameRect!!.bottom,
+            mImageRect.left, mFrameRect.top, mFrameRect.left, mFrameRect.bottom,
             mPaintTransparent
         )
         canvas.drawRect(
-            mFrameRect!!.right, mFrameRect!!.top, mImageRect!!.right, mFrameRect!!.bottom,
+            mFrameRect.right, mFrameRect.top, mImageRect.right, mFrameRect.bottom,
             mPaintTransparent
         )
-        mPaintFrame.isAntiAlias = true
-        mPaintFrame.isFilterBitmap = true
-        mPaintFrame.style = Paint.Style.STROKE
-        mPaintFrame.color = mFrameColor
-        mPaintFrame.strokeWidth = mFrameStrokeWeight
+        mPaintFrame.apply {
+            style = Paint.Style.STROKE
+            color = mFrameColor
+            strokeWidth = mFrameStrokeWeight
+        }
         canvas.drawRect(
-            mFrameRect!!.left, mFrameRect!!.top, mFrameRect!!.right, mFrameRect!!.bottom,
-            mPaintFrame
+            mFrameRect.left, mFrameRect.top, mFrameRect.right, mFrameRect.bottom, mPaintFrame
         )
         if (mShowGuide) {
-            mPaintFrame.color = mGuideColor
-            mPaintFrame.strokeWidth = mGuideStrokeWeight
-            val h1 = mFrameRect!!.left + (mFrameRect!!.right - mFrameRect!!.left) / 3.0f
-            val h2 = mFrameRect!!.right - (mFrameRect!!.right - mFrameRect!!.left) / 3.0f
-            val v1 = mFrameRect!!.top + (mFrameRect!!.bottom - mFrameRect!!.top) / 3.0f
-            val v2 = mFrameRect!!.bottom - (mFrameRect!!.bottom - mFrameRect!!.top) / 3.0f
-            canvas.drawLine(h1, mFrameRect!!.top, h1, mFrameRect!!.bottom, mPaintFrame)
-            canvas.drawLine(h2, mFrameRect!!.top, h2, mFrameRect!!.bottom, mPaintFrame)
-            canvas.drawLine(mFrameRect!!.left, v1, mFrameRect!!.right, v1, mPaintFrame)
-            canvas.drawLine(mFrameRect!!.left, v2, mFrameRect!!.right, v2, mPaintFrame)
+            mPaintFrame.apply {
+                color = mGuideColor
+                strokeWidth = mGuideStrokeWeight
+            }
+            val h1 = mFrameRect.left + (mFrameRect.right - mFrameRect.left) / 3.0f
+            val h2 = mFrameRect.right - (mFrameRect.right - mFrameRect.left) / 3.0f
+            val v1 = mFrameRect.top + (mFrameRect.bottom - mFrameRect.top) / 3.0f
+            val v2 = mFrameRect.bottom - (mFrameRect.bottom - mFrameRect.top) / 3.0f
+            canvas.drawLine(h1, mFrameRect.top, h1, mFrameRect.bottom, mPaintFrame)
+            canvas.drawLine(h2, mFrameRect.top, h2, mFrameRect.bottom, mPaintFrame)
+            canvas.drawLine(mFrameRect.left, v1, mFrameRect.right, v1, mPaintFrame)
+            canvas.drawLine(mFrameRect.left, v2, mFrameRect.right, v2, mPaintFrame)
         }
         if (mShowHandle) {
-            mPaintFrame.style = Paint.Style.FILL
-            mPaintFrame.color = mHandleColor
-            canvas.drawCircle(
-                mFrameRect!!.left,
-                mFrameRect!!.top,
-                mHandleSize.toFloat(),
-                mPaintFrame
-            )
-            canvas.drawCircle(
-                mFrameRect!!.right,
-                mFrameRect!!.top,
-                mHandleSize.toFloat(),
-                mPaintFrame
-            )
-            canvas.drawCircle(
-                mFrameRect!!.left,
-                mFrameRect!!.bottom,
-                mHandleSize.toFloat(),
-                mPaintFrame
-            )
-            canvas.drawCircle(
-                mFrameRect!!.right,
-                mFrameRect!!.bottom,
-                mHandleSize.toFloat(),
-                mPaintFrame
-            )
+            mPaintFrame.apply {
+                style = Paint.Style.FILL
+                color = mHandleColor
+            }
+            canvas.drawCircle(mFrameRect.left, mFrameRect.top, mHandleSize, mPaintFrame)
+            canvas.drawCircle(mFrameRect.right, mFrameRect.top, mHandleSize, mPaintFrame)
+            canvas.drawCircle(mFrameRect.left, mFrameRect.bottom, mHandleSize, mPaintFrame)
+            canvas.drawCircle(mFrameRect.right, mFrameRect.bottom, mHandleSize, mPaintFrame)
         }
     }
 
     private fun setMatrix() {
-        mMatrix!!.reset()
-        mMatrix!!.setTranslate(mCenter.x - mImgWidth * 0.5f, mCenter.y - mImgHeight * 0.5f)
-        mMatrix!!.postScale(mScale, mScale, mCenter.x, mCenter.y)
-        mMatrix!!.postRotate(mAngle, mCenter.x, mCenter.y)
+        mMatrix.reset()
+        mMatrix.setTranslate(mCenter.x - mImgWidth * 0.5f, mCenter.y - mImgHeight * 0.5f)
+        mMatrix.postScale(mScale, mScale, mCenter.x, mCenter.y)
+        mMatrix.postRotate(/*mAngle*/0.0F, mCenter.x, mCenter.y)
     }
 
     // Initializer /////////////////////////////////////////////////////////////////////////////////
@@ -330,14 +266,13 @@ class CropImageView @JvmOverloads constructor(
         val h = viewH.toFloat()
         val viewRatio = w / h
         val imgRatio = imgW / imgH
-        var scale = 1.0f
-        if (imgRatio >= viewRatio) {
-            scale = w / imgW
-        } else if (imgRatio < viewRatio) {
-            scale = h / imgH
+        val scale = when {
+            imgRatio >= viewRatio -> w / imgW
+            imgRatio < viewRatio -> h / imgH
+            else -> 1.0F
         }
-        setCenter(PointF(paddingLeft + w * 0.5f, paddingTop + h * 0.5f))
-        setScale(scale)
+        mCenter = PointF(paddingLeft + w * 0.5f, paddingTop + h * 0.5f)
+        mScale = scale
         initCropFrame()
         adjustRatio()
         mIsInitialized = true
@@ -345,16 +280,11 @@ class CropImageView @JvmOverloads constructor(
 
     private fun initCropFrame() {
         setMatrix()
-        val arrayOfFloat = FloatArray(8)
-        arrayOfFloat[0] = 0.0f
-        arrayOfFloat[1] = 0.0f
-        arrayOfFloat[2] = 0.0f
-        arrayOfFloat[3] = mImgHeight
-        arrayOfFloat[4] = mImgWidth
-        arrayOfFloat[5] = 0.0f
-        arrayOfFloat[6] = mImgWidth
-        arrayOfFloat[7] = mImgHeight
-        mMatrix!!.mapPoints(arrayOfFloat)
+        val arrayOfFloat = floatArrayOf(
+            0.0F, 0.0F, 0.0F, mImgHeight,
+            mImgWidth, 0.0F, mImgWidth, mImgHeight
+        )
+        mMatrix.mapPoints(arrayOfFloat)
         val l = arrayOfFloat[0]
         val t = arrayOfFloat[1]
         val r = arrayOfFloat[6]
@@ -367,7 +297,8 @@ class CropImageView @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!mIsInitialized) return false
-        return if (!mIsCropEnabled) false else when (event.action) {
+        if (!mIsCropEnabled) return false
+        return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 onDown(event)
                 true
@@ -386,7 +317,7 @@ class CropImageView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP -> {
                 parent.requestDisallowInterceptTouchEvent(false)
-                onUp(event)
+                onUp()
                 true
             }
             else -> false
@@ -417,8 +348,7 @@ class CropImageView @JvmOverloads constructor(
         mLastY = e.y
     }
 
-    private fun onUp(e: MotionEvent) {
-        Timber.d(e.toString())
+    private fun onUp() {
         if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = false
         if (mHandleShowMode == ShowMode.SHOW_ON_TOUCH) mShowHandle = false
         mTouchArea = TouchArea.OUT_OF_BOUNDS
@@ -430,321 +360,301 @@ class CropImageView @JvmOverloads constructor(
         invalidate()
     }
 
-    // Hit test ////////////////////////////////////////////////////////////////////////////////////
     private fun checkTouchArea(x: Float, y: Float) {
-        if (isInsideCornerLeftTop(x, y)) {
-            mTouchArea = TouchArea.LEFT_TOP
-            if (mHandleShowMode == ShowMode.SHOW_ON_TOUCH) mShowHandle = true
-            if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
-            return
+        mTouchArea = when {
+            isInsideCornerLeftTop(x, y) -> TouchArea.LEFT_TOP
+            isInsideCornerRightTop(x, y) -> TouchArea.RIGHT_TOP
+            isInsideCornerLeftBottom(x, y) -> TouchArea.LEFT_BOTTOM
+            isInsideCornerRightBottom(x, y) -> TouchArea.RIGHT_BOTTOM
+            isInsideFrame(x, y) -> TouchArea.CENTER
+            else -> TouchArea.OUT_OF_BOUNDS
         }
-        if (isInsideCornerRightTop(x, y)) {
-            mTouchArea = TouchArea.RIGHT_TOP
-            if (mHandleShowMode == ShowMode.SHOW_ON_TOUCH) mShowHandle = true
-            if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
-            return
+        when (mTouchArea) {
+            TouchArea.LEFT_TOP,
+            TouchArea.RIGHT_TOP,
+            TouchArea.LEFT_BOTTOM,
+            TouchArea.RIGHT_BOTTOM -> {
+                if (mHandleShowMode == ShowMode.SHOW_ON_TOUCH) mShowHandle = true
+                if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
+            }
+            TouchArea.CENTER -> {
+                if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
+            }
+            TouchArea.OUT_OF_BOUNDS -> {
+            }
         }
-        if (isInsideCornerLeftBottom(x, y)) {
-            mTouchArea = TouchArea.LEFT_BOTTOM
-            if (mHandleShowMode == ShowMode.SHOW_ON_TOUCH) mShowHandle = true
-            if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
-            return
-        }
-        if (isInsideCornerRightBottom(x, y)) {
-            mTouchArea = TouchArea.RIGHT_BOTTOM
-            if (mHandleShowMode == ShowMode.SHOW_ON_TOUCH) mShowHandle = true
-            if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
-            return
-        }
-        if (isInsideFrame(x, y)) {
-            if (mGuideShowMode == ShowMode.SHOW_ON_TOUCH) mShowGuide = true
-            mTouchArea = TouchArea.CENTER
-            return
-        }
-        mTouchArea = TouchArea.OUT_OF_BOUNDS
     }
 
-    private fun isInsideFrame(x: Float, y: Float): Boolean {
-        if (mFrameRect!!.left <= x && mFrameRect!!.right >= x &&
-            (mFrameRect!!.top <= y && mFrameRect!!.bottom >= y)
-        ) {
-            mTouchArea = TouchArea.CENTER
-            return true
-        }
-        return false
+    private fun isInsideFrame(x: Float, y: Float): Boolean = with(mFrameRect) {
+        (x in left..right) and (y in top..bottom)
     }
 
     private fun isInsideCornerLeftTop(x: Float, y: Float): Boolean {
-        val dx = x - mFrameRect!!.left
-        val dy = y - mFrameRect!!.top
+        val dx = x - mFrameRect.left
+        val dy = y - mFrameRect.top
         val d = dx * dx + dy * dy
-        return sq(mHandleSize + mTouchPadding.toFloat()) >= d
+        return sq(mHandleSize + mTouchPadding) >= d
     }
 
     private fun isInsideCornerRightTop(x: Float, y: Float): Boolean {
-        val dx = x - mFrameRect!!.right
-        val dy = y - mFrameRect!!.top
+        val dx = x - mFrameRect.right
+        val dy = y - mFrameRect.top
         val d = dx * dx + dy * dy
-        return sq(mHandleSize + mTouchPadding.toFloat()) >= d
+        return sq(mHandleSize + mTouchPadding) >= d
     }
 
     private fun isInsideCornerLeftBottom(x: Float, y: Float): Boolean {
-        val dx = x - mFrameRect!!.left
-        val dy = y - mFrameRect!!.bottom
+        val dx = x - mFrameRect.left
+        val dy = y - mFrameRect.bottom
         val d = dx * dx + dy * dy
-        return sq(mHandleSize + mTouchPadding.toFloat()) >= d
+        return sq(mHandleSize + mTouchPadding) >= d
     }
 
     private fun isInsideCornerRightBottom(x: Float, y: Float): Boolean {
-        val dx = x - mFrameRect!!.right
-        val dy = y - mFrameRect!!.bottom
+        val dx = x - mFrameRect.right
+        val dy = y - mFrameRect.bottom
         val d = dx * dx + dy * dy
-        return sq(mHandleSize + mTouchPadding.toFloat()) >= d
+        return sq(mHandleSize + mTouchPadding) >= d
     }
 
-    // Adjust frame ////////////////////////////////////////////////////////////////////////////////
     private fun moveFrame(x: Float, y: Float) {
-        mFrameRect!!.left += x
-        mFrameRect!!.right += x
-        mFrameRect!!.top += y
-        mFrameRect!!.bottom += y
+        mFrameRect.left += x
+        mFrameRect.right += x
+        mFrameRect.top += y
+        mFrameRect.bottom += y
         checkMoveBounds()
     }
 
     private fun moveHandleLT(diffX: Float, diffY: Float) {
         if (mCropMode == CropMode.RATIO_FREE) {
-            mFrameRect!!.left += diffX
-            mFrameRect!!.top += diffY
+            mFrameRect.left += diffX
+            mFrameRect.top += diffY
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.left -= offsetX
+                mFrameRect.left -= offsetX
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.top -= offsetY
+                mFrameRect.top -= offsetY
             }
             checkScaleBounds()
         } else {
             val dy = diffX * ratioY / ratioX
-            mFrameRect!!.left += diffX
-            mFrameRect!!.top += dy
+            mFrameRect.left += diffX
+            mFrameRect.top += dy
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.left -= offsetX
+                mFrameRect.left -= offsetX
                 val offsetY = offsetX * ratioY / ratioX
-                mFrameRect!!.top -= offsetY
+                mFrameRect.top -= offsetY
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.top -= offsetY
+                mFrameRect.top -= offsetY
                 val offsetX = offsetY * ratioX / ratioY
-                mFrameRect!!.left -= offsetX
+                mFrameRect.left -= offsetX
             }
             var ox: Float
             var oy: Float
-            if (!isInsideHorizontal(mFrameRect!!.left)) {
-                ox = mImageRect!!.left - mFrameRect!!.left
-                mFrameRect!!.left += ox
+            if (!isInsideHorizontal(mFrameRect.left)) {
+                ox = mImageRect.left - mFrameRect.left
+                mFrameRect.left += ox
                 oy = ox * ratioY / ratioX
-                mFrameRect!!.top += oy
+                mFrameRect.top += oy
             }
-            if (!isInsideVertical(mFrameRect!!.top)) {
-                oy = mImageRect!!.top - mFrameRect!!.top
-                mFrameRect!!.top += oy
+            if (!isInsideVertical(mFrameRect.top)) {
+                oy = mImageRect.top - mFrameRect.top
+                mFrameRect.top += oy
                 ox = oy * ratioX / ratioY
-                mFrameRect!!.left += ox
+                mFrameRect.left += ox
             }
         }
     }
 
     private fun moveHandleRT(diffX: Float, diffY: Float) {
         if (mCropMode == CropMode.RATIO_FREE) {
-            mFrameRect!!.right += diffX
-            mFrameRect!!.top += diffY
+            mFrameRect.right += diffX
+            mFrameRect.top += diffY
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.right += offsetX
+                mFrameRect.right += offsetX
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.top -= offsetY
+                mFrameRect.top -= offsetY
             }
             checkScaleBounds()
         } else {
             val dy = diffX * ratioY / ratioX
-            mFrameRect!!.right += diffX
-            mFrameRect!!.top -= dy
+            mFrameRect.right += diffX
+            mFrameRect.top -= dy
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.right += offsetX
+                mFrameRect.right += offsetX
                 val offsetY = offsetX * ratioY / ratioX
-                mFrameRect!!.top -= offsetY
+                mFrameRect.top -= offsetY
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.top -= offsetY
+                mFrameRect.top -= offsetY
                 val offsetX = offsetY * ratioX / ratioY
-                mFrameRect!!.right += offsetX
+                mFrameRect.right += offsetX
             }
             var ox: Float
             var oy: Float
-            if (!isInsideHorizontal(mFrameRect!!.right)) {
-                ox = mFrameRect!!.right - mImageRect!!.right
-                mFrameRect!!.right -= ox
+            if (!isInsideHorizontal(mFrameRect.right)) {
+                ox = mFrameRect.right - mImageRect.right
+                mFrameRect.right -= ox
                 oy = ox * ratioY / ratioX
-                mFrameRect!!.top += oy
+                mFrameRect.top += oy
             }
-            if (!isInsideVertical(mFrameRect!!.top)) {
-                oy = mImageRect!!.top - mFrameRect!!.top
-                mFrameRect!!.top += oy
+            if (!isInsideVertical(mFrameRect.top)) {
+                oy = mImageRect.top - mFrameRect.top
+                mFrameRect.top += oy
                 ox = oy * ratioX / ratioY
-                mFrameRect!!.right -= ox
+                mFrameRect.right -= ox
             }
         }
     }
 
     private fun moveHandleLB(diffX: Float, diffY: Float) {
         if (mCropMode == CropMode.RATIO_FREE) {
-            mFrameRect!!.left += diffX
-            mFrameRect!!.bottom += diffY
+            mFrameRect.left += diffX
+            mFrameRect.bottom += diffY
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.left -= offsetX
+                mFrameRect.left -= offsetX
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.bottom += offsetY
+                mFrameRect.bottom += offsetY
             }
             checkScaleBounds()
         } else {
             val dy = diffX * ratioY / ratioX
-            mFrameRect!!.left += diffX
-            mFrameRect!!.bottom -= dy
+            mFrameRect.left += diffX
+            mFrameRect.bottom -= dy
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.left -= offsetX
+                mFrameRect.left -= offsetX
                 val offsetY = offsetX * ratioY / ratioX
-                mFrameRect!!.bottom += offsetY
+                mFrameRect.bottom += offsetY
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.bottom += offsetY
+                mFrameRect.bottom += offsetY
                 val offsetX = offsetY * ratioX / ratioY
-                mFrameRect!!.left -= offsetX
+                mFrameRect.left -= offsetX
             }
             var ox: Float
             var oy: Float
-            if (!isInsideHorizontal(mFrameRect!!.left)) {
-                ox = mImageRect!!.left - mFrameRect!!.left
-                mFrameRect!!.left += ox
+            if (!isInsideHorizontal(mFrameRect.left)) {
+                ox = mImageRect.left - mFrameRect.left
+                mFrameRect.left += ox
                 oy = ox * ratioY / ratioX
-                mFrameRect!!.bottom -= oy
+                mFrameRect.bottom -= oy
             }
-            if (!isInsideVertical(mFrameRect!!.bottom)) {
-                oy = mFrameRect!!.bottom - mImageRect!!.bottom
-                mFrameRect!!.bottom -= oy
+            if (!isInsideVertical(mFrameRect.bottom)) {
+                oy = mFrameRect.bottom - mImageRect.bottom
+                mFrameRect.bottom -= oy
                 ox = oy * ratioX / ratioY
-                mFrameRect!!.left += ox
+                mFrameRect.left += ox
             }
         }
     }
 
     private fun moveHandleRB(diffX: Float, diffY: Float) {
         if (mCropMode == CropMode.RATIO_FREE) {
-            mFrameRect!!.right += diffX
-            mFrameRect!!.bottom += diffY
+            mFrameRect.right += diffX
+            mFrameRect.bottom += diffY
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.right += offsetX
+                mFrameRect.right += offsetX
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.bottom += offsetY
+                mFrameRect.bottom += offsetY
             }
             checkScaleBounds()
         } else {
             val dy = diffX * ratioY / ratioX
-            mFrameRect!!.right += diffX
-            mFrameRect!!.bottom += dy
+            mFrameRect.right += diffX
+            mFrameRect.bottom += dy
             if (isWidthTooSmall) {
                 val offsetX = mMinFrameSize - frameW
-                mFrameRect!!.right += offsetX
+                mFrameRect.right += offsetX
                 val offsetY = offsetX * ratioY / ratioX
-                mFrameRect!!.bottom += offsetY
+                mFrameRect.bottom += offsetY
             }
             if (isHeightTooSmall) {
                 val offsetY = mMinFrameSize - frameH
-                mFrameRect!!.bottom += offsetY
+                mFrameRect.bottom += offsetY
                 val offsetX = offsetY * ratioX / ratioY
-                mFrameRect!!.right += offsetX
+                mFrameRect.right += offsetX
             }
             var ox: Float
             var oy: Float
-            if (!isInsideHorizontal(mFrameRect!!.right)) {
-                ox = mFrameRect!!.right - mImageRect!!.right
-                mFrameRect!!.right -= ox
+            if (!isInsideHorizontal(mFrameRect.right)) {
+                ox = mFrameRect.right - mImageRect.right
+                mFrameRect.right -= ox
                 oy = ox * ratioY / ratioX
-                mFrameRect!!.bottom -= oy
+                mFrameRect.bottom -= oy
             }
-            if (!isInsideVertical(mFrameRect!!.bottom)) {
-                oy = mFrameRect!!.bottom - mImageRect!!.bottom
-                mFrameRect!!.bottom -= oy
+            if (!isInsideVertical(mFrameRect.bottom)) {
+                oy = mFrameRect.bottom - mImageRect.bottom
+                mFrameRect.bottom -= oy
                 ox = oy * ratioX / ratioY
-                mFrameRect!!.right -= ox
+                mFrameRect.right -= ox
             }
         }
     }
 
     // Frame position correction ///////////////////////////////////////////////////////////////////
     private fun checkScaleBounds() {
-        val lDiff = mFrameRect!!.left - mImageRect!!.left
-        val rDiff = mFrameRect!!.right - mImageRect!!.right
-        val tDiff = mFrameRect!!.top - mImageRect!!.top
-        val bDiff = mFrameRect!!.bottom - mImageRect!!.bottom
+        val lDiff = mFrameRect.left - mImageRect.left
+        val rDiff = mFrameRect.right - mImageRect.right
+        val tDiff = mFrameRect.top - mImageRect.top
+        val bDiff = mFrameRect.bottom - mImageRect.bottom
         if (lDiff < 0) {
-            mFrameRect!!.left -= lDiff
+            mFrameRect.left -= lDiff
         }
         if (rDiff > 0) {
-            mFrameRect!!.right -= rDiff
+            mFrameRect.right -= rDiff
         }
         if (tDiff < 0) {
-            mFrameRect!!.top -= tDiff
+            mFrameRect.top -= tDiff
         }
         if (bDiff > 0) {
-            mFrameRect!!.bottom -= bDiff
+            mFrameRect.bottom -= bDiff
         }
     }
 
     private fun checkMoveBounds() {
-        var diff = mFrameRect!!.left - mImageRect!!.left
+        var diff = mFrameRect.left - mImageRect.left
         if (diff < 0) {
-            mFrameRect!!.left -= diff
-            mFrameRect!!.right -= diff
+            mFrameRect.left -= diff
+            mFrameRect.right -= diff
         }
-        diff = mFrameRect!!.right - mImageRect!!.right
+        diff = mFrameRect.right - mImageRect.right
         if (diff > 0) {
-            mFrameRect!!.left -= diff
-            mFrameRect!!.right -= diff
+            mFrameRect.left -= diff
+            mFrameRect.right -= diff
         }
-        diff = mFrameRect!!.top - mImageRect!!.top
+        diff = mFrameRect.top - mImageRect.top
         if (diff < 0) {
-            mFrameRect!!.top -= diff
-            mFrameRect!!.bottom -= diff
+            mFrameRect.top -= diff
+            mFrameRect.bottom -= diff
         }
-        diff = mFrameRect!!.bottom - mImageRect!!.bottom
+        diff = mFrameRect.bottom - mImageRect.bottom
         if (diff > 0) {
-            mFrameRect!!.top -= diff
-            mFrameRect!!.bottom -= diff
+            mFrameRect.top -= diff
+            mFrameRect.bottom -= diff
         }
     }
 
-    private fun isInsideHorizontal(x: Float): Boolean {
-        return mImageRect!!.left <= x && mImageRect!!.right >= x
-    }
+    private fun isInsideHorizontal(x: Float): Boolean = with(mImageRect) { x in left..right }
 
-    private fun isInsideVertical(y: Float): Boolean {
-        return mImageRect!!.top <= y && mImageRect!!.bottom >= y
-    }
+    private fun isInsideVertical(y: Float): Boolean = with(mImageRect) { y in top..bottom }
 
     private val isWidthTooSmall: Boolean
         get() = frameW < mMinFrameSize
@@ -754,28 +664,20 @@ class CropImageView @JvmOverloads constructor(
 
     // Frame aspect ratio correction ///////////////////////////////////////////////////////////////
     private fun adjustRatio() {
-        if (mImageRect == null) return
-        val imgW = mImageRect!!.right - mImageRect!!.left
-        val imgH = mImageRect!!.bottom - mImageRect!!.top
-        val frameW = getRatioX(imgW)
-        val frameH = getRatioY(imgH)
+        val imgW = mImageRect.right - mImageRect.left
+        val imgH = mImageRect.bottom - mImageRect.top
+        val frameW = if (mCropMode == CropMode.RATIO_FREE) imgW else ratioX
+        val frameH = if (mCropMode == CropMode.RATIO_FREE) imgH else ratioY
         val imgRatio = imgW / imgH
         val frameRatio = frameW / frameH
-        var l = mImageRect!!.left
-        var t = mImageRect!!.top
-        var r = mImageRect!!.right
-        var b = mImageRect!!.bottom
+        var (l, t, r, b) = mImageRect
         if (frameRatio >= imgRatio) {
-            l = mImageRect!!.left
-            r = mImageRect!!.right
-            val hy = (mImageRect!!.top + mImageRect!!.bottom) * 0.5f
+            val hy = (mImageRect.top + mImageRect.bottom) * 0.5f
             val hh = imgW / frameRatio * 0.5f
             t = hy - hh
             b = hy + hh
         } else if (frameRatio < imgRatio) {
-            t = mImageRect!!.top
-            b = mImageRect!!.bottom
-            val hx = (mImageRect!!.left + mImageRect!!.right) * 0.5f
+            val hx = (mImageRect.left + mImageRect.right) * 0.5f
             val hw = imgH * frameRatio * 0.5f
             l = hx - hw
             r = hx + hw
@@ -786,34 +688,6 @@ class CropImageView @JvmOverloads constructor(
         invalidate()
     }
 
-    private fun getRatioX(w: Float): Float {
-        return when (mCropMode) {
-            CropMode.RATIO_FIT_IMAGE -> mImgWidth
-            CropMode.RATIO_FREE -> w
-            CropMode.RATIO_4_3 -> 4.0f
-            CropMode.RATIO_3_4 -> 3.0f
-            CropMode.RATIO_16_9 -> 16.0f
-            CropMode.RATIO_9_16 -> 9.0f
-            CropMode.RATIO_1_1 -> 1.0f
-            CropMode.RATIO_CUSTOM -> mCustomRatio.x
-            else -> w
-        }
-    }
-
-    private fun getRatioY(h: Float): Float {
-        return when (mCropMode) {
-            CropMode.RATIO_FIT_IMAGE -> mImgHeight
-            CropMode.RATIO_FREE -> h
-            CropMode.RATIO_4_3 -> 3.0f
-            CropMode.RATIO_3_4 -> 4.0f
-            CropMode.RATIO_16_9 -> 9.0f
-            CropMode.RATIO_9_16 -> 16.0f
-            CropMode.RATIO_1_1 -> 1.0f
-            CropMode.RATIO_CUSTOM -> mCustomRatio.y
-            else -> h
-        }
-    }
-
     private val ratioX: Float
         get() = when (mCropMode) {
             CropMode.RATIO_FIT_IMAGE -> mImgWidth
@@ -821,9 +695,8 @@ class CropImageView @JvmOverloads constructor(
             CropMode.RATIO_3_4 -> 3.0f
             CropMode.RATIO_16_9 -> 16.0f
             CropMode.RATIO_9_16 -> 9.0f
-            CropMode.RATIO_1_1 -> 1.0f
+            CropMode.RATIO_FREE, CropMode.RATIO_1_1 -> 1.0f
             CropMode.RATIO_CUSTOM -> mCustomRatio.x
-            else -> 1.0f
         }
 
     private val ratioY: Float
@@ -833,24 +706,16 @@ class CropImageView @JvmOverloads constructor(
             CropMode.RATIO_3_4 -> 4.0f
             CropMode.RATIO_16_9 -> 9.0f
             CropMode.RATIO_9_16 -> 16.0f
-            CropMode.RATIO_1_1 -> 1.0f
+            CropMode.RATIO_FREE, CropMode.RATIO_1_1 -> 1.0f
             CropMode.RATIO_CUSTOM -> mCustomRatio.y
-            else -> 1.0f
         }
 
-    // Utility methods /////////////////////////////////////////////////////////////////////////////
-    private val density: Float
-        get() {
-            val displayMetrics = DisplayMetrics()
-            (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-                .getMetrics(displayMetrics)
-            return displayMetrics.density
-        }
+    private fun sq(value: Float): Float = value * value
 
-    private fun sq(value: Float): Float {
-        return value * value
+    /* NOTE: Coil use this */
+    override fun setImageDrawable(drawable: Drawable?) {
+        if (drawable != null) setImageBitmap(drawable.toBitmap())
     }
-    // Public methods //////////////////////////////////////////////////////////////////////////////
 
     /**
      * Set source image bitmap
@@ -889,21 +754,16 @@ class CropImageView @JvmOverloads constructor(
      */
     val croppedBitmap: Bitmap
         get() {
-            var x = 0
-            var y = 0
-            var w = 0
-            var h = 0
-            if (imageBitmap != null) {
-                val l = (mFrameRect!!.left / mScale).toInt()
-                val t = (mFrameRect!!.top / mScale).toInt()
-                val r = (mFrameRect!!.right / mScale).toInt()
-                val b = (mFrameRect!!.bottom / mScale).toInt()
-                x = l - (mImageRect!!.left / mScale).toInt()
-                y = t - (mImageRect!!.top / mScale).toInt()
-                w = r - l
-                h = b - t
+            val l = (mFrameRect.left / mScale).toInt()
+            val t = (mFrameRect.top / mScale).toInt()
+            val r = (mFrameRect.right / mScale).toInt()
+            val b = (mFrameRect.bottom / mScale).toInt()
+            val x = l - (mImageRect.left / mScale).toInt()
+            val y = t - (mImageRect.top / mScale).toInt()
+            imageBitmap?.let {
+                return Bitmap.createBitmap(it, x, y, r - l, b - t, null, false)
             }
-            return Bitmap.createBitmap(imageBitmap!!, x, y, w, h, null, false)
+            throw IllegalStateException("imageBitmap == null, did you forget to setImage?")
         }
 
     /**
@@ -911,6 +771,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param mode crop mode
      */
+    @Suppress("unused")
     fun setCropMode(mode: CropMode) {
         if (mode == CropMode.RATIO_CUSTOM) {
             setCustomRatio(1, 1)
@@ -938,6 +799,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param overlayColor color resId or color int(ex. 0xFFFFFFFF)
      */
+    @Suppress("unused")
     fun setOverlayColor(overlayColor: Int) {
         mOverlayColor = overlayColor
         invalidate()
@@ -948,6 +810,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param frameColor color resId or color int(ex. 0xFFFFFFFF)
      */
+    @Suppress("unused")
     fun setFrameColor(frameColor: Int) {
         mFrameColor = frameColor
         invalidate()
@@ -958,6 +821,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param handleColor color resId or color int(ex. 0xFFFFFFFF)
      */
+    @Suppress("unused")
     fun setHandleColor(handleColor: Int) {
         mHandleColor = handleColor
         invalidate()
@@ -968,6 +832,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param guideColor color resId or color int(ex. 0xFFFFFFFF)
      */
+    @Suppress("unused")
     fun setGuideColor(guideColor: Int) {
         mGuideColor = guideColor
         invalidate()
@@ -989,6 +854,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param minDp crop frame minimum size in density-independent pixels
      */
+    @Suppress("unused")
     fun setMinFrameSizeInDp(minDp: Int) {
         mMinFrameSize = minDp * density
     }
@@ -998,8 +864,9 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param handleDp handle radius in density-independent pixels
      */
+    @Suppress("unused")
     fun setHandleSizeInDp(handleDp: Int) {
-        mHandleSize = (handleDp * density).toInt()
+        mHandleSize = (handleDp * density)
     }
 
     /**
@@ -1010,8 +877,9 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param paddingDp crop frame handle touch padding(touch area) in density-independent pixels
      */
+    @Suppress("unused")
     fun setTouchPaddingInDp(paddingDp: Int) {
-        mTouchPadding = (paddingDp * density).toInt()
+        mTouchPadding = (paddingDp * density)
     }
 
     /**
@@ -1020,13 +888,10 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param mode guideline show mode
      */
-    fun setGuideShowMode(mode: ShowMode?) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun setGuideShowMode(mode: ShowMode) {
         mGuideShowMode = mode
-        mShowGuide = when (mode) {
-            ShowMode.SHOW_ALWAYS -> true
-            ShowMode.NOT_SHOW, ShowMode.SHOW_ON_TOUCH -> false
-            else -> false
-        }
+        mShowGuide = mode == ShowMode.SHOW_ALWAYS
         invalidate()
     }
 
@@ -1036,13 +901,10 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param mode handle show mode
      */
-    fun setHandleShowMode(mode: ShowMode?) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun setHandleShowMode(mode: ShowMode) {
         mHandleShowMode = mode
-        mShowHandle = when (mode) {
-            ShowMode.SHOW_ALWAYS -> true
-            ShowMode.NOT_SHOW, ShowMode.SHOW_ON_TOUCH -> false
-            else -> false
-        }
+        mShowHandle = mode == ShowMode.SHOW_ALWAYS
         invalidate()
     }
 
@@ -1051,6 +913,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param weightDp frame stroke weight in density-independent pixels.
      */
+    @Suppress("unused")
     fun setFrameStrokeWeightInDp(weightDp: Int) {
         mFrameStrokeWeight = weightDp * density
         invalidate()
@@ -1061,6 +924,7 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param weightDp guideline stroke weight in density-independent pixels.
      */
+    @Suppress("unused")
     fun setGuideStrokeWeightInDp(weightDp: Int) {
         mGuideStrokeWeight = weightDp * density
         invalidate()
@@ -1071,24 +935,17 @@ class CropImageView @JvmOverloads constructor(
      *
      * @param enabled should show crop frame?
      */
+    @Suppress("unused")
     fun setCropEnabled(enabled: Boolean) {
         mIsCropEnabled = enabled
         invalidate()
     }
 
-    private fun setScale(mScale: Float) {
-        this.mScale = mScale
-    }
-
-    private fun setCenter(mCenter: PointF) {
-        this.mCenter = mCenter
-    }
-
     private val frameW: Float
-        get() = mFrameRect!!.right - mFrameRect!!.left
+        get() = mFrameRect.right - mFrameRect.left
 
     private val frameH: Float
-        get() = mFrameRect!!.bottom - mFrameRect!!.top
+        get() = mFrameRect.bottom - mFrameRect.top
 
     // Enum ////////////////////////////////////////////////////////////////////////////////////////
     private enum class TouchArea {
@@ -1111,21 +968,21 @@ class CropImageView @JvmOverloads constructor(
     // Save/Restore support ////////////////////////////////////////////////////////////////////////
     internal class SavedState : AbsSavedState {
         var image: Bitmap? = null
-        var mode: CropMode? = null
+        var mode: CropMode = CropMode.RATIO_1_1
         var backgroundColor = 0
         var overlayColor = 0
         var frameColor = 0
-        var guideShowMode: ShowMode? = null
-        var handleShowMode: ShowMode? = null
+        var guideShowMode: ShowMode = ShowMode.SHOW_ALWAYS
+        var handleShowMode: ShowMode = ShowMode.SHOW_ALWAYS
         var showGuide = false
         var showHandle = false
-        var handleSize = 0
-        var touchPadding = 0
-        var minFrameSize = 0f
-        var customRatioX = 0f
-        var customRatioY = 0f
-        var frameStrokeWeight = 0f
-        var guideStrokeWeight = 0f
+        var handleSize = 0F
+        var touchPadding = 0F
+        var minFrameSize = 0F
+        var customRatioX = 0F
+        var customRatioY = 0F
+        var frameStrokeWeight = 0F
+        var guideStrokeWeight = 0F
         var isCropEnabled = false
         var handleColor = 0
         var guideColor = 0
@@ -1133,22 +990,22 @@ class CropImageView @JvmOverloads constructor(
         constructor(superState: Parcelable) : super(superState)
         constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
             image = source.readParcelable(Bitmap::class.java.classLoader)
-            mode = source.readSerializable() as CropMode?
+            mode = source.readSerializable() as CropMode
             backgroundColor = source.readInt()
             overlayColor = source.readInt()
             frameColor = source.readInt()
-            guideShowMode = source.readSerializable() as ShowMode?
-            handleShowMode = source.readSerializable() as ShowMode?
-            showGuide = source.readBooleanCompat()
-            showHandle = source.readBooleanCompat()
-            handleSize = source.readInt()
-            touchPadding = source.readInt()
+            guideShowMode = source.readSerializable() as ShowMode
+            handleShowMode = source.readSerializable() as ShowMode
+            showGuide = source.readInt() != 0
+            showHandle = source.readInt() != 0
+            handleSize = source.readFloat()
+            touchPadding = source.readFloat()
             minFrameSize = source.readFloat()
             customRatioX = source.readFloat()
             customRatioY = source.readFloat()
             frameStrokeWeight = source.readFloat()
             guideStrokeWeight = source.readFloat()
-            isCropEnabled = source.readBooleanCompat()
+            isCropEnabled = source.readInt() != 0
             handleColor = source.readInt()
             guideColor = source.readInt()
         }
@@ -1162,21 +1019,22 @@ class CropImageView @JvmOverloads constructor(
             out.writeInt(frameColor)
             out.writeSerializable(guideShowMode)
             out.writeSerializable(handleShowMode)
-            out.writeBooleanCompat(showGuide)
-            out.writeBooleanCompat(showHandle)
-            out.writeInt(handleSize)
-            out.writeInt(touchPadding)
+            out.writeInt(if (showGuide) 1 else 0)
+            out.writeInt(if (showHandle) 1 else 0)
+            out.writeFloat(handleSize)
+            out.writeFloat(touchPadding)
             out.writeFloat(minFrameSize)
             out.writeFloat(customRatioX)
             out.writeFloat(customRatioY)
             out.writeFloat(frameStrokeWeight)
             out.writeFloat(guideStrokeWeight)
-            out.writeBooleanCompat(isCropEnabled)
+            out.writeInt(if (isCropEnabled) 1 else 0)
             out.writeInt(handleColor)
             out.writeInt(guideColor)
         }
 
         companion object {
+            @Suppress("unused")
             @JvmField
             val CREATOR = object : ClassLoaderCreator<SavedState> {
                 override fun createFromParcel(source: Parcel, loader: ClassLoader?): SavedState =
@@ -1198,29 +1056,5 @@ class CropImageView @JvmOverloads constructor(
         private const val TRANSLUCENT_WHITE = -0x44000001
         private const val WHITE = -0x1
         private const val TRANSLUCENT_BLACK = -0x45000000
-    }
-
-    // Constructor /////////////////////////////////////////////////////////////////////////////////
-    init {
-        // TRANSPARENT = ResUtils.getColorInt(context, android.R.color.transparent);
-        val mDensity = density
-        mHandleSize = (mDensity * HANDLE_SIZE_IN_DP).toInt()
-        mMinFrameSize = mDensity * MIN_FRAME_SIZE_IN_DP
-        mFrameStrokeWeight = mDensity * FRAME_STROKE_WEIGHT_IN_DP
-        mGuideStrokeWeight = mDensity * GUIDE_STROKE_WEIGHT_IN_DP
-        mPaintFrame = Paint()
-        mPaintTransparent = Paint()
-        mPaintBitmap = Paint()
-        mPaintBitmap.isFilterBitmap = true
-        mMatrix = Matrix()
-        mScale = 1.0f
-        mBackgroundColor = TRANSPARENT
-        mFrameColor = WHITE
-        mOverlayColor = TRANSLUCENT_BLACK
-        mHandleColor = WHITE
-        mGuideColor = TRANSLUCENT_WHITE
-
-        // handle Styleable
-        handleStyleable(context, attrs, defStyle, mDensity)
     }
 }
