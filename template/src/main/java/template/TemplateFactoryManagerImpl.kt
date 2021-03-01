@@ -58,10 +58,7 @@ class TemplateFactoryManagerImpl constructor(
         key: String,
         factory: () -> Factory<T>
     ): T {
-        cache.get(key)?.let {
-            println("get from cache: $key")
-            return it as T
-        }
+        cache.get(key)?.let { return it as T }
         return factory().newTemplate().also { cache.put(key, it) }
     }
 }
