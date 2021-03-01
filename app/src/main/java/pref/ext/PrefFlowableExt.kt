@@ -3,23 +3,24 @@
 package pref.ext
 
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.core.Flowable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import pref.Pref
 import kotlin.reflect.KProperty0
 
+@ExperimentalCoroutinesApi
 @JvmOverloads
-inline fun <T> Pref.asFlowable(
+inline fun <T> Pref.asFlow(
     prop: KProperty0<T>,
     key: String? = null
-): Flowable<T> = Flowable.create(
-    { emitter ->
-        val listenKey = key ?: prop.name
-        val listener = OnSharedPreferenceChangeListener { _, changeKey ->
-            if (listenKey == changeKey && !emitter.isCancelled) emitter.onNext(prop.get())
-        }
-        emitter.setCancellable { preferences.unregisterOnSharedPreferenceChangeListener(listener) }
-        preferences.registerOnSharedPreferenceChangeListener(listener)
-    },
-    BackpressureStrategy.LATEST
-)
+): Flow<T> = callbackFlow {
+    val listenKey = key ?: prop.name
+    val listener = OnSharedPreferenceChangeListener { _, changeKey ->
+        if (listenKey == changeKey && !isClosedForSend) this.sendBlocking(prop.get())
+    }
+    preferences.registerOnSharedPreferenceChangeListener(listener)
+    awaitClose { preferences.unregisterOnSharedPreferenceChangeListener(listener) }
+}

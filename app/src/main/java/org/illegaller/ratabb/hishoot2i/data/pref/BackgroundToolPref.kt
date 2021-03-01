@@ -2,7 +2,7 @@ package org.illegaller.ratabb.hishoot2i.data.pref
 
 import entity.BackgroundMode
 import entity.ImageOption
-import io.reactivex.rxjava3.core.Flowable
+import kotlinx.coroutines.flow.Flow
 
 interface BackgroundToolPref {
     var backgroundMode: BackgroundMode
@@ -10,5 +10,5 @@ interface BackgroundToolPref {
     var backgroundColorInt: Int
     var backgroundImageBlurEnable: Boolean
     var backgroundImageBlurRadius: Int
-    val mainFlow: List<Flowable<*>>
+    val mainFlow: List<Flow<*>>
 }

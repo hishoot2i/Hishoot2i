@@ -2,60 +2,52 @@ package org.illegaller.ratabb.hishoot2i.ui.main
 
 import androidx.annotation.ColorInt
 import common.ext.exhaustive
+import core.CoreProcess
+import core.CoreResult
+import core.Preview
+import core.Save
 import entity.BackgroundMode
 import entity.ImageOption
 import entity.ImageSourcePath
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.mergeDelayError
-import io.reactivex.rxjava3.kotlin.subscribeBy
-import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
-import org.illegaller.ratabb.hishoot2i.data.core.Result
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.ScreenToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
-import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
-import org.illegaller.ratabb.hishoot2i.data.rx.computationUI
-import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
-import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSource
+import org.illegaller.ratabb.hishoot2i.data.source.TemplateSource
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
 import template.Template
 import javax.inject.Inject
 
 class MainPresenterImpl @Inject constructor(
     private val coreProcess: CoreProcess,
-    private val templateSource: TemplateDataSource,
-    private val schedulerProvider: SchedulerProvider,
+    private val templateSource: TemplateSource,
     private val backgroundToolPref: BackgroundToolPref,
     private val badgeToolPref: BadgeToolPref,
     private val screenToolPref: ScreenToolPref,
     private val templateToolPref: TemplateToolPref
 ) : MainPresenter, BasePresenter<MainView>() {
-    private val disposables: CompositeDisposable = CompositeDisposable()
     private var lastTemplateId: String? = null
     private var lastTemplate: Template? = null
     private val isHaveLastTemplate: Boolean
         get() = lastTemplateId != null && lastTemplate != null &&
             lastTemplateId == templateToolPref.templateCurrentId
 
-    private val currentTemplate: Single<Template>
-        get() = if (isHaveLastTemplate) Single.just(lastTemplate)
-        else templateSource.findByIdOrDefault(templateToolPref.templateCurrentId)
-            .subscribeOn(schedulerProvider.io())
-            .doOnSuccess {
-                lastTemplate = it
-                lastTemplateId = it.id
-            }
-
+    @ExperimentalCoroutinesApi
     override fun attachView(view: MainView) {
         super.attachView(view)
         preferenceChangesSubscriber() //
     }
 
     override fun detachView() {
-        disposables.clear()
         lastTemplateId = null
         lastTemplate = null
         super.detachView()
@@ -73,30 +65,36 @@ class MainPresenterImpl @Inject constructor(
         }
     }
 
+    private suspend fun currentTemplate(): Template = if (isHaveLastTemplate) {
+        lastTemplate!!
+    } else {
+        templateSource.findByIdOrDefault(templateToolPref.templateCurrentId).also {
+            lastTemplate = it
+            lastTemplateId = it.id
+        }
+    }
+
     /**/
     override fun render() {
-        requiredView().showProgress()
-        currentTemplate.flatMap { coreProcess.preview(it, sourcePath) }
-            .computationUI(schedulerProvider)
-            .subscribeBy(::viewOnError, ::viewOnResult)
-            .addTo(disposables)
+        launch {
+            requiredView().showProgress()
+            runCatching { withContext(IO) { coreProcess.preview(currentTemplate(), sourcePath) } }
+                .fold(::viewOnResult, ::viewOnError)
+        }
     }
 
     /**/
     override fun save() {
-        with(requiredView()) {
-            showProgress()
-            startSave()
+        launch {
+            requiredView().showProgress()
+            requiredView().startSave()
+            runCatching { withContext(IO) { coreProcess.save(currentTemplate(), sourcePath) } }
+                .fold(::viewOnResult, ::viewOnError)
         }
-        currentTemplate.flatMap { coreProcess.save(it, sourcePath) }
-            .computationUI(schedulerProvider)
-            .subscribeBy(::viewOnError, ::viewOnResult)
-            .addTo(disposables)
     }
 
     override fun backgroundColorPipette(@ColorInt color: Int) {
         if (backgroundToolPref.backgroundColorInt != color) {
-            // NOTE: preferenceChangeSubscriber -> onPreview
             backgroundToolPref.backgroundColorInt = color
         }
     }
@@ -117,22 +115,17 @@ class MainPresenterImpl @Inject constructor(
         else backgroundToolPref.backgroundMode = BackgroundMode.IMAGE
     }
 
+    @ExperimentalCoroutinesApi
     private fun preferenceChangesSubscriber() {
         (
             screenToolPref.mainFlow + badgeToolPref.mainFlow +
                 templateToolPref.mainFlow + backgroundToolPref.mainFlow
             )
-            .mergeDelayError()
-            .ioUI(schedulerProvider)
-            .subscribeBy(
-                onError = { viewOnError(it) },
-                onNext = { doOnPreviewIf(it.isNotManualCrop()) }
-            )
-            .addTo(disposables)
-    }
-
-    private fun doOnPreviewIf(condition: Boolean) {
-        if (condition) render()
+            .merge()
+            .filter { it.isNotManualCrop() }
+            .onEach { render() }
+            .catch { viewOnError(it) }
+            .launchIn(this)
     }
 
     private fun Any?.isNotManualCrop() = (this as? ImageOption)?.isManualCrop != true
@@ -144,11 +137,11 @@ class MainPresenterImpl @Inject constructor(
         }
     }
 
-    private fun viewOnResult(result: Result) {
+    private fun viewOnResult(coreResult: CoreResult) {
         with(requiredView()) {
-            when (result) {
-                is Result.Preview -> preview(result.bitmap)
-                is Result.Save -> save(result.bitmap, result.uri, result.name)
+            when (coreResult) {
+                is Preview -> preview(coreResult.bitmap)
+                is Save -> save(coreResult.bitmap, coreResult.uri, coreResult.name)
             }.exhaustive
             hideProgress()
         }

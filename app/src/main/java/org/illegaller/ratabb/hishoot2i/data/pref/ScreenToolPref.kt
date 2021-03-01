@@ -1,8 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.data.pref
 
-import io.reactivex.rxjava3.core.Flowable
+import kotlinx.coroutines.flow.Flow
 
 interface ScreenToolPref {
     var doubleScreenEnable: Boolean
-    val mainFlow: List<Flowable<*>>
+    val mainFlow: List<Flow<*>>
 }

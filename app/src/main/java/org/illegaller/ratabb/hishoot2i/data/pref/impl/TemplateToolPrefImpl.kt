@@ -2,9 +2,10 @@ package org.illegaller.ratabb.hishoot2i.data.pref.impl
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
 import pref.SimplePref
-import pref.ext.asFlowable
+import pref.ext.asFlow
 import pref.ext.booleanPref
 import pref.ext.stringPref
 import template.TemplateConstants.DEFAULT_TEMPLATE_ID
@@ -17,9 +18,10 @@ class TemplateToolPrefImpl @Inject constructor(
     override var templateFrameEnable: Boolean by booleanPref(default = true)
     override var templateGlareEnable: Boolean by booleanPref(default = true)
     override var templateShadowEnable: Boolean by booleanPref(default = true)
+    @ExperimentalCoroutinesApi
     override val mainFlow = listOf(
-        asFlowable(::templateFrameEnable),
-        asFlowable(::templateGlareEnable),
-        asFlowable(::templateShadowEnable)
+        asFlow(::templateFrameEnable),
+        asFlow(::templateGlareEnable),
+        asFlow(::templateShadowEnable)
     )
 }

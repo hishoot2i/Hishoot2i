@@ -1,37 +1,26 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools.badge
 
 import androidx.annotation.ColorInt
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
-import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
-import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
-import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSource
+import org.illegaller.ratabb.hishoot2i.data.source.FileFontSource
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
 import javax.inject.Inject
 
 class BadgeToolPresenterImpl @Inject constructor(
-    private val fileFontStorageSource: FileFontStorageSource,
-    private val schedulerProvider: SchedulerProvider,
+    private val fileFontSource: FileFontSource,
     private val badgeToolPref: BadgeToolPref
 ) : BadgeToolPresenter, BasePresenter<BadgeView>() {
-    private val disposables: CompositeDisposable =
-        CompositeDisposable()
     private val tempPath = mutableListOf("DEFAULT")
     override fun attachView(view: BadgeView) {
         super.attachView(view)
         view.onEmit(badgeToolPref)
-        fileFontStorageSource.fileFonts()
-            .map { it.absolutePath }
-            .ioUI(schedulerProvider)
-            .subscribeBy(view::onError, ::setUpDataAdapter, tempPath::plusAssign)
-            .addTo(disposables)
-    }
-
-    override fun detachView() {
-        super.detachView()
-        disposables.clear()
+        launch {
+            runCatching { withContext(IO) { getFileFontsPath().onEach { tempPath += it } } }
+                .fold({ setUpDataAdapter() }, view::onError)
+        }
     }
 
     override fun setBadgeColor(@ColorInt color: Int) {
@@ -43,6 +32,9 @@ class BadgeToolPresenterImpl @Inject constructor(
         badgeToolPref.badgeTypefacePath = absolutePath
         return true
     }
+
+    private suspend fun getFileFontsPath() =
+        fileFontSource.fileFonts().map { it.absolutePath }
 
     private fun setUpDataAdapter() {
         val current = badgeToolPref.badgeTypefacePath

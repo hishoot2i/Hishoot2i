@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.data.core.impl
+package core.impl
 
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -13,13 +13,14 @@ import common.FileConstants
 import common.ext.graphics.saveTo
 import common.ext.graphics.sizes
 import common.ext.toDateTimeFormat
+import core.Save
+import core.SaveResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.Sizes
 import entity.ext
 import entity.mimeType
-import io.reactivex.rxjava3.core.Single
-import org.illegaller.ratabb.hishoot2i.data.core.Result
-import org.illegaller.ratabb.hishoot2i.data.core.SaveResult
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -30,11 +31,11 @@ class SaveResultImpl @Inject constructor(
     private val resolver: ContentResolver by lazy { context.contentResolver }
     private val savedDir: () -> File = (fileConstants::savedDir)
     private val toUri: (File) -> Uri = (fileConstants::toUri)
-    override fun save(
+    override suspend fun save(
         bitmap: Bitmap,
         compressFormat: CompressFormat,
         saveQuality: Int
-    ): Single<Result.Save> = Single.fromCallable {
+    ): Save = withContext(IO) {
         val nowMs = System.currentTimeMillis()
         @Suppress("SpellCheckingInspection") val fileName =
             "HiShoot_${nowMs.toDateTimeFormat("yyyyMMdd_HHmmss")}.${compressFormat.ext}"
@@ -52,7 +53,7 @@ class SaveResultImpl @Inject constructor(
             // Save MediaStore or [?:] *not* ;/
             resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, this) ?: toUri(file) //
         }
-        Result.Save(bitmap, uri, fileName)
+        Save(bitmap, uri, fileName)
     }
 
     private fun contentValues(

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import dagger.hilt.android.HiltAndroidApp
 import entity.mode
-import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,6 +20,5 @@ class HiShootApp : MultiDexApplication() {
             Timber.plant(Timber.DebugTree())
             enableStrictMode()
         }
-        RxJavaPlugins.setErrorHandler { Timber.e(it) }
     }
 }

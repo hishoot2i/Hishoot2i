@@ -2,18 +2,20 @@ package org.illegaller.ratabb.hishoot2i.ui.template
 
 import common.FileConstants
 import common.UnZipper
+import common.ext.DEFAULT_DELAY_MS
 import common.ext.entryInputStream
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplatePref
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
-import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
-import org.illegaller.ratabb.hishoot2i.data.rx.delayed
-import org.illegaller.ratabb.hishoot2i.data.rx.ioUI
-import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSource
+import org.illegaller.ratabb.hishoot2i.data.source.TemplateSource
 import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
 import template.Template
 import template.Template.VersionHtz
@@ -26,67 +28,47 @@ import java.util.zip.ZipFile
 import javax.inject.Inject
 
 class TemplatePresenterImpl @Inject constructor(
-    private val templateDataSource: TemplateDataSource,
-    private val schedulerProvider: SchedulerProvider,
+    private val templateSource: TemplateSource,
     private val templateToolPref: TemplateToolPref,
     private val templatePref: TemplatePref,
     fileConstants: FileConstants,
     templateFactoryManager: TemplateFactoryManager
 ) : TemplatePresenter, BasePresenter<TemplateView>() {
 
-    private val disposables: CompositeDisposable = CompositeDisposable()
-    private val tempData = mutableListOf<Template>()
+    private val tempDataForSearch = mutableListOf<Template>()
     private val htzDir: () -> File = (fileConstants::htzDir)
     private val versionHtz: (String, Long) -> VersionHtz =
         (templateFactoryManager::versionHtz)
 
     override fun detachView() {
         super.detachView()
-        tempData.clear()
-        disposables.clear()
+        tempDataForSearch.clear()
     }
 
-    override fun search(queryObservable: Observable<String>) {
-        queryObservable.delayed()
-            .observeOn(schedulerProvider.ui())
-            .doOnSubscribe {
-                requiredView().showProgress()
-            }
-            .subscribeBy(
-                onError = { viewOnError(it) },
-                onNext = { query: String ->
-                    val filteredData = mutableListOf<Template>()
-                    if (query.isEmpty()) {
-                        filteredData.addAll(tempData)
-                    } else {
-                        tempData.filter {
-                            it.containsNameOrAuthor(query)
-                        }.also { filteredData.addAll(it) }
-                    }
-                    viewSetData(filteredData)
+    @FlowPreview
+    override fun search(queries: Flow<String>) {
+        queries.debounce(DEFAULT_DELAY_MS)
+            .onEach { query: String ->
+                val filteredData = mutableListOf<Template>()
+                if (query.isEmpty()) {
+                    filteredData.addAll(tempDataForSearch)
+                } else {
+                    tempDataForSearch.filter {
+                        it.containsNameOrAuthor(query)
+                    }.also { filteredData.addAll(it) }
                 }
-            )
-            .addTo(disposables)
+                viewSetData(filteredData)
+            }
+            .catch { viewOnError(it) }
+            .launchIn(this)
     }
 
     override fun importHtz(htz: File) {
         require(htz.extension == "htz") { "expected is Htz, but it's a ${htz.extension}" }
-        Single.fromCallable {
-            ZipFile(htz)
-                .entryInputStream(TemplateConstants.TEMPLATE_CFG)
-                .use { ModelHtzReader(it).model() }
+        launch {
+            runCatching { withContext(IO) { unzipAndBuild(htz) } }
+                .fold(::viewOnSuccessImportHtz, ::viewOnError)
         }
-            .map { it.generateTemplateId() }
-            .flatMap { unzipAndBuild(it, htz) }
-            .ioUI(schedulerProvider)
-            .doOnSubscribe {
-                requiredView().showProgress()
-            }
-            .subscribeBy(
-                onError = { viewOnError(it) },
-                onSuccess = { viewOnSuccessImportHtz(it) }
-            )
-            .addTo(disposables)
     }
 
     override var templateComparator: TemplateComparator
@@ -97,19 +79,15 @@ class TemplatePresenterImpl @Inject constructor(
         }
 
     override fun render() {
-        tempData.clear()
-        templateDataSource.allTemplate()
-            .sorted(templatePref.templateComparator)
-            .ioUI(schedulerProvider)
-            .doOnSubscribe {
-                requiredView().showProgress()
-            }
-            .subscribeBy(
-                onError = { viewOnError(it) },
-                onComplete = { viewSetData(tempData) },
-                onNext = { tempData += it }
-            )
-            .addTo(disposables)
+        tempDataForSearch.clear()
+        launch {
+            requiredView().showProgress()
+            runCatching {
+                withContext(IO) {
+                    templateSource.allTemplate().sortedWith(templateComparator)
+                }.also { tempDataForSearch.addAll(it) }
+            }.fold(::viewSetData, ::viewOnError)
+        }
     }
 
     override fun setCurrentTemplate(template: Template): Boolean {
@@ -145,10 +123,12 @@ class TemplatePresenterImpl @Inject constructor(
         render() // ?
     }
 
-    private fun unzipAndBuild(templateId: String, htz: File): Single<VersionHtz> =
-        Single.fromCallable {
-            UnZipper.unzip(htz, File(htzDir(), templateId))
-        }.map {
-            versionHtz(templateId, System.currentTimeMillis())
-        }
+    private fun unzipAndBuild(htz: File): VersionHtz {
+        val id = ZipFile(htz)
+            .entryInputStream(TemplateConstants.TEMPLATE_CFG)
+            .use { ModelHtzReader(it).model() }
+            .generateTemplateId()
+        UnZipper.unzip(htz, File(htzDir(), id))
+        return versionHtz(id, System.currentTimeMillis())
+    }
 }

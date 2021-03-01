@@ -115,10 +115,9 @@ dependencies {
     implementation("com.squareup.leakcanary:plumber-android:$leakcanaryVersion")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion")
 
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-    implementation("io.reactivex.rxjava3:rxjava:3.0.10")
-    implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
-    implementation("org.reactivestreams:reactive-streams:1.0.3")
+    val coroutinesVersion: String by rootProject
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$coroutinesVersion")
 }
 
 apply("$rootDir/buildsystem/appVersioning.gradle")

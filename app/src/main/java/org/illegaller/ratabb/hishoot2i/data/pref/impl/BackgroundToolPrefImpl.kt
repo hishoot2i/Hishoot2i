@@ -8,9 +8,10 @@ import entity.BackgroundMode
 import entity.BackgroundMode.COLOR
 import entity.ImageOption
 import entity.ImageOption.SCALE_FILL
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref
 import pref.SimplePref
-import pref.ext.asFlowable
+import pref.ext.asFlow
 import pref.ext.booleanPref
 import pref.ext.enumOrdinalPref
 import pref.ext.intPref
@@ -24,11 +25,12 @@ class BackgroundToolPrefImpl @Inject constructor(
     override var backgroundColorInt: Int by intPref(default = -16711681) // 0xFF00FFFF
     override var backgroundImageBlurEnable: Boolean by booleanPref(default = false)
     override var backgroundImageBlurRadius: Int by intPref(default = 25)
+    @ExperimentalCoroutinesApi
     override val mainFlow = listOf(
-        asFlowable(::backgroundMode),
-        asFlowable(::backgroundColorInt),
-        asFlowable(::imageOption),
-        asFlowable(::backgroundImageBlurEnable),
-        asFlowable(::backgroundImageBlurRadius)
+        asFlow(::backgroundMode),
+        asFlow(::backgroundColorInt),
+        asFlow(::imageOption),
+        asFlow(::backgroundImageBlurEnable),
+        asFlow(::backgroundImageBlurRadius)
     )
 }

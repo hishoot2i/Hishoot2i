@@ -19,20 +19,22 @@ import common.ext.isVisible
 import common.ext.preventMultipleClick
 import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentTemplateBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
 import org.illegaller.ratabb.hishoot2i.ui.common.SideListDivider
 import org.illegaller.ratabb.hishoot2i.ui.common.broadcastReceiver
+import org.illegaller.ratabb.hishoot2i.ui.common.queryTextChange
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
-import org.illegaller.ratabb.hishoot2i.ui.common.rx.RxSearchView
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
 import template.Template
 import template.TemplateComparator
 import timber.log.Timber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
     @Inject
@@ -94,7 +96,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template), TemplateView {
             }
         }
         presenter.attachView(this)
-        presenter.search(RxSearchView.queryTextChange(binding.templateSearchView))
+        presenter.search(binding.templateSearchView.queryTextChange())
         presenter.render()
         setFragmentResultListener(KEY_REQ_SORT) { _, result ->
             presenter.templateComparator = TemplateComparator.values()[result.getInt(ARG_SORT)]

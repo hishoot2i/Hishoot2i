@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.data.pref
 
 import entity.BadgePosition
-import io.reactivex.rxjava3.core.Flowable
+import kotlinx.coroutines.flow.Flow
 
 interface BadgeToolPref {
     var badgePosition: BadgePosition
@@ -10,5 +10,5 @@ interface BadgeToolPref {
     var badgeSize: Float
     var badgeText: String
     var badgeTypefacePath: String?
-    val mainFlow: List<Flowable<*>>
+    val mainFlow: List<Flow<*>>
 }

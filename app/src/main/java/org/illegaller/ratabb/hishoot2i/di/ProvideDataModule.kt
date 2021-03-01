@@ -15,9 +15,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import imageloader.ImageLoader
 import imageloader.coil.CoilImageLoaderImpl
-import org.illegaller.ratabb.hishoot2i.BuildConfig
-import org.illegaller.ratabb.hishoot2i.data.rx.AppScheduler
-import org.illegaller.ratabb.hishoot2i.data.rx.SchedulerProvider
 import template.TemplateFactoryManager
 import template.TemplateFactoryManagerImpl
 import javax.inject.Singleton
@@ -28,17 +25,13 @@ object ProvideDataModule {
 
     @Provides
     @Singleton
-    fun provideScheduler(): SchedulerProvider = AppScheduler
-
-    @Provides
-    @Singleton
     fun provideMaxTexture(): MaxTexture = MaxTextureCompat
 
     @Provides
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context
-    ): ImageLoader = CoilImageLoaderImpl(context, BuildConfig.DEBUG)
+    ): ImageLoader = CoilImageLoaderImpl(context, isDebugLog = false)
 
     @Provides
     @Singleton

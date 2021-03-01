@@ -8,20 +8,14 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.internal.modules.ApplicationContextModule
 import dagger.hilt.components.SingletonComponent
-import org.illegaller.ratabb.hishoot2i.data.HtzResolver
-import org.illegaller.ratabb.hishoot2i.data.HtzResolverImpl
-import org.illegaller.ratabb.hishoot2i.data.PackageResolver
-import org.illegaller.ratabb.hishoot2i.data.PackageResolverImpl
-import org.illegaller.ratabb.hishoot2i.data.core.CoreProcess
-import org.illegaller.ratabb.hishoot2i.data.core.MixTemplate
-import org.illegaller.ratabb.hishoot2i.data.core.SaveResult
-import org.illegaller.ratabb.hishoot2i.data.core.impl.CoreProcessImpl
-import org.illegaller.ratabb.hishoot2i.data.core.impl.MixTemplateImpl
-import org.illegaller.ratabb.hishoot2i.data.core.impl.SaveResultImpl
-import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSource
-import org.illegaller.ratabb.hishoot2i.data.source.FileFontStorageSourceImpl
-import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSource
-import org.illegaller.ratabb.hishoot2i.data.source.TemplateDataSourceImpl
+import org.illegaller.ratabb.hishoot2i.data.resolver.HtzResolver
+import org.illegaller.ratabb.hishoot2i.data.resolver.HtzResolverImpl
+import org.illegaller.ratabb.hishoot2i.data.resolver.PackageResolver
+import org.illegaller.ratabb.hishoot2i.data.resolver.PackageResolverImpl
+import org.illegaller.ratabb.hishoot2i.data.source.FileFontSource
+import org.illegaller.ratabb.hishoot2i.data.source.FileFontSourceImpl
+import org.illegaller.ratabb.hishoot2i.data.source.TemplateSource
+import org.illegaller.ratabb.hishoot2i.data.source.TemplateSourceImpl
 import org.illegaller.ratabb.hishoot2i.provider.FileConstantsImpl
 import javax.inject.Singleton
 
@@ -30,7 +24,7 @@ import javax.inject.Singleton
 interface BindDataModule {
     @Binds
     @Singleton
-    fun bindFileFontStorageSource(impl: FileFontStorageSourceImpl): FileFontStorageSource
+    fun bindFileFontStorageSource(impl: FileFontSourceImpl): FileFontSource
 
     @Binds
     @Singleton
@@ -42,19 +36,7 @@ interface BindDataModule {
 
     @Binds
     @Singleton
-    fun bindTemplateDataSource(impl: TemplateDataSourceImpl): TemplateDataSource
-
-    @Binds
-    @Singleton
-    fun bindMixTemplate(impl: MixTemplateImpl): MixTemplate
-
-    @Binds
-    @Singleton
-    fun bindSaveResult(impl: SaveResultImpl): SaveResult
-
-    @Binds
-    @Singleton
-    fun bindCoreProcess(impl: CoreProcessImpl): CoreProcess
+    fun bindTemplateDataSource(impl: TemplateSourceImpl): TemplateSource
 
     @Binds
     @Singleton

@@ -1,4 +1,4 @@
-package org.illegaller.ratabb.hishoot2i.data.core.impl
+package core.impl
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -14,13 +14,15 @@ import common.ext.graphics.drawBitmapPerspective
 import common.ext.graphics.drawBitmapSafely
 import common.ext.graphics.resizeIfNotEqual
 import common.ext.graphics.sizes
+import core.MixTemplate
+import core.MixTemplate.Config
 import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.Sizes
 import entity.SizesF
 import imageloader.ImageLoader
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
 import org.illegaller.ratabb.hishoot2i.R
-import org.illegaller.ratabb.hishoot2i.data.core.MixTemplate
-import org.illegaller.ratabb.hishoot2i.data.core.MixTemplate.Config
 import template.Template
 import template.Template.Default
 import template.Template.Version1
@@ -45,20 +47,20 @@ class MixTemplateImpl @Inject constructor(
     private val loadSync: (String, Boolean, Sizes, Boolean) -> Bitmap? =
         (imageLoader::loadSync)
 
-    override fun mixed(
+    override suspend fun mixed(
         template: Template,
         config: Config,
         ss: String?,
         isSave: Boolean
-    ): Bitmap = template.run {
-        val coordinate = coordinate.toFloatArray()
-        return@run sizes.createBitmap().let { bitmap ->
-            when (this) {
+    ): Bitmap = withContext(Default) {
+        val coordinate = template.coordinate.toFloatArray()
+        template.sizes.createBitmap().let { bitmap ->
+            when (template) {
                 is Default -> bitmap.drawDefault(ss, coordinate, isSave)
-                is Version1 -> bitmap.drawVersion1(ss, coordinate, isSave, this)
-                is Version2 -> bitmap.drawVersion2(ss, coordinate, isSave, this, config)
-                is Version3 -> bitmap.drawVersion3(ss, coordinate, isSave, this, config)
-                is VersionHtz -> bitmap.drawVersionHtz(ss, coordinate, isSave, this)
+                is Version1 -> bitmap.drawVersion1(ss, coordinate, isSave, template)
+                is Version2 -> bitmap.drawVersion2(ss, coordinate, isSave, template, config)
+                is Version3 -> bitmap.drawVersion3(ss, coordinate, isSave, template, config)
+                is VersionHtz -> bitmap.drawVersionHtz(ss, coordinate, isSave, template)
             }.exhaustive
         }
     }

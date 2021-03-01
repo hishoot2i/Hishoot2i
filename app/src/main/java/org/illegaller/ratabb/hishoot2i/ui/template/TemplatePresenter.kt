@@ -1,13 +1,13 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
-import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.flow.Flow
 import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
 import template.Template
 import template.TemplateComparator
 import java.io.File
 
 interface TemplatePresenter : Mvp.Presenter<TemplateView> {
-    fun search(queryObservable: Observable<String>)
+    fun search(queries: Flow<String>)
     fun importHtz(htz: File)
     fun render()
     fun setCurrentTemplate(template: Template): Boolean
