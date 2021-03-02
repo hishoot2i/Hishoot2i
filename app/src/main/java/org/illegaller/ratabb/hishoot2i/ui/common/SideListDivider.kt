@@ -28,15 +28,12 @@ import kotlin.math.roundToInt
  *     - space= 4.0dp
  * - [onDraw] fill background with color from [R.attr.colorSurfaceHalfAlpha]
  **/
-class SideListDivider : RecyclerView.ItemDecoration {
-
-    private val sizeDivider: Float
-
-    private val space: Float
-
-    private val paintLine: Paint
-
-    private val paintBack: Paint
+class SideListDivider private constructor(
+    @ColorInt colorDivider: Int,
+    @ColorInt colorBack: Int,
+    @Px private val sizeDivider: Float,
+    @Px private val space: Float
+) : RecyclerView.ItemDecoration() {
 
     companion object {
         @JvmStatic
@@ -52,26 +49,15 @@ class SideListDivider : RecyclerView.ItemDecoration {
         space = context.dp2px(4.0f)
     )
 
-    private constructor(
-        @ColorInt colorDivider: Int,
-        @ColorInt colorBack: Int,
-        @Px sizeDivider: Float,
-        @Px space: Float
-    ) : super() {
+    private val paintLine: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        color = colorDivider
+        strokeWidth = sizeDivider
+    }
 
-        this.paintLine = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-            color = colorDivider
-            strokeWidth = sizeDivider
-        }
-
-        this.paintBack = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.FILL
-            color = colorBack
-        }
-
-        this.sizeDivider = sizeDivider
-        this.space = space
+    private val paintBack = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = colorBack
     }
 
     override fun getItemOffsets(
