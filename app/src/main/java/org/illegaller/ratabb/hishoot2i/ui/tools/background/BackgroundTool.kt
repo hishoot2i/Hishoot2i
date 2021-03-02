@@ -29,6 +29,8 @@ import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_MIX_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_PIPETTE
 import org.illegaller.ratabb.hishoot2i.ui.common.doOnStopTouch
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
+import org.illegaller.ratabb.hishoot2i.ui.tools.background.BackgroundToolDirections.Companion.actionToolsBackgroundToColorMix
+import org.illegaller.ratabb.hishoot2i.ui.tools.background.BackgroundToolDirections.Companion.actionToolsBackgroundToCrop
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,7 +45,7 @@ class BackgroundTool : BottomSheetDialogFragment() {
 
     private val imageBackgroundCrop = registerGetContent { uri ->
         findNavController().navigate(
-            BackgroundToolDirections.actionToolsBackgroundToCrop(uri.toString(), args.ratio)
+            actionToolsBackgroundToCrop(uri.toString(), args.ratio)
         )
         dismiss()
     }
@@ -54,14 +56,12 @@ class BackgroundTool : BottomSheetDialogFragment() {
             bundleOf(ARG_BACKGROUND_PATH to uri.toString())
         )
     }
-    private var backgroundBinding: FragmentToolBackgroundBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = FragmentToolBackgroundBinding.inflate(inflater, container, false).apply {
-        backgroundBinding = this
-        setViewListener(this)
+    ): View = FragmentToolBackgroundBinding.inflate(inflater, container, false).apply {
+        setViewListener()
         setFragmentResultListener(KEY_REQ_MIX_COLOR) { _, result ->
             val color = result.getInt(ARG_COLOR)
             if (backgroundToolPref.backgroundColorInt != color)
@@ -71,23 +71,18 @@ class BackgroundTool : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         clearFragmentResult(KEY_REQ_MIX_COLOR)
-        backgroundBinding?.toolBackgroundLayoutImage?.apply {
-            backgroundImageOptionGroup.clearOnButtonCheckedListeners()
-            backgroundImageBlurSlider.clearOnChangeListeners()
-        }
-        backgroundBinding = null
         super.onDestroyView()
     }
 
-    private fun setViewListener(binding: FragmentToolBackgroundBinding) = with(binding) {
-        handleVisibleLayoutMode(binding)
+    private fun FragmentToolBackgroundBinding.setViewListener() {
+        handleVisibleLayoutMode()
         backgroundModesSpinner.apply {
             setSelection(backgroundToolPref.backgroundMode.ordinal, false)
             setOnItemSelected { _, view, position, _ ->
                 view?.preventMultipleClick {
                     if (position != backgroundToolPref.backgroundMode.ordinal) {
                         backgroundToolPref.backgroundMode = BackgroundMode.values()[position]
-                        handleVisibleLayoutMode(binding)
+                        handleVisibleLayoutMode()
                     }
                 }
             }
@@ -98,7 +93,7 @@ class BackgroundTool : BottomSheetDialogFragment() {
             backgroundColorMix.setOnClickListener {
                 it.preventMultipleClick {
                     findNavController().navigate(
-                        BackgroundToolDirections.actionToolsBackgroundToColorMix(
+                        actionToolsBackgroundToColorMix(
                             color = backgroundToolPref.backgroundColorInt,
                             withAlpha = true,
                             withHex = true
@@ -158,7 +153,7 @@ class BackgroundTool : BottomSheetDialogFragment() {
         // endregion
     }
 
-    private fun handleVisibleLayoutMode(binding: FragmentToolBackgroundBinding) = with(binding) {
+    private fun FragmentToolBackgroundBinding.handleVisibleLayoutMode() {
         toolBackgroundLayoutColor.root.isVisible = backgroundMode.isColor
         toolBackgroundLayoutImage.root.isVisible = backgroundMode.isImage
         toolBackgroundLayoutTrans.isVisible = backgroundMode.isTransparent

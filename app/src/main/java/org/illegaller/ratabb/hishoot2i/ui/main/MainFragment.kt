@@ -10,12 +10,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import common.ext.activityPendingIntent
 import common.ext.graphics.sizes
 import common.ext.preventMultipleClick
+import core.Preview
+import core.Save
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.illegaller.ratabb.hishoot2i.HiShootActivity
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentMainBinding
@@ -32,18 +36,20 @@ import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_2
 import org.illegaller.ratabb.hishoot2i.ui.common.clearFragmentResultListeners
 import org.illegaller.ratabb.hishoot2i.ui.common.setFragmentResultListeners
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
+import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsBackground
+import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsBadge
+import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsScreen
+import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsTemplate
 import timber.log.Timber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main), MainView {
-    @Inject
-    lateinit var presenter: MainPresenter
-
+class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var saveNotification: SaveNotification
 
-    private var mainBinding: FragmentMainBinding? = null
+    private val viewModel: MainViewModel by viewModels()
 
     private val requestKeys = arrayOf(
         KEY_REQ_CROP, KEY_REQ_BACKGROUND,
@@ -57,83 +63,91 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentMainBinding.bind(view)
-        mainBinding = binding
-        binding.apply {
-            mainFab.setOnClickListener {
-                it.preventMultipleClick { if (!isOnPipette) presenter.save() else stopPipette() }
-            }
-            mainBottomAppBar.apply {
-                setOnMenuItemClickListener {
-                    it.preventMultipleClick {
-                        bottomMenuClick(it)
-                    }
-                }
-                setNavigationOnClickListener {
-                    it.preventMultipleClick {
-                        if (isOnPipette) stopPipette(true)
-                        (activity as? HiShootActivity)?.openDrawer()
-                    }
-                }
+        FragmentMainBinding.bind(view).apply {
+            setViewListener()
+            viewModel.uiState.observe(viewLifecycleOwner) { observer(it) }
+            setFragmentResultListeners(*requestKeys) { requestKey, result ->
+                handleResult(requestKey, result)
             }
         }
-        presenter.attachView(this)
-        handleSaveState(savedInstanceState)
-        if (!handleReceiver()) presenter.render()
-        setFragmentResultListeners(*requestKeys) { requestKey, result ->
-            when (requestKey) {
-                KEY_REQ_CROP ->
-                    result.getString(ARG_CROP_PATH)
-                        ?.let { presenter.changeBackground(it) }
-                KEY_REQ_BACKGROUND ->
-                    result.getString(ARG_BACKGROUND_PATH)
-                        ?.let { presenter.changeBackground(it) }
-                KEY_REQ_SCREEN_1 ->
-                    result.getString(ARG_SCREEN1_PATH)
-                        ?.let { presenter.changeScreen1(it) }
-                KEY_REQ_SCREEN_2 ->
-                    result.getString(ARG_SCREEN2_PATH)
-                        ?.let { presenter.changeScreen2(it) }
-                KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
-            }
-        }
+        if (!handleReceiver()) viewModel.render()
     }
 
     override fun onDestroyView() {
-        mainBinding = null
         clearFragmentResultListeners(*requestKeys)
-        presenter.detachView()
         super.onDestroyView()
     }
 
     override fun onResume() {
         super.onResume()
-        presenter.resume()
+        viewModel.resume()
     }
 
-    private fun handleSaveState(state: Bundle?) {
-        presenter.sourcePath.apply {
-            state?.getString(ARG_BACKGROUND_PATH)?.let { background = it }
-            state?.getString(ARG_SCREEN1_PATH)?.let { screen1 = it }
-            state?.getString(ARG_SCREEN2_PATH)?.let { screen2 = it }
+    private fun FragmentMainBinding.handleResult(requestKey: String, result: Bundle) {
+        when (requestKey) {
+            KEY_REQ_CROP -> result.getString(ARG_CROP_PATH)?.let {
+                viewModel.changeBackground(it)
+            }
+            KEY_REQ_BACKGROUND -> result.getString(ARG_BACKGROUND_PATH)?.let {
+                viewModel.changeBackground(it)
+            }
+            KEY_REQ_SCREEN_1 -> result.getString(ARG_SCREEN1_PATH)?.let {
+                viewModel.changeScreen1(it)
+            }
+            KEY_REQ_SCREEN_2 -> result.getString(ARG_SCREEN2_PATH)?.let {
+                viewModel.changeScreen2(it)
+            }
+            KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        with(outState) {
-            presenter.sourcePath.background?.let { putString(ARG_BACKGROUND_PATH, it) }
-            presenter.sourcePath.screen1?.let { putString(ARG_SCREEN1_PATH, it) }
-            presenter.sourcePath.screen2?.let { putString(ARG_SCREEN2_PATH, it) }
+    private fun FragmentMainBinding.observer(view: MainView) {
+        when (view) {
+            is Loading -> {
+                showProgress()
+                if (view.isFromSave) saveNotification.start()
+            }
+            is Fail -> {
+                hideProgress()
+                val msg = view.cause.localizedMessage ?: "Oops"
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                Timber.e(view.cause)
+                if (view.isFromSave) saveNotification.error(view.cause)
+            }
+            is Success -> {
+                hideProgress()
+                when (view.result) {
+                    is Preview -> preview(view.result.bitmap)
+                    is Save -> saveComplete(view.result)
+                }
+            }
         }
     }
 
-    override fun preview(bitmap: Bitmap) {
+    private fun FragmentMainBinding.setViewListener() {
+        mainFab.setOnClickListener {
+            it.preventMultipleClick {
+                if (!isOnPipette) viewModel.save() else stopPipette()
+            }
+        }
+        mainBottomAppBar.setOnMenuItemClickListener {
+            it.preventMultipleClick { bottomMenuClick(it) }
+        }
+        mainBottomAppBar.setNavigationOnClickListener {
+            it.preventMultipleClick {
+                if (isOnPipette) stopPipette(isCancel = true)
+                (activity as? HiShootActivity)?.openDrawer()
+            }
+        }
+    }
+
+    private fun FragmentMainBinding.preview(bitmap: Bitmap) {
         ratioCrop = bitmap.sizes.run { Point(x, y) }
-        mainBinding?.mainImage?.setImageBitmap(bitmap)
+        mainImage.setImageBitmap(bitmap)
     }
 
-    override fun save(bitmap: Bitmap, uri: Uri, name: String) {
+    private fun saveComplete(save: Save) {
+        val (bitmap: Bitmap, uri: Uri, name: String) = save
         saveNotification.complete(
             bitmap,
             name,
@@ -152,59 +166,37 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView {
         )
     }
 
-    override fun startSave() {
-        saveNotification.start()
-    }
-
-    override fun errorSave(e: Throwable) {
-        saveNotification.error(e)
-    }
-
-    override fun showProgress() {
+    private fun FragmentMainBinding.showProgress() {
         isOnProgress = true
-        mainBinding?.apply {
-            mainFab.setImageResource(R.drawable.ic_dot)
-            mainFab.isEnabled = false
-            mainProgress.show()
-        }
+        mainFab.setImageResource(R.drawable.ic_dot) // TODO: use AVD here!
+        mainFab.isEnabled = false
+        mainProgress.show()
     }
 
-    override fun hideProgress() {
+    private fun FragmentMainBinding.hideProgress() {
         isOnProgress = false
-        mainBinding?.apply {
-            mainFab.setImageResource(R.drawable.ic_save)
-            mainFab.isEnabled = true
-            mainProgress.hide()
-        }
+        mainFab.setImageResource(R.drawable.ic_save)
+        mainFab.isEnabled = true
+        mainProgress.hide()
     }
 
-    override fun onError(e: Throwable) {
-        Toast.makeText(requireContext(), e.localizedMessage ?: "Oops", Toast.LENGTH_SHORT).show()
-        Timber.e(e)
-    }
-
-    private fun startingPipette(srcColor: Int) {
+    private fun FragmentMainBinding.startingPipette(srcColor: Int) {
         isOnPipette = true
-        mainBinding?.apply {
-            mainImage.startPipette(srcColor)
-            mainFab.setImageResource(R.drawable.ic_pipette_done)
-        }
+        mainImage.startPipette(srcColor)
+        mainFab.setImageResource(R.drawable.ic_pipette_done)
     }
 
-    private fun stopPipette(isCancel: Boolean = false) {
-        mainBinding?.apply {
-            if (isCancel) {
-                mainImage.stopPipette()
-                mainFab.setImageResource(R.drawable.ic_save)
-            } else {
-                // NOTE: presenter#setBackgroundColorFromPipette -> hide/show progress
-                mainImage.stopPipette(presenter::backgroundColorPipette)
-            }
-            isOnPipette = false
+    private fun FragmentMainBinding.stopPipette(isCancel: Boolean = false) {
+        if (isCancel) {
+            mainImage.stopPipette()
+            mainFab.setImageResource(R.drawable.ic_save)
+        } else {
+            mainImage.stopPipette(viewModel::backgroundColorPipette)
         }
+        isOnPipette = false
     }
 
-    private fun bottomMenuClick(item: MenuItem): Boolean = when {
+    private fun FragmentMainBinding.bottomMenuClick(item: MenuItem): Boolean = when {
         isOnProgress -> false.also {
             showSnackBar(
                 view = requireView(),
@@ -217,27 +209,27 @@ class MainFragment : Fragment(R.layout.fragment_main), MainView {
                 view = requireView(),
                 resId = R.string.on_pipette,
                 anchorViewId = R.id.mainFab,
-                action = { setAction(R.string.cancel) { stopPipette(isCancel = true) } }
+                action = {
+                    setAction(R.string.cancel) { stopPipette(isCancel = true) }
+                }
             )
         }
         else -> {
-            val direction = when (item.itemId) {
-                R.id.action_background ->
-                    MainFragmentDirections.actionMainToToolsBackground(ratioCrop)
-                R.id.action_badge -> MainFragmentDirections.actionMainToToolsBadge()
-                R.id.action_screen -> MainFragmentDirections.actionMainToToolsScreen()
-                R.id.action_template -> MainFragmentDirections.actionMainToToolsTemplate()
+            when (item.itemId) {
+                R.id.action_background -> actionMainToToolsBackground(ratioCrop)
+                R.id.action_badge -> actionMainToToolsBadge()
+                R.id.action_screen -> actionMainToToolsScreen()
+                R.id.action_template -> actionMainToToolsTemplate()
                 else -> null
-            }?.let { findNavController().navigate(it) }
-            direction != null
+            }?.let { findNavController().navigate(it) } != null
         }
     }
 
     private fun handleReceiver(): Boolean = with(args) {
         val rawUri = path ?: return false
         return when (kind) {
-            R.string.background -> true.also { presenter.changeBackground(rawUri) }
-            R.string.screen -> true.also { presenter.changeScreen1(rawUri) }
+            R.string.background -> true.also { viewModel.changeBackground(rawUri) }
+            R.string.screen -> true.also { viewModel.changeScreen1(rawUri) }
             else -> false
         }
     }

@@ -38,11 +38,7 @@ class SortTemplateDialog : AppCompatDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = DialogSortTemplateBinding.inflate(inflater, container, false)
-        .also(::onBind)
-        .run { root }
-
-    private fun onBind(binding: DialogSortTemplateBinding) = with(binding) {
+    ): View = DialogSortTemplateBinding.inflate(inflater, container, false).apply {
         // views order must sync with TemplateComparator#ordinal
         val views = arrayOf(
             actionSortNameAsc, actionSortNameDesc, actionSortTypeAsc,
@@ -69,5 +65,5 @@ class SortTemplateDialog : AppCompatDialogFragment() {
         actionSortDateDesc.setOnClickListener { click(it, DATE_DESC) }
         //
         actionSortCancel.setOnClickListener { click(it, args.templateComparator) }
-    }
+    }.run { root }
 }

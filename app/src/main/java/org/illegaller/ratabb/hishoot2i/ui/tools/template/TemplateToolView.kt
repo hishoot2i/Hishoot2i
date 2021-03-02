@@ -1,9 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools.template
 
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
-import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
 import template.Template
 
-interface TemplateToolView : Mvp.View {
-    fun currentTemplate(template: Template, templateToolPref: TemplateToolPref)
-}
+internal sealed class TemplateToolView
+internal class Fail(val cause: Throwable) : TemplateToolView()
+internal class Success(val template: Template, val pref: TemplateToolPref) : TemplateToolView()

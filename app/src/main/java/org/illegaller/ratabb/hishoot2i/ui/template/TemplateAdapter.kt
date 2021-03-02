@@ -45,15 +45,15 @@ class TemplateAdapter @Inject constructor(
 
     internal var clickItem: (Template) -> Unit = { _: Template -> }
 
-    inner class TemplateHolder : ViewHolder {
+    inner class TemplateHolder private constructor(
         private val binding: RowItemTemplateBinding
+    ) : ViewHolder(binding.root) {
 
         constructor(parent: ViewGroup) : this(
             RowItemTemplateBinding.inflate(parent.layoutInflater, parent, false)
         )
 
-        private constructor(binding: RowItemTemplateBinding) : super(binding.root) {
-            this.binding = binding
+        init {
             itemView.setOnClickListener {
                 it.preventMultipleClick {
                     clickItem(getItem(absoluteAdapterPosition))
@@ -62,15 +62,14 @@ class TemplateAdapter @Inject constructor(
         }
 
         fun bind(item: Template) {
-            binding.apply {
-                itemTemplatePreview.apply {
-                    val (reqWidth, reqHeight) = context.run {
-                        deviceWidth to dpSize(R.dimen.itemPreviewHeight)
-                    }
-                    imageDisplay(this, item.preview, Sizes(reqWidth, reqHeight))
-                }
-                itemTemplateName.text = item.name
+            binding.itemTemplatePreview.apply {
+                imageDisplay(
+                    this,
+                    item.preview,
+                    Sizes(context.deviceWidth, context.dpSize(R.dimen.itemPreviewHeight))
+                )
             }
+            binding.itemTemplateName.text = item.name
         }
     }
 }

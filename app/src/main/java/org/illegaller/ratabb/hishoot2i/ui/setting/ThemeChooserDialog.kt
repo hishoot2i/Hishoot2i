@@ -22,7 +22,6 @@ import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_THEME
 class ThemeChooserDialog : AppCompatDialogFragment() {
     private val args: ThemeChooserDialogArgs by navArgs()
 
-    private var dialogBinding: DialogThemeChooserBinding? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         AppCompatDialog(context).apply {
             setStyle(DialogFragment.STYLE_NO_FRAME, theme)
@@ -34,28 +33,17 @@ class ThemeChooserDialog : AppCompatDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val binding = DialogThemeChooserBinding.inflate(inflater, container, false)
-        dialogBinding = binding
-        binding.apply {
-            actionThemeCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
-            themeRadioGroup.apply {
-                check(args.dayNightMode.resId)
-                addOnButtonCheckedListener { _, checkedId, _ ->
-                    setFragmentResult(
-                        KEY_REQ_THEME,
-                        bundleOf(ARG_THEME to DayNightMode.fromIdRes(checkedId).ordinal)
-                    )
-                    dismiss()
-                }
+    ): View = DialogThemeChooserBinding.inflate(inflater, container, false).apply {
+        actionThemeCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
+        themeRadioGroup.apply {
+            check(args.dayNightMode.resId)
+            addOnButtonCheckedListener { _, checkedId, _ ->
+                setFragmentResult(
+                    KEY_REQ_THEME,
+                    bundleOf(ARG_THEME to DayNightMode.fromIdRes(checkedId).ordinal)
+                )
+                dismiss()
             }
         }
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        dialogBinding?.themeRadioGroup?.clearOnButtonCheckedListeners()
-        dialogBinding = null
-        super.onDestroyView()
-    }
+    }.run { root }
 }

@@ -40,26 +40,24 @@ class ScreenTool : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        FragmentToolScreenBinding.inflate(inflater, container, false).apply {
-            toolScreen2.isEnabled = screenToolPref.doubleScreenEnable
-            with(toolScreenDouble) {
-                isChecked = screenToolPref.doubleScreenEnable
-                setOnCheckedChangeListener { cb, isChecked ->
-                    cb.preventMultipleClick {
-                        if (screenToolPref.doubleScreenEnable != isChecked) {
-                            screenToolPref.doubleScreenEnable = isChecked
-                            toolScreen2.isEnabled = isChecked
-                        }
-                    }
+    ): View = FragmentToolScreenBinding.inflate(inflater, container, false).apply {
+        toolScreen2.isEnabled = screenToolPref.doubleScreenEnable
+
+        toolScreenDouble.isChecked = screenToolPref.doubleScreenEnable
+        toolScreenDouble.setOnCheckedChangeListener { cb, isChecked ->
+            cb.preventMultipleClick {
+                if (screenToolPref.doubleScreenEnable != isChecked) {
+                    screenToolPref.doubleScreenEnable = isChecked
+                    toolScreen2.isEnabled = isChecked
                 }
             }
-            toolScreen1.setOnClickListener {
-                it.preventMultipleClick { screenShoot1.launch("image/*") }
-            }
-            toolScreen2.setOnClickListener {
-                it.preventMultipleClick { screenShoot2.launch("image/*") }
-            }
-        }.run { return@onCreateView root }
-    }
+        }
+
+        toolScreen1.setOnClickListener {
+            it.preventMultipleClick { screenShoot1.launch("image/*") }
+        }
+        toolScreen2.setOnClickListener {
+            it.preventMultipleClick { screenShoot2.launch("image/*") }
+        }
+    }.run { root }
 }

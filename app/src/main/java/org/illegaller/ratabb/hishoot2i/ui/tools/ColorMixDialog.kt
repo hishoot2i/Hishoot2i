@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.os.bundleOf
@@ -46,7 +45,6 @@ class ColorMixDialog : AppCompatDialogFragment() {
     @get:ColorInt
     private var color: Int by Delegates.notNull()
 
-    private var colorMixBinding: DialogColorMixBinding? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         super.onCreateDialog(savedInstanceState).apply {
             setStyle(DialogFragment.STYLE_NO_FRAME, theme)
@@ -58,29 +56,15 @@ class ColorMixDialog : AppCompatDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        DialogColorMixBinding.inflate(inflater, container, false).apply {
-            color = args.color
-            internalColorChange(color, this, emit = true)
-            colorAlphaLayout.isVisible = args.withAlpha
-            colorHexLayout.isVisible = args.withHex
-            setViewListener(this)
-            colorMixBinding = this
-        }.run { return@onCreateView root }
-    }
+    ): View = DialogColorMixBinding.inflate(inflater, container, false).apply {
+        color = args.color
+        internalColorChange(color, emit = true)
+        colorAlphaLayout.isVisible = args.withAlpha
+        colorHexLayout.isVisible = args.withHex
+        setViewListener()
+    }.run { root }
 
-    override fun onDestroyView() {
-        colorMixBinding?.apply {
-            colorAlphaSeekBar.clearOnChangeListeners()
-            colorRedSeekBar.clearOnChangeListeners()
-            colorGreenSeekBar.clearOnChangeListeners()
-            colorBlueSeekBar.clearOnChangeListeners()
-        }
-        colorMixBinding = null
-        super.onDestroyView()
-    }
-
-    private fun setViewListener(binding: DialogColorMixBinding) = with(binding) {
+    private fun DialogColorMixBinding.setViewListener() {
         colorCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
         colorDone.setOnClickListener {
             it.preventMultipleClick {
@@ -104,8 +88,7 @@ class ColorMixDialog : AppCompatDialogFragment() {
                     colorRedSeekBar.value.toInt(),
                     colorGreenSeekBar.value.toInt(),
                     colorBlueSeekBar.value.toInt()
-                ),
-                this
+                )
             )
         }
         colorAlphaSeekBar.addOnChangeListener(sliderOnChangeListener)
@@ -113,24 +96,17 @@ class ColorMixDialog : AppCompatDialogFragment() {
         colorGreenSeekBar.addOnChangeListener(sliderOnChangeListener)
         colorBlueSeekBar.addOnChangeListener(sliderOnChangeListener)
 
-        colorHex.apply {
-            addInputFilter(AllCaps(), LengthFilter(9))
-            onEditorAction { actionId ->
-                handleColorFromText(this@with) { actionId == IME_ACTION_DONE }
-            }
-            onKey { keyCode, keyEvent ->
-                handleColorFromText(this@with) {
-                    keyEvent.action == ACTION_DOWN && keyCode == KEYCODE_ENTER
-                }
-            }
+        colorHex.addInputFilter(AllCaps(), LengthFilter(9))
+        colorHex.onEditorAction { handleColorFromText { it == IME_ACTION_DONE } }
+        colorHex.onKey { keyCode, keyEvent ->
+            handleColorFromText { keyEvent.action == ACTION_DOWN && keyCode == KEYCODE_ENTER }
         }
     }
 
-    private fun internalColorChange(
+    private fun DialogColorMixBinding.internalColorChange(
         @ColorInt color: Int,
-        binding: DialogColorMixBinding,
         emit: Boolean = false
-    ) = with(binding) {
+    ) {
         if (this@ColorMixDialog.color != color || emit) {
             val (colorAlpha, colorAlphaHex) = color.alpha.toPairWithHex()
             val (colorRed, colorRedHex) = color.red.toPairWithHex()
@@ -166,15 +142,14 @@ class ColorMixDialog : AppCompatDialogFragment() {
         }
     }
 
-    private inline fun TextView.handleColorFromText(
-        binding: DialogColorMixBinding,
+    private inline fun DialogColorMixBinding.handleColorFromText(
         crossinline condition: () -> Boolean
     ): Boolean = condition().also {
-        val hex = text?.toString()
+        val hex = colorHex.text?.toString()
         if (it && hex != null) {
-            internalColorChange(hex.colorFromHex(args.withAlpha, color), binding)
-            clearFocus()
-            hideSoftKey()
+            internalColorChange(hex.colorFromHex(args.withAlpha, color))
+            colorHex.clearFocus()
+            colorHex.hideSoftKey()
         }
     }
 }

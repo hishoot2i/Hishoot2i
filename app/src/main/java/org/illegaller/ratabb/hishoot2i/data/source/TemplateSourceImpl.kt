@@ -37,6 +37,16 @@ class TemplateSourceImpl @Inject constructor(
     override suspend fun findByIdOrDefault(id: String): Template = allTemplate()
         .firstOrNull { it.id == id } ?: default()
 
+    override suspend fun searchByNameOrAuthor(query: String): List<Template> {
+        val allTemplate = allTemplate()
+        return when {
+            query.isNotBlank() -> allTemplate.filter {
+                it.name.contains(query, true) || it.author.contains(query, true)
+            }
+            else -> allTemplate
+        }
+    }
+
     private val resolveTemplateLegacy: suspend () -> List<AppInfo> =
         (packageResolver::installedTemplateLegacy)
 

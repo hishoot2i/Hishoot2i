@@ -13,21 +13,29 @@ class FileFontSourceImpl @Inject constructor(
     private val settingPref: SettingPref
 ) : FileFontSource {
 
-    override suspend fun fileFonts(): List<File> = withContext(IO) {
+    override suspend fun fontPaths(): List<String> =
+        listOf("DEFAULT") + fileFonts().map(File::getAbsolutePath)
+
+    private suspend fun fileFonts(): List<File> = withContext(IO) {
         (defaultFontDir() + customFontDir() + systemFontDir()).filterNotNull()
-            .filter { it.isDirAndCanRead() }
-            .map { it.listFilesByExt("ttf", "otf") }
-            .flatMap { it.asList() }
-            .distinctBy { it.nameWithoutExtension }
-            .sortedBy { it.name }
+            .filter(File::isDirAndCanRead)
+            .map(::fontsByExt)
+            .flatMap(Array<File>::asList)
+            .distinctBy(File::nameWithoutExtension)
+            .sortedBy(File::getName)
     }
 
-    @Suppress("DEPRECATION") // DEPRECATION: getExternalStorageDirectory
-    private fun defaultFontDir(): List<File> = arrayOf("font", "fonts", "Font", "Fonts")
-        .map { File(Environment.getExternalStorageDirectory(), it) }
+    private fun defaultFontDir(): List<File> =
+        arrayOf("font", "fonts", "Font", "Fonts").map(::externalStorageDir)
 
     private fun customFontDir(): File? = settingPref.customFontPath?.let { File(it) }
 
     private fun systemFontDir(): File? =
         if (settingPref.systemFontEnable) File("/system/fonts") else null
+
+    private fun fontsByExt(file: File): Array<File> = file.listFilesByExt("ttf", "otf")
+
+    @Suppress("DEPRECATION")
+    private fun externalStorageDir(path: String) =
+        File(Environment.getExternalStorageDirectory(), path)
 }

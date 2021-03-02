@@ -4,14 +4,12 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import common.FileConstants
-import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import javax.inject.Inject
 
-class FileConstantsImpl @Inject constructor(
-    @ApplicationContext val context: Context
+class FileConstantsImpl(
+    val context: Context
 ) : FileConstants {
     override fun savedDir(): File {
         @Suppress("DEPRECATION") // DEPRECATION = Environment.getExternalStorageDirectory()

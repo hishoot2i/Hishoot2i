@@ -1,9 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.ui.crop
 
-import android.net.Uri
-import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
-
-interface CropView : Mvp.View {
-    fun onErrorCrop(throwable: Throwable)
-    fun onSuccessCrop(uri: Uri)
-}
+internal sealed class CropView
+internal class Fail(val cause: Throwable) : CropView()
+internal class Success(val uriCrop: String) : CropView()

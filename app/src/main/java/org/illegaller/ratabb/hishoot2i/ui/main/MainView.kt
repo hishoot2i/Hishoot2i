@@ -1,14 +1,8 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
-import android.graphics.Bitmap
-import android.net.Uri
-import org.illegaller.ratabb.hishoot2i.ui.common.Mvp
+import core.CoreResult
 
-interface MainView : Mvp.View {
-    fun preview(bitmap: Bitmap)
-    fun save(bitmap: Bitmap, uri: Uri, name: String)
-    fun startSave()
-    fun errorSave(e: Throwable)
-    fun showProgress()
-    fun hideProgress()
-}
+internal sealed class MainView
+internal class Fail(val cause: Throwable, val isFromSave: Boolean) : MainView()
+internal class Loading(val isFromSave: Boolean) : MainView()
+internal class Success(val result: CoreResult) : MainView()

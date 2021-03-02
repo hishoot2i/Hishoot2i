@@ -11,17 +11,19 @@ import common.egl.MaxTextureCompat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.internal.modules.ApplicationContextModule
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import imageloader.ImageLoader
 import imageloader.coil.CoilImageLoaderImpl
+import org.illegaller.ratabb.hishoot2i.provider.FileConstantsImpl
 import template.TemplateFactoryManager
 import template.TemplateFactoryManagerImpl
 import javax.inject.Singleton
 
-@Module(includes = [BindDataModule::class])
+@Module(includes = [ApplicationContextModule::class])
 @InstallIn(SingletonComponent::class)
-object ProvideDataModule {
+object ProvideAppModule {
 
     @Provides
     @Singleton
@@ -32,6 +34,12 @@ object ProvideDataModule {
     fun provideImageLoader(
         @ApplicationContext context: Context
     ): ImageLoader = CoilImageLoaderImpl(context, isDebugLog = false)
+
+    @Provides
+    @Singleton
+    fun bindFileConstants(
+        @ApplicationContext context: Context,
+    ): FileConstants = FileConstantsImpl(context)
 
     @Provides
     @Singleton

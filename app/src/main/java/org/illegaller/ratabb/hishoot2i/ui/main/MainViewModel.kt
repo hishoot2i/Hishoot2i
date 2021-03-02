@@ -1,11 +1,13 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
 import androidx.annotation.ColorInt
-import common.ext.exhaustive
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import core.CoreProcess
-import core.CoreResult
-import core.Preview
-import core.Save
+import dagger.hilt.android.lifecycle.HiltViewModel
 import entity.BackgroundMode
 import entity.ImageOption
 import entity.ImageSourcePath
@@ -23,41 +25,48 @@ import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.ScreenToolPref
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
 import org.illegaller.ratabb.hishoot2i.data.source.TemplateSource
-import org.illegaller.ratabb.hishoot2i.ui.common.BasePresenter
+import org.illegaller.ratabb.hishoot2i.ui.ARG_BACKGROUND_PATH
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN1_PATH
+import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN2_PATH
 import template.Template
 import javax.inject.Inject
 
-class MainPresenterImpl @Inject constructor(
+@ExperimentalCoroutinesApi
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val coreProcess: CoreProcess,
     private val templateSource: TemplateSource,
     private val backgroundToolPref: BackgroundToolPref,
     private val badgeToolPref: BadgeToolPref,
     private val screenToolPref: ScreenToolPref,
-    private val templateToolPref: TemplateToolPref
-) : MainPresenter, BasePresenter<MainView>() {
+    private val templateToolPref: TemplateToolPref,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
     private var lastTemplateId: String? = null
     private var lastTemplate: Template? = null
     private val isHaveLastTemplate: Boolean
         get() = lastTemplateId != null && lastTemplate != null &&
             lastTemplateId == templateToolPref.templateCurrentId
 
-    @ExperimentalCoroutinesApi
-    override fun attachView(view: MainView) {
-        super.attachView(view)
-        preferenceChangesSubscriber() //
+    private val _uiState = MutableLiveData<MainView>()
+    internal val uiState: LiveData<MainView>
+        get() = _uiState
+
+    private val sourcePath = ImageSourcePath()
+
+    init {
+        preferenceChanges() //
+        sourcePath.background = savedStateHandle.get(ARG_BACKGROUND_PATH)
+        sourcePath.screen1 = savedStateHandle.get(ARG_SCREEN1_PATH)
+        sourcePath.screen2 = savedStateHandle.get(ARG_SCREEN2_PATH)
     }
 
-    override fun detachView() {
-        lastTemplateId = null
+    override fun onCleared() {
         lastTemplate = null
-        super.detachView()
+        lastTemplateId = null
     }
 
-    // Raw Uri
-    override val sourcePath = ImageSourcePath()
-
-    /**/
-    override fun resume() {
+    fun resume() {
         lastTemplateId?.let {
             if (it != templateToolPref.templateCurrentId) {
                 render()
@@ -65,85 +74,64 @@ class MainPresenterImpl @Inject constructor(
         }
     }
 
-    private suspend fun currentTemplate(): Template = if (isHaveLastTemplate) {
-        lastTemplate!!
-    } else {
+    private suspend fun currentTemplate(): Template = if (isHaveLastTemplate) lastTemplate!! else {
         templateSource.findByIdOrDefault(templateToolPref.templateCurrentId).also {
             lastTemplate = it
             lastTemplateId = it.id
         }
     }
 
-    /**/
-    override fun render() {
-        launch {
-            requiredView().showProgress()
+    fun render() {
+        viewModelScope.launch {
+            _uiState.value = Loading(false)
             runCatching { withContext(IO) { coreProcess.preview(currentTemplate(), sourcePath) } }
-                .fold(::viewOnResult, ::viewOnError)
+                .fold({ _uiState.value = Success(it) }, { _uiState.value = Fail(it, false) })
         }
     }
 
-    /**/
-    override fun save() {
-        launch {
-            requiredView().showProgress()
-            requiredView().startSave()
+    fun save() {
+        viewModelScope.launch {
+            _uiState.value = Loading(true)
             runCatching { withContext(IO) { coreProcess.save(currentTemplate(), sourcePath) } }
-                .fold(::viewOnResult, ::viewOnError)
+                .fold({ _uiState.value = Success(it) }, { _uiState.value = Fail(it, true) })
         }
     }
 
-    override fun backgroundColorPipette(@ColorInt color: Int) {
+    fun backgroundColorPipette(@ColorInt color: Int) {
         if (backgroundToolPref.backgroundColorInt != color) {
             backgroundToolPref.backgroundColorInt = color
         }
     }
 
-    override fun changeScreen1(path: String) {
+    fun changeScreen1(path: String) {
         sourcePath.screen1 = path
+        savedStateHandle.set(ARG_SCREEN1_PATH, path)
         render()
     }
 
-    override fun changeScreen2(path: String) {
+    fun changeScreen2(path: String) {
         sourcePath.screen2 = path
+        savedStateHandle.set(ARG_SCREEN2_PATH, path)
         render()
     }
 
-    override fun changeBackground(path: String) {
+    fun changeBackground(path: String) {
         sourcePath.background = path
+        savedStateHandle.set(ARG_BACKGROUND_PATH, path)
         if (backgroundToolPref.backgroundMode.isImage) render()
         else backgroundToolPref.backgroundMode = BackgroundMode.IMAGE
     }
 
     @ExperimentalCoroutinesApi
-    private fun preferenceChangesSubscriber() {
+    private fun preferenceChanges() {
         (
             screenToolPref.mainFlow + badgeToolPref.mainFlow +
                 templateToolPref.mainFlow + backgroundToolPref.mainFlow
             )
             .merge()
-            .filter { it.isNotManualCrop() }
+            .filter { (it as? ImageOption)?.isManualCrop != true }
             .onEach { render() }
-            .catch { viewOnError(it) }
-            .launchIn(this)
-    }
-
-    private fun Any?.isNotManualCrop() = (this as? ImageOption)?.isManualCrop != true
-
-    private fun viewOnError(throwable: Throwable) {
-        with(requiredView()) {
-            onError(throwable)
-            hideProgress()
-        }
-    }
-
-    private fun viewOnResult(coreResult: CoreResult) {
-        with(requiredView()) {
-            when (coreResult) {
-                is Preview -> preview(coreResult.bitmap)
-                is Save -> save(coreResult.bitmap, coreResult.uri, coreResult.name)
-            }.exhaustive
-            hideProgress()
-        }
+            .catch { _uiState.value = Fail(it, false) }
+            .launchIn(viewModelScope)
     }
 }

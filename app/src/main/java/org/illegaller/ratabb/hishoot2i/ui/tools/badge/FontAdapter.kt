@@ -72,13 +72,12 @@ class FontAdapter @Inject constructor(
         notifyDataSetChanged()
     }
 
-    private fun getItemAsString(position: Int): String = getItem(position) as String
-    private fun getLabel(position: Int): String =
-        getItemAsString(position).let {
-            File(it).nameWithoutExtension
-                .replace("[_-]".toRegex(), replacement = " ") //
-                .capitalizeWord(" ")
-        }
+    internal fun getItemAsString(position: Int): String = getItem(position) as String
+    private fun getLabel(position: Int): String = getItemAsString(position).let {
+        File(it).nameWithoutExtension
+            .replace("[_-]".toRegex(), replacement = " ") //
+            .capitalizeWord(" ")
+    }
 
     private fun getTypeface(position: Int): Typeface = when (val path = getItemAsString(position)) {
         "DEFAULT" -> Typeface.DEFAULT

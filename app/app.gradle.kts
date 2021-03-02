@@ -95,7 +95,10 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime:$xNavigationVersion")
     implementation("androidx.navigation:navigation-runtime-ktx:$xNavigationVersion")
     val xLifeCycleVersion: String by rootProject
+    implementation("androidx.lifecycle:lifecycle-livedata-core:$xLifeCycleVersion")
+    implementation("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel:$xLifeCycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$xLifeCycleVersion")
     val googleMaterialVersion: String by rootProject
     implementation("com.google.android.material:material:$googleMaterialVersion")
@@ -106,8 +109,9 @@ dependencies {
     implementation("com.google.dagger:hilt-core:$daggerHiltVersion")
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
-    // val xHiltVersion: String by rootProject
-    // kapt("androidx.hilt:hilt-compiler:$xHiltVersion")
+    val xHiltVersion: String by rootProject
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:$xHiltVersion")
+
     val timberVersion: String by rootProject
     implementation("com.jakewharton.timber:timber:$timberVersion")
     implementation("cat.ereza:customactivityoncrash:2.3.0")
