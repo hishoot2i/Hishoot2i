@@ -1,7 +1,10 @@
 #
 -keepattributes SourceFile,LineNumberTable
 #
--keep class io.reactivex.rxjava3.disposables.RunnableDisposable { <init>(...); }
-#
 -dontwarn java.lang.instrument.ClassFileTransformer
 -dontwarn sun.misc.SignalHandler
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+# Android API 30; atm. target is Android 29
+-dontwarn android.view.WindowInsetsAnimationControlListener
+-dontwarn android.view.WindowInsetsController$OnControllableInsetsChangedListener
+-dontwarn android.view.WindowInsetsAnimation$Callback
