@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
@@ -29,7 +30,6 @@ import common.ext.graphics.red
 import common.ext.graphics.toHexString
 import common.ext.graphics.toPairWithHex
 import common.ext.hideSoftKey
-import common.ext.isVisible
 import common.ext.onEditorAction
 import common.ext.onKey
 import common.ext.preventMultipleClick
@@ -59,7 +59,7 @@ class ColorMixDialog : AppCompatDialogFragment() {
     ): View = DialogColorMixBinding.inflate(inflater, container, false).apply {
         color = args.color
         internalColorChange(color, emit = true)
-        colorAlphaLayout.isVisible = args.withAlpha
+        colorAlphaGroup.isVisible = args.withAlpha
         colorHexLayout.isVisible = args.withHex
         setViewListener()
     }.run { root }
@@ -68,10 +68,7 @@ class ColorMixDialog : AppCompatDialogFragment() {
         colorCancel.setOnClickListener { it.preventMultipleClick { dismiss() } }
         colorDone.setOnClickListener {
             it.preventMultipleClick {
-                setFragmentResult(
-                    KEY_REQ_MIX_COLOR,
-                    bundleOf(ARG_COLOR to color)
-                )
+                setFragmentResult(KEY_REQ_MIX_COLOR, bundleOf(ARG_COLOR to color))
                 dismiss()
             }
         }

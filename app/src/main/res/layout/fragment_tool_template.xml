@@ -1,146 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
     android:orientation="vertical"
-    android:padding="@dimen/toolLayoutMargin">
+    android:padding="@dimen/toolLayoutPadding">
 
     <TextView
+        android:id="@+id/textTemplate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/template"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/toolTemplatePreview"
+        android:layout_width="@dimen/toolPreviewWidth"
+        android:layout_height="@dimen/toolPreviewHeight"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTemplate"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/toolTemplateName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="16dp"
-        android:text="@string/template"
-        android:textAppearance="@style/TextAppearance.App.Title" />
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.App"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/toolTemplatePreview"
+        app:layout_constraintTop_toTopOf="@+id/toolTemplatePreview"
+        tools:text="@tools:sample/full_names" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/toolTemplateId"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.App.SubTitle"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/toolTemplateName"
+        app:layout_constraintTop_toBottomOf="@+id/toolTemplateName"
+        tools:text="@tools:sample/lorem/random" />
 
-        <ImageView
-            android:id="@+id/toolTemplatePreview"
-            android:layout_width="@dimen/toolPreviewWidth"
-            android:layout_height="@dimen/toolPreviewHeight"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            tools:src="@tools:sample/avatars" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/toolTemplateName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.App"
-                android:textStyle="bold"
-                tools:text="@tools:sample/full_names" />
-
-            <TextView
-                android:id="@+id/toolTemplateId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.App.SubTitle"
-                android:textStyle="bold"
-                tools:text="@tools:sample/lorem/random" />
-
-            <TextView
-                android:id="@+id/toolTemplateInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="100dp"
-                android:maxLines="3"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:textAppearance="@style/TextAppearance.App.SubTitle"
-                tools:text="@tools:sample/lorem/random" />
-        </LinearLayout>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/toolTemplateInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="100dp"
+        android:maxLines="3"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textAppearance="@style/TextAppearance.App.SubTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/toolTemplateName"
+        app:layout_constraintTop_toBottomOf="@+id/toolTemplateId"
+        tools:text="@tools:sample/lorem/random" />
 
     <Button
         android:id="@+id/toolTemplateManager"
         style="@style/AppWidget.Button.OutlinedButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:text="@string/template_manager"
         app:icon="@drawable/ic_template"
         app:iconGravity="textEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolTemplatePreview"
         app:textAllCaps="false" />
 
-    <LinearLayout
-        android:id="@+id/toolTemplateOption"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textOption"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:paddingTop="8dp"
+        android:text="@string/options"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolTemplateManager" />
 
-        <TextView
-            android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textOptionInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:text="@string/template_v2_and_v3"
+        android:textAppearance="@style/TextAppearance.App.SubTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textOption" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toolTemplateToggleGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textOptionInfo"
+        app:selectionRequired="false"
+        app:singleSelection="false"
+        tools:checkedButton="@id/toolTemplateSwitchShadow">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/toolTemplateSwitchFrame"
+            style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="@string/options"
-            android:textAppearance="@style/TextAppearance.App.Title" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/frame" />
 
-        <TextView
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/toolTemplateSwitchShadow"
+            style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:text="@string/template_v2_and_v3"
-            android:textAppearance="@style/TextAppearance.App.SubTitle" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/shadow" />
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toolTemplateToggleGroup"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/toolTemplateSwitchGlare"
+            style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:selectionRequired="false"
-            app:singleSelection="false"
-            tools:checkedButton="@id/toolTemplateSwitchShadow">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/glare" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/toolTemplateSwitchFrame"
-                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/frame" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/toolTemplateSwitchShadow"
-                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/shadow" />
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/toolTemplateSwitchGlare"
-                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/glare" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

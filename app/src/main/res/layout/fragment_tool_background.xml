@@ -1,74 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
-    android:orientation="vertical"
-    android:padding="@dimen/toolLayoutMargin">
+    android:padding="@dimen/toolLayoutPadding">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textBackground"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal">
+        android:text="@string/background"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintEnd_toStartOf="@id/backgroundModes_Spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+    <Spinner
+        android:id="@+id/backgroundModes_Spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/background_mode_values"
+        android:prompt="@string/background_mode_prompt"
+        android:spinnerMode="dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/backgroundColor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textBackground"
+        tools:visibility="gone">
+
+        <Button
+            android:id="@+id/backgroundColorMix"
+            style="@style/AppWidget.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="@string/background"
-            android:textAppearance="@style/TextAppearance.App.Title" />
+            android:text="@string/color_mixer"
+            app:icon="@drawable/ic_color_lens"
+            app:iconGravity="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textAllCaps="false" />
 
-        <Spinner
-            android:id="@+id/backgroundModes_Spinner"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/backgroundColorPipette"
+            style="@style/AppWidget.Button.OutlinedButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:entries="@array/background_mode_values"
-            android:prompt="@string/background_mode_prompt"
-            android:spinnerMode="dialog" />
-    </LinearLayout>
+            android:text="@string/color_pipette"
+            app:icon="@drawable/ic_pipette"
+            app:iconGravity="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backgroundColorMix"
+            app:textAllCaps="false" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textBackground"
+        tools:visibility="visible">
 
-        <include
-            android:id="@+id/toolBackgroundLayoutColor"
-            layout="@layout/tool_background_color"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/backgroundImageOption_Group"
+            style="?attr/materialButtonToggleGroupStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:visibility="gone" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/backgroundImagePick"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            tools:checkedButton="@id/imageOption_CenterCrop"
+            tools:ignore="RtlSymmetry">
 
-        <include
-            android:id="@+id/toolBackgroundLayoutImage"
-            layout="@layout/tool_background_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:visibility="visible" />
-
-        <FrameLayout
-            android:id="@+id/toolBackgroundLayoutTrans"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:visibility="gone">
-
-            <TextView
+            <Button
+                android:id="@+id/imageOption_ScaleFill"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_horizontal"
-                android:text="@string/no_content_here"
-                android:textColor="?android:textColorSecondary"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-    </FrameLayout>
-</LinearLayout>
+                android:text="@string/scale_fill"
+                app:icon="@drawable/ic_zoom" />
+
+            <Button
+                android:id="@+id/imageOption_CenterCrop"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/center_crop"
+                app:icon="@drawable/ic_crop_free" />
+
+            <Button
+                android:id="@+id/imageOption_ManualCrop"
+                style="@style/AppWidget.Button.OutlinedButton.ToggleButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/manual_crop"
+                app:icon="@drawable/ic_crop" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <Button
+            android:id="@+id/backgroundImagePick"
+            style="@style/AppWidget.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_image"
+            app:icon="@drawable/ic_image"
+            app:layout_constraintBottom_toBottomOf="@+id/backgroundImageOption_Group"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/backgroundImageOption_Group"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textAllCaps="false" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/backgroundImageBlur"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/blur"
+            android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backgroundImageOption_Group"
+            tools:checked="true" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/backgroundImage_Blur_Slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/backgroundImageBlur"
+            app:layout_constraintTop_toTopOf="@+id/backgroundImageBlur"
+            tools:value="25.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textNoContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/no_content_here"
+        android:textColor="?android:textColorSecondary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>

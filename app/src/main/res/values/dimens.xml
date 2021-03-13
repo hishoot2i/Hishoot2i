@@ -7,7 +7,7 @@
     <dimen name="drawerLayoutElevation">12dp</dimen>
     <dimen name="itemPreviewHeight">180dp</dimen>
     <dimen name="navHeaderHeight">140dp</dimen>
-    <dimen name="toolLayoutMargin">16dp</dimen>
+    <dimen name="toolLayoutPadding">16dp</dimen>
     <dimen name="toolLayoutMinHeight">240dp</dimen>
     <dimen name="toolPreviewHeight">120dp</dimen>
     <dimen name="toolPreviewWidth">80dp</dimen>

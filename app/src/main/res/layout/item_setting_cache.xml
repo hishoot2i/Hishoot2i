@@ -2,58 +2,64 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:layout_margin="10dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/textCache"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/cache"
-            android:textAppearance="@style/TextAppearance.App.Title" />
+            android:textAppearance="@style/TextAppearance.App.Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="?android:listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textCache" />
+
+        <TextView
+            android:id="@+id/textImageCache"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/image_cache"
+            android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toStartOf="@+id/setting_cache_clear"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textCache" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/setting_cache_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toEndOf="@+id/textImageCache"
+            app:layout_constraintStart_toStartOf="@+id/textImageCache"
+            app:layout_constraintBottom_toBottomOf="@+id/setting_cache_clear"
+            tools:text="@tools:sample/us_zipcodes" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/image_cache"
-                    android:textAppearance="@style/TextAppearance.App" />
-
-                <TextView
-                    android:id="@+id/setting_cache_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.App"
-                    tools:text="@tools:sample/us_zipcodes" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/setting_cache_clear"
-                style="@style/AppWidget.Button.OutlinedButton.IconOnly"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                app:icon="@drawable/ic_clear_all" />
-        </LinearLayout>
-    </LinearLayout>
+        <Button
+            android:id="@+id/setting_cache_clear"
+            style="@style/AppWidget.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_clear_all"
+            app:layout_constraintEnd_toEndOf="@+id/textCache"
+            app:layout_constraintTop_toTopOf="@+id/textImageCache" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

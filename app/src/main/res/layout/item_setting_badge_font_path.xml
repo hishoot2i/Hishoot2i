@@ -2,46 +2,64 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:layout_margin="10dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/textBadgeFont"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/badge_font"
-            android:textAppearance="@style/TextAppearance.App.Title" />
+            android:textAppearance="@style/TextAppearance.App.Title"
+            app:layout_constraintBottom_toTopOf="@+id/setting_badge_system_font"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="?android:listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textBadgeFont" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/setting_badge_system_font"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/include_system_font"
             android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toEndOf="@+id/textBadgeFont"
+            app:layout_constraintStart_toStartOf="@+id/textBadgeFont"
+            app:layout_constraintTop_toBottomOf="@+id/textBadgeFont"
             tools:checked="true" />
 
         <Button
             android:id="@+id/setting_badge_custom_font_dir"
             style="@style/AppWidget.Button.OutlinedButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:text="@string/custom_directory"
             app:icon="@drawable/ic_launch"
             app:iconGravity="textEnd"
+            app:layout_constraintEnd_toEndOf="@+id/textBadgeFont"
+            app:layout_constraintStart_toStartOf="@+id/textBadgeFont"
+            app:layout_constraintTop_toBottomOf="@+id/setting_badge_system_font"
             app:textAllCaps="false" />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

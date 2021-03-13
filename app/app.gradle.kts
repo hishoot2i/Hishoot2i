@@ -76,6 +76,8 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:$xCoordinatorLayoutVersion")
     val xRecyclerViewVersion: String by rootProject
     implementation("androidx.recyclerview:recyclerview:$xRecyclerViewVersion")
+    val xConstraintLayoutVersion: String by rootProject
+    implementation("androidx.constraintlayout:constraintlayout:$xConstraintLayoutVersion")
     val xCustomViewVersion: String by rootProject
     implementation("androidx.customview:customview:$xCustomViewVersion")
     val xActivityVersion: String by rootProject
@@ -97,6 +99,7 @@ dependencies {
     val xLifeCycleVersion: String by rootProject
     implementation("androidx.lifecycle:lifecycle-livedata-core:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$xLifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$xLifeCycleVersion")

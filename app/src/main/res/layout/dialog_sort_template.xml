@@ -1,111 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minWidth="240dp"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:minWidth="240dp">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/sort_by"
-        android:textAppearance="@style/TextAppearance.App.Title" />
-
-    <TableLayout
+        android:id="@+id/textSortBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="8dp">
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/sort_by"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TableRow>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/name"
-                android:textAppearance="@style/TextAppearance.App" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/version"
-                android:textAppearance="@style/TextAppearance.App" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/date"
-                android:textAppearance="@style/TextAppearance.App" />
-        </TableRow>
-
-        <TableRow android:layout_marginTop="20dp">
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/action_sort_name_asc"
-                android:layout_width="@dimen/dialogSortIconSize"
-                android:layout_height="@dimen/dialogSortIconSize"
-                app:srcCompat="@drawable/ic_sort_az_up"
-                tools:background="@drawable/sort_selected" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/action_sort_type_asc"
-                android:layout_width="@dimen/dialogSortIconSize"
-                android:layout_height="@dimen/dialogSortIconSize"
-                app:srcCompat="@drawable/ic_sort_type_up" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/action_sort_date_asc"
-                android:layout_width="@dimen/dialogSortIconSize"
-                android:layout_height="@dimen/dialogSortIconSize"
-                app:srcCompat="@drawable/ic_sort_clock_up" />
-        </TableRow>
-
-        <TableRow android:layout_marginTop="20dp">
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/action_sort_name_desc"
-                android:layout_width="@dimen/dialogSortIconSize"
-                android:layout_height="@dimen/dialogSortIconSize"
-                app:srcCompat="@drawable/ic_sort_az_down" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/action_sort_type_desc"
-                android:layout_width="@dimen/dialogSortIconSize"
-                android:layout_height="@dimen/dialogSortIconSize"
-                app:srcCompat="@drawable/ic_sort_type_down" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/action_sort_date_desc"
-                android:layout_width="@dimen/dialogSortIconSize"
-                android:layout_height="@dimen/dialogSortIconSize"
-                app:srcCompat="@drawable/ic_sort_clock_down" />
-        </TableRow>
-    </TableLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/name"
+        android:textAppearance="@style/TextAppearance.App"
+        app:layout_constraintEnd_toStartOf="@+id/textVersion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSortBy"
+        app:layout_constraintWidth_percent="0.33" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+    <TextView
+        android:id="@+id/textVersion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/version"
+        android:textAppearance="@style/TextAppearance.App"
+        app:layout_constraintEnd_toStartOf="@+id/textDate"
+        app:layout_constraintStart_toEndOf="@+id/textName"
+        app:layout_constraintTop_toBottomOf="@+id/textSortBy"
+        app:layout_constraintWidth_percent="0.33" />
 
-        <Button
-            android:id="@+id/action_sort_cancel"
-            style="@style/AppWidget.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            tools:ignore="ButtonOrder" />
-    </LinearLayout>
-</LinearLayout>
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/date"
+        android:textAppearance="@style/TextAppearance.App"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSortBy"
+        app:layout_constraintWidth_percent="0.33" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/action_sort_name_asc"
+        android:layout_width="@dimen/dialogSortIconSize"
+        android:layout_height="@dimen/dialogSortIconSize"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/textName"
+        app:layout_constraintStart_toStartOf="@+id/textName"
+        app:layout_constraintTop_toBottomOf="@+id/textName"
+        app:srcCompat="@drawable/ic_sort_az_up"
+        tools:background="@drawable/sort_selected" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/action_sort_type_asc"
+        android:layout_width="@dimen/dialogSortIconSize"
+        android:layout_height="@dimen/dialogSortIconSize"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/textVersion"
+        app:layout_constraintStart_toStartOf="@+id/textVersion"
+        app:layout_constraintTop_toBottomOf="@+id/textVersion"
+        app:srcCompat="@drawable/ic_sort_type_up" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/action_sort_date_asc"
+        android:layout_width="@dimen/dialogSortIconSize"
+        android:layout_height="@dimen/dialogSortIconSize"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/textDate"
+        app:layout_constraintStart_toStartOf="@+id/textDate"
+        app:layout_constraintTop_toBottomOf="@+id/textDate"
+        app:srcCompat="@drawable/ic_sort_clock_up" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/action_sort_name_desc"
+        android:layout_width="@dimen/dialogSortIconSize"
+        android:layout_height="@dimen/dialogSortIconSize"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/action_sort_name_asc"
+        app:layout_constraintStart_toStartOf="@+id/action_sort_name_asc"
+        app:layout_constraintTop_toBottomOf="@+id/action_sort_name_asc"
+        app:srcCompat="@drawable/ic_sort_az_down" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/action_sort_type_desc"
+        android:layout_width="@dimen/dialogSortIconSize"
+        android:layout_height="@dimen/dialogSortIconSize"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/action_sort_type_asc"
+        app:layout_constraintStart_toStartOf="@+id/action_sort_type_asc"
+        app:layout_constraintTop_toBottomOf="@+id/action_sort_type_asc"
+        app:srcCompat="@drawable/ic_sort_type_down" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/action_sort_date_desc"
+        android:layout_width="@dimen/dialogSortIconSize"
+        android:layout_height="@dimen/dialogSortIconSize"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/action_sort_date_asc"
+        app:layout_constraintStart_toStartOf="@+id/action_sort_date_asc"
+        app:layout_constraintTop_toBottomOf="@+id/action_sort_date_asc"
+        app:srcCompat="@drawable/ic_sort_clock_down" />
+
+    <Button
+        android:id="@+id/action_sort_cancel"
+        style="@style/AppWidget.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/action_sort_date_desc"
+        app:layout_constraintWidth_percent=".33" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

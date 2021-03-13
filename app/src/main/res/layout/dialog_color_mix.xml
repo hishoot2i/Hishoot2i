@@ -1,156 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical"
     android:padding="20dp">
 
     <TextView
+        android:id="@+id/textColorMixer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:text="@string/color_mixer"
-        android:textAppearance="@style/TextAppearance.App.Title" />
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/nestedScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textColorMixer">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/colorAlphaLayout"
-                android:layout_width="match_parent"
+            <!-- region Alpha -->
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/colorAlphaGroup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:constraint_referenced_ids="colorAlphaText,colorAlphaIcon,colorAlphaSeekBar" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    app:elevation="4dp"
-                    app:srcCompat="@drawable/ic_dot_alpha" />
-
-                <com.google.android.material.slider.Slider
-                    style="@style/AppWidget.Slider.ColorMix"
-                    android:id="@+id/colorAlphaSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:value="53.0" />
-
-                <TextView
-                    android:id="@+id/colorAlphaText"
-                    style="@style/AppWidget.InfoHexColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    tools:text="35" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/colorAlphaIcon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:elevation="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/colorAlphaSeekBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorAlphaSeekBar"
+                app:srcCompat="@drawable/ic_dot_alpha" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_dot"
-                    app:tint="@color/red" />
-
-                <com.google.android.material.slider.Slider
-                    style="@style/AppWidget.Slider.ColorMix"
-                    android:id="@+id/colorRedSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:value="128.0" />
-
-                <TextView
-                    android:id="@+id/colorRedText"
-                    style="@style/AppWidget.InfoHexColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    tools:text="0F" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.slider.Slider
+                android:id="@+id/colorAlphaSeekBar"
+                style="@style/AppWidget.Slider.ColorMix"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:layout_constraintEnd_toStartOf="@+id/colorAlphaText"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/colorAlphaIcon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:value="53.0" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_dot"
-                    app:tint="@color/green" />
-
-                <com.google.android.material.slider.Slider
-                    style="@style/AppWidget.Slider.ColorMix"
-                    android:id="@+id/colorGreenSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:value="128.0" />
-
-                <TextView
-                    android:id="@+id/colorGreenText"
-                    style="@style/AppWidget.InfoHexColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    tools:text="7F" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/colorAlphaText"
+                style="@style/AppWidget.InfoHexColor"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:layout_constraintBottom_toBottomOf="@+id/colorAlphaSeekBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorAlphaSeekBar"
+                tools:text="35" />
+            <!-- endregion -->
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_dot"
-                    app:tint="@color/blue" />
+            <!-- region Red -->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/colorRedIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/colorRedSeekBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorRedSeekBar"
+                app:srcCompat="@drawable/ic_dot"
+                app:tint="@color/red" />
 
-                <com.google.android.material.slider.Slider
-                    style="@style/AppWidget.Slider.ColorMix"
-                    android:id="@+id/colorBlueSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:value="255.0" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/colorRedSeekBar"
+                style="@style/AppWidget.Slider.ColorMix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/colorRedText"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/colorRedIcon"
+                app:layout_constraintTop_toBottomOf="@+id/colorAlphaSeekBar"
+                tools:value="174.0" />
 
-                <TextView
-                    android:id="@+id/colorBlueText"
-                    style="@style/AppWidget.InfoHexColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    tools:text="FF" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/colorRedText"
+                style="@style/AppWidget.InfoHexColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/colorRedSeekBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorRedSeekBar"
+                tools:text="AD" />
+            <!-- endregion -->
+
+            <!-- region Green -->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/colorGreenIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/colorGreenSeekBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorGreenSeekBar"
+                app:srcCompat="@drawable/ic_dot"
+                app:tint="@color/green" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/colorGreenSeekBar"
+                style="@style/AppWidget.Slider.ColorMix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/colorGreenText"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/colorGreenIcon"
+                app:layout_constraintTop_toBottomOf="@+id/colorRedSeekBar"
+                tools:value="128.0" />
+
+            <TextView
+                android:id="@+id/colorGreenText"
+                style="@style/AppWidget.InfoHexColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/colorGreenSeekBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorGreenSeekBar"
+                tools:text="7F" />
+            <!-- endregion -->
+
+            <!-- region Blue -->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/colorBlueIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/colorBlueSeekBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorBlueSeekBar"
+                app:srcCompat="@drawable/ic_dot"
+                app:tint="@color/blue" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/colorBlueSeekBar"
+                style="@style/AppWidget.Slider.ColorMix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/colorBlueText"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/colorBlueIcon"
+                app:layout_constraintTop_toBottomOf="@+id/colorGreenSeekBar"
+                tools:value="255.0" />
+
+            <TextView
+                android:id="@+id/colorBlueText"
+                style="@style/AppWidget.InfoHexColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/colorBlueSeekBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/colorBlueSeekBar"
+                tools:text="FF" />
+            <!-- endregion -->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/colorHexLayout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:baselineAligned="true"
                 android:hint="@string/hex_color_prefix"
                 app:errorEnabled="false"
-                app:hintAnimationEnabled="false">
+                app:hintAnimationEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/colorBlueSeekBar">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/colorHex"
@@ -160,41 +192,39 @@
                     android:inputType="textNoSuggestions|textCapWords"
                     android:lines="1"
                     android:selectAllOnFocus="true"
-                    tools:text="357F7FFF" />
+                    tools:text="35AD7FFF" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:paddingTop="8dp">
-
-                <org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
-                    android:id="@+id/colorPreview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/colorCancel"
-                        style="@style/AppWidget.Button.TextButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/cancel" />
-
-                    <Button
-                        android:id="@+id/colorDone"
-                        style="@style/AppWidget.Button.TextButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/done" />
-                </LinearLayout>
-            </FrameLayout>
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+    <org.illegaller.ratabb.hishoot2i.ui.common.widget.ColorPreview
+        android:id="@+id/colorPreview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nestedScroll" />
+
+    <Button
+        android:id="@+id/colorCancel"
+        style="@style/AppWidget.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/colorPreview"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <Button
+        android:id="@+id/colorDone"
+        style="@style/AppWidget.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/colorPreview"
+        app:layout_constraintWidth_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

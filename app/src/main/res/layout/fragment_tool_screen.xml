@@ -1,64 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
-    android:orientation="vertical"
-    android:padding="@dimen/toolLayoutMargin">
+    android:padding="@dimen/toolLayoutPadding">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textScreen"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal">
+        android:text="@string/screen"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintBaseline_toBaselineOf="@+id/toolScreenDouble"
+        app:layout_constraintEnd_toStartOf="@+id/toolScreenDouble"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="@string/screen"
-            android:textAppearance="@style/TextAppearance.App.Title" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/toolScreenDouble"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/double_"
-            tools:checked="true" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/toolScreenDouble"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:text="@string/double_"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:checked="false" />
 
-        <Button
-            android:id="@+id/toolScreen1"
-            style="@style/AppWidget.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/screen_shoot_1"
-            app:icon="@drawable/ic_image"
-            app:iconGravity="textStart"
-            app:textAllCaps="false" />
+    <Button
+        android:id="@+id/toolScreen1"
+        style="@style/AppWidget.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/screen_shoot_1"
+        app:icon="@drawable/ic_image"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolScreenDouble"
+        app:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/toolScreen2"
-            style="@style/AppWidget.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/screen_shoot_2"
-            app:icon="@drawable/ic_image"
-            app:iconGravity="textStart"
-            app:textAllCaps="false"
-            tools:enabled="false" />
-
-    </LinearLayout>
-
-</LinearLayout>
+    <Button
+        android:id="@+id/toolScreen2"
+        style="@style/AppWidget.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/screen_shoot_2"
+        app:icon="@drawable/ic_image"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolScreen1"
+        app:textAllCaps="false"
+        tools:enabled="false" />
+</androidx.constraintlayout.widget.ConstraintLayout>

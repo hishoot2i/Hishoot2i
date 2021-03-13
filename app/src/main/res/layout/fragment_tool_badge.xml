@@ -1,151 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
-    android:orientation="vertical"
-    android:padding="@dimen/toolLayoutMargin">
+    android:padding="@dimen/toolLayoutPadding">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textBadge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/badge"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        app:layout_constraintBaseline_toBaselineOf="@+id/toolBadgeHide"
+        app:layout_constraintEnd_toStartOf="@+id/toolBadgeHide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/toolBadgeHide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:checked="true" />
+
+    <Button
+        android:id="@+id/toolBadgeColorPick"
+        style="@style/AppWidget.Button.OutlinedButton.IconOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_color_lens"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toStartOf="@+id/textInputLayout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:errorEnabled="false"
+        app:hintEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/toolBadgeColorPick"
+        app:layout_constraintTop_toBottomOf="@+id/toolBadgeHide">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/toolBadgeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions|textCapCharacters"
+            android:lines="1"
+            android:selectAllOnFocus="true"
+            tools:text="@tools:sample/cities" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minWidth="80dp"
+        android:text="@string/size"
+        android:textAppearance="@style/TextAppearance.App"
+        app:layout_constraintBottom_toBottomOf="@+id/toolBadgeSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolBadgeColorPick" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/toolBadgeSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textSize"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        tools:value="25.0" />
+
+    <TextView
+        android:id="@+id/textFont"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minWidth="80dp"
+        android:text="@string/font"
+        android:textAppearance="@style/TextAppearance.App"
+        app:layout_constraintBottom_toBottomOf="@+id/toolBadgeFont"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolBadgeSize" />
+
+    <Spinner
+        android:id="@+id/toolBadgeFont"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:popupBackground="?attr/colorSurface"
+        android:prompt="@string/badge_font_prompt"
+        android:spinnerMode="dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textFont"
+        app:layout_constraintTop_toBottomOf="@+id/toolBadgeSize"
+        tools:entries="@array/badge_position_values" />
+
+    <TextView
+        android:id="@+id/textPosition"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal">
+        android:minWidth="80dp"
+        android:text="@string/position"
+        android:textAppearance="@style/TextAppearance.App"
+        app:layout_constraintBottom_toBottomOf="@+id/toolBadgePosition"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolBadgeFont" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="@string/badge"
-            android:textAppearance="@style/TextAppearance.App.Title" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/toolBadgeHide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:text="@string/show"
-            tools:checked="true" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/toolBadgeLayout"
-        android:layout_width="match_parent"
+    <Spinner
+        android:id="@+id/toolBadgePosition"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="8dp"
+        android:entries="@array/badge_position_values"
+        android:popupBackground="?attr/colorSurface"
+        android:prompt="@string/bp_prompt"
+        android:spinnerMode="dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textPosition"
+        app:layout_constraintTop_toBottomOf="@+id/toolBadgeFont" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/toolBadgeColorPick"
-                style="@style/AppWidget.Button.OutlinedButton.IconOnly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:icon="@drawable/ic_color_lens" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:errorEnabled="false"
-                app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/toolBadgeInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="textNoSuggestions|textCapCharacters"
-                    android:lines="1"
-                    android:selectAllOnFocus="true"
-                    tools:text="@tools:sample/lorem/random" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:minWidth="80dp"
-                android:text="@string/size"
-                android:textAppearance="@style/TextAppearance.App" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/toolBadgeSize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:value="25.0" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="80dp"
-                android:text="@string/font"
-                android:textAppearance="@style/TextAppearance.App" />
-
-            <Spinner
-                android:id="@+id/toolBadgeFont"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:popupBackground="?attr/colorSurface"
-                android:prompt="@string/badge_font_prompt"
-                android:spinnerMode="dialog"
-                tools:entries="@array/badge_position_values" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="80dp"
-                android:text="@string/position"
-                android:textAppearance="@style/TextAppearance.App" />
-
-            <Spinner
-                android:id="@+id/toolBadgePosition"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:entries="@array/badge_position_values"
-                android:popupBackground="?attr/colorSurface"
-                android:prompt="@string/bp_prompt"
-                android:spinnerMode="dialog" />
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

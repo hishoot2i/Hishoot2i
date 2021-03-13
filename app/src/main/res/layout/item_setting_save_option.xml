@@ -1,84 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    tools:showIn="@layout/fragment_setting">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:layout_margin="10dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/textSaveOption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/save_option"
-            android:textAppearance="@style/TextAppearance.App.Title" />
+            android:textAppearance="@style/TextAppearance.App.Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="?android:listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textSaveOption" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/setting_save_notification"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/notification"
             android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
+            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintTop_toBottomOf="@+id/textSaveOption"
             tools:checked="true" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="?colorOnSurface" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textFormat"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingTop="8dp"
+            android:text="@string/format"
+            android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
+            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintTop_toBottomOf="@+id/setting_save_notification" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/format"
-                android:textAppearance="@style/TextAppearance.App" />
-
-            <Spinner
-                android:id="@+id/setting_save_format"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:dropDownSelector="?colorAccent"
-                android:entries="@array/save_option_values"
-                android:popupBackground="?attr/colorSurface"
-                android:prompt="@string/save_format"
-                android:spinnerMode="dialog" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Spinner
+            android:id="@+id/setting_save_format"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:dropDownSelector="?colorAccent"
+            android:entries="@array/save_option_values"
+            android:popupBackground="?attr/colorSurface"
+            android:prompt="@string/save_format"
+            android:spinnerMode="dialog"
+            app:layout_constraintStart_toStartOf="@+id/textFormat"
+            app:layout_constraintEnd_toEndOf="@+id/textFormat"
+            app:layout_constraintTop_toBottomOf="@+id/textFormat" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/quality"
-                android:textAppearance="@style/TextAppearance.App" />
+        <TextView
+            android:id="@+id/textQuality"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingTop="8dp"
+            android:text="@string/quality"
+            android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
+            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintTop_toBottomOf="@+id/setting_save_format" />
 
-            <com.google.android.material.slider.Slider
-                android:id="@+id/setting_save_quality"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                tools:value="80.0" />
-        </LinearLayout>
+        <com.google.android.material.slider.Slider
+            android:id="@+id/setting_save_quality"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
+            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintTop_toBottomOf="@+id/textQuality"
+            tools:value="80.0" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

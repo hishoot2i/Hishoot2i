@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,38 +8,55 @@
     <org.illegaller.ratabb.hishoot2i.ui.common.widget.CropImageView
         android:id="@+id/cropImageView"
         style="?attr/cropImageViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?actionBarSize"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@+id/backgroundButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/default_preview" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/backgroundButton"
+        android:layout_width="0dp"
         android:layout_height="@dimen/bottomAppBarHeight"
-        android:layout_gravity="bottom"
-        android:background="?attr/colorSurface">
+        android:background="?colorSurface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cropImageView" />
 
-        <Button
-            android:id="@+id/cropCancel"
-            style="@style/AppWidget.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            android:text="@string/cancel"
-            app:icon="@drawable/ic_cancel"
-            app:iconGravity="textStart" />
+    <Button
+        android:id="@+id/cropCancel"
+        style="@style/AppWidget.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/cancel"
+        app:icon="@drawable/ic_cancel"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toStartOf="@+id/cropDone"
+        app:layout_constraintStart_toStartOf="@+id/backgroundButton"
+        app:layout_constraintTop_toTopOf="@+id/backgroundButton" />
 
-        <Button
-            android:id="@+id/cropDone"
-            style="@style/AppWidget.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/done"
-            app:icon="@drawable/ic_done"
-            app:iconGravity="textStart" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/cropDone"
+        style="@style/AppWidget.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/done"
+        app:icon="@drawable/ic_done"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundButton"
+        app:layout_constraintTop_toTopOf="@+id/cropCancel" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
