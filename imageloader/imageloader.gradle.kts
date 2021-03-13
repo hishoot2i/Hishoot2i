@@ -11,12 +11,10 @@ dependencies {
     api(kotlin("stdlib", version = kotlinVersion))
     val xCoreVersion: String by rootProject
     implementation("androidx.core:core-ktx:$xCoreVersion")
-
+    val xLifeCycleVersion: String by rootProject
+    api("androidx.lifecycle:lifecycle-common:$xLifeCycleVersion")
     val coilVersion: String by rootProject
-    implementation("io.coil-kt:coil-base:$coilVersion")
-
+    api("io.coil-kt:coil-base:$coilVersion")
     val okHttpVersion: String by rootProject
     implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
-    val coroutinesVersion: String by rootProject
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$coroutinesVersion")
 }

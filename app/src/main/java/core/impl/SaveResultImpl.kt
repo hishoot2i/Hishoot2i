@@ -2,12 +2,12 @@ package core.impl
 
 import android.content.ContentResolver
 import android.content.ContentValues
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
-import android.provider.MediaStore
+import android.provider.MediaStore.Images.ImageColumns
+import android.provider.MediaStore.Images.Media
 import androidx.core.content.contentValuesOf
 import common.FileConstants
 import common.ext.graphics.saveTo
@@ -15,45 +15,39 @@ import common.ext.graphics.sizes
 import common.ext.toDateTimeFormat
 import core.Save
 import core.SaveResult
-import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.Sizes
 import entity.ext
 import entity.mimeType
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class SaveResultImpl @Inject constructor(
-    @ApplicationContext context: Context,
+    resolver: ContentResolver,
     fileConstants: FileConstants
 ) : SaveResult {
-    private val resolver: ContentResolver by lazy { context.contentResolver }
+    private val resolverInsert: (Uri, ContentValues) -> Uri? = (resolver::insert)
     private val savedDir: () -> File = (fileConstants::savedDir)
     private val toUri: (File) -> Uri = (fileConstants::toUri)
-    override suspend fun save(
+
+    // TODO: Implement [Scoped storage] here and `somewhere` ?
+    //  - https://developer.android.com/training/data-storage/use-cases
+    //  - https://commonsware.com/blog/2019/12/21/scoped-storage-stories-storing-mediastore.html
+    override suspend fun savingIt(
         bitmap: Bitmap,
         compressFormat: CompressFormat,
         saveQuality: Int
-    ): Save = withContext(IO) {
+    ): Save {
         val nowMs = System.currentTimeMillis()
-        @Suppress("SpellCheckingInspection") val fileName =
-            "HiShoot_${nowMs.toDateTimeFormat("yyyyMMdd_HHmmss")}.${compressFormat.ext}"
-        val file = File(savedDir(), fileName).also { file ->
-            // Save File
-            bitmap.saveTo(file, compressFormat, saveQuality)
-        }
-        val uri: Uri = contentValues(
-            nowMs,
-            bitmap.sizes,
-            file,
-            fileName,
-            compressFormat.mimeType
-        ).run {
-            // Save MediaStore or [?:] *not* ;/
-            resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, this) ?: toUri(file) //
-        }
-        Save(bitmap, uri, fileName)
+        val (ext, mimeType) = compressFormat.run { ext to mimeType }
+        @Suppress("SpellCheckingInspection")
+        val fileName = "HiShoot_${nowMs.toDateTimeFormat("yyyyMMdd_HHmmss")}.$ext"
+        val file = File(savedDir(), fileName)
+            .also { bitmap.saveTo(it, compressFormat, saveQuality) }
+        val uri = resolverInsert(
+            Media.EXTERNAL_CONTENT_URI,
+            contentValues(nowMs, bitmap.sizes, file, fileName, mimeType)
+        ) ?: toUri(file) //
+        return Save(bitmap, uri, fileName)
     }
 
     private fun contentValues(
@@ -67,17 +61,17 @@ class SaveResultImpl @Inject constructor(
         val (width, height) = bitmapSize
         return contentValuesOf(
             @Suppress("DEPRECATION") // DATA
-            MediaStore.Images.ImageColumns.DATA to file.absolutePath,
-            MediaStore.Images.ImageColumns.TITLE to fileName,
-            MediaStore.Images.ImageColumns.DISPLAY_NAME to fileName,
-            MediaStore.Images.ImageColumns.DATE_ADDED to nowInSeconds,
-            MediaStore.Images.ImageColumns.DATE_MODIFIED to nowInSeconds,
-            MediaStore.Images.ImageColumns.MIME_TYPE to mimeType,
-            MediaStore.Images.ImageColumns.WIDTH to width,
-            MediaStore.Images.ImageColumns.HEIGHT to height,
-            MediaStore.Images.ImageColumns.SIZE to file.length()
+            ImageColumns.DATA to file.absolutePath,
+            ImageColumns.TITLE to fileName,
+            ImageColumns.DISPLAY_NAME to fileName,
+            ImageColumns.DATE_ADDED to nowInSeconds,
+            ImageColumns.DATE_MODIFIED to nowInSeconds,
+            ImageColumns.MIME_TYPE to mimeType,
+            ImageColumns.WIDTH to width,
+            ImageColumns.HEIGHT to height,
+            ImageColumns.SIZE to file.length()
         ).also {
-            if (SDK_INT >= 29) it.put(MediaStore.Images.ImageColumns.DATE_TAKEN, nowMs)
+            if (SDK_INT >= 29) it.put(ImageColumns.DATE_TAKEN, nowMs)
         }
     }
 }

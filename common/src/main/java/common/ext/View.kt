@@ -17,6 +17,8 @@ import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
  * @see[View.getVisibility]
  * @see[View.setVisibility]
  */
+@Suppress("unused")
+@Deprecated(message = "use androidx-core-ktx directly.", level = DeprecationLevel.ERROR)
 inline var View.isVisible: Boolean
     get() = visibility == VISIBLE
     set(value) {

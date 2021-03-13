@@ -1,7 +1,6 @@
 package core
 
 import android.graphics.Bitmap.CompressFormat
-import common.custombitmap.BadgeBitmapBuilder
 import entity.BackgroundMode
 import entity.BadgePosition
 import entity.ImageOption
@@ -15,7 +14,7 @@ interface CoreRequest {
 
     val badgePosition: BadgePosition
     val badgeEnable: Boolean
-    val badgeConfig: BadgeBitmapBuilder.Config
+    val badgeConfig: BadgeBuilder.Config
 
     val doubleScreenEnable: Boolean
 

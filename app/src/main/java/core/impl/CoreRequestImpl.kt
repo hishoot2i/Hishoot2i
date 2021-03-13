@@ -2,8 +2,8 @@ package core.impl
 
 import android.graphics.Bitmap
 import android.graphics.Typeface
-import common.custombitmap.BadgeBitmapBuilder
 import common.ext.graphics.createFromFileOrDefault
+import core.BadgeBuilder
 import core.CoreRequest
 import core.MixTemplate
 import entity.BackgroundMode
@@ -43,8 +43,8 @@ class CoreRequestImpl @Inject constructor(
         get() = badgeToolPref.badgePosition
     override val badgeEnable: Boolean
         get() = badgeToolPref.badgeEnable
-    override val badgeConfig: BadgeBitmapBuilder.Config
-        get() = BadgeBitmapBuilder.Config(
+    override val badgeConfig: BadgeBuilder.Config
+        get() = BadgeBuilder.Config(
             badgeToolPref.badgeText,
             badgeTypeface,
             badgeToolPref.badgeSize,

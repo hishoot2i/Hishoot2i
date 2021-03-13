@@ -1,4 +1,4 @@
-package imageloader.coil
+package imageloader.coil.map
 
 import androidx.annotation.DrawableRes
 import coil.map.Mapper

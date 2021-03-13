@@ -1,4 +1,4 @@
-package imageloader.coil
+package imageloader.coil.map
 
 import android.content.ContentResolver.SCHEME_ANDROID_RESOURCE
 import android.content.Context
