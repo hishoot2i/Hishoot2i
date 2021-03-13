@@ -1,11 +1,10 @@
 package org.illegaller.ratabb.hishoot2i.di
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationManagerCompat
 import common.FileConstants
-import common.custombitmap.AlphaPatternBitmap
-import common.custombitmap.BadgeBitmapBuilder
 import common.egl.MaxTexture
 import common.egl.MaxTextureCompat
 import dagger.Module
@@ -62,13 +61,7 @@ object ProvideAppModule {
 
     @Provides
     @Singleton
-    fun provideAlphaPattern(
+    fun provideContentResolver(
         @ApplicationContext context: Context
-    ): AlphaPatternBitmap = AlphaPatternBitmap(context)
-
-    @Provides
-    @Singleton
-    fun provideBadgeBuilder(
-        @ApplicationContext context: Context
-    ): BadgeBitmapBuilder = BadgeBitmapBuilder(context)
+    ): ContentResolver = context.contentResolver
 }

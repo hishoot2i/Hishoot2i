@@ -4,11 +4,13 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
-import common.custombitmap.AlphaPatternBitmap
+import androidx.core.graphics.drawable.updateBounds
+import common.custombitmap.CheckerBoardDrawable
+import common.ext.dp2px
+import kotlin.math.roundToInt
 
 class ColorPreview @JvmOverloads constructor(
     context: Context,
@@ -43,15 +45,10 @@ class ColorPreview @JvmOverloads constructor(
             }
         }
 
-    private val alphaTiledDrawable by lazy {
-        BitmapDrawable(
-            context.resources,
-            AlphaPatternBitmap(context).create(sizes = entity.Sizes(measuredWidth, measuredHeight))
-        )
+    private val checkerBoard by lazy {
+        CheckerBoardDrawable(context.dp2px(12F).roundToInt())
     }
-    private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
-    }
+    private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
     private val srcRect: Rect
         get() = Rect(0, 0, measuredWidth shr 1, measuredHeight)
     private val dstRect: Rect
@@ -59,12 +56,12 @@ class ColorPreview @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        alphaTiledDrawable.setBounds(0, 0, measuredWidth, measuredHeight)
+        checkerBoard.updateBounds(right = measuredWidth, bottom = measuredHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        alphaTiledDrawable.draw(canvas)
+        checkerBoard.draw(canvas)
         paint.color = srcColor
         canvas.drawRect(srcRect, paint)
         paint.color = dstColor

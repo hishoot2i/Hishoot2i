@@ -3,7 +3,7 @@ package org.illegaller.ratabb.hishoot2i.data.source
 import template.Template
 
 interface TemplateSource {
-    suspend fun allTemplate(): List<Template>
-    suspend fun findByIdOrDefault(id: String): Template
-    suspend fun searchByNameOrAuthor(query: String): List<Template>
+    fun allTemplate(): List<Template>
+    fun findByIdOrDefault(id: String): Template
+    fun searchByNameOrAuthor(query: String): List<Template>
 }

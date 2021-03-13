@@ -3,20 +3,26 @@ package org.illegaller.ratabb.hishoot2i.ui.crop
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import common.ext.deviceSizes
 import common.ext.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import imageloader.ImageLoader
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentCropBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_CROP_PATH
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_CROP
+import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
 import org.illegaller.ratabb.hishoot2i.ui.common.widget.CropImageView
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,13 +40,16 @@ class CropFragment : Fragment(R.layout.fragment_crop) {
         super.onViewCreated(view, savedInstanceState)
         FragmentCropBinding.bind(view).apply {
             handleDataExtras(cropImageView)
-            viewModel.uiState.observe(viewLifecycleOwner) { observer(it) }
+            viewObserve(viewModel.uiState, ::observer)
             cropCancel.setOnClickListener {
                 it.preventMultipleClick { findNavController().navigateUp() }
             }
             cropDone.setOnClickListener {
                 it.preventMultipleClick {
-                    viewModel.savingCrop(cropImageView.croppedBitmap)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val bitmap = withContext(Default) { cropImageView.croppedBitmap }
+                        viewModel.savingCrop(bitmap)
+                    }
                 }
             }
         }
@@ -62,9 +71,8 @@ class CropFragment : Fragment(R.layout.fragment_crop) {
     }
 
     private fun handleDataExtras(cropImageView: CropImageView) {
-        with(args) {
-            cropImageView.setCustomRatio(ratio.x, ratio.y)
-            imageLoader.display(cropImageView, path, cropImageView.context.deviceSizes)
-        }
+        val (x, y) = args.ratio
+        cropImageView.setCustomRatio(x, y)
+        imageLoader.displayCrop(cropImageView, viewLifecycleOwner, args.path)
     }
 }

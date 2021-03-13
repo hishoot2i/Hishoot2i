@@ -5,18 +5,22 @@ import android.app.NotificationChannel
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.BigPictureStyle
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ShareCompat
+import androidx.core.graphics.applyCanvas
+import common.ext.activityPendingIntent
 import common.ext.dpSize
-import common.ext.graphics.applyCanvas
 import common.ext.graphics.createBitmap
 import common.ext.graphics.drawBitmapSafely
 import common.ext.graphics.halfAlpha
@@ -42,6 +46,23 @@ class SaveNotificationImpl @Inject constructor(
     private val subTextErrString by lazy { context.getString(R.string.sub_text_error) }
     private val tapToViewString by lazy { context.getString(R.string.tap_to_view) }
     private val appIconSize by lazy { context.dpSize(android.R.dimen.app_icon_size) }
+
+    private val shareIntent: (Uri) -> PendingIntent = {
+        context.activityPendingIntent {
+            ShareCompat.IntentBuilder(context)
+                .setStream(it)
+                .setType("image/*")
+                .setChooserTitle(R.string.share)
+                .createChooserIntent()
+        }
+    }
+    private val viewIntent: (Uri) -> PendingIntent = {
+        context.activityPendingIntent {
+            Intent(Intent.ACTION_VIEW)
+                .setDataAndTypeAndNormalize(it, "image/*")
+                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    }
 
     private val areNotificationsEnabled: () -> Boolean =
         (notificationManager::areNotificationsEnabled)
@@ -92,7 +113,7 @@ class SaveNotificationImpl @Inject constructor(
             setContentTitle(appName)
             setSmallIcon(R.drawable.ic_app_notification)
             setDefaults(NotificationCompat.DEFAULT_ALL)
-            setContentIntent(HiShootActivity.contentIntent(context))
+            setContentIntent(HiShootActivity.contentIntent(context)) //
             setOnlyAlertOnce(true)
         }
     }
@@ -127,14 +148,13 @@ class SaveNotificationImpl @Inject constructor(
     override fun complete(
         bitmap: Bitmap,
         fileName: String,
-        piShare: PendingIntent,
-        piView: PendingIntent
+        uri: Uri
     ) {
         if (!isEnable()) return
         val localBuilder = notificationBuilder
-        localBuilder.addAction(android.R.drawable.ic_menu_share, shareString, piShare)
+        localBuilder.addAction(android.R.drawable.ic_menu_share, shareString, shareIntent(uri))
             .setShowWhen(false)
-            .setContentIntent(piView)
+            .setContentIntent(viewIntent(uri))
             .setContentTitle(fileName)
             .setContentText(tapToViewString)
             .setOngoing(false)

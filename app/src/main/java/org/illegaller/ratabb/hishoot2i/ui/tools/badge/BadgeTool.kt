@@ -32,6 +32,7 @@ import org.illegaller.ratabb.hishoot2i.databinding.FragmentToolBadgeBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_MIX_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.common.doOnStopTouch
+import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
 import org.illegaller.ratabb.hishoot2i.ui.tools.badge.BadgeToolDirections.Companion.actionToolsBadgeToColorMix
 import timber.log.Timber
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class BadgeTool : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentToolBadgeBinding.inflate(inflater, container, false).apply {
-        viewModel.uiState.observe(viewLifecycleOwner) {
+        viewObserve(viewModel.uiState) {
             when (it) {
                 is Fail -> {
                     val message = it.cause.localizedMessage ?: "Oops"
@@ -140,14 +141,12 @@ class BadgeTool : BottomSheetDialogFragment() {
     }
 
     private fun FragmentToolBadgeBinding.handleBadgeHide(enable: Boolean) { //
-        toolBadgeLayout.forEach { view: View ->
-            view.isEnabled = enable
-            (view as? ViewGroup)?.forEach {
-                if (it == toolBadgeFont) {
-                    it.isEnabled = fontAdapter.count > 1 && enable
-                } else {
-                    it.isEnabled = enable
+        root.forEach {
+            when (it) {
+                toolBadgeHide -> { // no-op
                 }
+                toolBadgeFont -> it.isEnabled = fontAdapter.count > 1 && enable
+                else -> it.isEnabled = enable
             }
         }
     }

@@ -1,9 +1,11 @@
 package org.illegaller.ratabb.hishoot2i.di
 
+import core.BadgeBuilder
 import core.CoreProcess
 import core.CoreRequest
 import core.MixTemplate
 import core.SaveResult
+import core.impl.BadgeBuilderImpl
 import core.impl.CoreProcessImpl
 import core.impl.CoreRequestImpl
 import core.impl.MixTemplateImpl
@@ -52,6 +54,10 @@ interface ViewModelModule {
     @Binds
     @ViewModelScoped
     fun bindCoreRequest(impl: CoreRequestImpl): CoreRequest
+
+    @Binds
+    @ViewModelScoped
+    fun bindBadgeBuilder(impl: BadgeBuilderImpl): BadgeBuilder
 
     @Binds
     @ViewModelScoped

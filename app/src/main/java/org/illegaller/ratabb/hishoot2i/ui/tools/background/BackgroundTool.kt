@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.clearFragmentResult
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import common.ext.isVisible
 import common.ext.preventMultipleClick
 import common.ext.setOnItemSelected
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,64 +89,60 @@ class BackgroundTool : BottomSheetDialogFragment() {
         }
 
         // region BackgroundColor
-        toolBackgroundLayoutColor.apply {
-            backgroundColorMix.setOnClickListener {
-                it.preventMultipleClick {
-                    findNavController().navigate(
-                        actionToolsBackgroundToColorMix(
-                            color = backgroundToolPref.backgroundColorInt,
-                            withAlpha = true,
-                            withHex = true
-                        )
+        backgroundColorMix.setOnClickListener {
+            it.preventMultipleClick {
+                findNavController().navigate(
+                    actionToolsBackgroundToColorMix(
+                        color = backgroundToolPref.backgroundColorInt,
+                        withAlpha = true,
+                        withHex = true
                     )
-                }
+                )
             }
-            backgroundColorPipette.setOnClickListener {
-                it.preventMultipleClick {
-                    setFragmentResult(
-                        KEY_REQ_PIPETTE,
-                        bundleOf(ARG_PIPETTE_COLOR to backgroundToolPref.backgroundColorInt)
-                    )
-                    dismiss()
-                }
+        }
+        backgroundColorPipette.setOnClickListener {
+            it.preventMultipleClick {
+                setFragmentResult(
+                    KEY_REQ_PIPETTE,
+                    bundleOf(ARG_PIPETTE_COLOR to backgroundToolPref.backgroundColorInt)
+                )
+                dismiss()
             }
         }
         // endregion
 
         // region BackgroundImage
-        toolBackgroundLayoutImage.apply {
-            backgroundImagePick.setOnClickListener {
-                it.preventMultipleClick {
-                    if (isManualCrop) imageBackgroundCrop.launch("image/*")
-                    else imageBackground.launch("image/*")
+        backgroundImagePick.setOnClickListener {
+            it.preventMultipleClick {
+                if (isManualCrop) imageBackgroundCrop.launch("image/*")
+                else imageBackground.launch("image/*")
+            }
+        }
+        backgroundImageOptionGroup.apply {
+            check(backgroundToolPref.imageOption.resId)
+            addOnButtonCheckedListener { _, checkedId, _ ->
+                if (checkedId != backgroundToolPref.imageOption.resId) {
+                    backgroundToolPref.imageOption = ImageOption.fromIdRes(checkedId)
                 }
             }
-            backgroundImageOptionGroup.apply {
-                check(backgroundToolPref.imageOption.resId)
-                addOnButtonCheckedListener { _, checkedId, _ ->
-                    if (checkedId != backgroundToolPref.imageOption.resId) {
-                        backgroundToolPref.imageOption = ImageOption.fromIdRes(checkedId)
+        }
+        backgroundImageBlur.apply {
+            isChecked = backgroundToolPref.backgroundImageBlurEnable
+            setOnCheckedChangeListener { cb, isChecked ->
+                cb.preventMultipleClick {
+                    if (backgroundToolPref.backgroundImageBlurEnable != isChecked) {
+                        backgroundToolPref.backgroundImageBlurEnable = isChecked
+                        backgroundImageBlurSlider.isEnabled = isChecked
                     }
                 }
             }
-            backgroundImageBlur.apply {
-                isChecked = backgroundToolPref.backgroundImageBlurEnable
-                setOnCheckedChangeListener { cb, isChecked ->
-                    cb.preventMultipleClick {
-                        if (backgroundToolPref.backgroundImageBlurEnable != isChecked) {
-                            backgroundToolPref.backgroundImageBlurEnable = isChecked
-                            backgroundImageBlurSlider.isEnabled = isChecked
-                        }
-                    }
-                }
-            }
-            backgroundImageBlurSlider.apply {
-                isEnabled = backgroundToolPref.backgroundImageBlurEnable
-                value = backgroundToolPref.backgroundImageBlurRadius.toFloat()
-                doOnStopTouch { slider ->
-                    if (backgroundToolPref.backgroundImageBlurRadius != slider.value.toInt()) {
-                        backgroundToolPref.backgroundImageBlurRadius = slider.value.toInt()
-                    }
+        }
+        backgroundImageBlurSlider.apply {
+            isEnabled = backgroundToolPref.backgroundImageBlurEnable
+            value = backgroundToolPref.backgroundImageBlurRadius.toFloat()
+            doOnStopTouch { slider ->
+                if (backgroundToolPref.backgroundImageBlurRadius != slider.value.toInt()) {
+                    backgroundToolPref.backgroundImageBlurRadius = slider.value.toInt()
                 }
             }
         }
@@ -154,8 +150,8 @@ class BackgroundTool : BottomSheetDialogFragment() {
     }
 
     private fun FragmentToolBackgroundBinding.handleVisibleLayoutMode() {
-        toolBackgroundLayoutColor.root.isVisible = backgroundMode.isColor
-        toolBackgroundLayoutImage.root.isVisible = backgroundMode.isImage
-        toolBackgroundLayoutTrans.isVisible = backgroundMode.isTransparent
+        backgroundColor.isVisible = backgroundMode.isColor
+        backgroundImage.isVisible = backgroundMode.isImage
+        textNoContent.isVisible = backgroundMode.isTransparent
     }
 }

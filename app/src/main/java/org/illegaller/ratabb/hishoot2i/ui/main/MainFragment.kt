@@ -1,6 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.ui.main
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.net.Uri
@@ -8,12 +7,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import common.ext.activityPendingIntent
 import common.ext.graphics.sizes
 import common.ext.preventMultipleClick
 import core.Preview
@@ -36,6 +33,7 @@ import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_2
 import org.illegaller.ratabb.hishoot2i.ui.common.clearFragmentResultListeners
 import org.illegaller.ratabb.hishoot2i.ui.common.setFragmentResultListeners
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
+import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
 import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsBackground
 import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsBadge
 import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsScreen
@@ -65,7 +63,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
         FragmentMainBinding.bind(view).apply {
             setViewListener()
-            viewModel.uiState.observe(viewLifecycleOwner) { observer(it) }
+            viewObserve(viewModel.uiState) { observer(it) }
             setFragmentResultListeners(*requestKeys) { requestKey, result ->
                 handleResult(requestKey, result)
             }
@@ -83,42 +81,41 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewModel.resume()
     }
 
-    private fun FragmentMainBinding.handleResult(requestKey: String, result: Bundle) {
-        when (requestKey) {
-            KEY_REQ_CROP -> result.getString(ARG_CROP_PATH)?.let {
-                viewModel.changeBackground(it)
-            }
-            KEY_REQ_BACKGROUND -> result.getString(ARG_BACKGROUND_PATH)?.let {
-                viewModel.changeBackground(it)
-            }
-            KEY_REQ_SCREEN_1 -> result.getString(ARG_SCREEN1_PATH)?.let {
-                viewModel.changeScreen1(it)
-            }
-            KEY_REQ_SCREEN_2 -> result.getString(ARG_SCREEN2_PATH)?.let {
-                viewModel.changeScreen2(it)
-            }
-            KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
+    private fun FragmentMainBinding.handleResult(
+        requestKey: String,
+        result: Bundle
+    ): Unit = when (requestKey) {
+        KEY_REQ_CROP -> viewModel.changeBackground(result.getString(ARG_CROP_PATH))
+        KEY_REQ_BACKGROUND -> viewModel.changeBackground(result.getString(ARG_BACKGROUND_PATH))
+        KEY_REQ_SCREEN_1 -> viewModel.changeScreen1(result.getString(ARG_SCREEN1_PATH))
+        KEY_REQ_SCREEN_2 -> viewModel.changeScreen2(result.getString(ARG_SCREEN2_PATH))
+        KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
+        else -> {
         }
     }
 
-    private fun FragmentMainBinding.observer(view: MainView) {
-        when (view) {
-            is Loading -> {
-                showProgress()
-                if (view.isFromSave) saveNotification.start()
-            }
-            is Fail -> {
-                hideProgress()
-                val msg = view.cause.localizedMessage ?: "Oops"
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                Timber.e(view.cause)
-                if (view.isFromSave) saveNotification.error(view.cause)
-            }
-            is Success -> {
-                hideProgress()
-                when (view.result) {
-                    is Preview -> preview(view.result.bitmap)
-                    is Save -> saveComplete(view.result)
+    private fun FragmentMainBinding.observer(view: MainView): Unit = when (view) {
+        is Loading -> {
+            if (view.isFromSave) saveNotification.start()
+            showProgress()
+        }
+        is Fail -> {
+            hideProgress()
+            if (view.isFromSave) saveNotification.error(view.cause)
+            val msg = view.cause.localizedMessage ?: "Oops"
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+            Timber.e(view.cause)
+        }
+        is Success -> {
+            hideProgress()
+            when (view.result) {
+                is Preview -> {
+                    ratioCrop = view.result.bitmap.sizes.run { Point(x, y) }
+                    mainImage.setImageBitmap(view.result.bitmap)
+                }
+                is Save -> {
+                    val (bitmap: Bitmap, uri: Uri, name: String) = view.result
+                    saveNotification.complete(bitmap, name, uri)
                 }
             }
         }
@@ -139,31 +136,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 (activity as? HiShootActivity)?.openDrawer()
             }
         }
-    }
-
-    private fun FragmentMainBinding.preview(bitmap: Bitmap) {
-        ratioCrop = bitmap.sizes.run { Point(x, y) }
-        mainImage.setImageBitmap(bitmap)
-    }
-
-    private fun saveComplete(save: Save) {
-        val (bitmap: Bitmap, uri: Uri, name: String) = save
-        saveNotification.complete(
-            bitmap,
-            name,
-            requireContext().activityPendingIntent {
-                ShareCompat.IntentBuilder(requireContext())
-                    .setStream(uri)
-                    .setType("image/*")
-                    .setChooserTitle(R.string.share)
-                    .createChooserIntent()
-            },
-            requireContext().activityPendingIntent {
-                Intent(Intent.ACTION_VIEW)
-                    .setDataAndTypeAndNormalize(uri, "image/*")
-                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-        )
     }
 
     private fun FragmentMainBinding.showProgress() {
@@ -199,14 +171,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun FragmentMainBinding.bottomMenuClick(item: MenuItem): Boolean = when {
         isOnProgress -> false.also {
             showSnackBar(
-                view = requireView(),
+                view = root,
                 resId = R.string.on_progress,
                 anchorViewId = R.id.mainFab
             )
         }
         isOnPipette -> false.also {
             showSnackBar(
-                view = requireView(),
+                view = root,
                 resId = R.string.on_pipette,
                 anchorViewId = R.id.mainFab,
                 action = {

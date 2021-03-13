@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplatePref
 import org.illegaller.ratabb.hishoot2i.data.source.TemplateSource
 import template.Template.VersionHtz
-import template.TemplateConstants
+import template.TemplateConstants.TEMPLATE_CFG
 import template.TemplateFactoryManager
 import template.reader.ModelHtzReader
 import java.io.File
@@ -59,7 +59,7 @@ class TemplateViewModel @Inject constructor(
                 }
             }
             .onEach { _uiState.value = Success(it) }
-            .onCompletion { cause: Throwable? -> cause?.let { _uiState.value = Fail(it) } }
+            .onCompletion { cause -> cause?.let { _uiState.value = Fail(it) } }
             .catch { _uiState.value = Fail(it) }
             .launchIn(viewModelScope)
     }
@@ -86,7 +86,7 @@ class TemplateViewModel @Inject constructor(
 
     private fun unzipAndBuild(htz: File): VersionHtz {
         val id = ZipFile(htz)
-            .entryInputStream(TemplateConstants.TEMPLATE_CFG)
+            .entryInputStream(TEMPLATE_CFG)
             .use { ModelHtzReader(it).model() }
             .generateTemplateId()
         UnZipper.unzip(htz, File(htzDir(), id))

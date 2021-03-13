@@ -74,7 +74,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun currentTemplate(): Template = if (isHaveLastTemplate) lastTemplate!! else {
+    private fun currentTemplate(): Template = if (isHaveLastTemplate) lastTemplate!! else {
         templateSource.findByIdOrDefault(templateToolPref.templateCurrentId).also {
             lastTemplate = it
             lastTemplateId = it.id
@@ -103,19 +103,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun changeScreen1(path: String) {
+    fun changeScreen1(path: String?) {
+        if (path == null) return
         sourcePath.screen1 = path
         savedStateHandle.set(ARG_SCREEN1_PATH, path)
         render()
     }
 
-    fun changeScreen2(path: String) {
+    fun changeScreen2(path: String?) {
+        if (path == null) return
         sourcePath.screen2 = path
         savedStateHandle.set(ARG_SCREEN2_PATH, path)
         render()
     }
 
-    fun changeBackground(path: String) {
+    fun changeBackground(path: String?) {
+        if (path == null) return
         sourcePath.background = path
         savedStateHandle.set(ARG_BACKGROUND_PATH, path)
         if (backgroundToolPref.backgroundMode.isImage) render()

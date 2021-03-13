@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResult
@@ -16,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import common.ext.hideSoftKey
 import common.ext.isKeyboardOpen
-import common.ext.isVisible
 import common.ext.preventMultipleClick
 import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +33,7 @@ import org.illegaller.ratabb.hishoot2i.ui.common.broadcastReceiver
 import org.illegaller.ratabb.hishoot2i.ui.common.queryTextChange
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
+import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
 import org.illegaller.ratabb.hishoot2i.ui.template.TemplateFragmentDirections.Companion.actionTemplateToSortTemplate
 import template.Template
 import template.TemplateComparator
@@ -86,13 +87,13 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         super.onViewCreated(view, savedInstanceState)
         FragmentTemplateBinding.bind(view).apply {
             setViewListener()
-            viewModel.uiState.observe(viewLifecycleOwner) { observe(it) }
+            viewObserve(viewModel.uiState) { observer(it) }
             viewModel.search(templateSearchView.queryTextChange())
         }
         viewModel.perform()
         setFragmentResultListener(KEY_REQ_SORT) { _, result ->
             templatePref.templateComparator = TemplateComparator.values()[result.getInt(ARG_SORT)]
-            viewModel.perform()
+            viewModel.perform() // TODO: handle view on Search ?
         }
     }
 
@@ -101,7 +102,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         super.onDestroyView()
     }
 
-    private fun FragmentTemplateBinding.observe(view: TemplateView) {
+    private fun FragmentTemplateBinding.observer(view: TemplateView) {
         when (view) {
             Loading -> {
                 templateProgress.show()
@@ -132,8 +133,8 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         }
         templateHtzFab.setOnClickListener { requestHtz.launch("*/*") }
         templateBottomAppBar.apply {
-            setOnMenuItemClickListener { menuItemClick(it) }
-            setNavigationOnClickListener { popBack(it) }
+            setOnMenuItemClickListener(::menuItemClick)
+            setNavigationOnClickListener(::popBack)
         }
     }
 

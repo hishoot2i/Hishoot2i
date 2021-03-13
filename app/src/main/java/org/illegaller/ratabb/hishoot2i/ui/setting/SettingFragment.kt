@@ -12,6 +12,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import common.ext.preventMultipleClick
 import common.ext.setOnItemSelected
@@ -22,13 +23,13 @@ import entity.DayNightMode.DARK
 import entity.DayNightMode.LIGHT
 import entity.DayNightMode.SYSTEM
 import entity.mode
-import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentSettingBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_THEME
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_THEME
 import org.illegaller.ratabb.hishoot2i.ui.common.registerOpenDocumentTree
+import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
 import org.illegaller.ratabb.hishoot2i.ui.setting.SettingFragmentDirections.Companion.actionSettingToThemeChooser
 import javax.inject.Inject
 
@@ -37,8 +38,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     @Inject
     lateinit var settingPref: SettingPref
 
-    @Inject
-    lateinit var imageLoader: ImageLoader
+    private val viewModel: SettingViewModel by viewModels()
 
     @RequiresApi(21)
     private val customDir = registerOpenDocumentTree { uri ->
@@ -131,12 +131,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         // endregion
 
         // region Cache
-        updateCacheCount()
+        viewObserve(viewModel.diskCacheSize) { updateCacheCount(it) }
         itemSettingCache.settingCacheClear.setOnClickListener {
-            it.preventMultipleClick {
-                imageLoader.clearDiskCache()
-                updateCacheCount()
-            }
+            it.preventMultipleClick { viewModel.clearDiskCache() }
         }
         // endregion
     }
@@ -146,11 +143,10 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             settingPref.compressFormat != CompressFormat.PNG
     }
 
-    private fun FragmentSettingBinding.updateCacheCount() {
-        itemSettingCache.settingCacheCount.text = formatShortFileSize(
-            requireContext(),
-            imageLoader.totalDiskCacheSize()
-        )
+    private fun FragmentSettingBinding.updateCacheCount(diskCacheSize: Long) {
+        itemSettingCache.settingCacheCount.apply {
+            text = formatShortFileSize(context, diskCacheSize)
+        }
     }
 
     private fun FragmentSettingBinding.updateDayNightUi() {
