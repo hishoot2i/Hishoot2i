@@ -39,10 +39,25 @@ allprojects {
         }
     }
     apply("$rootDir/buildsystem/spotless.gradle")
+    // NOTE: avoid duplication libs with different version!
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            val xArchCoreVersion: String by project
+            if (requested.group == "androidx.arch.core") useVersion(xArchCoreVersion)
+            val xCollectionVersion: String by project
+            if (requested.group == "androidx.collection") useVersion(xCollectionVersion)
+            val xLifeCycleVersion: String by project
+            if (requested.group == "androidx.lifecycle") useVersion(xLifeCycleVersion)
+            val coroutinesVersion: String by project
+            if (requested.group == "org.jetbrains.kotlinx" &&
+                requested.name.startsWith("kotlinx-coroutines")
+            ) useVersion(coroutinesVersion)
+        }
+    }
 }
 plugins {
-    id("com.diffplug.spotless") version "5.10.0"
-    id("com.github.ben-manes.versions") version "0.36.0"
+    id("com.diffplug.spotless") version "5.11.0"
+    id("com.github.ben-manes.versions") version "0.38.0"
     id("com.autonomousapps.dependency-analysis") version "0.71.0"
 }
 /** Plugin [com.autonomousapps.dependency-analysis] config. */

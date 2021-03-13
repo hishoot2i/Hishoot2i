@@ -30,7 +30,7 @@ spotless {
     }
     format("misc") {
         target("**/*.md", "**/*.properties", "**/*.sh")
-        targetExclude("**/build/**", ".gradle/")
+        targetExclude("**/build/**", "**/.gradle/**")
         trimTrailingWhitespace()
         endWithNewline()
         indentWithSpaces()
