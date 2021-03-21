@@ -4,9 +4,6 @@ package common.ext
 
 import java.io.File
 
-inline fun File.compareByName(other: File): Int = if (name == other.name) 0
-else name.compareTo(other.name, true)
-
 inline fun File.isDirAndCanRead(): Boolean = isDirectory && canRead()
 
 @JvmOverloads

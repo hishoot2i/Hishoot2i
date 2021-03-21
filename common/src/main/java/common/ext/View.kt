@@ -8,22 +8,8 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
-
-/**
- * @see[View.getVisibility]
- * @see[View.setVisibility]
- */
-@Suppress("unused")
-@Deprecated(message = "use androidx-core-ktx directly.", level = DeprecationLevel.ERROR)
-inline var View.isVisible: Boolean
-    get() = visibility == VISIBLE
-    set(value) {
-        visibility = if (value) VISIBLE else GONE
-    }
 
 /**
  * @see [Context.getSystemService]
