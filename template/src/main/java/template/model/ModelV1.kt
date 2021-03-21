@@ -2,6 +2,10 @@
 
 package template.model
 
+import kotlinx.serialization.Serializable
+import nl.adaptivity.xmlutil.serialization.XmlElement
+import nl.adaptivity.xmlutil.serialization.XmlSerialName
+
 /**
  * // loc: assets/keterangan.xml
  *```
@@ -23,14 +27,13 @@ package template.model
  *</DCSMS-Hishoot>
  *```
  **/
-data class ModelV1 @JvmOverloads constructor(
-    var device: String = "",
-    var author: String = "",
-    var topx: Int = -1,
-    var topy: Int = -1,
-    var botx: Int = -1,
-    var boty: Int = -1
-) {
-    fun isNotValid(): Boolean = device == "" || author == "" || topx == -1 || topy == -1 ||
-        botx == -1 || boty == -1
-}
+@Serializable
+@XmlSerialName("DCSMS-Hishoot", "", "")
+data class ModelV1(
+    @XmlElement(true) val device: String,
+    @XmlElement(true) val author: String,
+    @XmlElement(true) val topx: Int,
+    @XmlElement(true) val topy: Int,
+    @XmlElement(true) val botx: Int,
+    @XmlElement(true) val boty: Int
+)

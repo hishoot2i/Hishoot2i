@@ -1,5 +1,8 @@
 package entity
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class SizesF(val x: Float, val y: Float) {
     companion object {
         @JvmStatic

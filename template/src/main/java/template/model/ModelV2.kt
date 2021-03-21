@@ -2,6 +2,8 @@
 
 package template.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * // loc: assets/template.cfg
  *```
@@ -21,22 +23,18 @@ package template.model
  * }
  *```
  **/
-data class ModelV2 @JvmOverloads constructor(
-    var name: String = "",
-    var author: String = "",
-    var left_top_x: Int = -1,
-    var left_top_y: Int = -1,
-    var right_top_x: Int = -1,
-    var right_top_y: Int = -1,
-    var left_bottom_x: Int = -1,
-    var left_bottom_y: Int = -1,
-    var right_bottom_x: Int = -1,
-    var right_bottom_y: Int = -1,
-    var template_width: Int = -1,
-    var template_height: Int = -1
-) {
-    fun isNotValid(): Boolean = name == "" || author == "" || left_top_x == -1 ||
-        left_top_y == -1 || left_bottom_x == -1 || left_bottom_y == -1 || right_top_x == -1 ||
-        right_top_y == -1 || right_bottom_x == -1 || right_bottom_y == -1 ||
-        template_width == -1 || template_height == -1
-}
+@Serializable
+data class ModelV2(
+    val name: String,
+    val author: String,
+    val left_top_x: Int,
+    val left_top_y: Int,
+    val right_top_x: Int,
+    val right_top_y: Int,
+    val left_bottom_x: Int,
+    val left_bottom_y: Int,
+    val right_bottom_x: Int,
+    val right_bottom_y: Int,
+    val template_width: Int,
+    val template_height: Int
+)

@@ -12,11 +12,13 @@ buildscript {
         google()
         mavenCentral()
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
+        maven("https://dl.bintray.com/pdvrieze/maven")
         gradlePluginPortal()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:$agpVersion")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
         classpath("com.google.dagger:hilt-android-gradle-plugin:$daggerHiltVersion")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$xNavigationVersion")
     }
@@ -27,6 +29,7 @@ allprojects {
         google()
         mavenCentral()
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
+        maven("https://dl.bintray.com/pdvrieze/maven")
         gradlePluginPortal()
     }
     afterEvaluate {
@@ -35,6 +38,7 @@ allprojects {
                 jvmTarget = "1.8"
                 allWarningsAsErrors = true
                 verbose = true
+                useIR = true
             }
         }
     }
@@ -42,16 +46,24 @@ allprojects {
     // NOTE: avoid duplication libs with different version!
     configurations.all {
         resolutionStrategy.eachDependency {
-            val xArchCoreVersion: String by project
-            if (requested.group == "androidx.arch.core") useVersion(xArchCoreVersion)
-            val xCollectionVersion: String by project
-            if (requested.group == "androidx.collection") useVersion(xCollectionVersion)
-            val xLifeCycleVersion: String by project
-            if (requested.group == "androidx.lifecycle") useVersion(xLifeCycleVersion)
             val coroutinesVersion: String by project
-            if (requested.group == "org.jetbrains.kotlinx" &&
-                requested.name.startsWith("kotlinx-coroutines")
-            ) useVersion(coroutinesVersion)
+            val kotlinVersion: String by project
+            val okHttpVersion: String by project
+            val xArchCoreVersion: String by project
+            val xCollectionVersion: String by project
+            val xLifeCycleVersion: String by project
+            when (requested.group) {
+                "androidx.arch.core" -> useVersion(xArchCoreVersion)
+                "androidx.collection" -> useVersion(xCollectionVersion)
+                "androidx.lifecycle" -> useVersion(xLifeCycleVersion)
+                "com.squareup.okhttp3" -> useVersion(okHttpVersion)
+                "org.jetbrains.kotlin" -> useVersion(kotlinVersion)
+                "org.jetbrains.kotlinx" -> {
+                    if (requested.name.startsWith("kotlinx-coroutines")) {
+                        useVersion(coroutinesVersion)
+                    }
+                }
+            }
         }
     }
 }
@@ -66,15 +78,8 @@ dependencyAnalysis {
 }
 /** Plugin `dependencyUpdates` [com.github.ben-manes.versions] config. */
 tasks.named("dependencyUpdates", DependencyUpdatesTask::class.java) {
-    fun isNonStable(version: String): Boolean {
-        val stableKeyword = listOf("RELEASE", "FINAL", "GA").any {
-            version.toUpperCase().contains(it)
-        }
-        val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-        val isStable = stableKeyword || regex.matches(version)
-        return isStable.not()
-    }
-    rejectVersionIf { isNonStable(candidate.version) }
+    fun isStable(version: String) = Regex("^[0-9,.v-]+(-r)?$").matches(version)
+    rejectVersionIf { !isStable(candidate.version) && isStable(currentVersion) }
     checkForGradleUpdate = false //
 }
 subprojects {

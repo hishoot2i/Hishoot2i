@@ -2,7 +2,7 @@
 
 package template.model
 
-import java.util.Locale
+import kotlinx.serialization.Serializable
 
 /**
  * // loc: template.cfg
@@ -20,36 +20,26 @@ import java.util.Locale
  *   "screen_x"       :200,
  *   "screen_y"       :300,
  *   "template_width" :1120,
- *   "template_height":2080
+ *   "template_height":2080,
+ * ## ============
+ *   "coordinate"     : [ 9999, 9999, 9999, 9999, 9999, 9999, 9999, 9999 ],
  * }
  * ```
  **/
+@Serializable
 data class ModelHtz(
-    var name: String = "",
-    var author: String = "",
-    var template_file: String = "",
-    var preview: String = "",
-    var overlay_file: String = "",
-    var overlay_x: Int = -1,
-    var overlay_y: Int = -1,
-    var screen_width: Int = -1,
-    var screen_height: Int = -1,
-    var screen_x: Int = -1,
-    var screen_y: Int = -1,
-    var template_width: Int = -1,
-    var template_height: Int = -1
-) {
-    fun isNotValid(): Boolean = name == "" || author == "" || template_file == "" ||
-        preview == "" || overlay_file == "" || overlay_x == -1 || overlay_y == -1 ||
-        screen_width == -1 || screen_height == -1 || screen_x == -1 || screen_y == -1 ||
-        template_width == -1 || template_height == -1
-
-    fun generateTemplateId(): String {
-        val ret = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
-            .replace("[^\\w]".toRegex(), replacement = "") // removing non word char
-            .trim()
-        val maxLengthID = 32
-        return ret.takeIf { it.length <= maxLengthID }
-            ?: ret.substring(range = 0..maxLengthID) // limit
-    }
-}
+    val name: String,
+    val author: String,
+    val template_file: String,
+    val preview: String? = null,
+    val overlay_file: String? = null,
+    val overlay_x: Int,
+    val overlay_y: Int,
+    val screen_width: Int,
+    val screen_height: Int,
+    val screen_x: Int,
+    val screen_y: Int,
+    val template_width: Int,
+    val template_height: Int,
+    val coordinate: List<Float>? = null
+)

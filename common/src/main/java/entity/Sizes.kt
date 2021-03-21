@@ -1,6 +1,13 @@
 package entity
 
-data class Sizes(val x: Int, val y: Int) {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Sizes(
+    @SerialName("width") val x: Int,
+    @SerialName("height") val y: Int
+) {
     companion object {
         @JvmStatic
         val ZERO: Sizes = Sizes(0, 0)

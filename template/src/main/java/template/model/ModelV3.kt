@@ -2,6 +2,8 @@ package template.model
 
 import entity.Glare
 import entity.Sizes
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * // loc: assets/template.cfg
@@ -36,17 +38,15 @@ import entity.Sizes
  *}
  *```
  **/
-data class ModelV3 @JvmOverloads constructor(
-    var name: String = "",
-    var author: String = "",
-    var desc: String? = null,
-    var frame: String = "",
-    var preview: String? = null,
-    var shadow: String? = null,
-    var coordinate: List<Float> = emptyList(),
-    var size: Sizes = Sizes.ZERO,
-    var glares: List<Glare>? = null
-) {
-    fun isNotValid(): Boolean = name == "" || author == "" || frame == "" ||
-        coordinate.isEmpty() || size == Sizes.ZERO
-}
+@Serializable
+data class ModelV3(
+    val name: String,
+    val author: String,
+    val desc: String?,
+    val frame: String,
+    val preview: String?,
+    val shadow: String?,
+    val coordinate: List<Float>,
+    @SerialName("template_size") val size: Sizes,
+    val glares: List<Glare>?
+)
