@@ -70,7 +70,6 @@ dependencies {
     val xBrowserVersion: String by rootProject
     implementation("androidx.browser:browser:$xBrowserVersion")
     val xAppCompatVersion: String by rootProject
-    implementation("androidx.appcompat:appcompat-resources:$xAppCompatVersion")
     implementation("androidx.appcompat:appcompat:$xAppCompatVersion")
     val xCoordinatorLayoutVersion: String by rootProject
     implementation("androidx.coordinatorlayout:coordinatorlayout:$xCoordinatorLayoutVersion")

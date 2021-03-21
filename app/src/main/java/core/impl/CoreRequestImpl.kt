@@ -2,7 +2,7 @@ package core.impl
 
 import android.graphics.Bitmap
 import android.graphics.Typeface
-import common.ext.graphics.createFromFileOrDefault
+import common.ext.graphics.typeFaceOrDefault
 import core.BadgeBuilder
 import core.CoreRequest
 import core.MixTemplate
@@ -35,10 +35,8 @@ class CoreRequestImpl @Inject constructor(
         get() = backgroundToolPref.backgroundImageBlurRadius
 
     private val badgeTypeface: Typeface
-        get() = when (val path = badgeToolPref.badgeTypefacePath) {
-            null, "DEFAULT" -> Typeface.DEFAULT
-            else -> path.createFromFileOrDefault()
-        }
+        get() = badgeToolPref.badgeTypefacePath.typeFaceOrDefault()
+
     override val badgePosition: BadgePosition
         get() = badgeToolPref.badgePosition
     override val badgeEnable: Boolean

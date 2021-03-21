@@ -43,8 +43,7 @@ class BadgeTool : BottomSheetDialogFragment() {
     @Inject
     lateinit var badgeToolPref: BadgeToolPref
 
-    @Inject
-    lateinit var fontAdapter: FontAdapter
+    private val fontAdapter by lazy { FontAdapter() }
 
     private val viewModel: BadgeToolViewModel by viewModels()
 
@@ -124,8 +123,10 @@ class BadgeTool : BottomSheetDialogFragment() {
         toolBadgeFont.adapter = fontAdapter
         toolBadgeFont.setOnItemSelected { _, v, position, _ ->
             v?.preventMultipleClick {
-                fontAdapter.setSelection(position)
-                badgeToolPref.badgeTypefacePath = fontAdapter.getItemAsString(position)
+                val value = fontAdapter.current(position)
+                if (badgeToolPref.badgeTypefacePath != value) {
+                    badgeToolPref.badgeTypefacePath = value
+                }
             }
         }
     }

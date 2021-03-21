@@ -1,6 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.data.source
 
 import android.os.Environment
+import common.ext.graphics.DEFAULT_TYPEFACE_KEY
 import common.ext.isDirAndCanRead
 import common.ext.listFilesByExt
 import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
@@ -12,7 +13,7 @@ class FileFontSourceImpl @Inject constructor(
 ) : FileFontSource {
 
     override fun fontPaths(): List<String> =
-        listOf("DEFAULT") + fileFonts().map(File::getAbsolutePath)
+        listOf(DEFAULT_TYPEFACE_KEY) + fileFonts().map(File::getAbsolutePath)
 
     private fun fileFonts(): List<File> =
         (defaultFontDir() + customFontDir() + systemFontDir()).filterNotNull()

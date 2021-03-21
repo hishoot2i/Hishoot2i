@@ -121,7 +121,7 @@
         android:entries="@array/badge_position_values"
         android:popupBackground="?attr/colorSurface"
         android:prompt="@string/bp_prompt"
-        android:spinnerMode="dialog"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textPosition"
         app:layout_constraintTop_toBottomOf="@+id/toolBadgeFont" />

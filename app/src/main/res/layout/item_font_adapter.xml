@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?attr/spinnerDropDownItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/dropdownListPreferredItemHeight"
+    android:checkMark="@drawable/check_selection"
+    android:ellipsize="marquee"
+    android:singleLine="true"
+    tools:checked="true"
+    tools:text="@tools:sample/lorem/random"
+    tools:viewBindingIgnore="true" />
