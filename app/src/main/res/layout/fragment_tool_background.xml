@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:entries="@array/background_mode_values"
         android:prompt="@string/background_mode_prompt"
-        android:spinnerMode="dialog"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

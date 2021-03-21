@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minWidth="240dp">
+    android:padding="20dp"
+    tools:background="@drawable/dialog_background">
 
     <TextView
         android:id="@+id/textSortBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/sort_by"
         android:textAppearance="@style/TextAppearance.App.Title"
@@ -22,7 +22,7 @@
         android:id="@+id/textName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/name"
         android:textAppearance="@style/TextAppearance.App"
@@ -35,25 +35,23 @@
         android:id="@+id/textVersion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/version"
         android:textAppearance="@style/TextAppearance.App"
         app:layout_constraintEnd_toStartOf="@+id/textDate"
         app:layout_constraintStart_toEndOf="@+id/textName"
-        app:layout_constraintTop_toBottomOf="@+id/textSortBy"
+        app:layout_constraintTop_toTopOf="@+id/textName"
         app:layout_constraintWidth_percent="0.33" />
 
     <TextView
         android:id="@+id/textDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/date"
         android:textAppearance="@style/TextAppearance.App"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSortBy"
+        app:layout_constraintTop_toTopOf="@+id/textName"
         app:layout_constraintWidth_percent="0.33" />
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -122,7 +120,6 @@
         style="@style/AppWidget.Button.TextButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="@string/cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_sort_date_desc"
