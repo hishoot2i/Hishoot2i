@@ -6,8 +6,9 @@ import common.ext.listFilesOrEmpty
 import java.io.File
 import javax.inject.Inject
 
-class HtzResolverImpl @Inject constructor(fileConstants: FileConstants) : HtzResolver {
-    private val htzDir: () -> File = (fileConstants::htzDir)
-    override fun installedHtz(): List<File> =
-        htzDir().listFilesOrEmpty().filter(File::isDirAndCanRead)
+class HtzResolverImpl @Inject constructor(
+    private val fileConstants: FileConstants
+) : HtzResolver {
+    override fun installedHtz(): List<File> = fileConstants.htzDir()
+        .listFilesOrEmpty(File::isDirAndCanRead).toList()
 }

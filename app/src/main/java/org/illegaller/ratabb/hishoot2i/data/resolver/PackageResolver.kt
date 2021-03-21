@@ -1,8 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.data.resolver
 
-import entity.AppInfo
-
 interface PackageResolver {
-    fun installedTemplateLegacy(): List<AppInfo>
-    fun installedTemplate(version: Int): List<AppInfo>
+    fun installedTemplateLegacy(): List<Pair<String, Long>>
+    fun installedTemplate(version: Int): List<Pair<String, Long>>
 }
