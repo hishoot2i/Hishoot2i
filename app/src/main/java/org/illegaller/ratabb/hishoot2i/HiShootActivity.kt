@@ -5,8 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.GET_META_DATA
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
@@ -16,6 +18,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import common.ext.activityPendingIntent
+import common.ext.dp2px
 import common.ext.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.BuildConfig.IMAGE_RECEIVER
@@ -38,6 +41,9 @@ class HiShootActivity : AppCompatActivity() {
         Timber.d("Permission is granted: $granted")
     }
 
+    var isKeyboardShow: Boolean = false
+        private set
+
     private val versionName by lazy { getString(R.string.version_format, VERSION_NAME) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +55,7 @@ class HiShootActivity : AppCompatActivity() {
             setSystemUiFlagEdgeToEdge(root, true) //
             navController = findNavController(R.id.navHostContainer)
             navController.setGraph(R.navigation.navigation, parseImageReceiver())
-
+            drawerLayout.listenSoftKey(dp2px(200F))
             navigationView.apply {
                 setupWithNavController(navController)
                 HeaderNavLayoutBinding.bind(getHeaderView(0)).apply {
@@ -103,6 +109,14 @@ class HiShootActivity : AppCompatActivity() {
             }
         }
         return null
+    }
+
+    private fun View.listenSoftKey(threshold: Float) {
+        val visibleBounds = Rect()
+        viewTreeObserver.addOnGlobalLayoutListener {
+            rootView.getWindowVisibleDisplayFrame(visibleBounds)
+            isKeyboardShow = rootView.height - visibleBounds.height() > threshold
+        }
     }
 
     companion object {
