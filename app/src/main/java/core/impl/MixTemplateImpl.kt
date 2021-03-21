@@ -18,7 +18,6 @@ import entity.ImageSourcePath
 import entity.Sizes
 import entity.SizesF
 import imageloader.ImageLoader
-import org.illegaller.ratabb.hishoot2i.R
 import template.Template
 import template.Template.Default
 import template.Template.Version1
@@ -35,7 +34,7 @@ class MixTemplateImpl @Inject constructor(
     /* NOTE: frameDefault [R.drawable.frame1] is 9-patch, do not load w/ imageLoader. */
     private val frameDefault: (Int, Int) -> Drawable by lazy {
         { width, height ->
-            ContextCompat.getDrawable(context, R.drawable.frame1)?.apply {
+            ContextCompat.getDrawable(context, template.R.drawable.frame1)?.apply {
                 updateBounds(right = width, bottom = height)
             } ?: throw IllegalStateException("Can't Load frame1")
         }

@@ -20,14 +20,8 @@ import common.ext.dp2px
 import common.ext.graphics.themeColorOrDefault
 import org.illegaller.ratabb.hishoot2i.R
 import kotlin.math.roundToInt
+import com.google.android.material.R as MaterialR
 
-/**
- * ## Divider [RecyclerView.ItemDecoration]
- * - [onDrawOver] line (bottom and right side) with color from [R.attr.colorOnSurface]
- *     - stroke= 0.5dp
- *     - space= 4.0dp
- * - [onDraw] fill background with color from [R.attr.colorSurfaceHalfAlpha]
- **/
 class SideListDivider private constructor(
     @ColorInt colorDivider: Int,
     @ColorInt colorBack: Int,
@@ -43,7 +37,7 @@ class SideListDivider private constructor(
     }
 
     constructor(context: Context) : this(
-        colorDivider = context.themeColorOrDefault(R.attr.colorOnSurface, Color.LTGRAY),
+        colorDivider = context.themeColorOrDefault(MaterialR.attr.colorOnSurface, Color.LTGRAY),
         colorBack = context.themeColorOrDefault(R.attr.colorSurfaceHalfAlpha, Color.DKGRAY),
         sizeDivider = context.dp2px(0.5f),
         space = context.dp2px(4.0f)

@@ -12,8 +12,8 @@ import androidx.core.content.res.use
 import androidx.core.view.ViewCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import common.ext.dp2px
-import org.illegaller.ratabb.hishoot2i.R
 import kotlin.math.roundToInt
+import androidx.appcompat.R as AppcompatR
 
 @Keep
 class FabQuickHideBehavior @JvmOverloads @Keep constructor(
@@ -27,7 +27,7 @@ class FabQuickHideBehavior @JvmOverloads @Keep constructor(
     private var animator: Animator? = null
 
     init {
-        context?.obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))?.use {
+        context?.obtainStyledAttributes(intArrayOf(AppcompatR.attr.actionBarSize))?.use {
             scrollThreshold = it.getDimensionPixelSize(0, context.dp2px(56F).roundToInt()) / 2
         }
     }
