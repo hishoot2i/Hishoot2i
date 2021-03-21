@@ -44,6 +44,20 @@
             app:layout_constraintTop_toBottomOf="@+id/textSaveOption"
             tools:checked="true" />
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/setting_save_confirmation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/confirmation"
+            android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
+            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintTop_toBottomOf="@+id/setting_save_notification"
+            tools:checked="true" />
+
         <TextView
             android:id="@+id/textFormat"
             android:layout_width="0dp"
@@ -56,7 +70,7 @@
             android:textAppearance="@style/TextAppearance.App"
             app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
             app:layout_constraintStart_toStartOf="@+id/textSaveOption"
-            app:layout_constraintTop_toBottomOf="@+id/setting_save_notification" />
+            app:layout_constraintTop_toBottomOf="@+id/setting_save_confirmation" />
 
         <Spinner
             android:id="@+id/setting_save_format"
@@ -68,9 +82,9 @@
             android:entries="@array/save_option_values"
             android:popupBackground="?attr/colorSurface"
             android:prompt="@string/save_format"
-            android:spinnerMode="dialog"
-            app:layout_constraintStart_toStartOf="@+id/textFormat"
+            android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="@+id/textFormat"
+            app:layout_constraintStart_toStartOf="@+id/textFormat"
             app:layout_constraintTop_toBottomOf="@+id/textFormat" />
 
         <TextView

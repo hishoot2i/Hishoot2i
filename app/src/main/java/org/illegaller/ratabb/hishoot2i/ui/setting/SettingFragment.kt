@@ -128,6 +128,16 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 }
             }
         }
+        itemSettingSaveOption.settingSaveConfirmation.apply {
+            isChecked = settingPref.saveConfirmEnable
+            setOnCheckedChangeListener { cb, checked ->
+                cb.preventMultipleClick {
+                    if (settingPref.saveConfirmEnable != checked) {
+                        settingPref.saveConfirmEnable = checked
+                    }
+                }
+            }
+        }
         // endregion
 
         // region Cache

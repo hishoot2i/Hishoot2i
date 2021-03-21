@@ -104,4 +104,8 @@
     <string name="on_pipette">On pipette</string>
     <string name="notification">Notification</string>
     <string name="custom_directory">Set Custom Directory</string>
+    <!-- Save confirm dialog -->
+    <string name="save_image">Save Image</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="ok_btn_txt">OK</string>
 </resources>

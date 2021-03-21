@@ -32,4 +32,5 @@ class SettingPrefImpl @Inject constructor(
     override var compressFormat: CompressFormat by enumOrdinalPref(default = PNG)
     override var saveQuality: Int by intPref(default = 100)
     override var saveNotificationEnable: Boolean by booleanPref(default = true)
+    override var saveConfirmEnable: Boolean by booleanPref(default = true)
 }

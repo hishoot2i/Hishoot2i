@@ -10,4 +10,5 @@ interface SettingPref {
     var compressFormat: CompressFormat
     var saveQuality: Int
     var saveNotificationEnable: Boolean
+    var saveConfirmEnable: Boolean
 }

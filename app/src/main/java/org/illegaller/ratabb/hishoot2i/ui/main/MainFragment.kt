@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.illegaller.ratabb.hishoot2i.HiShootActivity
 import org.illegaller.ratabb.hishoot2i.R
+import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentMainBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_BACKGROUND_PATH
 import org.illegaller.ratabb.hishoot2i.ui.ARG_CROP_PATH
@@ -28,6 +29,7 @@ import org.illegaller.ratabb.hishoot2i.ui.ARG_SCREEN2_PATH
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_BACKGROUND
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_CROP
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_PIPETTE
+import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SAVE
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_1
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SCREEN_2
 import org.illegaller.ratabb.hishoot2i.ui.common.clearFragmentResultListeners
@@ -46,13 +48,15 @@ import javax.inject.Inject
 class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var saveNotification: SaveNotification
+    @Inject
+    lateinit var settingPref: SettingPref
 
     private val viewModel: MainViewModel by viewModels()
 
     private val requestKeys = arrayOf(
         KEY_REQ_CROP, KEY_REQ_BACKGROUND,
         KEY_REQ_SCREEN_1, KEY_REQ_SCREEN_2,
-        KEY_REQ_PIPETTE
+        KEY_REQ_PIPETTE, KEY_REQ_SAVE
     )
     private val args: MainFragmentArgs by navArgs()
     private var ratioCrop = Point()
@@ -90,6 +94,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         KEY_REQ_SCREEN_1 -> viewModel.changeScreen1(result.getString(ARG_SCREEN1_PATH))
         KEY_REQ_SCREEN_2 -> viewModel.changeScreen2(result.getString(ARG_SCREEN2_PATH))
         KEY_REQ_PIPETTE -> startingPipette(result.getInt(ARG_PIPETTE_COLOR))
+        KEY_REQ_SAVE -> viewModel.save()
         else -> {
         }
     }
@@ -124,7 +129,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun FragmentMainBinding.setViewListener() {
         mainFab.setOnClickListener {
             it.preventMultipleClick {
-                if (!isOnPipette) viewModel.save() else stopPipette()
+                if (isOnPipette) stopPipette()
+                else {
+                    if (settingPref.saveConfirmEnable) {
+                        findNavController().navigate(R.id.action_main_to_saveConfirm)
+                    } else viewModel.save()
+                }
             }
         }
         mainBottomAppBar.setOnMenuItemClickListener {

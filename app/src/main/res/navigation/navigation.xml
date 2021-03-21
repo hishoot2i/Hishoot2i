@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_main_to_toolsTemplate"
             app:destination="@id/toolsTemplate" />
+        <action
+            android:id="@+id/action_main_to_saveConfirm"
+            app:destination="@id/saveConfirm" />
     </fragment>
     <fragment
         android:id="@+id/template"
@@ -145,6 +148,12 @@
             android:defaultValue="SYSTEM"
             app:argType="entity.DayNightMode" />
     </dialog>
+    <dialog
+        android:id="@+id/saveConfirm"
+        tools:layout="@layout/dialog_save_confirm"
+        android:label="@string/save_image"
+        android:name="org.illegaller.ratabb.hishoot2i.ui.main.SaveConfirmDialog"
+        />
     <!-- endregion -->
 
     <!-- region Action Global ? -->
