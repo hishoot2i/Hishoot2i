@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -23,7 +22,7 @@ class ThemeChooserDialog : AppCompatDialogFragment() {
     private val args: ThemeChooserDialogArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        AppCompatDialog(context).apply {
+        super.onCreateDialog(savedInstanceState).apply {
             setStyle(DialogFragment.STYLE_NO_FRAME, theme)
             setCancelable(false)
             setCanceledOnTouchOutside(false)
