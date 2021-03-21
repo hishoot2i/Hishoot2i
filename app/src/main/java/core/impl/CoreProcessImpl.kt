@@ -2,7 +2,6 @@ package core.impl
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Canvas
 import androidx.core.graphics.applyCanvas
 import common.egl.MaxTexture
 import common.ext.graphics.createBitmap
@@ -59,19 +58,16 @@ class CoreProcessImpl @Inject constructor(
             TRANSPARENT -> { // no-op
             }
             COLOR -> drawColor(backgroundColorInt)
-            IMAGE -> drawImage(path)
+            IMAGE -> drawBitmapSafely(
+                loadBackground(
+                    source = path,
+                    reqSizes = Sizes(width, height),
+                    imageOption = imageOption,
+                    blurEnable = backgroundImageBlurEnable,
+                    blurRadius = backgroundImageBlurRadius
+                )
+            )
         }
-    }
-
-    private suspend fun Canvas.drawImage(path: String?) {
-        val imgBackground = loadBackground(
-            source = path,
-            reqSizes = Sizes(width, height),
-            imageOption = imageOption,
-            blurEnable = backgroundImageBlurEnable,
-            blurRadius = backgroundImageBlurRadius
-        )
-        drawBitmapSafely(imgBackground)
     }
 
     private fun Bitmap.resizePreview(): Bitmap =
