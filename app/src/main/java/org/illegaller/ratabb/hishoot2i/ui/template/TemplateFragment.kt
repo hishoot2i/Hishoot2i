@@ -1,5 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
@@ -7,6 +8,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
@@ -16,12 +20,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import common.ext.hideSoftKey
-import common.ext.isKeyboardOpen
 import common.ext.preventMultipleClick
 import common.ext.toFile
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import org.illegaller.ratabb.hishoot2i.HiShootActivity
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplatePref
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
@@ -44,7 +48,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TemplateFragment : Fragment(R.layout.fragment_template) {
     @Inject
-    lateinit var adapter: TemplateAdapter
+    lateinit var templateAdapter: TemplateAdapter
 
     @Inject
     lateinit var templatePref: TemplatePref
@@ -56,7 +60,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
 
     private val requestHtz = registerGetContent { uri ->
         DocumentFile.fromSingleUri(requireContext(), uri)?.uri?.toFile(requireContext())?.let {
-            viewModel.importHtz(it)
+            viewModel.importFileHtz(it)
         }
     }
 
@@ -87,7 +91,8 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         super.onViewCreated(view, savedInstanceState)
         FragmentTemplateBinding.bind(view).apply {
             setViewListener()
-            viewObserve(viewModel.uiState) { observer(it) }
+            viewObserve(viewModel.uiState) { observerView(it) }
+            viewObserve(viewModel.htzState) { observerHtzView(it) }
             viewModel.search(templateSearchView.queryTextChange())
         }
         viewModel.perform()
@@ -102,31 +107,39 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         super.onDestroyView()
     }
 
-    private fun FragmentTemplateBinding.observer(view: TemplateView) {
-        when (view) {
-            Loading -> {
-                templateProgress.show()
-                templateRecyclerView.isVisible = false
-            }
-            is HtzImported -> {
+    private fun FragmentTemplateBinding.observerHtzView(state: HtzEventView) {
+        when (state) {
+            LoadingHtzEvent -> templateProgress.show()
+            is FailHtzEvent -> {
                 templateProgress.hide()
-                htzImported(view.htz)
+                onError(state.cause)
             }
+            is SuccessHtzEvent -> {
+                templateProgress.hide()
+                htzNotify(state.event, state.message)
+            }
+        }
+    }
+
+    private fun FragmentTemplateBinding.observerView(state: TemplateView) {
+        when (state) {
+            Loading -> templateProgress.show()
             is Fail -> {
                 templateProgress.hide()
-                onError(view.cause)
+                onError(state.cause)
             }
             is Success -> {
                 templateProgress.hide()
-                setData(view.data)
+                setData(state.data)
             }
         }
     }
 
     private fun FragmentTemplateBinding.setViewListener() {
-        adapter.clickItem = ::adapterItemClick
+        templateAdapter.clickItem = ::adapterItemClick
+        templateAdapter.longClickItem = ::adapterItemLongClick
         templateRecyclerView.apply {
-            adapter = this@TemplateFragment.adapter
+            adapter = templateAdapter
             SideListDivider.addItemDecorToRecyclerView(this)
             LinearSnapHelper().attachToRecyclerView(this)
             setHasFixedSize(true)
@@ -142,17 +155,23 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         val haveData = templates.isNotEmpty()
         if (haveData) { // TODO:
             val state = templateRecyclerView.layoutManager?.onSaveInstanceState()
-            adapter.submitList(templates) //
+            templateAdapter.submitList(templates) //
             templateRecyclerView.layoutManager?.onRestoreInstanceState(state)
         }
         templateRecyclerView.isVisible = haveData
         noContent.isVisible = !haveData
     }
 
-    private fun htzImported(templateHtz: Template.VersionHtz) {
+    private fun htzNotify(htzEvent: HtzEvent, message: String) {
+        val format = when (htzEvent) {
+            HtzEvent.IMPORT -> R.string.template_htz_imported_format
+            HtzEvent.CONVERT -> R.string.template_htz_converted_format
+            HtzEvent.EXPORT -> R.string.template_htz_exported_format
+            HtzEvent.REMOVE -> R.string.template_htz_removed_format
+        }
         showSnackBar(
             view = requireView(),
-            text = getString(R.string.template_htz_add_format, templateHtz.name),
+            text = getString(format, message),
             anchorViewId = R.id.templateHtzFab
         )
     }
@@ -163,14 +182,8 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
     }
 
     private fun popBack(view: View) {
-        val isKeyboardOpen = requireActivity().isKeyboardOpen()
-        Timber.d("isKeyboardOpen= $isKeyboardOpen")
-        if (isKeyboardOpen) {
-            view.hideSoftKey()
-            findNavController().popBackStack()
-        } else {
-            findNavController().popBackStack()
-        }
+        if ((requireActivity() as HiShootActivity).isKeyboardShow) view.hideSoftKey()
+        else findNavController().popBackStack()
     }
 
     private fun menuItemClick(menuItem: MenuItem): Boolean = menuItem.preventMultipleClick {
@@ -182,6 +195,58 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
                 true
             }
             else -> false
+        }
+    }
+
+    @SuppressLint("RestrictedApi") // <- MenuPopupHelper || TODO: replace with something else?
+    private inline fun popupMenu(
+        view: View,
+        isHtz: Boolean,
+        crossinline menuClick: (MenuItem) -> Boolean
+    ) = PopupMenu(view.context, view).apply {
+        inflate(R.menu.template_popup)
+        if (isHtz) menu.findItem(R.id.action_convert_to_htz).isEnabled = false
+        else {
+            menu.findItem(R.id.action_export_htz).isEnabled = false
+            menu.findItem(R.id.action_remove_htz).isEnabled = false
+        }
+        setOnMenuItemClickListener { menuClick(it) }
+    }.run {
+        MenuPopupHelper(view.context, menu as MenuBuilder, view)
+            .apply { setForceShowIcon(true) }
+            .show()
+    }
+
+    private fun adapterItemLongClick(view: View, template: Template): Boolean = when (template) {
+        is Template.Default -> false
+        is Template.VersionHtz -> {
+            popupMenu(view, true) {
+                return@popupMenu when (it.itemId) {
+                    R.id.action_export_htz -> {
+                        viewModel.exportTemplateHtz(template)
+                        true
+                    }
+                    R.id.action_remove_htz -> {
+                        viewModel.removeTemplateHtz(template)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            true
+        }
+        is Template.Version1, is Template.Version2, is Template.Version3 -> {
+            popupMenu(view, false) {
+                return@popupMenu when (it.itemId) {
+                    R.id.action_convert_to_htz -> {
+                        viewModel.convertTemplateHtz(template)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+            true
         }
     }
 

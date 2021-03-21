@@ -23,7 +23,10 @@
     <string name="show">Show</string>
     <string name="size">Size</string>
     <string name="template">Template</string>
-    <string name="template_htz_add_format" formatted="true">Template Htz %s add</string>
+    <string name="template_htz_imported_format" formatted="true">Template Htz %s imported</string>
+    <string name="template_htz_converted_format" formatted="true">Template Htz %s converted</string>
+    <string name="template_htz_exported_format" formatted="true">Template Htz exported to %s</string>
+    <string name="template_htz_removed_format" formatted="true">Template Htz %s removed</string>
     <string name="template_manager">Template Manager</string>
     <string name="template_v2_and_v3">(Template v2 and v3)</string>
     <!--TemplateTool-->
@@ -34,7 +37,7 @@
     <string name="image">Image</string>
     <string name="transparent">Transparent</string>
     <string name="hex_color_prefix">Hex Color </string>
-    <string name="sort_by">Sort by</string>
+    <string name="sort_by">Sort By</string>
     <string name="name">Name</string>
     <string name="version">Version</string>
     <string name="date">Date</string>
@@ -108,4 +111,8 @@
     <string name="save_image">Save Image</string>
     <string name="confirmation">Confirmation</string>
     <string name="ok_btn_txt">OK</string>
+    <!-- Popup menu htz -->
+    <string name="convert_to_htz">Convert to Htz</string>
+    <string name="export_htz">Export Htz</string>
+    <string name="remove_htz">Remove Htz</string>
 </resources>

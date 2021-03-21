@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textBackground"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <Button
             android:id="@+id/backgroundColorMix"
@@ -74,7 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textBackground"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/backgroundImageOption_Group"

@@ -12,17 +12,17 @@ import template.TemplateConstants.GLARE
 import template.TemplateConstants.PREVIEW
 import template.TemplateConstants.SHADOW
 import template.TemplateConstants.TEMPLATE_CFG
-import template.reader.ModelV2Reader
+import template.model.ModelV2
+import java.io.InputStream
 
-class Version2Factory(
+internal class Version2Factory(
     private val appContext: Context,
     private val packageName: String,
-    private val installedDate: Long
+    private val installedDate: Long,
+    private val decodeModel: (InputStream) -> ModelV2
 ) : Factory<Version2> {
-    @Throws(Exception::class)
     override fun newTemplate(): Version2 {
-        val model = appContext.openAssetsFrom(packageName, TEMPLATE_CFG)
-            .let { ModelV2Reader(it).use(ModelV2Reader::model) }
+        val model = appContext.openAssetsFrom(packageName, TEMPLATE_CFG).use { decodeModel(it) }
         val templateSize = model.run { Sizes(template_width, template_height) }
         return Version2(
             id = packageName,

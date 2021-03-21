@@ -1,31 +1,33 @@
 package org.illegaller.ratabb.hishoot2i.data.source
 
-import entity.AppInfo
 import org.illegaller.ratabb.hishoot2i.data.resolver.HtzResolver
 import org.illegaller.ratabb.hishoot2i.data.resolver.PackageResolver
 import template.Template
 import template.TemplateFactoryManager
-import java.io.File
+import timber.log.Timber
 import javax.inject.Inject
 
 class TemplateSourceImpl @Inject constructor(
     packageResolver: PackageResolver,
     htzResolver: HtzResolver,
-    templateFactoryManager: TemplateFactoryManager
-) : TemplateSource, TemplateFactoryManager by templateFactoryManager {
+    templateManager: TemplateFactoryManager
+) : TemplateSource,
+    TemplateFactoryManager by templateManager,
+    PackageResolver by packageResolver,
+    HtzResolver by htzResolver {
 
     override fun allTemplate(): List<Template> = listOf(
         listOfNotNull(createOrNull { default() }),
-        resolveTemplateLegacy().mapNotNull { (packageName, firstInstallTime) ->
-            createOrNull { version1(packageName, firstInstallTime) }
+        installedTemplateLegacy().mapNotNull { (name, installed) ->
+            createOrNull { version1(name, installed) }
         },
-        resolveTemplateApk(2).mapNotNull { (packageName, firstInstallTime) ->
-            createOrNull { version2(packageName, firstInstallTime) }
+        installedTemplate(2).mapNotNull { (name, installed) ->
+            createOrNull { version2(name, installed) }
         },
-        resolveTemplateApk(3).mapNotNull { (packageName, firstInstallTime) ->
-            createOrNull { version3(packageName, firstInstallTime) }
+        installedTemplate(3).mapNotNull { (name, installed) ->
+            createOrNull { version3(name, installed) }
         },
-        resolveTemplateHtz().mapNotNull { file ->
+        installedHtz().mapNotNull { file ->
             createOrNull { versionHtz(file.name, file.lastModified()) }
         }
     ).flatten()
@@ -37,18 +39,14 @@ class TemplateSourceImpl @Inject constructor(
         if (query.isNotBlank()) allTemplate().filterNameOrAuthor(query)
         else allTemplate()
 
-    private val resolveTemplateLegacy: () -> List<AppInfo> =
-        (packageResolver::installedTemplateLegacy)
-
-    private val resolveTemplateApk: (Int) -> List<AppInfo> =
-        (packageResolver::installedTemplate)
-
-    private val resolveTemplateHtz: () -> List<File> =
-        (htzResolver::installedHtz)
-
     private fun List<Template>.filterNameOrAuthor(query: String) =
         filter { it.name.contains(query, true) || it.author.contains(query, true) }
 
-    private inline fun <T> createOrNull(creator: () -> T): T? =
-        runCatching { creator() }.getOrNull()
+    private inline fun <T> createOrNull(creator: () -> T): T? = try {
+        creator()
+    } catch (e: Exception) {
+        Timber.e(e)
+        null
+    }
+    // runCatching { creator() }.getOrNull()
 }

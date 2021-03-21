@@ -1,5 +1,6 @@
 package org.illegaller.ratabb.hishoot2i.ui.template
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.ObjectsCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -25,7 +26,9 @@ class TemplateAdapter @Inject constructor(
         )
     }
 
-    internal var clickItem: (Template) -> Unit = { _: Template -> }
+    internal var clickItem: (Template) -> Unit = { _ -> }
+
+    internal var longClickItem: (View, Template) -> Boolean = { _, _ -> false }
 
     inner class TemplateHolder(val binding: RowItemTemplateBinding) : ViewHolder(binding.root)
 
@@ -41,6 +44,9 @@ class TemplateAdapter @Inject constructor(
     ) = TemplateHolder(RowItemTemplateBinding.inflate(parent.layoutInflater, parent, false)).apply {
         itemView.setOnClickListener {
             it.preventMultipleClick { clickItem(getItem(absoluteAdapterPosition)) }
+        }
+        itemView.setOnLongClickListener {
+            longClickItem(it, getItem(absoluteAdapterPosition))
         }
     }
 

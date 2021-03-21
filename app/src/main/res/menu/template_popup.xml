@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_convert_to_htz"
+        android:icon="@drawable/ic_convert"
+        android:title="@string/convert_to_htz" />
+    <item
+        android:id="@+id/action_export_htz"
+        android:icon="@drawable/ic_import_export"
+        android:title="@string/export_htz" />
+    <item
+        android:id="@+id/action_remove_htz"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/remove_htz" />
+</menu>
