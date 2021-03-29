@@ -1,0 +1,94 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+apply from: "$rootDir/buildsystem/signingRelease.gradle"
+apply from: "$rootDir/buildsystem/androidCommon.gradle"
+android {
+    defaultConfig {
+        applicationId = 'org.illegaller.ratabb.hishoot2i'
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
+        def fileAuthority = applicationId + '.FILE_AUTHORITY'
+        def imageReceiverKey = applicationId + '.IMAGE_RECEIVER'
+        buildConfigField 'String', 'FILE_AUTHORITY', "\"$fileAuthority\""
+        buildConfigField 'String', 'IMAGE_RECEIVER', "\"$imageReceiverKey\""
+        manifestPlaceholders = ["file_authority": fileAuthority, "image_receiver_key": imageReceiverKey]
+        resConfigs 'en', 'xxhdpi'
+        dependenciesInfo.includeInApk = false
+    }
+    packagingOptions {
+        exclude 'kotlin/**'
+        exclude '**/*.kotlin_metadata'
+        exclude 'META-INF/*.kotlin_module'
+        exclude 'META-INF/*.version'
+        exclude 'META-INF/*.properties'
+        exclude 'androidsupportmultidexversion.txt'
+        exclude 'DebugProbesKt.bin'
+    }
+    buildTypes {
+        release {
+            debuggable = false
+            shrinkResources = true
+            minifyEnabled = true
+            zipAlignEnabled = true
+            proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-app.pro')
+            signingConfig = signingConfigs.release
+        }
+    }
+    buildFeatures.viewBinding = true
+    compileOptions.coreLibraryDesugaringEnabled = true
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':imageloader')
+    implementation project(':template')
+    implementation project(':pref')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:' + kotlinVersion
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:' + desugarVersion
+    implementation 'androidx.multidex:multidex:' + xMultiDexVersion
+    compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
+    implementation 'androidx.core:core:' + xCoreVersion
+    implementation 'androidx.core:core-ktx:' + xCoreVersion
+    implementation 'androidx.browser:browser:' + xBrowserVersion
+    implementation 'androidx.appcompat:appcompat:' + xAppCompatVersion
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:' + xCoordinatorLayoutVersion
+    implementation 'androidx.recyclerview:recyclerview:' + xRecyclerViewVersion
+    implementation 'androidx.constraintlayout:constraintlayout:' + xConstraintLayoutVersion
+    implementation 'androidx.customview:customview:' + xCustomViewVersion
+    implementation 'androidx.activity:activity:' + xActivityVersion
+    implementation 'androidx.documentfile:documentfile:' + xDocumentFileVersion
+    implementation 'androidx.fragment:fragment:' + xFragmentVersion
+    implementation 'androidx.fragment:fragment-ktx:' + xFragmentVersion
+    implementation 'androidx.drawerlayout:drawerlayout:' + xDrawerLayoutVersion
+    implementation 'androidx.navigation:navigation-fragment-ktx:' + xNavigationVersion
+    implementation 'androidx.navigation:navigation-ui-ktx:' + xNavigationVersion
+    implementation 'androidx.navigation:navigation-common:' + xNavigationVersion
+    implementation 'androidx.navigation:navigation-common-ktx:' + xNavigationVersion
+    implementation 'androidx.navigation:navigation-runtime:' + xNavigationVersion
+    implementation 'androidx.navigation:navigation-runtime-ktx:' + xNavigationVersion
+    implementation 'androidx.lifecycle:lifecycle-livedata-core:' + xLifeCycleVersion
+    implementation 'androidx.lifecycle:lifecycle-common:' + xLifeCycleVersion
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:' + xLifeCycleVersion
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:' + xLifeCycleVersion
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:' + xLifeCycleVersion
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:' + xLifeCycleVersion
+    implementation 'com.google.android.material:material:' + googleMaterialVersion
+    implementation 'javax.inject:javax.inject:1'
+    implementation 'com.google.dagger:dagger:' + daggerVersion
+    implementation 'com.google.dagger:hilt-core:' + daggerHiltVersion
+    implementation 'com.google.dagger:hilt-android:' + daggerHiltVersion
+    kapt 'com.google.dagger:hilt-android-compiler:' + daggerHiltVersion
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:' + xHiltVersion
+    implementation 'com.jakewharton.timber:timber:' + timberVersion
+    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+    implementation 'com.squareup.leakcanary:plumber-android:' + leakcanaryVersion
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:' + leakcanaryVersion
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:' + coroutinesVersion
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:' + coroutinesVersion
+}
+apply from: "$rootDir/buildsystem/appVersioning.gradle"

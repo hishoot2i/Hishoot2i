@@ -5,10 +5,10 @@ android {
             if (signingPropsFile.exists()) {
                 def properties = new Properties()
                 signingPropsFile.withInputStream { is -> properties.load(is) }
-                storeFile properties?.get("secretKeyFile")?.with(rootProject.&file)
-                storePassword properties?.get("secretStorePassword")
-                keyAlias properties?.get("secretKeyAlias")
-                keyPassword properties?.get("secretKeyPassword")
+                storeFile properties?.get('secretKeyFile')?.with(rootProject.&file)
+                storePassword properties?.get('secretStorePassword')
+                keyAlias properties?.get('secretKeyAlias')
+                keyPassword properties?.get('secretKeyPassword')
             }
         }
     }

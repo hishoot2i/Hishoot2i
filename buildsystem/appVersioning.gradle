@@ -3,14 +3,11 @@ import java.text.SimpleDateFormat
 // use only at [sub-]module app buildFile [app/app.gradle.kts]
 android {
     applicationVariants.all { variants ->
-        if (variants.buildType.name == "release") {
+        if (variants.buildType.name == 'release') {
             def ver = Versioning.from(project)
-            // println("ver= $ver")
             variants.outputs.all { output ->
                 output.versionCodeOverride = ver.code
                 output.versionNameOverride = ver.name
-                // NOTE: this will override all output file apk (breaking apk split!!)
-                // output.outputFileName = ver.apk
             }
         }
     }
@@ -19,7 +16,6 @@ android {
 final class Versioning {
     //region consumable fields
     public final String name
-    //public final String apk
     public final int code
     //endregion
 
@@ -33,19 +29,14 @@ final class Versioning {
         this.thisProject = p
         this.name = getVersionName(buildTime)
         this.code = getVersionCode(buildTime)
-        //this.apk = getApkName()
     }
 
     @Override
     String toString() {
-        return "Versioning {\n  name:$name;\n  code:$code;\n  apk:$apk\n}"
+        return "Versioning (name:$name; code:$code)"
     }
-    //region constants
-    private static final String FORMAT_APK_NAME = "%s-v%s-minApi%s.apk"
     private static final String FILE_NAME_VERSION = "VERSION"
-    //endregion
 
-    //region private method
     private static String getBuildTime() {
         def today = new Date()
         // HiShoot2i 1st release = 2015
@@ -55,14 +46,6 @@ final class Versioning {
         // println("buildTime: $buildTime")
         return buildTime
     }
-
-    /*private String getApkName() {
-        return String.format(
-                FORMAT_APK_NAME,
-                thisProject.rootProject.name,
-                getVersionFromFile(),
-                thisProject.rootProject.androidMinSdk)
-    }*/
 
     private int getVersionCode(String buildTime) {
         def n = getVersionFromFile()
@@ -93,5 +76,4 @@ final class Versioning {
     private void logError(String message, Exception e) {
         thisProject.getLogger().error(message, e)
     }
-    //endregion
 }

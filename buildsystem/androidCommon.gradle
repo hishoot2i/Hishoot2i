@@ -1,14 +1,14 @@
 // NOTE: Global config `android` sub module.
 android {
-    compileSdkVersion(rootProject.androidCompileSdk as Integer)
+    compileSdkVersion rootProject.androidCompileSdk as Integer
     buildToolsVersion rootProject.androidBuildTools
     defaultConfig {
-        minSdkVersion(rootProject.androidMinSdk as Integer)
-        targetSdkVersion(rootProject.androidTargetSdk as Integer)
+        minSdkVersion rootProject.androidMinSdk as Integer
+        targetSdkVersion rootProject.androidTargetSdk as Integer
         versionCode 1
-        versionName "1.0.0"
+        versionName '1.0.0'
     }
-    buildFeatures.buildConfig = !plugins.hasPlugin("com.android.library")
+    buildFeatures.buildConfig = !plugins.hasPlugin('com.android.library')
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -21,6 +21,6 @@ android {
         xmlReport false
         textReport true
         textOutput 'stdout'
-        disable "ObsoleteLintCustomCheck"
+        disable 'ObsoleteLintCustomCheck'
     }
 }

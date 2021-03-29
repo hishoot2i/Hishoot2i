@@ -1,0 +1,20 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
+apply from: "$rootDir/buildsystem/androidCommon.gradle"
+android {
+    lintOptions.ignore 'IconMissingDensityFolder' // frame1.9.png @ mdpi only
+    buildTypes.release.consumerProguardFile 'proguard-template.pro'
+}
+dependencies {
+    api project(':common')
+    compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
+    implementation 'androidx.core:core-ktx:' + xCoreVersion
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:' + serializationVersion
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:' + serializationVersion
+    implementation 'net.devrieze:xmlutil-android:' + xmlUtilVersion
+    api 'net.devrieze:xmlutil-serialization-android:' + xmlUtilVersion
+}

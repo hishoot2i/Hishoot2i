@@ -1,0 +1,12 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+apply from: "$rootDir/buildsystem/androidCommon.gradle"
+dependencies {
+    api project(':common')
+    implementation 'androidx.core:core-ktx:' +xCoreVersion
+    api 'androidx.lifecycle:lifecycle-common:' +xLifeCycleVersion
+    api 'io.coil-kt:coil-base:' +coilVersion
+    implementation 'com.squareup.okhttp3:okhttp:' +okHttpVersion
+}

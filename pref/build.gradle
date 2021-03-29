@@ -1,0 +1,9 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+apply from: "$rootDir/buildsystem/androidCommon.gradle"
+dependencies {
+    compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
+}
+apply from: "$rootDir/buildsystem/localTest.gradle"

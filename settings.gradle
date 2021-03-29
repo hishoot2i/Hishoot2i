@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    resolutionStrategy.eachPlugin { PluginResolveDetails prd ->
+        def targetId = prd.target.id.id
+        def reqVersion = prd.requested.version
+        if (targetId ==~ /com\.android\..*/)
+            prd.useModule 'com.android.tools.build:gradle:' + reqVersion
+        if (targetId ==~ /dagger\.hilt\..*/)
+            prd.useModule 'com.google.dagger:hilt-android-gradle-plugin:' + reqVersion
+        if (targetId ==~ /androidx\.navigation\.safeargs\..*/)
+            prd.useModule 'androidx.navigation:navigation-safe-args-gradle-plugin:' + reqVersion
+    }
+}
+include ':common',
+        ':imageloader',
+        ':template',
+        ':pref',
+        ':app'
