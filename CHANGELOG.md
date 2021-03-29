@@ -4,6 +4,15 @@
 
 >_Release date: TBA_
 
+### Added
+
+- [Save] confirmation dialog
+  >_Optional_, You can opt-out at Setting.
+- [Template] manage Template Htz
+  - Convert installed Template Apk to Template Htz
+  - Export installed Template Htz to file Htz
+  - Remove installed Htz
+
 ---
 
 ## **Version 1.2.5**
