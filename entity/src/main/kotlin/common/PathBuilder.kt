@@ -2,7 +2,6 @@
 
 package common
 
-import androidx.annotation.DrawableRes
 import java.io.File
 
 object PathBuilder {
@@ -29,7 +28,7 @@ object PathBuilder {
      * @return [String] ** drawable://`drawableRes` **
      */
     @JvmStatic
-    fun stringDrawables(@DrawableRes drawableRes: Int): String = "$DRAWABLES$drawableRes"
+    fun stringDrawables(drawableRes: Int): String = "$DRAWABLES$drawableRes"
 
     /**
      * Image path from storage

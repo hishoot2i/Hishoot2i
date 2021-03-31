@@ -6,10 +6,10 @@ plugins {
 apply from: "$rootDir/buildsystem/androidCommon.gradle"
 android.buildTypes.release.consumerProguardFile 'proguard-common.pro'
 dependencies {
+    api project(':entity')
     compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
     implementation 'androidx.core:core:' + xCoreVersion
     implementation 'androidx.documentfile:documentfile:' + xDocumentFileVersion
     implementation 'com.jakewharton.timber:timber:' + timberVersion
     api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
-    api 'org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:' + serializationVersion
 }
