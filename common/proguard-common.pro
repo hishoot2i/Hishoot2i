@@ -9,3 +9,5 @@
 -keepclasseswithmembers class entity.** {
   kotlinx.serialization.KSerializer $$serializer(...);
 }
+# nav arg
+-keep class entity.DayNightMode

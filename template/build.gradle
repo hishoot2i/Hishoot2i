@@ -11,7 +11,7 @@ android {
 dependencies {
     api project(':common')
     api project(':template-base')
-    implementation(project(":entity"))
+    implementation project(":entity")
     compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
     implementation 'androidx.core:core-ktx:' + xCoreVersion
     api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion

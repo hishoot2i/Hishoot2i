@@ -9,3 +9,5 @@
 -keepclasseswithmembers class template.model.** {
   kotlinx.serialization.KSerializer $$serializer(...);
 }
+# nav arg
+-keep class template.TemplateComparator
