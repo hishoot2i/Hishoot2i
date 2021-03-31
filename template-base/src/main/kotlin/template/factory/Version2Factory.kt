@@ -1,8 +1,6 @@
 package template.factory
 
-import android.content.Context
 import common.PathBuilder.stringTemplateApp
-import common.ext.openAssetsFrom
 import entity.Glare
 import entity.Sizes
 import entity.SizesF
@@ -13,16 +11,14 @@ import template.TemplateConstants.PREVIEW
 import template.TemplateConstants.SHADOW
 import template.TemplateConstants.TEMPLATE_CFG
 import template.model.ModelV2
-import java.io.InputStream
 
-internal class Version2Factory(
-    private val appContext: Context,
+class Version2Factory(
     private val packageName: String,
     private val installedDate: Long,
-    private val decodeModel: (InputStream) -> ModelV2
+    private val decodeModel: (String) -> ModelV2
 ) : Factory<Version2> {
     override fun newTemplate(): Version2 {
-        val model = appContext.openAssetsFrom(packageName, TEMPLATE_CFG).use { decodeModel(it) }
+        val model = decodeModel(TEMPLATE_CFG)
         val templateSize = model.run { Sizes(template_width, template_height) }
         return Version2(
             id = packageName,

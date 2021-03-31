@@ -1,21 +1,17 @@
 package template.factory
 
-import android.content.Context
 import common.PathBuilder.stringTemplateApp
-import common.ext.openAssetsFrom
 import template.Template.Version3
 import template.TemplateConstants.TEMPLATE_CFG
 import template.model.ModelV3
-import java.io.InputStream
 
-internal class Version3Factory(
-    private val appContext: Context,
+class Version3Factory(
     private val packageName: String,
     private val installedDate: Long,
-    private val decodeModel: (InputStream) -> ModelV3
+    private val decodeModel: (String) -> ModelV3
 ) : Factory<Version3> {
     override fun newTemplate(): Version3 {
-        val model = appContext.openAssetsFrom(packageName, TEMPLATE_CFG).use { decodeModel(it) }
+        val model = decodeModel(TEMPLATE_CFG)
         val frame = stringTemplateApp(packageName, model.frame)
         return Version3(
             id = packageName,

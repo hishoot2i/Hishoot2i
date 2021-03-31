@@ -6,7 +6,8 @@ import template.model.ModelV2
 import template.model.ModelV3
 import java.io.InputStream
 
-internal interface ModelSerialize {
+interface ModelSerialize {
+
     fun encodeModelV1(model: ModelV1): String
     fun decodeModelV1(input: InputStream): ModelV1
 

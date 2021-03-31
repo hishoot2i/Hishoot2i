@@ -1,25 +1,24 @@
 package template.factory
 
 import common.PathBuilder.stringFiles
-import common.ext.graphics.bitmapSize
 import entity.Glare
 import entity.Sizes
 import template.Template.VersionHtz
 import template.TemplateConstants.TEMPLATE_CFG
 import template.model.ModelHtz
 import java.io.File
-import java.io.InputStream
 
-internal class VersionHtzFactory(
+class VersionHtzFactory(
     private val htzBaseDir: File,
     private val htzPath: String,
     private val installedDate: Long,
-    private val decodeModel: (InputStream) -> ModelHtz
+    private val decodeModel: (String) -> ModelHtz,
+    private val calculateSizes: (File) -> Sizes?
 ) : Factory<VersionHtz> {
     override fun newTemplate(): VersionHtz {
         val currentPath = File(htzBaseDir, htzPath)
         check(currentPath.canRead()) { "Can't read: $currentPath" }
-        val model = File(currentPath, TEMPLATE_CFG).inputStream().use { decodeModel(it) }
+        val model = decodeModel(TEMPLATE_CFG)
         val coordinate = model.coordinate ?: model.run {
             check(screen_x > 0 && screen_y > 0 && screen_width > 0 && screen_height > 0) {
                 "Invalid screen_.. field, name=$name; id=$htzPath"
@@ -44,7 +43,7 @@ internal class VersionHtzFactory(
                 if (overlay_file.isNullOrEmpty()) return@run null
                 val glareFile = File(currentPath, overlay_file)
                 if (glareFile.canRead()) {
-                    glareFile.bitmapSize()?.let { sizes ->
+                    calculateSizes(glareFile)?.let { sizes ->
                         Glare(
                             stringFiles(glareFile),
                             sizes,

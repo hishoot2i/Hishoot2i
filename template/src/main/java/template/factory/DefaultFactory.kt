@@ -8,7 +8,7 @@ import entity.Sizes
 import template.R
 import template.Template.Default
 
-internal class DefaultFactory(private val appContext: Context) : Factory<Default> {
+class DefaultFactory(private val appContext: Context) : Factory<Default> {
     override fun newTemplate(): Default {
         val (topTop, topLeft) = appContext.run { dpSize(R.dimen.def_tt) to dpSize(R.dimen.def_tl) }
         val (bottomTop, bottomLeft) = appContext.run { dpSize(R.dimen.def_bt) to dpSize(R.dimen.def_bl) }

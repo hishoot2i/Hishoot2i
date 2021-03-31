@@ -10,10 +10,14 @@ import template.model.ModelV2
 import template.model.ModelV3
 import java.io.InputStream
 
-internal object ModelSerializeImpl : ModelSerialize {
+object ModelSerializeImpl : ModelSerialize {
 
-    private val xmlFormat by lazy { XML { unknownChildHandler = { _, _, _, _ -> } } }
-    private val jsonFormat by lazy { Json { ignoreUnknownKeys = true; encodeDefaults = true } }
+    private val jsonFormat: Json by lazy {
+        Json { ignoreUnknownKeys = true; encodeDefaults = true }
+    }
+    private val xmlFormat: XML by lazy {
+        XML { unknownChildHandler = { _, _, _, _ -> } }
+    }
 
     override fun encodeModelV1(model: ModelV1): String = xmlFormat.encodeToString(model)
     override fun decodeModelV1(input: InputStream): ModelV1 =

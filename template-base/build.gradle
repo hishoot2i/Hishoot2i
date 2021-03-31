@@ -1,0 +1,13 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
+
+dependencies {
+    api project(':entity')
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:' + serializationVersion
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:' + serializationVersion
+    implementation 'net.devrieze:xmlutil-jvm:' + xmlUtilVersion
+    api 'net.devrieze:xmlutil-serialization-jvm:' + xmlUtilVersion
+}

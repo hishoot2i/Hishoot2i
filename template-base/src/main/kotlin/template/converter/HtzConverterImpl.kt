@@ -1,8 +1,6 @@
 package template.converter
 
-import android.content.Context
-import common.ext.openRawResource
-import common.ext.resourcesFrom
+import entity.Glare
 import template.Template
 import template.Template.Version1
 import template.Template.Version2
@@ -12,23 +10,18 @@ import template.model.ModelHtz
 import java.io.File
 import java.io.InputStream
 
-internal class HtzConverterImpl(
-    context: Context,
+class HtzConverterImpl(
     private val htzDir: () -> File,
     private val encodeModelHtz: (ModelHtz) -> String,
+    private val assetTemplate: (String, String) -> InputStream
 ) : HtzConverter {
 
-    private val assetTemplate: (String, String) -> InputStream = { id, asset ->
-        context.resourcesFrom(id).openRawResource(asset, "drawable", id)
-            ?: throw IllegalStateException("Failed open $asset from $id")
-    }
-
-    override fun convert(template: Template, generatorHtzId: ModelHtz.() -> String): String {
+    override fun convert(template: Template): String {
         check(template is Version1 || template is Version2 || template is Version3) {
             "Can not convert: ${template.id}"
         }
         val model = template.toModelHtz()
-        val newHtzId = generatorHtzId(model)
+        val newHtzId = model.newHtzId
         val pathTemplate = File(htzDir(), newHtzId).apply {
             require(!exists()) { "Already converted: ${template.id}?" }
             mkdirs()
@@ -54,22 +47,27 @@ internal class HtzConverterImpl(
         }
     }
 
+    /**
+     * When changing this method,
+     * make sure change logic [template.factory.VersionHtzFactory]
+     **/
     private fun Template.toModelHtz(): ModelHtz {
-        val frameName = frame.substringAfterLast("/", "")
-        val previewName: String? =
-            if (this is Version1) null else preview.substringAfterLast("/", "")
-        var overlayName: String? = null // Version1 not have this.
-        var overlayX = -1
-        var overlayY = -1
-        (this as? Version2)?.glare?.let {
-            overlayName = it.name.substringAfterLast("/", "")
-            overlayX = it.position.x.toInt()
-            overlayY = it.position.y.toInt()
+        val frameName = frame.substringAfterLast("/")
+        // Version1 not have preview, use frame?
+        val previewName = if (this is Version1) null else preview.substringAfterLast("/")
+
+        fun overlayOrElse(glare: Glare?, fallback: Triple<String?, Float, Float>) = when (glare) {
+            null -> fallback
+            else -> Triple(glare.name.substringAfterLast("/"), glare.position.x, glare.position.y)
         }
-        (this as? Version3)?.glares?.get(0)?.let { // NOTE: only take 1 glare and ignore shadow?
-            overlayName = it.name.substringAfterLast("/", "")
-            overlayX = it.position.x.toInt()
-            overlayY = it.position.y.toInt()
+        // Version1 not have glare
+        // Version2 glare = optional
+        // Version3 glares = optional, only take 1st glare if exist and ignore shadow?
+        val fallback = Triple(null, -1F, -1F)
+        val (overlayName, overlayX, overlayY) = when (this) {
+            is Version2 -> overlayOrElse(glare, fallback)
+            is Version3 -> overlayOrElse(glares?.firstOrNull(), fallback)
+            else -> fallback
         }
         return ModelHtz(
             name = "[Htz] $name", // added prefix.
@@ -77,8 +75,8 @@ internal class HtzConverterImpl(
             template_file = frameName,
             preview = previewName,
             overlay_file = overlayName,
-            overlay_x = overlayX,
-            overlay_y = overlayY,
+            overlay_x = overlayX.toInt(),
+            overlay_y = overlayY.toInt(),
             screen_width = -1, //
             screen_height = -1, //
             screen_x = -1, //

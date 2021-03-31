@@ -10,11 +10,12 @@ android {
 }
 dependencies {
     api project(':common')
+    api project(':template-base')
+    implementation(project(":entity"))
     compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
     implementation 'androidx.core:core-ktx:' + xCoreVersion
     api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
-    api 'org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:' + serializationVersion
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:' + serializationVersion
     implementation 'net.devrieze:xmlutil-android:' + xmlUtilVersion
-    api 'net.devrieze:xmlutil-serialization-android:' + xmlUtilVersion
+    implementation 'net.devrieze:xmlutil-serialization-jvm:' + xmlUtilVersion
+    implementation 'net.devrieze:xmlutil-serialization-android:' + xmlUtilVersion
 }

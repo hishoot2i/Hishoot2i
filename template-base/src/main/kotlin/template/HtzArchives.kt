@@ -1,7 +1,7 @@
 package template
 
-import common.ext.listFilesOrEmpty
 import java.io.File
+import java.io.InputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
@@ -14,9 +14,8 @@ import java.util.zip.ZipOutputStream
  *
  * [dst] directory file at application internal ex: `<htzDir>/<HtzId>/`
  *
- * @see [common.FileConstants.htzDir]
  **/
-internal fun decompressHtz(src: File, dst: File) {
+fun decompressHtz(src: File, dst: File) {
     fun validateCanonical(relativePath: String, dst: File): String =
         File(dst, relativePath).canonicalPath.takeIf { it.startsWith(dst.canonicalPath) }
             ?: throw IllegalStateException("Entry tried to write outside destination")
@@ -39,10 +38,9 @@ internal fun decompressHtz(src: File, dst: File) {
  *
  * [dst] an archive file htz ex: `someFile.htz`
  *
- * @see [common.FileConstants.htzDir]
  **/
-internal fun compressHtz(src: File, dst: File) {
-    val listFiles = src.listFilesOrEmpty(File::isFile) //
+fun compressHtz(src: File, dst: File) {
+    val listFiles = src.listFiles(File::isFile) ?: emptyArray() //
     require(src.isDirectory && listFiles.isNotEmpty()) {
         "src must be Directory and have children file inside it."
     }
@@ -58,4 +56,4 @@ internal fun compressHtz(src: File, dst: File) {
 }
 
 /** shortcut for combine [getEntry][ZipFile.getEntry] and [getInputStream][ZipFile.getInputStream]*/
-internal fun ZipFile.entryInputStream(entryName: String) = getInputStream(getEntry(entryName))
+fun ZipFile.entryInputStream(entryName: String): InputStream = getInputStream(getEntry(entryName))

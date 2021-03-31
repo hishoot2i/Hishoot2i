@@ -3,6 +3,7 @@
 package template.model
 
 import kotlinx.serialization.Serializable
+import java.util.Locale
 
 /**
  * // loc: template.cfg
@@ -42,4 +43,9 @@ data class ModelHtz(
     val template_width: Int,
     val template_height: Int,
     val coordinate: List<Float>? = null
-)
+) {
+    val newHtzId
+        get() = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
+            .replace(Regex("[^\\w]"), "") // removing non word char
+            .trim().take(32) // limit
+}

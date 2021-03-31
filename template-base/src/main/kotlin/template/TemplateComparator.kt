@@ -1,7 +1,5 @@
 package template
 
-import androidx.annotation.Keep
-import common.ext.exhaustive
 import template.Template.Default
 import template.Template.Version1
 import template.Template.Version2
@@ -9,7 +7,6 @@ import template.Template.Version3
 import template.Template.VersionHtz
 import java.text.Collator
 
-@Keep
 enum class TemplateComparator : Comparator<Template> {
     NAME_ASC {
         override val impl: (Template, Template) -> Int = { lhs, rhs ->
@@ -57,7 +54,7 @@ enum class TemplateComparator : Comparator<Template> {
             is Version2 -> 2
             is Version3 -> 3
             is VersionHtz -> 4
-        }.exhaustive
+        }
 
     override fun compare(lhs: Template, rhs: Template): Int =
         if (lhs is Default || rhs is Default) 1 else impl(lhs, rhs)
