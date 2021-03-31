@@ -35,9 +35,9 @@ class ConvertCommand(apkFilePath: String) {
     )
 
     fun run() {
-        echo("=====================================")
-        echo(">>          Htz Converter          <<")
-        echo("=====================================")
+        println("=====================================")
+        println(">>          Htz Converter          <<")
+        println("=====================================")
 
         val apkTemplate = try {
             apkZip.entryInputStream("AndroidManifest.xml").toApkTemplate()
@@ -45,34 +45,34 @@ class ConvertCommand(apkFilePath: String) {
             throw IllegalStateException("parsing AndroidManifest", e)
         }
         val (packageName, templateVersion) = apkTemplate.run { packageName to templateVersion }
-        echo("  packageName    : $packageName")
-        echo("  templateVersion: $templateVersion")
+        println("  packageName    : $packageName")
+        println("  templateVersion: $templateVersion")
         val today = System.currentTimeMillis()
         val factory = when (templateVersion) {
             1 -> Version1Factory(
                 packageName, today,
                 { asset ->
-                    openAssets(asset).use { serialize.decodeModelV1(it) }
+                    openAssets(asset).use(serialize::decodeModelV1)
                 },
                 { drawableName ->
                     ImageIO.read(openResDrawable(drawableName)).run { Sizes(width, height) }
                 }
             )
             2 -> Version2Factory(packageName, today) { asset ->
-                openAssets(asset).use { serialize.decodeModelV2(it) }
+                openAssets(asset).use(serialize::decodeModelV2)
             }
             3 -> Version3Factory(packageName, today) { asset ->
-                openAssets(asset).use { serialize.decodeModelV3(it) }
+                openAssets(asset).use(serialize::decodeModelV3)
             }
             else -> throw IllegalStateException("Not apk template= $packageName, $templateVersion")
         }
         val newHtzId = htzConverter.convert(factory.newTemplate())
-        echo("  newHtzId= \t$newHtzId")
+        println("  newHtzId       : $newHtzId")
 
         val result = File("$newHtzId.htz")
         compressHtz(File(tempDir, newHtzId), result) // TODO: validation file result?
-        echo("=====================================")
-        echo("Done!!\n  Htz= \t${result.absolutePath}")
+        println("=====================================")
+        println("Done!!\t  Htz: ${result.absolutePath}")
         exitProcess(0) //
     }
 
@@ -84,7 +84,4 @@ class ConvertCommand(apkFilePath: String) {
     }
 
     private fun openAssets(assetName: String) = apkZip.entryInputStream("assets/$assetName")
-
-    //
-    private fun echo(message: String): Unit = println(message)
 }

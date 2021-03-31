@@ -3,19 +3,16 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
-//configurations {
-//    r8
-//}
-
 dependencies {
     implementation project(':entity')
     implementation project(':template-base')
     api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
-    api 'org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:' + serializationVersion
     implementation 'net.devrieze:xmlutil-jvm:' + xmlUtilVersion
-    api 'net.devrieze:xmlutil-serialization-jvm:' + xmlUtilVersion
+    implementation 'net.devrieze:xmlutil-serialization-jvm:' + xmlUtilVersion
     //
-    // r8 'com.android.tools:r8:2.2.60'
+    // testImplementation 'junit:junit:' + jUnitVersion
+    // testImplementation 'org.hamcrest:hamcrest-all:' + hamcrestVersion
+    // testImplementation 'org.robolectric:robolectric:' + robolectricVersion
 }
 
 def version = '0.0.1'
@@ -36,6 +33,7 @@ jar {
 //    // args "../sources/sample_v3.apk" // <- V3
 //    args "../../TemplateHishoot/sources/bsod_menjesse_v1_0.apk" //
 //}
+
 def fatJarProvider = tasks.register('fatJar', Jar) { task ->
     task.dependsOn(configurations.named('runtimeClasspath'))
     task.dependsOn(tasks.named('jar'))
@@ -61,46 +59,6 @@ def fatJarProvider = tasks.register('fatJar', Jar) { task ->
         task.exclude 'NOTICE'
     }
 }
-
-//def r8File = new File("$buildDir/libs/$archivesBaseName-$version-r8.jar")
-//def r8JarProvider = tasks.register('r8Jar', JavaExec) { task ->
-//    def fatJar = fatJarProvider.get()
-//    def fatJarFile = fatJar.archivePath
-//    task.dependsOn(fatJar)
-//    task.inputs.file(fatJarFile)
-//    task.outputs.file(r8File)
-//
-//    task.classpath(configurations.r8)
-//    task.main = 'com.android.tools.r8.R8'
-//    task.args = [
-//        '--release',
-//        '--classfile',
-//        '--output',
-//        r8File.toString(),
-//        '--pg-conf',
-//        'r8-rules.pro',
-//        '--lib',
-//        System.properties['java.home'].toString(),
-//        fatJarFile.toString(),
-//    ]
-//}
-//
-//def binaryFile = new File(buildDir, "libs/$archivesBaseName-$version-binary.jar")
-//def binaryJar = tasks.register('binaryDiffuseJar') { task ->
-//    task.dependsOn(r8JarProvider)
-//
-//    task.inputs.file(r8File)
-//    task.outputs.file(binaryFile)
-//
-//    task.doLast {
-//        binaryFile.getParentFile().mkdirs()
-//        binaryFile.delete()
-//        binaryFile << "#!/bin/sh\n\nexec java \$JAVA_OPTS -jar \$0 \"\$@\"\n\n"
-//        r8File.withInputStream { binaryFile.append it }
-//
-//        binaryFile.setExecutable true, false
-//    }
-//}
 
 def binaryFile = new File(buildDir, "libs/$archivesBaseName-$version-binary.jar")
 def binaryJar = tasks.register('binaryCliJar') { task ->
