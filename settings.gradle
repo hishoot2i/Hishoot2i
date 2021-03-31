@@ -17,6 +17,9 @@ pluginManagement {
 }
 include ':common',
         ':imageloader',
+        ':template-base',
         ':template',
         ':pref',
-        ':app'
+        ':app',
+        ':entity',
+        ':htz-converter-cli'
