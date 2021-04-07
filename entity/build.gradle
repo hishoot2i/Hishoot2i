@@ -6,4 +6,6 @@ plugins {
 dependencies {
     api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
     api 'org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:' + serializationVersion
+    testImplementation 'junit:junit:' + jUnitVersion
+    testImplementation 'org.hamcrest:hamcrest-all:' + hamcrestVersion
 }
