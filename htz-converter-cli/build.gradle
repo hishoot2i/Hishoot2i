@@ -1,45 +1,30 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 dependencies {
     implementation project(':entity')
     implementation project(':template-base')
-    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
-    implementation 'net.devrieze:xmlutil-jvm:' + xmlUtilVersion
-    implementation 'net.devrieze:xmlutil-serialization-jvm:' + xmlUtilVersion
-    //
-    // testImplementation 'junit:junit:' + jUnitVersion
-    // testImplementation 'org.hamcrest:hamcrest-all:' + hamcrestVersion
-    // testImplementation 'org.robolectric:robolectric:' + robolectricVersion
+    testImplementation 'junit:junit:' + jUnitVersion
+    testImplementation 'org.hamcrest:hamcrest-all:' + hamcrestVersion
 }
 
 def version = '0.0.1'
+def mainClass = 'MainCli'
 
 jar {
     manifest {
-        attributes 'Main-Class': 'MainCli'
+        attributes 'Main-Class': mainClass
         attributes 'Implementation-Version': version
     }
 }
-
-//task run(type: JavaExec, group: "build") {
-//    description = "Run this."
-//    main = 'MainCli'
-//    classpath = sourceSets.main.runtimeClasspath
-//    // args "../sources/dvd_plastic_case_v1_0.apk" // <- V1
-//    // args "../sources/bsod_menjesse_v1_0.apk" // <- V2
-//    // args "../sources/sample_v3.apk" // <- V3
-//    args "../../TemplateHishoot/sources/bsod_menjesse_v1_0.apk" //
-//}
 
 def fatJarProvider = tasks.register('fatJar', Jar) { task ->
     task.dependsOn(configurations.named('runtimeClasspath'))
     task.dependsOn(tasks.named('jar'))
     task.classifier 'fat'
     task.manifest {
-        attributes 'Main-Class': 'MainCli'
+        attributes 'Main-Class': mainClass
         attributes 'Implementation-Version': version
     }
     def sourceClasses = sourceSets.main.output.classesDirs
@@ -53,6 +38,7 @@ def fatJarProvider = tasks.register('fatJar', Jar) { task ->
         task.exclude '**/*.kotlin_builtins'
         task.exclude '**/module-info.class'
         task.exclude 'META-INF/maven/**'
+        task.exclude 'META-INF/services/**'
         task.exclude 'META-INF/*.version'
         task.exclude '**/*.proto'
         task.exclude 'LICENSE'
@@ -60,7 +46,7 @@ def fatJarProvider = tasks.register('fatJar', Jar) { task ->
     }
 }
 
-def binaryFile = new File(buildDir, "libs/$archivesBaseName-$version-binary.jar")
+def binaryFile = new File(buildDir, "libs/$archivesBaseName-binary.jar")
 def binaryJar = tasks.register('binaryCliJar') { task ->
     task.dependsOn(fatJarProvider)
     def fatJar = fatJarProvider.get()
@@ -73,7 +59,6 @@ def binaryJar = tasks.register('binaryCliJar') { task ->
         binaryFile.delete()
         binaryFile << "#!/bin/sh\n\nexec java \$JAVA_OPTS -jar \$0 \"\$@\"\n\n"
         fatJarFile.withInputStream { binaryFile.append it }
-
         binaryFile.setExecutable true, false
     }
 }
