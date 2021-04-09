@@ -150,8 +150,8 @@ class BackgroundTool : BottomSheetDialogFragment() {
     }
 
     private fun FragmentToolBackgroundBinding.handleVisibleLayoutMode() {
-        backgroundColor.isVisible = backgroundMode.isColor
-        backgroundImage.isVisible = backgroundMode.isImage
-        textNoContent.isVisible = backgroundMode.isTransparent
+        backgroundColor.isVisible = backgroundMode == BackgroundMode.COLOR
+        backgroundImage.isVisible = backgroundMode == BackgroundMode.IMAGE
+        textNoContent.isVisible = backgroundMode == BackgroundMode.TRANSPARENT
     }
 }

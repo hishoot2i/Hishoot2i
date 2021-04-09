@@ -53,8 +53,8 @@ dependencies {
     implementation project(':imageloader')
     implementation project(':template')
     implementation project(':pref')
-    implementation project(":entity")
-    implementation project(":template-base")
+    implementation project(':entity')
+    implementation project(':template-base')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:' + kotlinVersion
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:' + desugarVersion
     implementation 'androidx.multidex:multidex:' + xMultiDexVersion

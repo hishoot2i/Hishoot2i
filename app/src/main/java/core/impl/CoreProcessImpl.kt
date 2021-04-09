@@ -61,7 +61,7 @@ class CoreProcessImpl @Inject constructor(
             IMAGE -> drawBitmapSafely(
                 loadBackground(
                     source = path,
-                    reqSizes = Sizes(width, height),
+                    reqSizes = sizes,
                     imageOption = imageOption,
                     blurEnable = backgroundImageBlurEnable,
                     blurRadius = backgroundImageBlurRadius

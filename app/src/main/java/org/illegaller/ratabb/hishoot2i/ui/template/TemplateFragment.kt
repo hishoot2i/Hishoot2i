@@ -248,6 +248,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
             }
             true
         }
+        else -> false //
     }
 
     private fun adapterItemClick(template: Template) {

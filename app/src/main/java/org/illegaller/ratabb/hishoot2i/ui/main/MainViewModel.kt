@@ -121,7 +121,7 @@ class MainViewModel @Inject constructor(
         if (path == null) return
         sourcePath.background = path
         savedStateHandle.set(ARG_BACKGROUND_PATH, path)
-        if (backgroundToolPref.backgroundMode.isImage) render()
+        if (backgroundToolPref.backgroundMode === BackgroundMode.IMAGE) render()
         else backgroundToolPref.backgroundMode = BackgroundMode.IMAGE
     }
 

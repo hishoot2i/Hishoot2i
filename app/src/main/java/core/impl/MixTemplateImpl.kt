@@ -32,12 +32,9 @@ class MixTemplateImpl @Inject constructor(
 ) : MixTemplate, ImageLoader by imageLoader {
 
     /* NOTE: frameDefault [R.drawable.frame1] is 9-patch, do not load w/ imageLoader. */
-    private val frameDefault: (Int, Int) -> Drawable by lazy {
-        { width, height ->
-            ContextCompat.getDrawable(context, template.R.drawable.frame1)?.apply {
-                updateBounds(right = width, bottom = height)
-            } ?: throw IllegalStateException("Can't Load frame1")
-        }
+    private val frameDefault: Drawable by lazy {
+        ContextCompat.getDrawable(context, template.R.drawable.frame1)
+            ?: throw IllegalStateException("Can't Load frame1")
     }
 
     override suspend fun Bitmap.drawMixing(
@@ -46,10 +43,10 @@ class MixTemplateImpl @Inject constructor(
         path: ImageSourcePath,
         isDoubleScreen: Boolean
     ): Bitmap = applyCanvas {
-        drawBitmapSafely(singleMix(template, config, path.screen1))
+        drawBitmapSafely(bitmap = singleMix(template = template, cfg = config, ss = path.screen1))
         if (isDoubleScreen) {
             drawBitmapSafely(
-                bitmap = singleMix(template, config, path.screen2),
+                bitmap = singleMix(template = template, cfg = config, ss = path.screen2),
                 left = template.sizes.x.toFloat()
             )
         }
@@ -57,48 +54,61 @@ class MixTemplateImpl @Inject constructor(
 
     private suspend fun singleMix(
         template: Template,
-        configMix: Config,
+        cfg: Config,
         ss: String?
-    ): Bitmap = with(template.sizes.createBitmap()) {
+    ): Bitmap = template.sizes.createBitmap().run {
         when (template) {
-            is Default -> drawDefault(ss, template)
-            is Version1 -> drawVersion1(ss, template)
-            is Version2 -> drawVersion2(ss, template, configMix)
-            is Version3 -> drawVersion3(ss, template, configMix)
-            is VersionHtz -> drawVersionHtz(ss, template)
+            is Default -> drawDefault(ss = ss, d = template)
+            is Version1 -> drawVersion1(ss = ss, v1 = template)
+            is Version2 -> drawVersion2(ss = ss, v2 = template, cfg = cfg)
+            is Version3 -> drawVersion3(ss = ss, v3 = template, cfg = cfg)
+            is VersionHtz -> drawVersionHtz(ss = ss, htz = template)
+            else -> throw IllegalStateException("...?")
         }
     }
 
     private suspend fun Bitmap.drawDefault(ss: String?, d: Default) = applyCanvas {
-        drawScreenShoot(ss, d)
-        frameDefault(width, height).draw(this)
+        drawScreenShoot(ss = ss, template = d)
+        frameDefault.apply { updateBounds(right = width, bottom = height) }.draw(this)
     }
 
     private suspend fun Bitmap.drawVersion1(ss: String?, v1: Version1) = applyCanvas {
-        drawScreenShoot(ss, v1)
-        drawAssetTemplate(v1.frame, sizes)
+        drawScreenShoot(ss = ss, template = v1)
+        drawAssetTemplate(source = v1.frame, sizes = sizes)
     }
 
     private suspend fun Bitmap.drawVersion2(ss: String?, v2: Version2, cfg: Config) = applyCanvas {
         val (isFrame, isGlare, isShadow) = cfg
-        if (isShadow) drawAssetTemplate(v2.shadow, sizes)
-        if (isFrame) drawAssetTemplate(v2.frame, sizes)
-        drawScreenShoot(ss, v2)
-        if (isGlare) v2.glare?.let { drawAssetTemplate(it.name, it.size, it.position) }
+        if (isShadow) drawAssetTemplate(source = v2.shadow, sizes = sizes)
+        if (isFrame) drawAssetTemplate(source = v2.frame, sizes = sizes)
+        drawScreenShoot(ss = ss, template = v2)
+        val glare = v2.glare
+        if (isGlare && glare != null) {
+            drawAssetTemplate(source = glare.name, sizes = glare.size, position = glare.position)
+        }
     }
 
     private suspend fun Bitmap.drawVersion3(ss: String?, v3: Version3, cfg: Config) = applyCanvas {
         val (isFrame, isGlare, isShadow) = cfg
-        if (isShadow) v3.shadow?.let { drawAssetTemplate(it, sizes) }
-        if (isFrame) drawAssetTemplate(v3.frame, sizes)
-        drawScreenShoot(ss, v3)
-        if (isGlare) v3.glares?.forEach { drawAssetTemplate(it.name, it.size, it.position) }
+        val shadow = v3.shadow
+        val glares = v3.glares
+        if (isShadow && shadow != null) drawAssetTemplate(source = shadow, sizes = sizes)
+        if (isFrame) drawAssetTemplate(source = v3.frame, sizes = sizes)
+        drawScreenShoot(ss = ss, template = v3)
+        if (isGlare && glares != null) glares.forEach { glare ->
+            drawAssetTemplate(source = glare.name, sizes = glare.size, position = glare.position)
+        }
     }
 
     private suspend fun Bitmap.drawVersionHtz(ss: String?, htz: VersionHtz) = applyCanvas {
-        drawAssetTemplate(htz.frame, sizes)
-        drawScreenShoot(ss, htz)
-        htz.glare?.let { drawAssetTemplate(it.name, it.size, it.position) }
+        drawAssetTemplate(source = htz.frame, sizes = sizes)
+        drawScreenShoot(ss = ss, template = htz)
+        val glare = htz.glare
+        if (glare != null) drawAssetTemplate(
+            source = glare.name,
+            sizes = glare.size,
+            position = glare.position
+        )
     }
 
     private suspend fun Canvas.drawAssetTemplate(
@@ -106,13 +116,17 @@ class MixTemplateImpl @Inject constructor(
         sizes: Sizes,
         position: SizesF = SizesF.ZERO
     ) {
-        val (left, top) = position
-        drawBitmapSafely(loadAssetsTemplate(source, sizes), left, top)
+        drawBitmapSafely(
+            bitmap = loadAssetsTemplate(source = source, reqSizes = sizes),
+            left = position.x,
+            top = position.y
+        )
     }
 
     private suspend fun Canvas.drawScreenShoot(ss: String?, template: Template) {
-        val sizes = Sizes(width, height)
-        val coordinate = template.coordinate.toFloatArray()
-        drawBitmapPerspective(loadScreen(ss, sizes), coordinate)
+        drawBitmapPerspective(
+            bitmap = loadScreen(source = ss, reqSizes = Sizes(width, height)),
+            coordinate = template.coordinate.toFloatArray()
+        )
     }
 }
