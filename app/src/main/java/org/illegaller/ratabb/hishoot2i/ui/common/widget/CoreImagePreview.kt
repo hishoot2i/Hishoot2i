@@ -10,7 +10,7 @@ import android.view.MotionEvent.ACTION_MOVE
 import android.view.SoundEffectConstants
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageView
-import common.ext.colorFromBitmap
+import common.ext.colorFromView
 import common.ext.dp2px
 import common.ext.graphics.halfAlpha
 import common.ext.graphics.lightOrDarkContrast
@@ -64,7 +64,7 @@ class CoreImagePreview @JvmOverloads constructor(
 
     private fun handleEventTouch(event: MotionEvent): Boolean {
         center = SizesF(event.x, event.y) // set center from event
-        return colorFromBitmap(event.x, event.y, 0).takeIf { it != 0 }?.let {
+        return colorFromView(event.x, event.y, 0).takeIf { it != 0 }?.let {
             colorPipette = it
             invalidate()
             true
