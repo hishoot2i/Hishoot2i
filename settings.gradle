@@ -4,22 +4,36 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    plugins {
+        id 'androidx.navigation.safeargs.kotlin' version "$xNavigationVersion"
+        id 'com.android.application' version "$agpVersion"
+        id 'com.android.library' version "$agpVersion"
+        id 'dagger.hilt.android.plugin' version "$daggerHiltVersion"
+        id 'org.jetbrains.kotlin.android' version "$kotlinVersion"
+        id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+        id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
+
+        id 'com.autonomousapps.dependency-analysis' version "$dependencyAnalysisVersion"
+        id 'com.diffplug.spotless' version "$spotlessVersion"
+        id 'com.github.ben-manes.versions' version "$dependencyUpdatesVersion"
+    }
+    // map pluginId : module
+    def plugins = [
+        'androidx.navigation.safeargs.kotlin': 'androidx.navigation:navigation-safe-args-gradle-plugin:' + xNavigationVersion,
+        'com.android.application'            : 'com.android.tools.build:gradle:' + agpVersion,
+        'com.android.library'                : 'com.android.tools.build:gradle:' + agpVersion,
+        'dagger.hilt.android.plugin'         : 'com.google.dagger:hilt-android-gradle-plugin:' + daggerHiltVersion
+    ]
     resolutionStrategy.eachPlugin { PluginResolveDetails prd ->
         def targetId = prd.target.id.id
-        def reqVersion = prd.requested.version
-        if (targetId ==~ /com\.android\..*/)
-            prd.useModule 'com.android.tools.build:gradle:' + reqVersion
-        if (targetId ==~ /dagger\.hilt\..*/)
-            prd.useModule 'com.google.dagger:hilt-android-gradle-plugin:' + reqVersion
-        if (targetId ==~ /androidx\.navigation\.safeargs\..*/)
-            prd.useModule 'androidx.navigation:navigation-safe-args-gradle-plugin:' + reqVersion
+        if (plugins.containsKey(targetId)) prd.useModule plugins.get(targetId)
     }
 }
-include ':common',
-        ':imageloader',
-        ':template-base',
-        ':template',
-        ':pref',
-        ':app',
+include ':app',
+        ':common',
         ':entity',
-        ':htz-converter-cli'
+        ':htz-converter-cli',
+        ':imageloader',
+        ':pref',
+        ':template',
+        ':template-base'

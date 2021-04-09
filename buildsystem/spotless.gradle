@@ -16,6 +16,7 @@ spotless {
     }
     format("xml") {
         target("src/**/*.xml")
+        targetExclude("**/test/**/*.*")
         trimTrailingWhitespace()
         endWithNewline()
         indentWithSpaces()

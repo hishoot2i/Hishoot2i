@@ -1,14 +1,13 @@
 plugins {
     //
-    id 'com.android.application' version '4.1.3' apply false
-    id 'org.jetbrains.kotlin.android' version '1.4.31' apply false
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.31' apply false
-    id 'dagger.hilt.android.plugin' version '2.33-beta' apply false
-    id 'androidx.navigation.safeargs.kotlin' version '2.3.4' apply false
+    id 'androidx.navigation.safeargs.kotlin' apply false
+    id 'com.android.application' apply false
+    id 'dagger.hilt.android.plugin' apply false
+    id 'org.jetbrains.kotlin.jvm' apply false
 
-    id 'com.diffplug.spotless' version '5.11.0'
-    id 'com.github.ben-manes.versions' version '0.38.0'
-    id 'com.autonomousapps.dependency-analysis' version '0.71.0'
+    id 'com.autonomousapps.dependency-analysis'
+    id 'com.diffplug.spotless'
+    id 'com.github.ben-manes.versions'
 }
 
 allprojects {
@@ -36,6 +35,8 @@ allprojects {
         okHttpVersion = project.okHttpVersion
         serializationVersion = project.serializationVersion
         timberVersion = project.timberVersion
+        xmlUtilVersion = project.xmlUtilVersion
+        //
         xActivityVersion = project.xActivityVersion
         xAnnotationVersion = project.xAnnotationVersion
         xAppCompatVersion = project.xAppCompatVersion
@@ -51,7 +52,6 @@ allprojects {
         xFragmentVersion = project.xFragmentVersion
         xHiltVersion = project.xHiltVersion
         xLifeCycleVersion = project.xLifeCycleVersion
-        xmlUtilVersion = project.xmlUtilVersion
         xMultiDexVersion = project.xMultiDexVersion
         xNavigationVersion = project.xNavigationVersion
         xRecyclerViewVersion = project.xRecyclerViewVersion
@@ -67,9 +67,11 @@ allprojects {
         resolutionStrategy.eachDependency { DependencyResolveDetails drd ->
             def group = drd.requested.group
             def name = drd.requested.name
+            if (group ==~ /androidx\.activity/) drd.useVersion xActivityVersion
             if (group ==~ /androidx\.arch\.core/) drd.useVersion xArchCoreVersion
             if (group ==~ /androidx\.collection/) drd.useVersion xCollectionVersion
             if (group ==~ /androidx\.lifecycle/) drd.useVersion xLifeCycleVersion
+            if (group ==~ /androidx\.transition/) drd.useVersion xTransitionVersion
             if (group ==~ /com\.squareup\.okhttp3/) drd.useVersion okHttpVersion
             if (group ==~ /org\.jetbrains\.kotlin/) drd.useVersion kotlinVersion
             if (group ==~ /org\.jetbrains\.kotlinx/ && name ==~ /kotlinx-coroutines.*/)
