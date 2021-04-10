@@ -4,10 +4,10 @@ plugins {
 }
 apply from: "$rootDir/buildsystem/androidCommon.gradle"
 dependencies {
-    api(project(":entity"))
+    api project(':entity')
     implementation project(':common')
-    implementation 'androidx.core:core-ktx:' +xCoreVersion
-    api 'androidx.lifecycle:lifecycle-common:' +xLifeCycleVersion
-    api 'io.coil-kt:coil-base:' +coilVersion
-    implementation 'com.squareup.okhttp3:okhttp:' +okHttpVersion
+    implementation androidxLibs.coreKtx
+    api androidxLibs.lifecycleCommon
+    api libs.coilBase
+    implementation libs.okHttp
 }

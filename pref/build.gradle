@@ -3,7 +3,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 apply from: "$rootDir/buildsystem/androidCommon.gradle"
+android.defaultConfig.testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 dependencies {
-    compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
+    compileOnly androidxLibs.annotation
+    testImplementation testLibs.bundles.localTest
+    testImplementation testLibs.robolectric
 }
-apply from: "$rootDir/buildsystem/localTest.gradle"

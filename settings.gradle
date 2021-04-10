@@ -4,6 +4,20 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    // TODO: versionCatalogs not support plugin version
+    //  https://github.com/gradle/gradle/issues/16078#issuecomment-782825425
+    def fromCatalog = { String catalog, String id ->
+        return file("gradle/${catalog}.versions.toml")
+                .readLines().findAll { it.contains id }
+                .first().split('"')[1]
+    }
+    def xNavigationVersion = fromCatalog("androidxLibs", "navigation")
+    def agpVersion = fromCatalog("libs", "agp")
+    def daggerHiltVersion = fromCatalog("libs", "daggerHilt")
+    def dependencyAnalysisVersion = fromCatalog("libs", "dependencyAnalysis")
+    def dependencyUpdatesVersion = fromCatalog("libs", "dependencyUpdates")
+    def kotlinVersion = fromCatalog("libs", "kotlin")
+    def spotlessVersion = fromCatalog("libs", "spotless")
     plugins {
         id 'androidx.navigation.safeargs.kotlin' version "$xNavigationVersion"
         id 'com.android.application' version "$agpVersion"
@@ -27,6 +41,18 @@ pluginManagement {
     resolutionStrategy.eachPlugin { PluginResolveDetails prd ->
         def targetId = prd.target.id.id
         if (plugins.containsKey(targetId)) prd.useModule plugins.get(targetId)
+    }
+}
+enableFeaturePreview('VERSION_CATALOGS')
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    versionCatalogs {
+        testLibs { from(files('gradle/testLibs.versions.toml')) }
+        androidxLibs { from(files('gradle/androidxLibs.versions.toml')) }
     }
 }
 include ':app',

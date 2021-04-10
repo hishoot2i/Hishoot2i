@@ -1,15 +1,13 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 apply from: "$rootDir/buildsystem/androidCommon.gradle"
 android.buildTypes.release.consumerProguardFile 'proguard-common.pro'
 dependencies {
     api project(':entity')
-    compileOnly 'androidx.annotation:annotation:' + xAnnotationVersion
-    implementation 'androidx.core:core:' + xCoreVersion
-    implementation 'androidx.documentfile:documentfile:' + xDocumentFileVersion
-    implementation 'com.jakewharton.timber:timber:' + timberVersion
-    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:' + serializationVersion
+    compileOnly androidxLibs.annotation
+    implementation androidxLibs.core
+    implementation androidxLibs.documentFile
+    implementation libs.timber
 }

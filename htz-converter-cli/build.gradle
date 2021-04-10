@@ -5,8 +5,7 @@ plugins {
 dependencies {
     implementation project(':entity')
     implementation project(':template-base')
-    testImplementation 'junit:junit:' + jUnitVersion
-    testImplementation 'org.hamcrest:hamcrest-all:' + hamcrestVersion
+    testImplementation testLibs.bundles.localTest
 }
 
 def version = '0.0.1'

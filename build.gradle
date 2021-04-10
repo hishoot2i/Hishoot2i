@@ -21,65 +21,36 @@ allprojects {
         gradlePluginPortal()
     }
 
-    ext {
-        // region Version
-        coilVersion = project.coilVersion
-        coroutinesVersion = project.coroutinesVersion
-        daggerHiltVersion = project.daggerHiltVersion
-        daggerVersion = project.daggerVersion
-        desugarVersion = project.desugarVersion
-        googleMaterialVersion = project.googleMaterialVersion
-        kotlinVersion = project.kotlinVersion
-        ktLintVersion = project.ktLintVersion
-        leakcanaryVersion = project.leakcanaryVersion
-        okHttpVersion = project.okHttpVersion
-        serializationVersion = project.serializationVersion
-        timberVersion = project.timberVersion
-        xmlUtilVersion = project.xmlUtilVersion
-        //
-        xActivityVersion = project.xActivityVersion
-        xAnnotationVersion = project.xAnnotationVersion
-        xAppCompatVersion = project.xAppCompatVersion
-        xArchCoreVersion = project.xArchCoreVersion
-        xBrowserVersion = project.xBrowserVersion
-        xCollectionVersion = project.xCollectionVersion
-        xConstraintLayoutVersion = project.xConstraintLayoutVersion
-        xCoordinatorLayoutVersion = project.xCoordinatorLayoutVersion
-        xCoreVersion = project.xCoreVersion
-        xCustomViewVersion = project.xCustomViewVersion
-        xDocumentFileVersion = project.xDocumentFileVersion
-        xDrawerLayoutVersion = project.xDrawerLayoutVersion
-        xFragmentVersion = project.xFragmentVersion
-        xHiltVersion = project.xHiltVersion
-        xLifeCycleVersion = project.xLifeCycleVersion
-        xMultiDexVersion = project.xMultiDexVersion
-        xNavigationVersion = project.xNavigationVersion
-        xRecyclerViewVersion = project.xRecyclerViewVersion
-        xRoomVersion = project.xRoomVersion
-        //
-        hamcrestVersion = project.hamcrestVersion
-        jUnitVersion = project.jUnitVersion
-        robolectricVersion = project.robolectricVersion
-        // endregion
-    }
-
     configurations.all {
         resolutionStrategy.eachDependency { DependencyResolveDetails drd ->
             def group = drd.requested.group
             def name = drd.requested.name
-            if (group ==~ /androidx\.activity/) drd.useVersion xActivityVersion
-            if (group ==~ /androidx\.arch\.core/) drd.useVersion xArchCoreVersion
-            if (group ==~ /androidx\.collection/) drd.useVersion xCollectionVersion
-            if (group ==~ /androidx\.lifecycle/) drd.useVersion xLifeCycleVersion
-            if (group ==~ /androidx\.transition/) drd.useVersion xTransitionVersion
-            if (group ==~ /com\.squareup\.okhttp3/) drd.useVersion okHttpVersion
-            if (group ==~ /org\.jetbrains\.kotlin/) drd.useVersion kotlinVersion
-            if (group ==~ /org\.jetbrains\.kotlinx/ && name ==~ /kotlinx-coroutines.*/)
-                drd.useVersion coroutinesVersion
+            if (group ==~ /androidx\.activity/) {
+                drd.useVersion androidxLibs.versions.activity.get()
+            }
+            if (group ==~ /androidx\.arch\.core/) {
+                drd.useVersion androidxLibs.versions.archCore.get()
+            }
+            if (group ==~ /androidx\.collection/) {
+                drd.useVersion androidxLibs.versions.collection.get()
+            }
+            if (group ==~ /androidx\.lifecycle/) {
+                drd.useVersion androidxLibs.versions.lifeCycle.get()
+            }
+            if (group ==~ /androidx\.transition/) {
+                drd.useVersion androidxLibs.versions.transition.get()
+            }
+            if (group ==~ /com\.squareup\.okhttp3/) {
+                drd.useVersion libs.versions.okHttp.get()
+            }
+            if (group ==~ /org\.jetbrains\.kotlin/) {
+                drd.useVersion libs.versions.kotlin.get()
+            }
+            if (group ==~ /org\.jetbrains\.kotlinx/ && name ==~ /kotlinx-coroutines.*/) {
+                drd.useVersion libs.versions.coroutines.get()
+            }
         }
     }
-
-    apply from: "$rootDir/buildsystem/spotless.gradle"
 }
 
 dependencyAnalysis {
@@ -108,5 +79,35 @@ subprojects {
             verbose = true
             useIR = true
         }
+    }
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktlint libs.versions.ktLint.get()
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
+    }
+    groovyGradle {
+        target("buildsystem/*.gradle", "*.gradle")
+        greclipse()
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
+    }
+    format("xml") {
+        target("src/**/*.xml")
+        targetExclude("**/test/**/*.*")
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
+    }
+    format("misc") {
+        target("*.md", "*.properties", "*.sh")
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces()
     }
 }
