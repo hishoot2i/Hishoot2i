@@ -3,7 +3,7 @@ package pref.impl
 import android.content.Context
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.core.IsNull.nullValue
+import org.hamcrest.Matchers.nullValue
 import org.junit.Test
 import pref.BasePrefTest
 import pref.SimplePref

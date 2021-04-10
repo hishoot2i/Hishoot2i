@@ -4,8 +4,8 @@ import android.content.SharedPreferences
 import androidx.test.platform.app.InstrumentationRegistry
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.notNullValue
-import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
