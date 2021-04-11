@@ -51,6 +51,7 @@ allprojects {
             }
         }
     }
+    apply from: "$rootDir/buildsystem/spotless.gradle"
 }
 
 dependencyAnalysis {
@@ -79,35 +80,5 @@ subprojects {
             verbose = true
             useIR = true
         }
-    }
-}
-
-spotless {
-    kotlin {
-        target("src/**/*.kt")
-        ktlint libs.versions.ktLint.get()
-        trimTrailingWhitespace()
-        endWithNewline()
-        indentWithSpaces()
-    }
-    groovyGradle {
-        target("buildsystem/*.gradle", "*.gradle")
-        greclipse()
-        trimTrailingWhitespace()
-        endWithNewline()
-        indentWithSpaces()
-    }
-    format("xml") {
-        target("src/**/*.xml")
-        targetExclude("**/test/**/*.*")
-        trimTrailingWhitespace()
-        endWithNewline()
-        indentWithSpaces()
-    }
-    format("misc") {
-        target("*.md", "*.properties", "*.sh")
-        trimTrailingWhitespace()
-        endWithNewline()
-        indentWithSpaces()
     }
 }
