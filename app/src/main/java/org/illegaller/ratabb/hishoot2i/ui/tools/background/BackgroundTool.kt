@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.clearFragmentResult
@@ -12,13 +13,12 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import common.ext.preventMultipleClick
-import common.ext.setOnItemSelected
+import common.view.preventMultipleClick
+import common.widget.setOnItemSelected
 import dagger.hilt.android.AndroidEntryPoint
 import entity.BackgroundMode
 import entity.ImageOption
-import entity.fromIdRes
-import entity.resId
+import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.BackgroundToolPref
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentToolBackgroundBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_BACKGROUND_PATH
@@ -29,8 +29,6 @@ import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_MIX_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_PIPETTE
 import org.illegaller.ratabb.hishoot2i.ui.common.doOnStopTouch
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
-import org.illegaller.ratabb.hishoot2i.ui.tools.background.BackgroundToolDirections.Companion.actionToolsBackgroundToColorMix
-import org.illegaller.ratabb.hishoot2i.ui.tools.background.BackgroundToolDirections.Companion.actionToolsBackgroundToCrop
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,7 +43,7 @@ class BackgroundTool : BottomSheetDialogFragment() {
 
     private val imageBackgroundCrop = registerGetContent { uri ->
         findNavController().navigate(
-            actionToolsBackgroundToCrop(uri.toString(), args.ratio)
+            BackgroundToolDirections.actionToolsBackgroundToCrop(uri.toString(), args.ratio)
         )
         dismiss()
     }
@@ -56,6 +54,7 @@ class BackgroundTool : BottomSheetDialogFragment() {
             bundleOf(ARG_BACKGROUND_PATH to uri.toString())
         )
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,12 +77,10 @@ class BackgroundTool : BottomSheetDialogFragment() {
         handleVisibleLayoutMode()
         backgroundModesSpinner.apply {
             setSelection(backgroundToolPref.backgroundMode.ordinal, false)
-            setOnItemSelected { _, view, position, _ ->
-                view?.preventMultipleClick {
-                    if (position != backgroundToolPref.backgroundMode.ordinal) {
-                        backgroundToolPref.backgroundMode = BackgroundMode.values()[position]
-                        handleVisibleLayoutMode()
-                    }
+            setOnItemSelected { _, _, position, _ ->
+                if (position != backgroundToolPref.backgroundMode.ordinal) {
+                    backgroundToolPref.backgroundMode = BackgroundMode.values()[position]
+                    handleVisibleLayoutMode()
                 }
             }
         }
@@ -92,7 +89,7 @@ class BackgroundTool : BottomSheetDialogFragment() {
         backgroundColorMix.setOnClickListener {
             it.preventMultipleClick {
                 findNavController().navigate(
-                    actionToolsBackgroundToColorMix(
+                    BackgroundToolDirections.actionToolsBackgroundToColorMix(
                         color = backgroundToolPref.backgroundColorInt,
                         withAlpha = true,
                         withHex = true
@@ -153,5 +150,20 @@ class BackgroundTool : BottomSheetDialogFragment() {
         backgroundColor.isVisible = backgroundMode == BackgroundMode.COLOR
         backgroundImage.isVisible = backgroundMode == BackgroundMode.IMAGE
         textNoContent.isVisible = backgroundMode == BackgroundMode.TRANSPARENT
+    }
+
+    @get:IdRes
+    private inline val ImageOption.resId: Int
+        get() = when (this) {
+            ImageOption.SCALE_FILL -> R.id.imageOption_ScaleFill
+            ImageOption.CENTER_CROP -> R.id.imageOption_CenterCrop
+            ImageOption.MANUAL_CROP -> R.id.imageOption_ManualCrop
+        }
+
+    private fun ImageOption.Companion.fromIdRes(@IdRes idRes: Int) = when (idRes) {
+        R.id.imageOption_ScaleFill -> ImageOption.SCALE_FILL
+        R.id.imageOption_CenterCrop -> ImageOption.CENTER_CROP
+        R.id.imageOption_ManualCrop -> ImageOption.MANUAL_CROP
+        else -> ImageOption.SCALE_FILL // fallback
     }
 }

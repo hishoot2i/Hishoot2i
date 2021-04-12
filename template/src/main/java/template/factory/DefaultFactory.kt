@@ -2,8 +2,8 @@ package template.factory
 
 import android.content.Context
 import common.PathBuilder.stringDrawables
-import common.ext.deviceSizes
-import common.ext.dpSize
+import common.content.deviceSizes
+import common.content.dpSize
 import entity.Sizes
 import template.R
 import template.Template.Default

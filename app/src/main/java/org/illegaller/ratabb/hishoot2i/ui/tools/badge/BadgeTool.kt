@@ -19,12 +19,12 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import common.ext.addInputFilter
-import common.ext.hideSoftKey
-import common.ext.onEditorAction
-import common.ext.onKey
-import common.ext.preventMultipleClick
-import common.ext.setOnItemSelected
+import common.view.hideSoftKey
+import common.view.onKey
+import common.view.preventMultipleClick
+import common.widget.addInputFilter
+import common.widget.onEditorAction
+import common.widget.setOnItemSelected
 import dagger.hilt.android.AndroidEntryPoint
 import entity.BadgePosition
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
@@ -33,7 +33,6 @@ import org.illegaller.ratabb.hishoot2i.ui.ARG_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_MIX_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.common.doOnStopTouch
 import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
-import org.illegaller.ratabb.hishoot2i.ui.tools.badge.BadgeToolDirections.Companion.actionToolsBadgeToColorMix
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -88,7 +87,7 @@ class BadgeTool : BottomSheetDialogFragment() {
         toolBadgeColorPick.setOnClickListener {
             it.preventMultipleClick {
                 findNavController().navigate(
-                    actionToolsBadgeToColorMix(
+                    BadgeToolDirections.actionToolsBadgeToColorMix(
                         color = badgeToolPref.badgeColor,
                         withAlpha = false,
                         withHex = true
@@ -112,21 +111,17 @@ class BadgeTool : BottomSheetDialogFragment() {
         }
 
         toolBadgePosition.setSelection(badgeToolPref.badgePosition.ordinal, false)
-        toolBadgePosition.setOnItemSelected { _, v, position, _ ->
-            v?.preventMultipleClick {
-                if (badgeToolPref.badgePosition.ordinal != position) {
-                    badgeToolPref.badgePosition = BadgePosition.values()[position]
-                }
+        toolBadgePosition.setOnItemSelected { _, _, position, _ ->
+            if (badgeToolPref.badgePosition.ordinal != position) {
+                badgeToolPref.badgePosition = BadgePosition.values()[position]
             }
         }
 
         toolBadgeFont.adapter = fontAdapter
-        toolBadgeFont.setOnItemSelected { _, v, position, _ ->
-            v?.preventMultipleClick {
-                val value = fontAdapter.current(position)
-                if (badgeToolPref.badgeTypefacePath != value) {
-                    badgeToolPref.badgeTypefacePath = value
-                }
+        toolBadgeFont.setOnItemSelected { _, _, position, _ ->
+            val value = fontAdapter.current(position)
+            if (badgeToolPref.badgeTypefacePath != value) {
+                badgeToolPref.badgeTypefacePath = value
             }
         }
     }

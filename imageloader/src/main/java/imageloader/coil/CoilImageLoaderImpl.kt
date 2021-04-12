@@ -12,8 +12,7 @@ import coil.size.Precision.INEXACT
 import coil.transform.Transformation
 import coil.util.CoilUtils
 import coil.util.DebugLogger
-import common.custombitmap.CheckerBoardDrawable
-import common.ext.dp2px
+import common.graphics.drawable.CheckerBoardDrawable
 import entity.ImageOption
 import entity.ImageOption.CENTER_CROP
 import entity.ImageOption.MANUAL_CROP
@@ -29,7 +28,6 @@ import imageloader.coil.transform.OrientationAwareTransformation
 import imageloader.coil.transform.ScaleCenterTransformation
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import kotlin.math.roundToInt
 import coil.ImageLoader as CoilImageLoader
 
 class CoilImageLoaderImpl(
@@ -60,7 +58,7 @@ class CoilImageLoaderImpl(
     }
 
     private val placeholderForDisplay by lazy {
-        CheckerBoardDrawable(context.dp2px(12F).roundToInt())
+        CheckerBoardDrawable.createWith(context, 12F)
     }
 
     override fun displayCrop(view: ImageView, lifecycleOwner: LifecycleOwner, source: String) {

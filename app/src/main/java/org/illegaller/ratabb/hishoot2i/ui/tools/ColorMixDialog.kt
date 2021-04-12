@@ -13,6 +13,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -20,19 +24,12 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
-import common.ext.addInputFilter
-import common.ext.graphics.alpha
-import common.ext.graphics.blue
-import common.ext.graphics.colorFromHex
-import common.ext.graphics.green
-import common.ext.graphics.lightOrDarkContrast
-import common.ext.graphics.red
-import common.ext.graphics.toHexString
-import common.ext.graphics.toPairWithHex
-import common.ext.hideSoftKey
-import common.ext.onEditorAction
-import common.ext.onKey
-import common.ext.preventMultipleClick
+import common.graphics.lightOrDarkContrast
+import common.view.hideSoftKey
+import common.view.onKey
+import common.view.preventMultipleClick
+import common.widget.addInputFilter
+import common.widget.onEditorAction
 import org.illegaller.ratabb.hishoot2i.databinding.DialogColorMixBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_COLOR
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_MIX_COLOR
@@ -120,9 +117,10 @@ class ColorMixDialog : AppCompatDialogFragment() {
             colorGreenText.text = colorGreenHex
             colorBlueText.text = colorBlueHex
             //
-            var textColorHex: String = if (args.withAlpha) colorAlphaHex else ""
-            textColorHex += "$colorRedHex$colorGreenHex$colorBlueHex"
-
+            val textColorHex: String = buildString {
+                if (args.withAlpha) append(colorAlphaHex)
+                append(colorRedHex).append(colorGreenHex).append(colorBlueHex)
+            }
             colorHex.setText(textColorHex.toUpperCase(Locale.ROOT))
             val buttonTextColor = color.lightOrDarkContrast
             if (emit) {
@@ -147,6 +145,47 @@ class ColorMixDialog : AppCompatDialogFragment() {
             internalColorChange(hex.colorFromHex(args.withAlpha, color))
             colorHex.clearFocus()
             colorHex.hideSoftKey()
+        }
+    }
+
+    private fun @receiver:ColorInt Int.toHexString(): String =
+        Integer.toHexString(this).apply {
+            return when (length) {
+                1 -> "0$this" //
+                else -> this
+            }
+        }
+
+    private fun @receiver:ColorInt Int.toPairWithHex(): Pair<Int, String> =
+        this to toHexString()
+
+    @ColorInt
+    private fun String.colorFromHex(isWithAlpha: Boolean, @ColorInt fallback: Int): Int {
+        val value = this
+        return try {
+            Color.parseColor(value)
+        } catch (e: IndexOutOfBoundsException) {
+            fallback
+        } catch (e: IllegalArgumentException) {
+            if (value[0] != '#') when (value.length) {
+                // RGB -> #AARRGGBB {A=FF: full alpha }
+                3 -> buildString(9) {
+                    append("#FF")
+                    append(value[0]).repeat(2)
+                    append(value[1]).repeat(2)
+                    append(value[2]).repeat(2)
+                }.colorFromHex(isWithAlpha, fallback)
+                // RRGGBB -> #AARRGGBB {A=FF: full alpha }
+                6 -> buildString(9) { append("#FF").append(value) }
+                    .colorFromHex(isWithAlpha, fallback)
+                // AARRGGBB -> #AARRGGBB {if not isWithAlpha A=FF: full alpha }
+                8 -> buildString(9) {
+                    append("#")
+                    if (isWithAlpha) append(value)
+                    else append("FF").append(value.substring(2))
+                }.colorFromHex(isWithAlpha, fallback)
+                else -> fallback
+            } else fallback
         }
     }
 }

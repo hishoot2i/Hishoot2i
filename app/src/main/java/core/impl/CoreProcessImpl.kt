@@ -1,13 +1,12 @@
 package core.impl
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.core.graphics.applyCanvas
-import common.egl.MaxTexture
-import common.ext.graphics.createBitmap
-import common.ext.graphics.drawBitmapSafely
-import common.ext.graphics.resizeIfNotEqual
-import common.ext.graphics.sizes
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import common.graphics.drawBitmapSafely
+import common.graphics.sizes
+import common.opengl.MaxTexture
 import core.BadgeBuilder
 import core.CoreProcess
 import core.CoreRequest
@@ -48,7 +47,7 @@ class CoreProcessImpl @Inject constructor(
         savingIt(template.core(sourcePath), compressFormat, saveQuality)
 
     private suspend fun Template.core(path: ImageSourcePath): Bitmap =
-        sizes.doubleXIf(doubleScreenEnable).createBitmap(ARGB_8888)
+        sizes.doubleXIf(doubleScreenEnable).run { createBitmap(x, y) }
             .drawBackground(path.background)
             .drawMixing(this, mixTemplateConfig, path, doubleScreenEnable)
             .drawBadge(badgeEnable, badgePosition, badgeConfig)
@@ -70,8 +69,10 @@ class CoreProcessImpl @Inject constructor(
         }
     }
 
-    private fun Bitmap.resizePreview(): Bitmap =
-        if (sizes > Sizes(maxTextureSize)) resizeIfNotEqual(sizes.max(maxTextureSize)) else this
+    private fun Bitmap.resizePreview(): Bitmap = if (sizes > Sizes(maxTextureSize)) {
+        val (width, height) = sizes.max(maxTextureSize)
+        scale(width, height)
+    } else this
 
     private fun Sizes.doubleXIf(condition: Boolean) = if (condition) copy(x = x * 2) else this
 }

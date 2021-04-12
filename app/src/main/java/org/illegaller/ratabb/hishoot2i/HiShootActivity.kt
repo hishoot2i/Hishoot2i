@@ -17,16 +17,16 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import common.ext.activityPendingIntent
-import common.ext.dp2px
-import common.ext.preventMultipleClick
+import common.content.activityPendingIntent
+import common.content.dp2px
+import common.view.preventMultipleClick
+import common.view.setSystemUiFlagEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.BuildConfig.IMAGE_RECEIVER
 import org.illegaller.ratabb.hishoot2i.BuildConfig.VERSION_NAME
 import org.illegaller.ratabb.hishoot2i.databinding.ActivityHishootBinding
 import org.illegaller.ratabb.hishoot2i.databinding.HeaderNavLayoutBinding
 import org.illegaller.ratabb.hishoot2i.ui.common.registerRequestPermissionLazy
-import org.illegaller.ratabb.hishoot2i.ui.common.setSystemUiFlagEdgeToEdge
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -52,7 +52,7 @@ class HiShootActivity : AppCompatActivity() {
         binding = ActivityHishootBinding.inflate(layoutInflater)
         binding.apply {
             setContentView(root)
-            setSystemUiFlagEdgeToEdge(root, true) //
+            root.setSystemUiFlagEdgeToEdge(true) //
             navController = findNavController(R.id.navHostContainer)
             navController.setGraph(R.navigation.navigation, parseImageReceiver())
             drawerLayout.listenSoftKey(dp2px(200F))

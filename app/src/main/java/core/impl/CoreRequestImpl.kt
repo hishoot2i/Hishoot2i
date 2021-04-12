@@ -2,7 +2,7 @@ package core.impl
 
 import android.graphics.Bitmap
 import android.graphics.Typeface
-import common.ext.graphics.typeFaceOrDefault
+import common.graphics.typeFaceOrDefault
 import core.BadgeBuilder
 import core.CoreRequest
 import core.MixTemplate

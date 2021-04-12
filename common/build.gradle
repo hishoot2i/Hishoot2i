@@ -8,6 +8,6 @@ dependencies {
     api project(':entity')
     compileOnly androidxLibs.annotation
     implementation androidxLibs.core
+    implementation androidxLibs.coreKtx
     implementation androidxLibs.documentFile
-    implementation libs.timber
 }

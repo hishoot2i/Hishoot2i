@@ -14,9 +14,9 @@ import androidx.fragment.app.clearFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import common.ext.preventMultipleClick
-import common.ext.setOnItemSelected
-import common.ext.toFile
+import common.net.toFile
+import common.view.preventMultipleClick
+import common.widget.setOnItemSelected
 import dagger.hilt.android.AndroidEntryPoint
 import entity.DayNightMode
 import entity.DayNightMode.DARK
@@ -30,7 +30,6 @@ import org.illegaller.ratabb.hishoot2i.ui.ARG_THEME
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_THEME
 import org.illegaller.ratabb.hishoot2i.ui.common.registerOpenDocumentTree
 import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
-import org.illegaller.ratabb.hishoot2i.ui.setting.SettingFragmentDirections.Companion.actionSettingToThemeChooser
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -72,7 +71,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         // region Theme
         itemSettingAppThemes.settingDayNight.setOnClickListener {
             it.preventMultipleClick {
-                findNavController().navigate(actionSettingToThemeChooser(settingPref.dayNightMode))
+                findNavController().navigate(
+                    SettingFragmentDirections.actionSettingToThemeChooser(settingPref.dayNightMode)
+                )
             }
         }
         updateDayNightUi()
@@ -109,12 +110,10 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         handleEnableQuality()
         itemSettingSaveOption.settingSaveFormat.apply {
             setSelection(settingPref.compressFormat.ordinal, false)
-            setOnItemSelected { _, v, position, _ ->
-                v?.preventMultipleClick {
-                    if (position != settingPref.compressFormat.ordinal) {
-                        settingPref.compressFormat = CompressFormat.values()[position]
-                        handleEnableQuality()
-                    }
+            setOnItemSelected { _, _, position, _ ->
+                if (position != settingPref.compressFormat.ordinal) {
+                    settingPref.compressFormat = CompressFormat.values()[position]
+                    handleEnableQuality()
                 }
             }
         }

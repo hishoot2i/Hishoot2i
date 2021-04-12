@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package common.ext
+package common.net
 
 import android.content.ContentResolver
 import android.content.ContentResolver.SCHEME_CONTENT
@@ -17,7 +17,6 @@ import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.webkit.MimeTypeMap
 import androidx.core.content.ContentResolverCompat
 import androidx.documentfile.provider.DocumentFile
-import timber.log.Timber
 import java.io.File
 
 // FIXME : Do not use this, find other method!
@@ -99,7 +98,6 @@ inline fun Uri.resolveFrom(
         cursor.moveToFirst()
         val index = cursor.getColumnIndex(columnName)
         return cursor.getString(index)
-            .also { Timber.d("Uri<<<<:$it") }
     } catch (e: Exception) {
         e.printStackTrace()
         return null
@@ -110,6 +108,7 @@ inline fun Uri.resolveFrom(
 
 inline val Uri.isDownloadDocument: Boolean
     get() = authority == "com.android.providers.downloads.documents"
+@Suppress("SpellCheckingInspection")
 inline val Uri.isExternalStorage: Boolean
     get() = authority == "com.android.externalstorage.documents"
 inline val Uri.isImageMediaDocument: Boolean

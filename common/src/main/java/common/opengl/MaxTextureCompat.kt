@@ -1,4 +1,4 @@
-package common.egl
+package common.opengl
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.JELLY_BEAN_MR1

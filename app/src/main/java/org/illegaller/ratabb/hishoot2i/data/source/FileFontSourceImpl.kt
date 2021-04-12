@@ -1,7 +1,7 @@
 package org.illegaller.ratabb.hishoot2i.data.source
 
 import android.os.Environment
-import common.ext.graphics.DEFAULT_TYPEFACE_KEY
+import common.graphics.DEFAULT_TYPEFACE_KEY
 import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import java.io.File
 import javax.inject.Inject

@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package common.ext.graphics
+package common.graphics
 
 import android.graphics.Typeface
 import java.io.File

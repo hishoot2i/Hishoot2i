@@ -1,4 +1,4 @@
-package common.egl
+package common.opengl
 
 import android.opengl.GLES10
 import javax.microedition.khronos.egl.EGL10

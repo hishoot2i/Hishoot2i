@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import common.ext.DEFAULT_DELAY_MS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +44,7 @@ class TemplateViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     @FlowPreview
     fun search(queries: Flow<String>) {
-        queries.debounce(DEFAULT_DELAY_MS)
+        queries.debounce(600L)
             .distinctUntilChanged()
             .mapLatest {
                 withContext(IO) {

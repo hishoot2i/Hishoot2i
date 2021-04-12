@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
-import common.ext.setOnItemSelected
+import common.widget.setOnItemSelected
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.data.pref.SettingPref
 import org.illegaller.ratabb.hishoot2i.databinding.DialogSaveConfirmBinding

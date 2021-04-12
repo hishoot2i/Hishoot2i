@@ -16,8 +16,8 @@ import androidx.core.graphics.component4
 import androidx.core.graphics.toRectF
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
-import common.ext.dp2px
-import common.ext.graphics.themeColorOrDefault
+import common.content.dp2px
+import common.graphics.themeColorOrDefault
 import org.illegaller.ratabb.hishoot2i.R
 import kotlin.math.roundToInt
 import com.google.android.material.R as MaterialR

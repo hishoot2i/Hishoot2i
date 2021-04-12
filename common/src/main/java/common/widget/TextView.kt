@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package common.ext
+package common.widget
 
 import android.text.InputFilter
 import android.view.KeyEvent

@@ -25,7 +25,7 @@ import androidx.core.graphics.component4
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.minus
 import androidx.customview.view.AbsSavedState
-import common.ext.displayMetrics
+import common.content.displayMetrics
 import org.illegaller.ratabb.hishoot2i.R
 
 class CropImageView @JvmOverloads constructor(

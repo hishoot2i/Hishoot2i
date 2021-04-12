@@ -10,14 +10,12 @@ import android.provider.MediaStore.Images.ImageColumns
 import android.provider.MediaStore.Images.Media
 import androidx.core.content.contentValuesOf
 import common.FileConstants
-import common.ext.graphics.saveTo
-import common.ext.graphics.sizes
-import common.ext.toDateTimeFormat
+import common.graphics.saveTo
+import common.graphics.sizes
+import common.text.toDateTimeFormat
 import core.Save
 import core.SaveResult
 import entity.Sizes
-import entity.ext
-import entity.mimeType
 import java.io.File
 import javax.inject.Inject
 
@@ -38,9 +36,13 @@ class SaveResultImpl @Inject constructor(
         saveQuality: Int
     ): Save {
         val nowMs = System.currentTimeMillis()
-        val (ext, mimeType) = compressFormat.run { ext to mimeType }
+        val (ext, mimeType) = when (compressFormat) {
+            CompressFormat.JPEG -> "jpg" to "image/jpeg"
+            CompressFormat.PNG -> "png" to "image/png"
+            CompressFormat.WEBP -> "webp" to "image/webp"
+        }
         @Suppress("SpellCheckingInspection")
-        val fileName = "HiShoot_${nowMs.toDateTimeFormat("yyyyMMdd_HHmmss")}.$ext"
+        val fileName = "HiShoot_${nowMs toDateTimeFormat "yyyyMMdd_HHmmss"}.$ext"
         val file = File(savedDir(), fileName)
             .also { bitmap.saveTo(it, compressFormat, saveQuality) }
         val uri = resolverInsert(
@@ -70,8 +72,8 @@ class SaveResultImpl @Inject constructor(
             ImageColumns.WIDTH to width,
             ImageColumns.HEIGHT to height,
             ImageColumns.SIZE to file.length()
-        ).also {
-            if (SDK_INT >= 29) it.put(ImageColumns.DATE_TAKEN, nowMs)
+        ).apply {
+            if (SDK_INT >= 29) put(ImageColumns.DATE_TAKEN, nowMs)
         }
     }
 }

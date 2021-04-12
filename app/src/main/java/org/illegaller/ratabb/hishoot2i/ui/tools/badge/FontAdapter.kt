@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
-import common.ext.graphics.DEFAULT_TYPEFACE_KEY
-import common.ext.graphics.typeFaceOrDefault
+import common.graphics.DEFAULT_TYPEFACE_KEY
+import common.graphics.typeFaceOrDefault
 import org.illegaller.ratabb.hishoot2i.R
 
 class FontAdapter : BaseAdapter() {

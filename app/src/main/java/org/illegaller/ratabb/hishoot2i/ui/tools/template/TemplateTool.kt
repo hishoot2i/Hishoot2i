@@ -9,16 +9,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import common.ext.preventMultipleClick
-import common.ext.toDateTimeFormat
+import common.text.toDateTimeFormat
+import common.view.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplateToolPref
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentToolTemplateBinding
 import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
-import org.illegaller.ratabb.hishoot2i.ui.tools.template.TemplateToolDirections.Companion.actionGlobalTemplate
-import template.Template
+import template.Template.Version2
+import template.Template.Version3
+import template.Template.VersionHtz
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,18 +36,22 @@ class TemplateTool : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentToolTemplateBinding.inflate(inflater, container, false).apply {
-        viewObserve(viewModel.uiState) {
-            when (it) {
+        viewObserve(viewModel.uiState) { uiState ->
+            when (uiState) {
                 is Fail -> {
-                    val message = it.cause.localizedMessage ?: "Oops"
+                    val message = uiState.cause.localizedMessage ?: "Oops"
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    Timber.e(it.cause)
+                    Timber.e(uiState.cause)
                 }
-                is Success -> currentTemplate(it)
+                is Success -> currentTemplate(uiState)
             }
         }
         toolTemplateManager.setOnClickListener {
-            it.preventMultipleClick { findNavController().navigate(actionGlobalTemplate()) }
+            it.preventMultipleClick {
+                findNavController().navigate(
+                    TemplateToolDirections.actionGlobalTemplate()
+                )
+            }
             dismiss()
         }
     }.run { root }
@@ -54,12 +59,20 @@ class TemplateTool : BottomSheetDialogFragment() {
     private fun FragmentToolTemplateBinding.currentTemplate(success: Success) {
         val template = success.template
         val pref = success.pref
-        when (template) {
-            is Template.Version2, is Template.Version3 -> enableOptions(pref)
-            else -> {
-                textOption.isVisible = false
-                textOptionInfo.isVisible = false
-                toolTemplateToggleGroup.isVisible = false
+        val isSupportOption = template is Version2 || template is Version3 || template is VersionHtz
+        textOption.isVisible = isSupportOption
+        textOptionInfo.isVisible = isSupportOption
+        toolTemplateToggleGroup.isVisible = isSupportOption
+        if (isSupportOption) {
+            getCheckedIds(pref).takeIf { it.isNotEmpty() }?.onEach {
+                toolTemplateToggleGroup.check(it)
+            }
+            toolTemplateToggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+                when (checkedId) {
+                    R.id.toolTemplateSwitchFrame -> pref.templateFrameEnable = isChecked
+                    R.id.toolTemplateSwitchGlare -> pref.templateGlareEnable = isChecked
+                    R.id.toolTemplateSwitchShadow -> pref.templateShadowEnable = isChecked
+                }
             }
         }
         imageLoader.display(toolTemplatePreview, viewLifecycleOwner, template.preview)
@@ -70,24 +83,8 @@ class TemplateTool : BottomSheetDialogFragment() {
                 R.string.template_info_format,
                 template.author,
                 template.desc,
-                template.installedDate.toDateTimeFormat()
+                template.installedDate toDateTimeFormat "yyyy-MMM-dd HH:mm:ss"
             )
-        }
-    }
-
-    private fun FragmentToolTemplateBinding.enableOptions(pref: TemplateToolPref) {
-        textOption.isVisible = true
-        textOptionInfo.isVisible = true
-        toolTemplateToggleGroup.isVisible = true
-        getCheckedIds(pref).takeIf { it.isNotEmpty() }?.onEach {
-            toolTemplateToggleGroup.check(it)
-        }
-        toolTemplateToggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            when (checkedId) {
-                R.id.toolTemplateSwitchFrame -> pref.templateFrameEnable = isChecked
-                R.id.toolTemplateSwitchGlare -> pref.templateGlareEnable = isChecked
-                R.id.toolTemplateSwitchShadow -> pref.templateShadowEnable = isChecked
-            }
         }
     }
 

@@ -7,11 +7,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
+import android.graphics.Paint.ANTI_ALIAS_FLAG
+import android.graphics.Paint.FILTER_BITMAP_FLAG
+import android.graphics.PorterDuff.Mode.SRC_IN
+import android.graphics.PorterDuffXfermode
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import androidx.core.app.NotificationCompat
@@ -19,14 +24,14 @@ import androidx.core.app.NotificationCompat.BigPictureStyle
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ShareCompat
 import androidx.core.graphics.applyCanvas
-import common.ext.activityPendingIntent
-import common.ext.dpSize
-import common.ext.graphics.createBitmap
-import common.ext.graphics.drawBitmapSafely
-import common.ext.graphics.halfAlpha
-import common.ext.graphics.roundedLargeIcon
-import common.ext.graphics.scaleCenterCrop
-import common.ext.graphics.sizes
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import common.content.activityPendingIntent
+import common.content.dpSize
+import common.graphics.drawBitmapSafely
+import common.graphics.halfAlpha
+import common.graphics.scaleCenterCrop
+import common.graphics.sizes
 import dagger.hilt.android.qualifiers.ActivityContext
 import entity.Sizes
 import org.illegaller.ratabb.hishoot2i.HiShootActivity
@@ -175,17 +180,26 @@ class SaveNotificationImpl @Inject constructor(
         .setBigContentTitle(title)
         .setSummaryText(summary)
 
-    private val paintBigPicture: Paint by lazy {
-        val filter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0.25F) })
-        Paint(Paint.FILTER_BITMAP_FLAG).apply { colorFilter = filter }
+    private fun Bitmap.bigPictureBitmap(): Bitmap = sizes.shortSide().run {
+        createBitmap(x, y, RGB_565)
+    }.applyCanvas {
+        drawBitmapSafely(
+            bitmap = this@bigPictureBitmap.scaleCenterCrop(Sizes(width, height), RGB_565),
+            paint = Paint(FILTER_BITMAP_FLAG).apply {
+                colorFilter = ColorMatrixColorFilter(
+                    ColorMatrix().apply { setSaturation(0.25F) }
+                )
+            }
+        )
+        drawColor(Color.DKGRAY.halfAlpha)
     }
 
-    private fun Bitmap.bigPictureBitmap(): Bitmap = sizes.shortSide().createBitmap(RGB_565)
-        .applyCanvas {
-            drawBitmapSafely(
-                bitmap = this@bigPictureBitmap.scaleCenterCrop(Sizes(width, height), RGB_565),
-                paint = paintBigPicture
-            )
-            drawColor(Color.DKGRAY.halfAlpha)
+    private fun Bitmap.roundedLargeIcon(size: Int): Bitmap =
+        createBitmap(size, size, ARGB_8888).applyCanvas {
+            val halfSize = size * 0.5F
+            val paint = Paint(FILTER_BITMAP_FLAG or ANTI_ALIAS_FLAG)
+            drawCircle(halfSize, halfSize, halfSize, paint)
+            paint.xfermode = PorterDuffXfermode(SRC_IN)
+            drawBitmapSafely(this@roundedLargeIcon.scale(size, size), paint = paint)
         }
 }

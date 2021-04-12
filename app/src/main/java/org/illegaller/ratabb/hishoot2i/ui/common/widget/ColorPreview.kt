@@ -8,9 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.updateBounds
-import common.custombitmap.CheckerBoardDrawable
-import common.ext.dp2px
-import kotlin.math.roundToInt
+import common.graphics.drawable.CheckerBoardDrawable
 
 class ColorPreview @JvmOverloads constructor(
     context: Context,
@@ -46,7 +44,7 @@ class ColorPreview @JvmOverloads constructor(
         }
 
     private val checkerBoard by lazy {
-        CheckerBoardDrawable(context.dp2px(12F).roundToInt())
+        CheckerBoardDrawable.createWith(context, 12F)
     }
     private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
     private val srcRect: Rect

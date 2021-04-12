@@ -11,7 +11,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.use
 import androidx.core.view.ViewCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import common.ext.dp2px
+import common.content.dp2px
 import kotlin.math.roundToInt
 import androidx.appcompat.R as AppcompatR
 

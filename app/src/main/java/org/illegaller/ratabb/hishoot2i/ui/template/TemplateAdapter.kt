@@ -6,8 +6,8 @@ import androidx.core.util.ObjectsCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import common.ext.layoutInflater
-import common.ext.preventMultipleClick
+import common.view.layoutInflater
+import common.view.preventMultipleClick
 import imageloader.ImageLoader
 import org.illegaller.ratabb.hishoot2i.databinding.RowItemTemplateBinding
 import org.illegaller.ratabb.hishoot2i.ui.common.DiffUtilItemCallback

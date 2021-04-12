@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import common.ext.preventMultipleClick
+import common.view.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import imageloader.ImageLoader
 import kotlinx.coroutines.Dispatchers.Default

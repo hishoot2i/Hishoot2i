@@ -19,9 +19,10 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
-import common.ext.hideSoftKey
-import common.ext.preventMultipleClick
-import common.ext.toFile
+import common.content.lazyBroadcastReceiver
+import common.net.toFile
+import common.view.hideSoftKey
+import common.view.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -33,12 +34,10 @@ import org.illegaller.ratabb.hishoot2i.databinding.FragmentTemplateBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_SORT
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_SORT
 import org.illegaller.ratabb.hishoot2i.ui.common.SideListDivider
-import org.illegaller.ratabb.hishoot2i.ui.common.broadcastReceiver
 import org.illegaller.ratabb.hishoot2i.ui.common.queryTextChange
 import org.illegaller.ratabb.hishoot2i.ui.common.registerGetContent
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
 import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
-import org.illegaller.ratabb.hishoot2i.ui.template.TemplateFragmentDirections.Companion.actionTemplateToSortTemplate
 import template.Template
 import template.TemplateComparator
 import timber.log.Timber
@@ -64,14 +63,14 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         }
     }
 
-    private val receiver: BroadcastReceiver by broadcastReceiver { _, _ -> viewModel.perform() }
+    private val receiver: BroadcastReceiver by lazyBroadcastReceiver { _, _ -> viewModel.perform() }
 
     override fun onResume() {
         super.onResume()
         requireActivity().registerReceiver(
             receiver,
             IntentFilter().apply {
-                // addAction(Intent.ACTION_PACKAGE_INSTALL) // <-- TODO: ?
+                // addAction(Intent.ACTION_PACKAGE_INSTALL)
                 addAction(Intent.ACTION_PACKAGE_ADDED)
                 addAction(Intent.ACTION_PACKAGE_CHANGED)
                 addAction(Intent.ACTION_PACKAGE_REMOVED)
@@ -153,7 +152,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
 
     private fun FragmentTemplateBinding.setData(templates: List<Template>) {
         val haveData = templates.isNotEmpty()
-        if (haveData) { // TODO:
+        if (haveData) {
             val state = templateRecyclerView.layoutManager?.onSaveInstanceState()
             templateAdapter.submitList(templates) //
             templateRecyclerView.layoutManager?.onRestoreInstanceState(state)
@@ -190,7 +189,7 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         return when (menuItem.itemId) {
             R.id.action_sort_template -> {
                 findNavController().navigate(
-                    actionTemplateToSortTemplate(templatePref.templateComparator)
+                    TemplateFragmentDirections.actionTemplateToSortTemplate(templatePref.templateComparator)
                 )
                 true
             }

@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
-import common.ext.preventMultipleClick
+import common.view.preventMultipleClick
 import entity.DayNightMode
-import entity.fromIdRes
-import entity.resId
+import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.databinding.DialogThemeChooserBinding
 import org.illegaller.ratabb.hishoot2i.ui.ARG_THEME
 import org.illegaller.ratabb.hishoot2i.ui.KEY_REQ_THEME
@@ -45,4 +45,19 @@ class ThemeChooserDialog : AppCompatDialogFragment() {
             }
         }
     }.run { root }
+
+    @get:IdRes
+    private inline val DayNightMode.resId: Int
+        get() = when (this) {
+            DayNightMode.LIGHT -> R.id.themeLightRb
+            DayNightMode.DARK -> R.id.themeDarkRb
+            DayNightMode.SYSTEM -> R.id.themeSysDefRb
+        }
+
+    private fun DayNightMode.Companion.fromIdRes(@IdRes idRes: Int): DayNightMode = when (idRes) {
+        R.id.themeLightRb -> DayNightMode.LIGHT
+        R.id.themeDarkRb -> DayNightMode.DARK
+        R.id.themeSysDefRb -> DayNightMode.SYSTEM
+        else -> DayNightMode.SYSTEM // fallback
+    }
 }

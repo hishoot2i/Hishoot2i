@@ -10,12 +10,12 @@ import android.graphics.RectF
 import android.os.Build
 import android.text.TextPaint
 import androidx.core.graphics.applyCanvas
-import common.ext.dp2px
-import common.ext.graphics.createBitmap
-import common.ext.graphics.drawBitmapSafely
-import common.ext.graphics.halfAlpha
-import common.ext.graphics.sizes
-import common.ext.textSize
+import androidx.core.graphics.createBitmap
+import common.content.dp2px
+import common.content.textSize
+import common.graphics.drawBitmapSafely
+import common.graphics.halfAlpha
+import common.graphics.sizes
 import core.BadgeBuilder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.BadgePosition
@@ -72,7 +72,7 @@ class BadgeBuilderImpl @Inject constructor(
             right = sizes.x.toFloat()
             bottom = sizes.y.toFloat()
         }
-        return sizes.createBitmap().applyCanvas {
+        return createBitmap(sizes.x, sizes.y).applyCanvas {
             drawRoundRect(rectF, cornerRadius, cornerRadius, backgroundPaint)
             drawText(textUpperCase, padding, height - padding, textPaint)
         }

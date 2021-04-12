@@ -1,10 +1,10 @@
-package org.illegaller.ratabb.hishoot2i.ui.common
+package common.content
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 
-inline fun broadcastReceiver(
+inline fun lazyBroadcastReceiver(
     crossinline receive: (Context?, Intent?) -> Unit
 ): Lazy<BroadcastReceiver> = lazy {
     object : BroadcastReceiver() {

@@ -5,7 +5,7 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import coil.bitmap.BitmapPool
 import coil.size.Size
 import coil.transform.Transformation
-import common.ext.graphics.scaleCenterCrop
+import common.graphics.scaleCenterCrop
 import entity.Sizes
 
 class ScaleCenterTransformation(

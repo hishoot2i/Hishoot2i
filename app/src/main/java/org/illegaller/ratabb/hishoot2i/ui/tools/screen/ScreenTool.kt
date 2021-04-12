@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import common.ext.preventMultipleClick
+import common.view.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import org.illegaller.ratabb.hishoot2i.data.pref.ScreenToolPref
 import org.illegaller.ratabb.hishoot2i.databinding.FragmentToolScreenBinding

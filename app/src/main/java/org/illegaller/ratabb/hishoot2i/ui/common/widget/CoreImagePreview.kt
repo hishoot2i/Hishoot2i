@@ -2,7 +2,9 @@ package org.illegaller.ratabb.hishoot2i.ui.common.widget
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
@@ -10,10 +12,11 @@ import android.view.MotionEvent.ACTION_MOVE
 import android.view.SoundEffectConstants
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageView
-import common.ext.colorFromView
-import common.ext.dp2px
-import common.ext.graphics.halfAlpha
-import common.ext.graphics.lightOrDarkContrast
+import androidx.core.graphics.get
+import common.content.dp2px
+import common.graphics.halfAlpha
+import common.graphics.lightOrDarkContrast
+import common.graphics.sizes
 import entity.Sizes
 import entity.SizesF
 
@@ -62,14 +65,11 @@ class CoreImagePreview @JvmOverloads constructor(
         invalidate()
     }
 
-    private fun handleEventTouch(event: MotionEvent): Boolean {
+    private fun handleEventTouch(event: MotionEvent): Boolean = colorPixel(event.x, event.y)?.let {
+        colorPipette = it
         center = SizesF(event.x, event.y) // set center from event
-        return colorFromView(event.x, event.y, 0).takeIf { it != 0 }?.let {
-            colorPipette = it
-            invalidate()
-            true
-        } == true
-    }
+        invalidate()
+    } != null
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -86,5 +86,21 @@ class CoreImagePreview @JvmOverloads constructor(
             }
             canvas.drawCircle(center.x, center.y, radius, paintPipette)
         }
+    }
+
+    @ColorInt
+    private fun colorPixel(x: Float, y: Float): Int? {
+        val (bmpX, bmpY) = (drawable as BitmapDrawable).bitmap.sizes
+        val mappedPoint = floatArrayOf(x, y)
+        Matrix().apply {
+            imageMatrix.invert(this)
+            mapPoints(mappedPoint)
+        }
+        val (width, height) = drawable.bounds.run { width() to height() }
+        val pX = ((mappedPoint[0] / width) * bmpX).toInt()
+        val pY = ((mappedPoint[1] / height) * bmpY).toInt()
+        return if (pX in 0 until bmpX && pY in 0 until bmpY) {
+            (drawable as BitmapDrawable).bitmap[pX, pY]
+        } else null
     }
 }

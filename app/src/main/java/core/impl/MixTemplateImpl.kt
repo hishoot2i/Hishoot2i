@@ -3,14 +3,15 @@ package core.impl
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.updateBounds
-import common.ext.graphics.createBitmap
-import common.ext.graphics.drawBitmapPerspective
-import common.ext.graphics.drawBitmapSafely
-import common.ext.graphics.sizes
+import androidx.core.graphics.withMatrix
+import common.graphics.drawBitmapSafely
+import common.graphics.sizes
 import core.MixTemplate
 import core.MixTemplate.Config
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -56,14 +57,14 @@ class MixTemplateImpl @Inject constructor(
         template: Template,
         cfg: Config,
         ss: String?
-    ): Bitmap = template.sizes.createBitmap().run {
+    ): Bitmap = createBitmap(template.sizes.x, template.sizes.y).run {
         when (template) {
             is Default -> drawDefault(ss = ss, d = template)
             is Version1 -> drawVersion1(ss = ss, v1 = template)
             is Version2 -> drawVersion2(ss = ss, v2 = template, cfg = cfg)
             is Version3 -> drawVersion3(ss = ss, v3 = template, cfg = cfg)
-            is VersionHtz -> drawVersionHtz(ss = ss, htz = template)
-            else -> throw IllegalStateException("...?")
+            is VersionHtz -> drawVersionHtz(ss = ss, htz = template, cfg = cfg)
+            else -> throw IllegalStateException("...?") // IDK: sealed class Template already there.
         }
     }
 
@@ -100,11 +101,12 @@ class MixTemplateImpl @Inject constructor(
         }
     }
 
-    private suspend fun Bitmap.drawVersionHtz(ss: String?, htz: VersionHtz) = applyCanvas {
-        drawAssetTemplate(source = htz.frame, sizes = sizes)
+    private suspend fun Bitmap.drawVersionHtz(ss: String?, htz: VersionHtz, cfg: Config) = applyCanvas {
+        val (isFrame, isGlare, _) = cfg
+        if (isFrame) drawAssetTemplate(source = htz.frame, sizes = sizes)
         drawScreenShoot(ss = ss, template = htz)
         val glare = htz.glare
-        if (glare != null) drawAssetTemplate(
+        if (isGlare && glare != null) drawAssetTemplate(
             source = glare.name,
             sizes = glare.size,
             position = glare.position
@@ -124,9 +126,14 @@ class MixTemplateImpl @Inject constructor(
     }
 
     private suspend fun Canvas.drawScreenShoot(ss: String?, template: Template) {
-        drawBitmapPerspective(
-            bitmap = loadScreen(source = ss, reqSizes = Sizes(width, height)),
-            coordinate = template.coordinate.toFloatArray()
-        )
+        val bitmap = loadScreen(source = ss, reqSizes = Sizes(width, height))
+        val coordinate = template.coordinate.toFloatArray()
+        // draw perspective bitmap with coordinate as floating point [Matrix#setPolyToPoly]
+        if (null != bitmap && !bitmap.isRecycled) {
+            val (width, height) = bitmap.sizes.toSizeF()
+            val src = floatArrayOf(0F, 0F, width, 0F, 0F, height, width, height)
+            val matrix = Matrix().apply { setPolyToPoly(src, 0, coordinate, 0, 4) }
+            withMatrix(matrix) { drawBitmapSafely(bitmap) }
+        }
     }
 }

@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import common.ext.graphics.sizes
-import common.ext.preventMultipleClick
+import common.graphics.sizes
+import common.view.preventMultipleClick
 import core.Preview
 import core.Save
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,10 +36,6 @@ import org.illegaller.ratabb.hishoot2i.ui.common.clearFragmentResultListeners
 import org.illegaller.ratabb.hishoot2i.ui.common.setFragmentResultListeners
 import org.illegaller.ratabb.hishoot2i.ui.common.showSnackBar
 import org.illegaller.ratabb.hishoot2i.ui.common.viewObserve
-import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsBackground
-import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsBadge
-import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsScreen
-import org.illegaller.ratabb.hishoot2i.ui.main.MainFragmentDirections.Companion.actionMainToToolsTemplate
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -48,6 +44,7 @@ import javax.inject.Inject
 class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var saveNotification: SaveNotification
+
     @Inject
     lateinit var settingPref: SettingPref
 
@@ -198,10 +195,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         else -> {
             when (item.itemId) {
-                R.id.action_background -> actionMainToToolsBackground(ratioCrop)
-                R.id.action_badge -> actionMainToToolsBadge()
-                R.id.action_screen -> actionMainToToolsScreen()
-                R.id.action_template -> actionMainToToolsTemplate()
+                R.id.action_background -> {
+                    MainFragmentDirections.actionMainToToolsBackground(ratioCrop)
+                }
+                R.id.action_badge -> MainFragmentDirections.actionMainToToolsBadge()
+                R.id.action_screen -> MainFragmentDirections.actionMainToToolsScreen()
+                R.id.action_template -> MainFragmentDirections.actionMainToToolsTemplate()
                 else -> null
             }?.let { findNavController().navigate(it) } != null
         }

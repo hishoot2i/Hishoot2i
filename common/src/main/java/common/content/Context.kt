@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package common.ext
+package common.content
 
 import android.app.PendingIntent
 import android.content.Context

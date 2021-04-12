@@ -1,14 +1,15 @@
 package template
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import androidx.annotation.WorkerThread
 import androidx.core.util.lruCache
 import common.FileConstants
-import common.ext.drawableSizes
-import common.ext.graphics.bitmapSize
-import common.ext.openAssetsFrom
-import common.ext.openRawResource
-import common.ext.resourcesFrom
+import common.content.drawableSizes
+import common.content.openAssetsFrom
+import common.content.openRawResource
+import common.content.resourcesFrom
+import entity.Sizes
 import template.Template.Default
 import template.Template.Version1
 import template.Template.Version2
@@ -93,7 +94,17 @@ class TemplateFactoryManagerImpl constructor(
                 val currentPath = File(htzDir(), path)
                 File(currentPath, cfg).inputStream().use(serialize::decodeModelHtz)
             },
-            calculateSizes = File::bitmapSize
+            calculateSizes = { file ->
+                var ret: Sizes? = null
+                file.inputStream().buffered().use { stream ->
+                    BitmapFactory.Options().run {
+                        inJustDecodeBounds = true
+                        BitmapFactory.decodeStream(stream, null, this)
+                        if (outWidth > 0 && outHeight > 0) ret = Sizes(outWidth, outHeight)
+                    }
+                }
+                ret
+            }
         )
 
     override fun importHtz(file: File): VersionHtz {

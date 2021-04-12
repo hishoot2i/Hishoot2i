@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationManagerCompat
 import common.FileConstants
-import common.egl.MaxTexture
-import common.egl.MaxTextureCompat
+import common.opengl.MaxTexture
+import common.opengl.MaxTextureCompat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
