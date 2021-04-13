@@ -14,10 +14,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven() {
-            url 'https://dl.bintray.com/pdvrieze/maven'
-            content { includeModuleByRegex(/net\.devrieze/, /xmlutil.*/) }
-        }
+        // maven() {
+        //   url 'https://dl.bintray.com/pdvrieze/maven'
+        //   content { includeModuleByRegex(/net\.devrieze/, /xmlutil.*/) }
+        // }
         gradlePluginPortal()
     }
 
@@ -59,6 +59,16 @@ dependencyAnalysis {
         all {
             onAny {
                 severity 'fail'
+            }
+        }
+        project(':template') {
+            onIncorrectConfiguration {
+                severity 'ignore'
+            }
+        }
+        project(':template-base') {
+            onUsedTransitiveDependencies {
+                severity 'ignore'
             }
         }
     }
