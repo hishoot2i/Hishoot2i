@@ -15,8 +15,7 @@ okHttp = "4.9.1"
 timber = "4.7.1"
 serialization = "1.1.0"
 spotless = "5.11.0"
-#
-#xmlUtil = "0.81.1"
+xmlUtil = "0.81.1"
 
 [libraries]
 coilBase = { module = "io.coil-kt:coil-base", version.ref = "coil" }
@@ -38,11 +37,10 @@ serializationCoreJvm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-c
 serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 serializationJsonJvm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", version.ref = "serialization" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-#
-#xmlUtilAndroid = { module = "net.devrieze:xmlutil-android", version.ref = "xmlUtil" }
-#xmlUtilJvm = { module = "net.devrieze:xmlutil-jvm", version.ref = "xmlUtil" }
-#xmlUtilSerializationAndroid = { module = "net.devrieze:xmlutil-serialization-android", version.ref = "xmlUtil" }
-#xmlUtilSerializationJvm = { module = "net.devrieze:xmlutil-serialization-jvm", version.ref = "xmlUtil" }
+xmlUtilAndroid = { module = "net.devrieze:xmlutil-android", version.ref = "xmlUtil" }
+xmlUtilJvm = { module = "net.devrieze:xmlutil-jvm", version.ref = "xmlUtil" }
+xmlUtilSerializationAndroid = { module = "net.devrieze:xmlutil-serialization-android", version.ref = "xmlUtil" }
+xmlUtilSerializationJvm = { module = "net.devrieze:xmlutil-serialization-jvm", version.ref = "xmlUtil" }
 
 [bundles]
 injectApp = ["javaxInject", "dagger", "daggerHilt", "daggerHiltAndroid"]

@@ -54,9 +54,7 @@ dependencies {
     implementation project(':template')
     implementation project(':pref')
     implementation project(':entity')
-    implementation(project(':template-base')) {
-        transitive false
-    }
+    implementation project(':template-base')
 
     compileOnly androidxLibs.annotation
     implementation androidxLibs.bundles.appCommon

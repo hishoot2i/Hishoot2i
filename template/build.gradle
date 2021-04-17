@@ -10,17 +10,14 @@ android {
 }
 dependencies {
     api project(':common')
-    implementation(project(':template-base')) {
-        transitive false
-    }
+    api project(':template-base')
     implementation project(':entity')
 
     compileOnly androidxLibs.annotation
     implementation androidxLibs.coreKtx
 
     api libs.serializationJson
-    // implementation libs.xmlUtilAndroid
-    // implementation libs.xmlUtilSerializationJvm
-    // implementation libs.xmlUtilSerializationAndroid
-    implementation fileTree(dir: "$rootDir/xmlutil/android", includes: ["*.jar"])
+    implementation libs.xmlUtilAndroid
+    implementation libs.xmlUtilSerializationJvm
+    implementation libs.xmlUtilSerializationAndroid
 }

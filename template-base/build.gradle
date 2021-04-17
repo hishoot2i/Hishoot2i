@@ -8,7 +8,6 @@ dependencies {
     implementation libs.serializationJson
     implementation libs.serializationJsonJvm
     api libs.serializationCoreJvm
-    // implementation libs.xmlUtilJvm
-    // api libs.xmlUtilSerializationJvm
-    implementation fileTree(dir: "$rootDir/xmlutil/jvm", includes: ["*.jar"])
+    implementation libs.xmlUtilJvm
+    api libs.xmlUtilSerializationJvm
 }
