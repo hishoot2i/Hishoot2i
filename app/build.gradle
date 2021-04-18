@@ -43,8 +43,8 @@ android {
     compileOptions.coreLibraryDesugaringEnabled = true
     applicationVariants.all { variant ->
         def runtimeConf = variant.getRuntimeConfiguration()
-        runtimeConf.exclude group: 'net.devrieze', module: 'xmlutil-serialization-jvm'
-        runtimeConf.exclude group: 'net.devrieze', module: 'xmlutil-jvm'
+        runtimeConf.exclude group: 'io.github.pdvrieze.xmlutil', module: 'serialization-jvm'
+        runtimeConf.exclude group: 'io.github.pdvrieze.xmlutil', module: 'core-jvm'
     }
 }
 

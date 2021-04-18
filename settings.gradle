@@ -43,12 +43,24 @@ pluginManagement {
         if (plugins.containsKey(targetId)) prd.useModule plugins.get(targetId)
     }
 }
+def localProp = new Properties()
+localProp.load(file('local.properties').newDataInputStream())
+
 enableFeaturePreview('VERSION_CATALOGS')
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
         gradlePluginPortal()
+
+        maven {
+            name = "XMLUtil GitHubPackages"
+            url = "https://maven.pkg.github.com/pdvrieze/xmlutil"
+            credentials {
+                username = localProp["gpr.user"] ?: System.getenv("USERNAME")
+                password = localProp["gpr.key"] ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
     versionCatalogs {
         testLibs { from(files('gradle/testLibs.versions.toml')) }
