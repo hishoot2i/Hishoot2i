@@ -44,7 +44,10 @@ pluginManagement {
     }
 }
 def localProp = new Properties()
-localProp.load(file('local.properties').newDataInputStream())
+def fileLocalProp = file('local.properties')
+if (fileLocalProp.exists()) {
+    fileLocalProp.withInputStream { localProp.load(it) }
+}
 
 enableFeaturePreview('VERSION_CATALOGS')
 dependencyResolutionManagement {
