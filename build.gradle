@@ -41,7 +41,7 @@ allprojects {
             }
         }
     }
-    apply from: "$rootDir/buildsystem/spotless.gradle"
+    apply from: rootDir.path + '/buildsystem/spotless.gradle'
 }
 
 dependencyAnalysis {
@@ -55,9 +55,7 @@ dependencyAnalysis {
 }
 
 tasks.named('dependencyUpdates').configure {
-    def isStable = { String version ->
-        return version ==~ /^[0-9,.v-]+(-r)?$/
-    }
+    def isStable = { String version -> version ==~ /^[0-9,.v-]+(-r)?$/ }
     rejectVersionIf { !isStable(it.candidate.version) && isStable(it.currentVersion) }
     checkForGradleUpdate = false //
 }
@@ -69,6 +67,7 @@ subprojects {
             allWarningsAsErrors = true
             verbose = true
             useIR = true
+            freeCompilerArgs = ["-Xopt-in=kotlin.RequiresOptIn"]
         }
     }
 }

@@ -5,8 +5,8 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
 }
-apply from: "$rootDir/buildsystem/signingRelease.gradle"
-apply from: "$rootDir/buildsystem/androidCommon.gradle"
+apply from: rootDir.path + '/buildsystem/signingRelease.gradle'
+apply from: rootDir.path + '/buildsystem/androidCommon.gradle'
 android {
     defaultConfig {
         applicationId = 'org.illegaller.ratabb.hishoot2i'
@@ -75,4 +75,4 @@ dependencies {
     implementation libs.coroutinesAndroid
     implementation libs.coroutinesCoreJvm
 }
-apply from: "$rootDir/buildsystem/appVersioning.gradle"
+apply from: rootDir.path + '/buildsystem/appVersioning.gradle'

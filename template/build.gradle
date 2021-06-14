@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
-apply from: "$rootDir/buildsystem/androidCommon.gradle"
+apply from: rootDir.path + '/buildsystem/androidCommon.gradle'
 android {
     lintOptions.ignore 'IconMissingDensityFolder' // frame1.9.png @ mdpi only
     buildTypes.release.consumerProguardFile 'proguard-template.pro'

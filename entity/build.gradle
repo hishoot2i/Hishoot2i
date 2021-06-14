@@ -6,5 +6,6 @@ plugins {
 dependencies {
     implementation libs.serializationJson
     api libs.serializationCoreJvm
+    api libs.serializationJsonJvm
     testImplementation testLibs.bundles.localTest
 }

@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
-apply from: "$rootDir/buildsystem/androidCommon.gradle"
+apply from: rootDir.path + '/buildsystem/androidCommon.gradle'
 android.defaultConfig.testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 dependencies {
     compileOnly androidxLibs.annotation

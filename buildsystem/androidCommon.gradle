@@ -1,7 +1,6 @@
 // NOTE: Global config `android` sub module.
 android {
     compileSdkVersion rootProject.androidCompileSdk as Integer
-    buildToolsVersion rootProject.androidBuildTools
     defaultConfig {
         minSdkVersion rootProject.androidMinSdk as Integer
         targetSdkVersion rootProject.androidTargetSdk as Integer

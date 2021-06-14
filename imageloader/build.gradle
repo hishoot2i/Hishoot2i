@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
-apply from: "$rootDir/buildsystem/androidCommon.gradle"
+apply from: rootDir.path + '/buildsystem/androidCommon.gradle'
 dependencies {
     api project(':entity')
     implementation project(':common')

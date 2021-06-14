@@ -1,7 +1,7 @@
 [versions]
 hamcrest = "1.3"
-jUnit = "4.13.1"
-robolectric = "4.4"
+jUnit = "4.13.2"
+robolectric = "4.5.1"
 
 [libraries]
 jUnit = { module = "junit:junit", version.ref = "jUnit" }
