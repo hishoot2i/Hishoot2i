@@ -45,7 +45,7 @@ data class ModelHtz(
     val coordinate: List<Float>? = null
 ) {
     val newHtzId
-        get() = "${author.hashCode()}_${name.toLowerCase(Locale.ROOT)}"
+        get() = "${author.hashCode()}_${name.lowercase(Locale.ROOT)}"
             .replace(Regex("[^\\w]"), "") // removing non word char
             .trim().take(32) // limit
 }

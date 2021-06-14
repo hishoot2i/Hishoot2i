@@ -69,7 +69,7 @@ class ColorMixDialog : AppCompatDialogFragment() {
                 dismiss()
             }
         }
-        val hexFormatter = LabelFormatter { it.toInt().toHexString().toUpperCase(Locale.ROOT) }
+        val hexFormatter = LabelFormatter { it.toInt().toHexString().uppercase(Locale.ROOT) }
         colorAlphaSeekBar.setLabelFormatter(hexFormatter)
         colorRedSeekBar.setLabelFormatter(hexFormatter)
         colorGreenSeekBar.setLabelFormatter(hexFormatter)
@@ -121,7 +121,7 @@ class ColorMixDialog : AppCompatDialogFragment() {
                 if (args.withAlpha) append(colorAlphaHex)
                 append(colorRedHex).append(colorGreenHex).append(colorBlueHex)
             }
-            colorHex.setText(textColorHex.toUpperCase(Locale.ROOT))
+            colorHex.setText(textColorHex.uppercase(Locale.ROOT))
             val buttonTextColor = color.lightOrDarkContrast
             if (emit) {
                 colorPreview.initColor(color)
@@ -133,7 +133,7 @@ class ColorMixDialog : AppCompatDialogFragment() {
                 this@ColorMixDialog.color = color
             }
         } else {
-            colorHex.setText(color.toHexString().toUpperCase(Locale.ROOT)) //
+            colorHex.setText(color.toHexString().uppercase(Locale.ROOT)) //
         }
     }
 

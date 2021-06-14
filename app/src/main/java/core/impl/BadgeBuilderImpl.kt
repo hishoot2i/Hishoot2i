@@ -56,7 +56,7 @@ class BadgeBuilderImpl @Inject constructor(
     }
 
     private fun buildWith(config: BadgeBuilder.Config): Bitmap {
-        val textUpperCase = config.text.toUpperCase(Locale.ROOT)
+        val textUpperCase = config.text.uppercase(Locale.ROOT)
         val localBound = Rect()
         textPaint.apply {
             typeface = config.typeFace

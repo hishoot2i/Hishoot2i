@@ -1,6 +1,5 @@
 package org.illegaller.ratabb.hishoot2i.ui.tools.badge
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.CheckedTextView
 import common.graphics.DEFAULT_TYPEFACE_KEY
 import common.graphics.typeFaceOrDefault
 import org.illegaller.ratabb.hishoot2i.R
+import java.util.Locale
 
 class FontAdapter : BaseAdapter() {
 
@@ -66,8 +66,11 @@ class FontAdapter : BaseAdapter() {
             .capitalizeWord(" ")
     }
 
-    @SuppressLint("DefaultLocale")
     private fun String.capitalizeWord(delimiter: String): String = buildString {
         this@capitalizeWord.split(delimiter).forEach { word -> append("${word.capitalize()} ") }
     }.trim()
+
+    private fun String.capitalize(): String = replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+    }
 }
