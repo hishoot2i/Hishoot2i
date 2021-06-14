@@ -1,12 +1,14 @@
 package entity
 
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 @Serializable
+@OptIn(ExperimentalSerializationApi::class)
 data class Sizes(
-    @SerialName("width") val x: Int,
-    @SerialName("height") val y: Int
+    @JsonNames("width", "x") val x: Int,
+    @JsonNames("height", "y") val y: Int
 ) : Comparable<Sizes> {
     companion object {
         @JvmStatic

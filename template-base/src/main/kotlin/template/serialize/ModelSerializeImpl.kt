@@ -13,7 +13,11 @@ import java.io.InputStream
 object ModelSerializeImpl : ModelSerialize {
 
     private val jsonFormat: Json by lazy {
-        Json { ignoreUnknownKeys = true; encodeDefaults = true }
+        Json {
+            ignoreUnknownKeys = true
+            useAlternativeNames = true
+            encodeDefaults = true
+        }
     }
     private val xmlFormat: XML by lazy {
         XML { unknownChildHandler = { _, _, _, _ -> } }
