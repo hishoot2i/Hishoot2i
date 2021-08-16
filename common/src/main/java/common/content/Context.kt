@@ -25,6 +25,7 @@ import java.io.IOException
 import java.io.InputStream
 
 const val POINT_OF_FIVE = .5F
+@Suppress("DEPRECATION")
 inline val Context.displayMetrics: DisplayMetrics
     get() = if (SDK_INT > JELLY_BEAN) {
         val ret = DisplayMetrics()

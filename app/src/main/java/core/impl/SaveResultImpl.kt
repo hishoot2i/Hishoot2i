@@ -39,7 +39,9 @@ class SaveResultImpl @Inject constructor(
         val (ext, mimeType) = when (compressFormat) {
             CompressFormat.JPEG -> "jpg" to "image/jpeg"
             CompressFormat.PNG -> "png" to "image/png"
+            @Suppress("DEPRECATION")
             CompressFormat.WEBP -> "webp" to "image/webp"
+            else -> "webp" to "image/webp"
         }
         @Suppress("SpellCheckingInspection")
         val fileName = "HiShoot_${nowMs toDateTimeFormat "yyyyMMdd_HHmmss"}.$ext"
