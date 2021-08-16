@@ -1,12 +1,14 @@
 [versions]
 hamcrest = "1.3"
 jUnit = "4.13.2"
-robolectric = "4.5.1"
+robolectric = "4.6.1"
 
 [libraries]
 jUnit = { module = "junit:junit", version.ref = "jUnit" }
 hamcrest = { module = "org.hamcrest:hamcrest-all", version.ref = "hamcrest" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+robolectricAnno = { module = "org.robolectric:annotations", version.ref = "robolectric" }
+testMonitor = "androidx.test:monitor:1.4.0"
 
 [bundles]
 localTest = ["jUnit", "hamcrest"]

@@ -8,4 +8,6 @@ dependencies {
     compileOnly androidxLibs.annotation
     testImplementation testLibs.bundles.localTest
     testImplementation testLibs.robolectric
+    testImplementation testLibs.robolectricAnno
+    testImplementation testLibs.testMonitor
 }
