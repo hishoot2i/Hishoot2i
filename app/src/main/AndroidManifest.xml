@@ -29,6 +29,7 @@
         <activity
             android:name=".HiShootActivity"
             android:configChanges="orientation|keyboard|keyboardHidden"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
@@ -43,6 +44,7 @@
         <!-- Launcher -->
         <activity-alias
             android:name=".ui.activity.MainActivity"
+            android:exported="true"
             android:targetActivity=".HiShootActivity">
 
             <intent-filter>
@@ -56,6 +58,7 @@
         <activity-alias
             android:name=".ScreenReceiver"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/screen"
             android:targetActivity=".HiShootActivity">
             <intent-filter>
@@ -70,6 +73,7 @@
         <activity-alias
             android:name=".BackgroundReceiver"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/background"
             android:targetActivity=".HiShootActivity">
             <intent-filter>
