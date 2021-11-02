@@ -4,8 +4,8 @@ plugins {
 }
 apply from: rootDir.path + '/buildsystem/androidCommon.gradle'
 dependencies {
-    api project(':entity')
-    implementation project(':common')
+    api(projects.entity)
+    implementation(projects.common)
     implementation androidxLibs.coreKtx
     api androidxLibs.lifecycleCommon
     api libs.coilBase

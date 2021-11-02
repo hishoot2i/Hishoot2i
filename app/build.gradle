@@ -49,12 +49,13 @@ android {
 }
 
 dependencies {
-    implementation project(':common')
-    implementation project(':imageloader')
-    implementation project(':template')
-    implementation project(':pref')
-    implementation project(':entity')
-    implementation project(':template-base')
+    implementation(projects.common)
+    implementation(projects.imageloader)
+    implementation(projects.template)
+    implementation(projects.pref)
+    implementation(projects.entity)
+    implementation(projects.template.android)
+    implementation(projects.template.base)
 
     compileOnly androidxLibs.annotation
     implementation androidxLibs.bundles.appCommon

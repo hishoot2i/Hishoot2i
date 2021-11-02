@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation project(':entity')
-    implementation project(':template-base')
+    implementation(projects.entity)
+    implementation(projects.template.base)
     testImplementation testLibs.bundles.localTest
 }
 

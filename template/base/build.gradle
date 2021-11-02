@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api project(':entity')
+    api(projects.entity)
     implementation libs.serializationJson
     implementation libs.serializationJsonJvm
     api libs.serializationCoreJvm

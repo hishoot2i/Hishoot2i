@@ -9,9 +9,9 @@ android {
     buildTypes.release.consumerProguardFile 'proguard-template.pro'
 }
 dependencies {
-    api project(':common')
-    api project(':template-base')
-    implementation project(':entity')
+    api(projects.common)
+    api(projects.template.base)
+    implementation(projects.entity)
 
     compileOnly androidxLibs.annotation
     implementation androidxLibs.coreKtx

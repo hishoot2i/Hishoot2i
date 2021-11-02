@@ -55,5 +55,7 @@ fun compressHtz(src: File, dst: File) {
     }
 }
 
-/** shortcut for combine [getEntry][ZipFile.getEntry] and [getInputStream][ZipFile.getInputStream]*/
+/**
+ * shortcut for combine [getEntry][ZipFile.getEntry] and [getInputStream][ZipFile.getInputStream]
+ **/
 fun ZipFile.entryInputStream(entryName: String): InputStream = getInputStream(getEntry(entryName))

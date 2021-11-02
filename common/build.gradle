@@ -5,7 +5,7 @@ plugins {
 apply from: rootDir.path + '/buildsystem/androidCommon.gradle'
 android.buildTypes.release.consumerProguardFile 'proguard-common.pro'
 dependencies {
-    api project(':entity')
+    api(projects.entity)
     compileOnly androidxLibs.annotation
     implementation androidxLibs.core
     implementation androidxLibs.coreKtx

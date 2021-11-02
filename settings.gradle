@@ -46,6 +46,7 @@ pluginManagement {
 }
 
 enableFeaturePreview('VERSION_CATALOGS')
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 dependencyResolutionManagement {
     repositoriesMode.set(FAIL_ON_PROJECT_REPOS)
     rulesMode.set(FAIL_ON_PROJECT_RULES)
@@ -59,11 +60,6 @@ dependencyResolutionManagement {
         androidxLibs { from(files('gradle/androidxLibs.versions.toml')) }
     }
 }
-include ':app',
-        ':common',
-        ':entity',
-        ':htz-converter-cli',
-        ':imageloader',
-        ':pref',
-        ':template',
-        ':template-base'
+include(':app', ':common', ':entity',
+        ':htz-converter-cli', ':imageloader', ':pref',
+        ':template:android', ':template:base')
