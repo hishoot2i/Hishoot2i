@@ -1,6 +1,9 @@
 package entity
 
 import entity.SizesF.Companion.toSizesF
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.comparesEqualTo
@@ -10,7 +13,8 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.lessThan
 import org.junit.Test
 
-class SizesFTest {
+@OptIn(ExperimentalSerializationApi::class)
+class SizesFTest : JsonBaseTest() {
 
     @Test
     fun createFromPair() {
@@ -57,5 +61,14 @@ class SizesFTest {
         assertThat(SizesF(5F, 10F), `is`(greaterThan(SizesF(4F, 9F))))
         assertThat(SizesF(4F, 10F), `is`(lessThan(SizesF(5F, 9F))))
         assertThat(SizesF(6F), `is`(comparesEqualTo(SizesF(6F, 6F))))
+    }
+
+    @Test
+    fun serialize() {
+        val sizesF = SizesF(5F)
+        assertThat(sizesF, `is`(equalTo(default.decodeFromString<SizesF>("""{"x":5,"y":5}"""))))
+        assertThat(default.decodeFromString<SizesF>("""{"x":5,"y":5}"""), `is`(equalTo(sizesF)))
+        //
+        assertThat(default.encodeToString(sizesF), `is`(equalTo("""{"x":5.0,"y":5.0}""")))
     }
 }

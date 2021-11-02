@@ -18,7 +18,7 @@ data class Sizes(
         @JvmName("create")
         fun Pair<Int, Int>.toSizes() = Sizes(first, second)
 
-        @JvmStatic // TODO:
+        @JvmStatic
         val comparator = compareBy(Sizes::x, Sizes::y)
     }
 
