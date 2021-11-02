@@ -6,7 +6,6 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import entity.BadgePosition
 import entity.BadgePosition.CENTER_BOTTOM
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.illegaller.ratabb.hishoot2i.data.pref.BadgeToolPref
 import pref.SimplePref
 import pref.ext.asFlow
@@ -35,7 +34,7 @@ class BadgeToolPrefImpl @Inject constructor(
                 badgeTypeface = valuePlusQuote
             }
         }
-    @ExperimentalCoroutinesApi
+
     override val mainFlow = listOf(
         asFlow(::badgeTypeface),
         asFlow(::badgePosition),

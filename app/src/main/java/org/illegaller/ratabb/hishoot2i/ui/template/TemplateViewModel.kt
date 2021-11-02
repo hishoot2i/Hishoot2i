@@ -41,8 +41,7 @@ class TemplateViewModel @Inject constructor(
     internal val htzState: LiveData<HtzEventView>
         get() = _htzState
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     fun search(queries: Flow<String>) {
         queries.debounce(600L)
             .distinctUntilChanged()

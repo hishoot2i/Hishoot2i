@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import pref.Pref
 import kotlin.reflect.KProperty0
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @JvmOverloads
 inline fun <T> Pref.asFlow(
     prop: KProperty0<T>,

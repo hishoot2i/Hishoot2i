@@ -25,7 +25,6 @@ import common.view.hideSoftKey
 import common.view.preventMultipleClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import org.illegaller.ratabb.hishoot2i.HiShootActivity
 import org.illegaller.ratabb.hishoot2i.R
 import org.illegaller.ratabb.hishoot2i.data.pref.TemplatePref
@@ -85,7 +84,6 @@ class TemplateFragment : Fragment(R.layout.fragment_template) {
         requireActivity().unregisterReceiver(receiver)
     }
 
-    @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         FragmentTemplateBinding.bind(view).apply {

@@ -3,6 +3,8 @@ package template.serialize
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
+import nl.adaptivity.xmlutil.serialization.UnknownChildHandler
 import nl.adaptivity.xmlutil.serialization.XML
 import template.model.ModelHtz
 import template.model.ModelV1
@@ -19,8 +21,10 @@ object ModelSerializeImpl : ModelSerialize {
             encodeDefaults = true
         }
     }
+
+    @OptIn(ExperimentalXmlUtilApi::class)
     private val xmlFormat: XML by lazy {
-        XML { unknownChildHandler = { _, _, _, _ -> } }
+        XML { unknownChildHandler = UnknownChildHandler { _, _, _, _, _ -> emptyList() } }
     }
 
     override fun encodeModelV1(model: ModelV1): String = xmlFormat.encodeToString(model)
