@@ -10,7 +10,10 @@ android {
 }
 dependencies {
     api(projects.common)
-    api(projects.template.base)
+    api(projects.template.base){
+        exclude group: 'io.github.pdvrieze.xmlutil', module:'core-jvm'
+        exclude group: 'io.github.pdvrieze.xmlutil', module:'serialization-jvm'
+    }
     implementation(projects.entity)
 
     compileOnly androidxLibs.annotation
@@ -18,6 +21,5 @@ dependencies {
 
     api libs.serializationJson
     implementation libs.xmlUtilAndroid
-    implementation libs.xmlUtilSerializationJvm
     implementation libs.xmlUtilSerializationAndroid
 }

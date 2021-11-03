@@ -8,6 +8,10 @@ android {
         versionName '1.0.0'
     }
     buildFeatures.buildConfig = !plugins.hasPlugin('com.android.library')
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     lintOptions {
         warningsAsErrors true
         abortOnError true

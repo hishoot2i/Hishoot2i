@@ -41,13 +41,15 @@ android {
     }
     buildFeatures.viewBinding = true
     compileOptions.coreLibraryDesugaringEnabled = true
-    applicationVariants.all { variant ->
-        def runtimeConf = variant.getRuntimeConfiguration()
-        runtimeConf.exclude group: 'io.github.pdvrieze.xmlutil', module: 'serialization-jvm'
-        runtimeConf.exclude group: 'io.github.pdvrieze.xmlutil', module: 'core-jvm'
-    }
 }
-
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+hilt {
+    // FIXME: `Could not resolve io.github.pdvrieze.xmlutil`
+    enableAggregatingTask = false
+}
 dependencies {
     implementation(projects.common)
     implementation(projects.imageloader)
@@ -55,7 +57,10 @@ dependencies {
     implementation(projects.pref)
     implementation(projects.entity)
     implementation(projects.template.android)
-    implementation(projects.template.base)
+    implementation(projects.template.base){
+        exclude group: 'io.github.pdvrieze.xmlutil', module:'core-jvm'
+        exclude group: 'io.github.pdvrieze.xmlutil', module:'serialization-jvm'
+    }
 
     compileOnly androidxLibs.annotation
     implementation androidxLibs.bundles.appCommon
