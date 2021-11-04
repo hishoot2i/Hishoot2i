@@ -70,6 +70,7 @@ dependencies {
     implementation libs.bundles.injectApp
     kapt libs.daggerHiltAndroidCompiler
     implementation androidxLibs.hiltLifecycleViewmodel
+    implementation androidxLibs.vectorDrawableAnimated
 
     implementation libs.kotlinStd
     coreLibraryDesugaring libs.desugar

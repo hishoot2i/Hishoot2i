@@ -19,6 +19,7 @@ recyclerView = "1.2.1"
 room = "2.2.5"
 transition = "1.3.0"
 multiDex = "2.0.1"
+vectorDrawable = "1.1.0"
 
 [libraries]
 activity = { module = "androidx.activity:activity", version.ref = "activity" }
@@ -51,6 +52,7 @@ navigationRuntimeKtx = { module = "androidx.navigation:navigation-runtime-ktx", 
 navigationUi = { module = "androidx.navigation:navigation-ui", version.ref = "navigation" }
 navigationUiktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
 recyclerView = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerView" }
+vectorDrawableAnimated = { module = "androidx.vectordrawable:vectordrawable-animated", version.ref = "vectorDrawable" }
 
 [bundles]
 appCommon = [

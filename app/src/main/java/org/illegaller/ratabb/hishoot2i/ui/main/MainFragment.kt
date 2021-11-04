@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import common.graphics.sizes
 import common.view.preventMultipleClick
 import core.Preview
@@ -147,7 +148,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun FragmentMainBinding.showProgress() {
         isOnProgress = true
-        mainFab.setImageResource(R.drawable.ic_dot) // TODO: use AVD here!
+        val avd = AnimatedVectorDrawableCompat.create(
+            requireContext(),
+            R.drawable.avd_hourglass_24
+        )
+        mainFab.setImageDrawable(avd)
+        avd?.start()
         mainFab.isEnabled = false
         mainProgress.show()
     }
