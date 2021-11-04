@@ -10,4 +10,5 @@ dependencies {
     api libs.serializationCoreJvm
     implementation libs.xmlUtilJvm
     api libs.xmlUtilSerializationJvm
+    testImplementation testLibs.bundles.localTest
 }
