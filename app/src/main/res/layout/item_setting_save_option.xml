@@ -42,44 +42,41 @@
             app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
             app:layout_constraintStart_toStartOf="@+id/textSaveOption"
             app:layout_constraintTop_toBottomOf="@+id/textSaveOption"
-            tools:checked="true" />
+            tools:checked="true"
+            tools:ignore="TextContrastCheck" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/setting_save_confirmation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/confirmation"
             android:textAppearance="@style/TextAppearance.App"
-            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
-            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintEnd_toEndOf="@+id/setting_save_notification"
+            app:layout_constraintStart_toStartOf="@+id/setting_save_notification"
             app:layout_constraintTop_toBottomOf="@+id/setting_save_notification"
-            tools:checked="true" />
+            tools:checked="true"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/textFormat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:paddingTop="8dp"
             android:text="@string/format"
             android:textAppearance="@style/TextAppearance.App"
-            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
-            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintEnd_toEndOf="@+id/setting_save_confirmation"
+            app:layout_constraintStart_toStartOf="@+id/setting_save_confirmation"
             app:layout_constraintTop_toBottomOf="@+id/setting_save_confirmation" />
 
         <Spinner
             android:id="@+id/setting_save_format"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:dropDownSelector="?colorAccent"
             android:entries="@array/save_option_values"
+            android:minHeight="48dp"
             android:popupBackground="?attr/colorSurface"
             android:prompt="@string/save_format"
             android:spinnerMode="dropdown"
@@ -91,24 +88,21 @@
             android:id="@+id/textQuality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:paddingTop="8dp"
             android:text="@string/quality"
             android:textAppearance="@style/TextAppearance.App"
-            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
-            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            app:layout_constraintEnd_toEndOf="@+id/setting_save_format"
+            app:layout_constraintStart_toStartOf="@+id/setting_save_format"
             app:layout_constraintTop_toBottomOf="@+id/setting_save_format" />
 
         <com.google.android.material.slider.Slider
             android:id="@+id/setting_save_quality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintEnd_toEndOf="@+id/textSaveOption"
-            app:layout_constraintStart_toStartOf="@+id/textSaveOption"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@string/quality_desc"
+            app:layout_constraintEnd_toEndOf="@+id/textQuality"
+            app:layout_constraintStart_toStartOf="@+id/textQuality"
             app:layout_constraintTop_toBottomOf="@+id/textQuality"
             tools:value="80.0" />
 

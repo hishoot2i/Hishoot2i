@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <!-- android:foreground="?selectableItemBackgroundBorderless" -->
+
     <ImageView
         android:id="@+id/itemTemplatePreview"
         android:layout_width="0dp"
@@ -31,6 +31,7 @@
         app:layout_constraintBottom_toBottomOf="@id/itemTemplatePreview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck"
         tools:text="@tools:sample/full_names" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

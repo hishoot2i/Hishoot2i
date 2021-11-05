@@ -46,13 +46,15 @@
                 app:layout_constraintBottom_toBottomOf="@+id/colorAlphaSeekBar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/colorAlphaSeekBar"
-                app:srcCompat="@drawable/ic_dot_alpha" />
+                app:srcCompat="@drawable/ic_dot_alpha"
+                tools:ignore="ImageContrastCheck" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/colorAlphaSeekBar"
                 style="@style/AppWidget.Slider.ColorMix"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/alpha_slider"
                 app:layout_constraintEnd_toStartOf="@+id/colorAlphaText"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/colorAlphaIcon"
@@ -87,6 +89,7 @@
                 style="@style/AppWidget.Slider.ColorMix"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/red_slider"
                 app:layout_constraintEnd_toStartOf="@+id/colorRedText"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/colorRedIcon"
@@ -114,13 +117,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/colorGreenSeekBar"
                 app:srcCompat="@drawable/ic_dot"
-                app:tint="@color/green" />
+                app:tint="@color/green"
+                tools:ignore="ImageContrastCheck" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/colorGreenSeekBar"
                 style="@style/AppWidget.Slider.ColorMix"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/green_slider"
                 app:layout_constraintEnd_toStartOf="@+id/colorGreenText"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/colorGreenIcon"
@@ -148,13 +153,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/colorBlueSeekBar"
                 app:srcCompat="@drawable/ic_dot"
-                app:tint="@color/blue" />
+                app:tint="@color/blue"
+                tools:ignore="ImageContrastCheck" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/colorBlueSeekBar"
                 style="@style/AppWidget.Slider.ColorMix"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/blue_slider"
                 app:layout_constraintEnd_toStartOf="@+id/colorBlueText"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/colorBlueIcon"
@@ -216,7 +223,8 @@
         android:text="@string/cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/colorPreview"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/colorDone"
@@ -226,6 +234,7 @@
         android:text="@string/done"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/colorPreview"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

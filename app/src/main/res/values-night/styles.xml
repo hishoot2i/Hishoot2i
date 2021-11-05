@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppWidget.FloatingActionButton" parent="Base.AppWidget.FloatingActionButton">
+        <item name="backgroundTint">@color/accent</item>
+    </style>
+</resources>

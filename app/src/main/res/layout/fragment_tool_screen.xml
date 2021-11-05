@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
-    android:padding="@dimen/toolLayoutPadding">
+    android:padding="@dimen/toolLayoutPadding"
+    tools:background="?colorSurface">
 
     <TextView
         android:id="@+id/textScreen"
@@ -13,8 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/screen"
         android:textAppearance="@style/TextAppearance.App.Title"
-        app:layout_constraintBaseline_toBaselineOf="@+id/toolScreenDouble"
-        app:layout_constraintEnd_toStartOf="@+id/toolScreenDouble"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

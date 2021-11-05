@@ -32,31 +32,29 @@
         style="@style/AppWidget.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/cancel"
         app:icon="@drawable/ic_cancel"
         app:iconGravity="textStart"
-        app:layout_constraintEnd_toStartOf="@+id/cropDone"
-        app:layout_constraintStart_toStartOf="@+id/backgroundButton"
-        app:layout_constraintTop_toTopOf="@+id/backgroundButton" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/cropDone" />
 
     <Button
         android:id="@+id/cropDone"
         style="@style/AppWidget.Button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/done"
         app:icon="@drawable/ic_done"
         app:iconGravity="textStart"
-        app:layout_constraintEnd_toEndOf="@+id/backgroundButton"
-        app:layout_constraintTop_toTopOf="@+id/cropCancel" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="6"
+        app:layout_constraintLeft_toRightOf="@+id/cropCancel"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

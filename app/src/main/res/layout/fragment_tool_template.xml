@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
     android:orientation="vertical"
-    android:padding="@dimen/toolLayoutPadding">
+    android:padding="@dimen/toolLayoutPadding"
+    tools:background="?colorSurface">
 
     <TextView
         android:id="@+id/textTemplate"
@@ -27,6 +28,7 @@
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textTemplate"
+        tools:ignore="ImageContrastCheck"
         tools:src="@tools:sample/avatars" />
 
     <TextView

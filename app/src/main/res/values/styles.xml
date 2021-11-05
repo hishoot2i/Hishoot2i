@@ -19,6 +19,7 @@
     <style name="AppWidget.CoordinatorLayout" parent="Widget.Support.CoordinatorLayout">
         <item name="statusBarBackground">@android:color/transparent</item>
     </style>
+
     <style name="AppWidget.ProgressBar.Linear" parent="Widget.MaterialComponents.LinearProgressIndicator">
         <item name="indeterminateAnimationType">contiguous</item>
         <item name="indicatorColor">@array/progressColors</item>
@@ -53,11 +54,14 @@
         <item name="android:background">@drawable/app_window_background</item>
     </style>
 
-    <style name="AppWidget.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">@color/accent</item>
+    <style name="Base.AppWidget.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="fabSize">normal</item>
         <item name="useCompatPadding">true</item>
         <item name="tint">@color/white</item>
+    </style>
+
+    <style name="AppWidget.FloatingActionButton" parent="Base.AppWidget.FloatingActionButton">
+        <item name="backgroundTint">@color/accentAlt</item>
     </style>
 
     <style name="AppWidget.Button" parent="Widget.MaterialComponents.Button">

@@ -41,6 +41,7 @@
         android:layout_marginTop="10dp"
         android:dropDownSelector="?colorAccent"
         android:entries="@array/save_option_values"
+        android:minHeight="48dp"
         android:popupBackground="?attr/colorSurface"
         android:prompt="@string/save_format"
         android:spinnerMode="dropdown"
@@ -68,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:contentDescription="@string/quality_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textQuality"
@@ -76,28 +78,27 @@
     <Button
         android:id="@+id/action_save_cancel"
         style="@style/AppWidget.Button.TextButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/cancel"
-        app:layout_constraintEnd_toStartOf="@+id/action_save_ok"
-        app:layout_constraintTop_toTopOf="@+id/action_save_ok" />
+        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/action_save_ok"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_save_quality" />
 
     <Button
         android:id="@+id/action_save_ok"
         style="@style/AppWidget.Button.OutlinedButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/ok_btn_txt"
-        app:iconGravity="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="6"
+        app:layout_constraintLeft_toRightOf="@+id/action_save_cancel"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialog_save_quality" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

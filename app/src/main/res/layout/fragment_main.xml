@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:contentDescription="@null"
+        android:contentDescription="@string/main_fab_desc"
         app:layout_anchor="@id/mainBottomAppBar"
         app:layout_behavior=".ui.common.behavior.FabSnackBarAwareBehavior"
         app:srcCompat="@drawable/ic_save" />

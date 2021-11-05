@@ -2,10 +2,10 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/fragment_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    tools:showIn="@layout/fragment_setting">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
@@ -45,20 +45,19 @@
             app:layout_constraintEnd_toEndOf="@+id/textBadgeFont"
             app:layout_constraintStart_toStartOf="@+id/textBadgeFont"
             app:layout_constraintTop_toBottomOf="@+id/textBadgeFont"
-            tools:checked="true" />
+            tools:checked="true"
+            tools:ignore="TextContrastCheck" />
 
         <Button
             android:id="@+id/setting_badge_custom_font_dir"
             style="@style/AppWidget.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:text="@string/custom_directory"
             app:icon="@drawable/ic_launch"
             app:iconGravity="textEnd"
-            app:layout_constraintEnd_toEndOf="@+id/textBadgeFont"
-            app:layout_constraintStart_toStartOf="@+id/textBadgeFont"
+            app:layout_constraintEnd_toEndOf="@+id/setting_badge_system_font"
+            app:layout_constraintStart_toStartOf="@+id/setting_badge_system_font"
             app:layout_constraintTop_toBottomOf="@+id/setting_badge_system_font"
             app:textAllCaps="false" />
     </androidx.constraintlayout.widget.ConstraintLayout>

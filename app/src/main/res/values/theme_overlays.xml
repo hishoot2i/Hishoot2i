@@ -18,7 +18,7 @@
     <style name="Platform.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog"/>
 
     <style name="ThemeOverlay.App.Button">
-        <item name="colorPrimary">@color/accent</item>
+        <item name="colorPrimary">@color/accentAlt</item>
         <item name="colorOnPrimary">@color/white</item>
     </style>
 

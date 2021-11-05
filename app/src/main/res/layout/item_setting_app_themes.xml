@@ -2,10 +2,10 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/fragment_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    tools:showIn="@layout/fragment_setting">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -35,9 +35,9 @@
             android:id="@+id/setting_day_night"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:foreground="?selectableItemBackgroundBorderless"
             android:gravity="center_vertical"
             android:textAppearance="@style/TextAppearance.App"
@@ -45,7 +45,7 @@
             app:layout_constraintStart_toStartOf="@+id/textSettingThemes"
             app:layout_constraintTop_toBottomOf="@+id/textSettingThemes"
             tools:drawableRightCompat="@drawable/ic_brightness_auto"
-            tools:ignore="UnusedAttribute"
+            tools:ignore="UnusedAttribute,TextContrastCheck"
             tools:text="@string/follow_system" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -59,17 +59,20 @@
         android:layout_width="@dimen/dialogSortIconSize"
         android:layout_height="@dimen/dialogSortIconSize"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/sort_by_name_asc"
         app:layout_constraintEnd_toEndOf="@+id/textName"
         app:layout_constraintStart_toStartOf="@+id/textName"
         app:layout_constraintTop_toBottomOf="@+id/textName"
         app:srcCompat="@drawable/ic_sort_az_up"
-        tools:background="@drawable/sort_selected" />
+        tools:background="@drawable/sort_selected"
+        tools:ignore="ImageContrastCheck" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/action_sort_type_asc"
         android:layout_width="@dimen/dialogSortIconSize"
         android:layout_height="@dimen/dialogSortIconSize"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/sort_by_type_asc"
         app:layout_constraintEnd_toEndOf="@+id/textVersion"
         app:layout_constraintStart_toStartOf="@+id/textVersion"
         app:layout_constraintTop_toBottomOf="@+id/textVersion"
@@ -80,6 +83,7 @@
         android:layout_width="@dimen/dialogSortIconSize"
         android:layout_height="@dimen/dialogSortIconSize"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/sort_by_date_asc"
         app:layout_constraintEnd_toEndOf="@+id/textDate"
         app:layout_constraintStart_toStartOf="@+id/textDate"
         app:layout_constraintTop_toBottomOf="@+id/textDate"
@@ -90,6 +94,7 @@
         android:layout_width="@dimen/dialogSortIconSize"
         android:layout_height="@dimen/dialogSortIconSize"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/sort_by_name_desc"
         app:layout_constraintEnd_toEndOf="@+id/action_sort_name_asc"
         app:layout_constraintStart_toStartOf="@+id/action_sort_name_asc"
         app:layout_constraintTop_toBottomOf="@+id/action_sort_name_asc"
@@ -100,6 +105,7 @@
         android:layout_width="@dimen/dialogSortIconSize"
         android:layout_height="@dimen/dialogSortIconSize"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/sort_by_type_desc"
         app:layout_constraintEnd_toEndOf="@+id/action_sort_type_asc"
         app:layout_constraintStart_toStartOf="@+id/action_sort_type_asc"
         app:layout_constraintTop_toBottomOf="@+id/action_sort_type_asc"
@@ -110,6 +116,7 @@
         android:layout_width="@dimen/dialogSortIconSize"
         android:layout_height="@dimen/dialogSortIconSize"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/sort_by_date_desc"
         app:layout_constraintEnd_toEndOf="@+id/action_sort_date_asc"
         app:layout_constraintStart_toStartOf="@+id/action_sort_date_asc"
         app:layout_constraintTop_toBottomOf="@+id/action_sort_date_asc"
@@ -120,9 +127,10 @@
         style="@style/AppWidget.Button.TextButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/cancel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_sort_date_desc"
-        app:layout_constraintWidth_percent=".33" />
+        app:layout_constraintWidth_percent=".45" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

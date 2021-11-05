@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
-    android:padding="@dimen/toolLayoutPadding">
+    android:padding="@dimen/toolLayoutPadding"
+    tools:background="?colorSurface">
 
     <TextView
         android:id="@+id/textBackground"
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/background"
         android:textAppearance="@style/TextAppearance.App.Title"
-        app:layout_constraintEnd_toStartOf="@id/backgroundModes_Spinner"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:entries="@array/background_mode_values"
+        android:minHeight="48dp"
         android:prompt="@string/background_mode_prompt"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"

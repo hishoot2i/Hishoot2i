@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:background="?android:windowBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/templateRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="8dp"
         android:clipToPadding="false"
         app:fastScrollEnabled="false"
         app:layoutManager="GridLayoutManager"
@@ -47,6 +49,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true">
 
@@ -77,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:contentDescription="@null"
+        android:contentDescription="@string/template_htz_imported_desc"
         app:layout_anchor="@id/templateBottomAppBar"
         app:layout_behavior=".ui.common.behavior.FabQuickHideBehavior"
         app:srcCompat="@drawable/ic_htz_plus" />

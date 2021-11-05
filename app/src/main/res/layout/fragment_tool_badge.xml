@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/toolLayoutMinHeight"
-    android:padding="@dimen/toolLayoutPadding">
+    android:padding="@dimen/toolLayoutPadding"
+    tools:background="?colorSurface">
 
     <TextView
         android:id="@+id/textBadge"
@@ -13,8 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/badge"
         android:textAppearance="@style/TextAppearance.App.Title"
-        app:layout_constraintBaseline_toBaselineOf="@+id/toolBadgeHide"
-        app:layout_constraintEnd_toStartOf="@+id/toolBadgeHide"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,16 +25,17 @@
         android:text="@string/show"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:checked="true" />
+        tools:checked="true"
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/toolBadgeColorPick"
         style="@style/AppWidget.Button.OutlinedButton.IconOnly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/badge_color_pick_desc"
         app:icon="@drawable/ic_color_lens"
         app:layout_constraintBaseline_toBaselineOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toStartOf="@+id/textInputLayout"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -44,7 +45,7 @@
         app:errorEnabled="false"
         app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/toolBadgeColorPick"
+        app:layout_constraintStart_toStartOf="@+id/toolBadgeSize"
         app:layout_constraintTop_toBottomOf="@+id/toolBadgeHide">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -73,6 +74,7 @@
         android:id="@+id/toolBadgeSize"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/badge_size_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textSize"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
@@ -93,9 +95,11 @@
         android:id="@+id/toolBadgeFont"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:popupBackground="?attr/colorSurface"
         android:prompt="@string/badge_font_prompt"
         android:spinnerMode="dialog"
+        android:contentDescription="@string/badge_font_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textFont"
         app:layout_constraintTop_toBottomOf="@+id/toolBadgeSize"
@@ -119,6 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:entries="@array/badge_position_values"
+        android:minHeight="48dp"
         android:popupBackground="?attr/colorSurface"
         android:prompt="@string/bp_prompt"
         android:spinnerMode="dropdown"

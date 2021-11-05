@@ -15,6 +15,7 @@
     <color name="primary">#FF0281BB</color>
     <color name="primaryDark">#FF034171</color>
     <color name="accent">#FF689F38</color>
+    <color name="accentAlt">#FF33691E</color>
     <!-- -->
     <color name="shadowTextButton">#7f5a595b</color>
     <integer-array name="progressColors">

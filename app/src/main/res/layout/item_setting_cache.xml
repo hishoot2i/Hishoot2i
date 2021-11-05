@@ -2,10 +2,10 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/fragment_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    tools:showIn="@layout/fragment_setting">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,9 +34,9 @@
             android:id="@+id/textImageCache"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/image_cache"
             android:textAppearance="@style/TextAppearance.App"
             app:layout_constraintEnd_toStartOf="@+id/setting_cache_clear"
@@ -48,9 +48,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.App"
+            app:layout_constraintBottom_toBottomOf="@+id/setting_cache_clear"
             app:layout_constraintEnd_toEndOf="@+id/textImageCache"
             app:layout_constraintStart_toStartOf="@+id/textImageCache"
-            app:layout_constraintBottom_toBottomOf="@+id/setting_cache_clear"
+            tools:ignore="TextContrastCheck"
             tools:text="@tools:sample/us_zipcodes" />
 
         <Button
@@ -58,6 +59,7 @@
             style="@style/AppWidget.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/clear_image_cache"
             app:icon="@drawable/ic_clear_all"
             app:layout_constraintEnd_toEndOf="@+id/textCache"
             app:layout_constraintTop_toTopOf="@+id/textImageCache" />

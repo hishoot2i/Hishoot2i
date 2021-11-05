@@ -115,4 +115,24 @@
     <string name="convert_to_htz">Convert to Htz</string>
     <string name="export_htz">Export Htz</string>
     <string name="remove_htz">Remove Htz</string>
+    <!-- -->
+    <string name="quality_desc">Quality of image</string>
+    <string name="red_slider">Red slider</string>
+    <string name="green_slider">Green slider</string>
+    <string name="alpha_slider">Alpha slider</string>
+    <string name="blue_slider">Blue slider</string>
+    <string name="sort_by_date_desc">Sort by date desc</string>
+    <string name="sort_by_date_asc">Sort by date asc</string>
+    <string name="sort_by_name_desc">Sort by name desc</string>
+    <string name="sort_by_type_desc">Sort by type desc</string>
+    <string name="sort_by_type_asc">Sort by type asc</string>
+    <string name="sort_by_name_asc">Sort by name asc</string>
+    <string name="main_fab_desc">Save result</string>
+    <string name="template_htz_imported_desc">Import template Htz</string>
+    <string name="badge_color_pick_desc">Badge color pick</string>
+    <string name="badge_size_desc">Badge size</string>
+    <string name="badge_font_desc">Badge font</string>
+    <string name="goto_web_desc">Goto Web</string>
+    <string name="goto_source_desc">Goto Source</string>
+    <string name="clear_image_cache">Clear image cache</string>
 </resources>
