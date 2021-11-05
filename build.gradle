@@ -18,6 +18,9 @@ allprojects {
             if (group ==~ /androidx\.activity/) {
                 drd.useVersion androidxLibs.versions.activity.get()
             }
+            if (group ==~ /androidx\.annotation/ && name ==~ /annotation/) {
+                drd.useVersion androidxLibs.versions.annotation.get()
+            }
             if (group ==~ /androidx\.arch\.core/) {
                 drd.useVersion androidxLibs.versions.archCore.get()
             }
